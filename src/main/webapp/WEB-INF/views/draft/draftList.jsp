@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>전자결재 - LDBSOFT</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f4f6f9;
@@ -80,7 +79,6 @@
     </table>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const searchInput = document.getElementById('searchInput');
     const searchType = document.getElementById('searchType');

@@ -6,13 +6,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <sitemesh:write property="head"/>
     <meta charset="UTF-8">
     <title><sitemesh:write property="title"/></title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
         html, body {
@@ -64,6 +64,7 @@
             min-height: calc(100vh - 100px);
         }
     </style>
+<sitemesh:write property="head"/>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-glass shadow-sm m-2 px-3">
@@ -194,7 +195,7 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
     const employees = [
         {name: "김사원", dept: "개발팀", rank: "사원", email: "kim@ldbsoft.co.kr", phone: "010-1234-0001"},
