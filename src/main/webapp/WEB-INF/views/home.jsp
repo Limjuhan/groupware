@@ -13,6 +13,7 @@
 
         .main {
             padding: 40px 40px;
+            margin-top: 30px;
             min-height: calc(100vh - 80px); /* 화면 높이 - header */
         }
 

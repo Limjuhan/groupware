@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -6,9 +6,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <sitemesh:write property="head" />
+    <sitemesh:write property="head"/>
     <meta charset="UTF-8">
-    <title><sitemesh:write property="title" /></title>
+    <title><sitemesh:write property="title"/></title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -54,7 +54,7 @@
         }
 
         .dropdown-menu {
-            background-color: rgba(255,255,255,0.9);
+            background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
         }
@@ -68,7 +68,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-glass shadow-sm m-2 px-3">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><i class="fa-solid fa-cubes"></i> LDBSOFT Groupware</a>
+        <a class="navbar-brand" href="/"><i class="fa-solid fa-cubes"></i> LDBSOFT Groupware</a>
         <div class="d-flex">
             <div class="dropdown me-3">
                 <button class="btn" id="searchToggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -104,20 +104,78 @@
     <div class="content-wrapper">
         <div class="col-md-2 bg-glass me-2 sidebar">
             <ul class="nav flex-column nav-pills">
-                <li class="nav-item"><a class="nav-link active" href="#"><i class="fa-solid fa-house"></i> 홈</a></li>
-                <li class="nav-item"><a class="nav-link" href="profile"><i class="fa-solid fa-user"></i> 개인정보</a></li>
-                <li class="nav-item"><a class="nav-link" href="board/noticeList"><i class="fa-solid fa-bullhorn"></i> 공지사항</a></li>
-                <li class="nav-item"><a class="nav-link" href="draft/draftList"><i class="fa-solid fa-file-signature"></i> 전자결재</a></li>
-                <li class="nav-item"><a class="nav-link" href="calendar"><i class="fa-solid fa-calendar-days"></i> 캘린더</a></li>
-                <li class="nav-item"><a class="nav-link" href="email"><i class="fa-solid fa-envelope"></i> 이메일</a></li>
-                <li class="nav-item"><a class="nav-link" href="reservation/vehicleList"><i class="fa-solid fa-car"></i> 차량예약</a></li>
-                <li class="nav-item"><a class="nav-link" href="admin/adminMemberManage"><i class="fa-solid fa-users-gear"></i> 관리자</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/"><i class="fa-solid fa-house"></i> 홈</a></li>
+                <li class="nav-item"><a class="nav-link" href="/profile"><i class="fa-solid fa-user"></i> 개인정보</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#boardMenu" role="button" aria-expanded="false" aria-controls="boardMenu">
+                        <i class="fa-solid fa-thumbtack me-1"></i> 게시판 ▾
+                    </a>
+                    <div class="collapse ps-3" id="boardMenu">
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="/board/noticeList">공지사항</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/faqList">자주묻는질문</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/questionList">질문게시판</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/faqManage">자주묻는질문 관리</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#draftMenu" role="button" aria-expanded="false" aria-controls="draftMenu">
+                        <i class="fa-solid fa-pen-nib me-1"></i> 전자결재 ▾
+                    </a>
+                    <div class="collapse ps-3" id="draftMenu">
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="/draft/draftList">내 전자결재</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/draft/receviedDraftList">받은 전자결재</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#facilityMenu" role="button" aria-expanded="false" aria-controls="facilityMenu">
+                        <i class="fa-solid fa-cogs me-1"></i> 공용설비 ▾
+                    </a>
+                    <div class="collapse ps-3" id="facilityMenu">
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="/reservation/vehicleList">차량예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/reservation/meetingRoomList">회의실예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/reservation/itemList">비품예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/reservation/reservationList">내 예약내역</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/vehicleManage">차량관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/meetingRoomManage">회의실관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/itemListManage">비품관리</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#calendarMenu" role="button" aria-expanded="false" aria-controls="calendarMenu">
+                        <i class="fa-solid fa-calendar-days"></i> 캘린더 ▾
+                    </a>
+                    <div class="collapse ps-3" id="calendarMenu">
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="/calendar"><i class="fa-regular fa-calendar-check me-1"></i> 내 캘린더</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/calendarManage"><i class="fa-solid fa-sliders me-1"></i> 일정관리</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="/email"><i class="fa-solid fa-envelope"></i> 이메일</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#adminMenu" role="button" aria-expanded="false" aria-controls="adminMenu">
+                        <i class="fa-solid fa-user-gear me-1"></i> 관리자 ▾
+                    </a>
+                    <div class="collapse ps-3" id="adminMenu">
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="/admin/adminMemberManage">회원관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/deptAuth">부서권한관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/dashBoard">연차사용률</a></li>
+                        </ul>
+                    </div>
+                </li>
             </ul>
         </div>
 
         <div class="flex-fill">
             <div class="glass-content">
-                <sitemesh:write property="body" />
+                <sitemesh:write property="body"/>
             </div>
         </div>
     </div>
@@ -139,9 +197,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const employees = [
-        { name: "김사원", dept: "개발팀", rank: "사원", email: "kim@ldbsoft.co.kr", phone: "010-1234-0001" },
-        { name: "이대리", dept: "영업팀", rank: "대리", email: "lee@ldbsoft.co.kr", phone: "010-5678-0002" },
-        { name: "박과장", dept: "기획팀", rank: "과장", email: "park@ldbsoft.co.kr", phone: "010-1111-0003" }
+        {name: "김사원", dept: "개발팀", rank: "사원", email: "kim@ldbsoft.co.kr", phone: "010-1234-0001"},
+        {name: "이대리", dept: "영업팀", rank: "대리", email: "lee@ldbsoft.co.kr", phone: "010-5678-0002"},
+        {name: "박과장", dept: "기획팀", rank: "과장", email: "park@ldbsoft.co.kr", phone: "010-1111-0003"}
     ];
 
     document.getElementById("searchInput").addEventListener("input", function () {
