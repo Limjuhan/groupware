@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -37,12 +37,10 @@
             font-weight: bold;
         }
 
-        /* ✅ select box wrapper를 relative로 */
         .select-wrapper {
             position: relative;
         }
 
-        /* ✅ select 자체 */
         .form-select.bg-glass.custom-select-arrow {
             appearance: none;
             -webkit-appearance: none;
@@ -56,7 +54,6 @@
             border-radius: 0.5rem;
         }
 
-        /* ✅ 화살표 표시 */
         .select-wrapper::after {
             content: "▼";
             position: absolute;
@@ -68,7 +65,6 @@
             font-size: 1.2rem;
         }
 
-        /* ✅ 드롭다운 목록 option 배경 */
         .form-select.bg-glass option {
             background-color: #ffffff;
             color: #000000;
@@ -83,7 +79,7 @@
         <a href="draftForm" class="btn btn-primary bg-glass">+ 새 결재문서 작성</a>
     </div>
 
-    <!-- ✅ 검색 영역 -->
+    <!-- 검색 영역 -->
     <div class="row mb-3 align-items-end">
         <div class="col-md-3 select-wrapper">
             <label for="searchType" class="form-label">검색 기준</label>
@@ -95,6 +91,9 @@
         <div class="col-md-6">
             <label for="searchInput" class="form-label">검색어 입력</label>
             <input type="text" id="searchInput" class="form-control bg-glass" placeholder="검색어 입력">
+        </div>
+        <div class="col-md-3">
+            <button type="button" class="btn btn-primary w-100 bg-glass" onclick="searchMyDraftList()">검색</button>
         </div>
     </div>
 
@@ -114,53 +113,100 @@
             <th>삭제</th>
         </tr>
         </thead>
-        <tbody>
-        <tr>
-            <td>A00001</td>
-            <td><a href="draftDetail?id=A00001" class="link-white">휴가신청서(5/1~5/3)</a></td>
-            <td>2025-05-01</td>
-            <td>동곤</td>
-            <td>김부장</td>
-            <td>김이사</td>
-            <td><span class="badge bg-warning text-dark">1차결재 승인</span></td>
-            <td><a href="draftDelete?id=A00001" class="btn btn-sm btn-outline-danger bg-glass">삭제</a></td>
-        </tr>
-        <tr>
-            <td>A00002</td>
-            <td><a href="draftDetail?id=A00002" class="link-white">지출결의서(회의비)</a></td>
-            <td>2025-05-10</td>
-            <td>동곤</td>
-            <td>박부장</td>
-            <td>대표</td>
-            <td><span class="badge bg-success">2차결재 승인</span></td>
-            <td>-</td>
-        </tr>
+        <tbody id="documentTableBody">
+
         </tbody>
     </table>
 </div>
 
 <script>
-    const searchInput = document.getElementById('searchInput');
-    const searchType = document.getElementById('searchType');
+    function searchMyDraftList() {
 
-    searchInput.addEventListener('keyup', function () {
-        const keyword = searchInput.value.toLowerCase();
-        const type = searchType.value;
+        var keyword = $("#searchInput").val().trim();
+        var type = $("#searchType").val();
 
-        const rows = document.querySelectorAll('#documentTable tbody tr');
+        var requestData = {
+            type : '',
+            keyword: '',
+        };
 
-        rows.forEach(row => {
-            const titleCell = row.children[1].innerText.toLowerCase();
-            const writerCell = row.children[3].innerText.toLowerCase();
+        if (keyword !== "" && type !== "") {
+            requestData.type = type;
+            requestData.keyword = keyword;
+        }
 
-            const isMatch =
-                (type === 'title' && titleCell.includes(keyword)) ||
-                (type === 'writer' && writerCell.includes(keyword));
+        $.ajax({
+            url: "/draft/searchMyDraftList",
+            method: "GET",
+            data: requestData,
+            dataType: "json",
+            success: function (data) {
+                console.log('data결과: ', data);
+                var $tbody = $("#documentTableBody");
+                $tbody.empty();
 
-            row.style.display = isMatch ? '' : 'none';
+                if (!data || data.length === 0) {
+                    $tbody.append("<tr><td colspan='8' class='text-center text-muted'>검색 결과가 없습니다.</td></tr>");
+                    return;
+                }
+
+                for (var i = 0; i < data.length; i++) {
+                    var draft = data[i];
+                    var statusBadge = getStatusBadge(draft.status);
+
+                    if (draft.approver1 == null || draft.approver1 == '' || draft.approver2 == null || draft.approver2 == '') {
+                        draft.approver1 = '-';
+                        draft.approver2 = '-';
+                    }
+
+                    var row = "<tr>" +
+                        "<td>" + draft.docId + "</td>" +
+                        "<td><a href='draftDetail?id=" + draft.docId + "' class='link-white'>" + draft.docTitle + "</a></td>" +
+                        "<td>" + draft.docEndDate + "</td>" +
+                        "<td>" + draft.writer + "</td>" +
+                        "<td>" + draft.approver1 + "</td>" +
+                        "<td>" + draft.approver2 + "</td>" +
+                        "<td>" + statusBadge + "</td>" +
+                        "<td><a href='deleteMyDraft?id=" + draft.docId + "' class='btn btn-sm btn-outline-danger bg-glass'>삭제</a></td>" +
+                        "</tr>";
+
+                    $tbody.append(row);
+                }
+            },
+            error: function () {
+                alert("목록을 불러오는 중 오류가 발생했습니다.");
+            }
         });
+    }
+
+    function getStatusBadge(status) {
+        if (status === "0") {
+            return "<span class='badge bg-secondary'>임시저장</span>";
+        } else if (status === "1") {
+            return "<span class='badge bg-warning text-dark'>1차결재 대기</span>";
+        } else if (status === "2") {
+            return "<span class='badge bg-warning text-dark'>1차결재 승인</span>";
+        } else if (status === "3") {
+            return "<span class='badge bg-danger'>1차결재 반려</span>";
+        } else if (status === "4") {
+            return "<span class='badge bg-info text-dark'>2차결재 대기</span>";
+        } else if (status === "5") {
+            return "<span class='badge bg-success'>2차결재 승인</span>";
+        } else if (status === "6") {
+            return "<span class='badge bg-danger'>2차결재 반려</span>";
+        } else {
+            return "<span class='badge bg-dark'>알 수 없음</span>";
+        }
+    }
+
+
+    // ✅ 페이지 로딩 시 전체 목록 먼저 출력
+    $(document).ready(function () {
+        searchMyDraftList();
     });
 </script>
-
 </body>
+
+
+
 </html>

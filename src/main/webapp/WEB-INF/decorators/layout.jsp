@@ -126,7 +126,7 @@
                     </a>
                     <div class="collapse ps-3" id="draftMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/draft/draftList">내 전자결재</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/draft/getMyDraftList">내 전자결재</a></li>
                             <li class="nav-item"><a class="nav-link" href="/draft/receivedDraftList">받은 전자결재</a></li>
                         </ul>
                     </div>
