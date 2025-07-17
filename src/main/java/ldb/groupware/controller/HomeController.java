@@ -15,4 +15,14 @@ public class HomeController {
     public String errorTest() {
         throw new RuntimeException("테스트용 예외 발생!");
     }
+
+    @GetMapping("/calendar")
+    public String calendar(){
+        return "calendar/calendar";
+    }
+
+    @GetMapping("/profile")
+    public String profile(){
+        return "profile/profile";
+    }
 }
