@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.*" %>
-<%
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%--
     // 예시 로그인 정보 (실제 환경에서는 세션에서 가져옴)
     String loginDept = "인사팀";
     int loginLevel = 2;
@@ -41,7 +43,7 @@
     int totalFAQs = filteredList.size();
     int start = (currentPage - 1) * pageSize;
     int end = Math.min(start + pageSize, totalFAQs);
-%>
+--%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -72,34 +74,33 @@
 
     <!-- FAQ 리스트 -->
     <div class="accordion" id="faqAccordion">
-        <%
-            if (totalFAQs == 0) {
-        %>
+        <c:if test="${faq==null}">
             <p class="text-muted">검색 결과가 없습니다.</p>
-        <%
-            } else {
-                for (int i = start; i < end; i++) {
-                    FAQ faq = filteredList.get(i);
-        %>
+        </c:if>
+        <c:if test="${faq!=null}">
+            <c:forEach var="q" items="${faq}">
         <div class="accordion-item mb-2">
-            <h2 class="accordion-header" id="heading<%=faq.id%>">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%=faq.id%>">
-                    <%= faq.question %>
+            <h2 class="accordion-header" id="heading${q}>">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${q.faqId}">
+                        ${q.faqTitle}
                 </button>
             </h2>
-            <div id="collapse<%=faq.id%>" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div id="collapse${q.faqId}" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                 <div class="accordion-body">
-                    <div class="faq-answer mb-2"><%= faq.answer %></div>
-                    <div class="text-muted small">작성 부서: <%= faq.dept %></div>
+                    <div class="faq-answer mb-2">${q.faqContent}</div>
+                    <div class="text-muted small">작성 부서: ${q.deptId}</div>
                 </div>
             </div>
         </div>
-        <%
-                }
-            }
-        %>
+            </c:forEach>
+        </c:if>
     </div>
 
+
+
+
+
+    <%--
     <!-- 페이징 -->
     <%
         int totalPages = (int)Math.ceil(totalFAQs / (double)pageSize);
@@ -123,10 +124,8 @@
                 <a class="page-link" href="?page=<%= currentPage + 1 %>&keyword=<%= keyword %>">다음</a>
             </li>
         </ul>
-    </nav>
-    <%
-        }
-    %>
+    </nav> --%>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
