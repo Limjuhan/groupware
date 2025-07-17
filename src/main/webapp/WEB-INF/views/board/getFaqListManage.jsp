@@ -70,7 +70,7 @@
     <h3 class="fw-bold mb-4">자주 묻는 질문 (FAQ)</h3>
 
 
-    <a href="faqWrite" class="btn btn-success w-100">+ 등록</a>
+    <a href="getFaqForm" class="btn btn-success w-100">+ 등록</a>
 
     <!-- FAQ 리스트 -->
     <div class="accordion" id="faqAccordion">

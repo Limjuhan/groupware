@@ -10,4 +10,5 @@ public interface FaqMapper {
 
     public List<FaqListDto> findFaqList();
 
+    int faqCount();
 }

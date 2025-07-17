@@ -117,7 +117,7 @@
                             <li class="nav-item"><a class="nav-link" href="/board/noticeList">공지사항</a></li>
                             <li class="nav-item"><a class="nav-link" href="/board/getFaqList">자주묻는질문</a></li>
                             <li class="nav-item"><a class="nav-link" href="/board/questionList">질문게시판</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/faqManage">자주묻는질문 관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage">자주묻는질문 관리</a></li>
                         </ul>
                     </div>
                 </li>
