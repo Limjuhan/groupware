@@ -64,7 +64,7 @@
             min-height: calc(100vh - 100px);
         }
     </style>
-<sitemesh:write property="head"/>
+    <sitemesh:write property="head"/>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-glass shadow-sm m-2 px-3">
@@ -95,8 +95,8 @@
                 </ul>
             </div>
 
-            <span class="me-3"><i class="fa-solid fa-user-circle"></i> LDB님</span>
-            <a href="logout.jsp" class="btn btn-outline-danger btn-sm">로그아웃</a>
+            <span class="me-3"><i class="fa-solid fa-user-circle"></i>${sessionScope.loggedInUser.memName} 님</span>
+            <a href="login/doLogout" class="btn btn-outline-danger btn-sm">로그아웃</a>
         </div>
     </div>
 </nav>
@@ -106,7 +106,7 @@
         <div class="col-md-2 bg-glass me-2 sidebar">
             <ul class="nav flex-column nav-pills">
                 <li class="nav-item"><a class="nav-link active" href="/"><i class="fa-solid fa-house"></i> 홈</a></li>
-                <li class="nav-item"><a class="nav-link" href="/profile"><i class="fa-solid fa-user"></i> 개인정보</a></li>
+                <li class="nav-item"><a class="nav-link" href="/member/getMemberInfo"><i class="fa-solid fa-user"></i> 개인정보</a></li>
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#boardMenu" role="button" aria-expanded="false" aria-controls="boardMenu">
                         <i class="fa-solid fa-thumbtack me-1"></i> 게시판 ▾
@@ -234,6 +234,21 @@
             results.appendChild(item);
         });
     });
+
+    const timeoutSec = 10800; // 세션 시간 3시간
+    const warnSec = timeoutSec- 300; // 세션 남은 시간 5분전
+
+    // 세선 5분전 알림
+    setTimeout(() =>{
+        alert("세션이 5분 후에 만료 됩니다.");
+    }, warnSec * 1000);
+
+    // 세션 만료 시 로그 아웃
+    setTimeout(() => {
+        alert("세션이 만료되어 자동 로그아웃됩니다.");
+        local.href ="/login/dodoLogout";
+    }, timeoutSec * 1000);
+
 </script>
 </body>
 </html>

@@ -18,26 +18,29 @@ public class LoginController {
 
     private final LoginService service;
 
-    @GetMapping("dologin")
-    public String dologin(HttpServletRequest request) {
-        if (service.loginChk(request)) {
-            return "error";
-        }
-        return "login/dologin";
+    @GetMapping("doLogin")
+    public String doLogin() {
+        return "login/doLogin";
     }
 
-    @PostMapping("/loginProcess")
+    @PostMapping("loginProcess")
     public String loginProcess(@RequestParam String id,
                                @RequestParam String password,
                                HttpSession session, HttpServletRequest request) {
 
-        LoginUserDto loginUser  = service.getLoginUserDto(id,password);
+        LoginUserDto loginUser = service.getLoginUserDto(id, password);
         if (loginUser == null) {
             request.setAttribute("error", "아이디 또는 비밀번호가 올바르지 않습니다.");
-            return "login/dologin";
+            return "login/doLogin";
         }
         session.setAttribute("loggedInUser", loginUser);
-        session.setMaxInactiveInterval(30 * 60);
+        session.setMaxInactiveInterval(180 * 60);
         return "redirect:/";
+    }
+
+    @GetMapping("doLogout")
+    public String doLogout(HttpServletRequest request) {
+        service.logout(request);
+        return "redirect:/login/doLogin";
     }
 }
