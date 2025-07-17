@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            background: url('/img/won.jpg') center center / cover no-repeat fixed;
+            background: url('/img/sad.jpg') center center / cover no-repeat fixed;
             display: flex;
             align-items: center;
             justify-content: center;
