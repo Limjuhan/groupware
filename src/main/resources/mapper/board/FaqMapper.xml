@@ -7,7 +7,7 @@
     </select>
 
     <select id="findFaqList" resultType="FaqListDto">
-             select * from faq
+        select * from faq
     </select>
 
 </mapper>
