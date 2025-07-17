@@ -3,8 +3,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>관리자 회원 관리</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>관리자 사원 관리</title>
   <style>
     body { background-color: #f8f9fa; }
     .container { max-width: 1000px; margin-top: 60px; }
@@ -47,7 +46,7 @@
 </head>
 <body>
 <div class="container bg-white shadow-sm rounded p-5">
-  <h4 class="mb-4 fw-bold">👤 회원 관리</h4>
+  <h4 class="mb-4 fw-bold">👤 사원 관리</h4>
 
 
   <!-- 필터 -->
@@ -140,6 +139,5 @@
   </table>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

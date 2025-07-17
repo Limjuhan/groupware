@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>회원 설정</title>
+  <title>사원 설정</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body { background-color: #f8f9fa; }
@@ -12,7 +12,7 @@
 </head>
 <body>
 <div class="container bg-white shadow-sm rounded p-5">
-  <h4 class="mb-4 fw-bold">👤 회원 설정</h4>
+  <h4 class="mb-4 fw-bold">👤 사원 설정</h4>
 
   <form action="memberLevelProc.jsp" method="post">
     <!-- 사원번호 -->
@@ -48,20 +48,10 @@
         <option value="주임">주임</option>
         <option value="대리">대리</option>
         <option value="과장">과장</option>
-        <option value="팀장">팀장</option>
+        <option value="부장">부장</option>
       </select>
     </div>
 
-    <!-- 권한 변경 선택 -->
-    <div class="mb-4">
-      <label for="newLevel" class="form-label">권한 레벨 설정</label>
-      <select id="newLevel" name="newLevel" class="form-select" required>
-        <option value="">-- 선택 --</option>
-        <option value="1">1 (일반 사용자)</option>
-        <option value="2">2 (부서 관리자)</option>
-        <option value="3">3 (최고 관리자)</option>
-      </select>
-    </div>
 
     <!-- 버튼 -->
     <div class="d-flex justify-content-between">

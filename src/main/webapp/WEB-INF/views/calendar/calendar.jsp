@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>캘린더 조회 - LDBSOFT 그룹웨어</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css" rel="stylesheet">
   <style>
     body { background-color: #f4f6f9; }
@@ -61,7 +60,6 @@
 </div>
 
 <!-- 스크립트 -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
