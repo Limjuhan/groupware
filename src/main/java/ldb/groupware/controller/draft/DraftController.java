@@ -1,4 +1,4 @@
-package ldb.groupware.controller;
+package ldb.groupware.controller.draft;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
