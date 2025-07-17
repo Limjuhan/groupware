@@ -25,11 +25,12 @@ public class DraftController {
 
     @GetMapping("draftManagement")
     public String draftManagement() {
-        return "draft/draftManagement";
+        return "draft/receivedDraftDetail";
     }
-    @GetMapping("receviedDraftList")
-    public String receviedDraftList() {
-        return "draft/receviedDraftList";
+
+    @GetMapping("receivedDraftList")
+    public String receivedDraftList() {
+        return "draft/receivedDraftList";
     }
 
 

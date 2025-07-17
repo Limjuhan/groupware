@@ -33,31 +33,45 @@
             text-decoration: underline;
         }
 
-        /* select에 glass 효과 및 ▼ 커스텀 아이콘 추가 */
-        .form-select.bg-glass {
-            background: rgba(255, 255, 255, 0.05) !important;
-            color: white;
-            backdrop-filter: blur(1px);
-            -webkit-backdrop-filter: blur(1px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .form-label {
+            font-weight: bold;
+        }
+
+        /* ✅ select box wrapper를 relative로 */
+        .select-wrapper {
+            position: relative;
+        }
+
+        /* ✅ select 자체 */
+        .form-select.bg-glass.custom-select-arrow {
             appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
-            padding-right: 2rem;
-            background-image: url("data:image/svg+xml,%3Csvg fill='white' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1rem;
-        }
-
-        /* 밝은 option 배경 처리 */
-        .form-select.bg-glass option {
-            background-color: rgba(0, 0, 0, 0.8);
+            background: rgba(255, 255, 255, 0.05) !important;
             color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            padding-right: 2.5rem;
+            border-radius: 0.5rem;
         }
 
-        .form-label {
-            font-weight: bold;
+        /* ✅ 화살표 표시 */
+        .select-wrapper::after {
+            content: "▼";
+            position: absolute;
+            top: 65%;
+            right: 1.0rem;
+            transform: translateY(-40%);
+            pointer-events: none;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        /* ✅ 드롭다운 목록 option 배경 */
+        .form-select.bg-glass option {
+            background-color: #ffffff;
+            color: #000000;
         }
     </style>
 </head>
@@ -69,11 +83,11 @@
         <a href="draftForm" class="btn btn-primary bg-glass">+ 새 결재문서 작성</a>
     </div>
 
-    <!-- 검색 영역 -->
+    <!-- ✅ 검색 영역 -->
     <div class="row mb-3 align-items-end">
-        <div class="col-md-3">
+        <div class="col-md-3 select-wrapper">
             <label for="searchType" class="form-label">검색 기준</label>
-            <select id="searchType" class="form-select bg-glass">
+            <select id="searchType" class="form-select bg-glass custom-select-arrow">
                 <option value="title">제목</option>
                 <option value="writer">기안자</option>
             </select>

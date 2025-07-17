@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <style>
         html, body {
@@ -128,7 +127,7 @@
                     <div class="collapse ps-3" id="draftMenu">
                         <ul class="nav flex-column">
                             <li class="nav-item"><a class="nav-link" href="/draft/draftList">내 전자결재</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/draft/receviedDraftList">받은 전자결재</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/draft/receivedDraftList">받은 전자결재</a></li>
                         </ul>
                     </div>
                 </li>
