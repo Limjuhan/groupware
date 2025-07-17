@@ -1,4 +1,4 @@
-package ldb.groupware.controller;
+package ldb.groupware.controller.board;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,7 @@ public class BoardController {
 
     @GetMapping("faqList")
     public String faqList(){
-        return "board/faqList";
+        return "getFaqList";
     }
 
     @GetMapping("noticeDetail")
