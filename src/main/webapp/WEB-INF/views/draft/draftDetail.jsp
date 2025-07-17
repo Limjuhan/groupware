@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>전자결재 상세보기 - LDBSOFT</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body { background-color: #f4f6f9; }
         .container { max-width: 1000px; margin-top: 40px; }
@@ -84,6 +84,5 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
