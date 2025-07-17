@@ -6,8 +6,8 @@
         select count(*) from faq
     </select>
 
-    <select id="findFaqList" resultType="FaqListDto">
-        select * from faq
+    <select id="findFaqList" resultType="FaqListDto" parameterType="PaginationDto">
+        select * from faq LIMIT #{startNum},#{itemsPerPage}
     </select>
 
 </mapper>

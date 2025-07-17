@@ -69,7 +69,7 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h3 class="fw-bold mb-4">자주 묻는 질문 (FAQ)</h3>
+    <h3 class="fw-bold mb-4" style="color: darkgray">자주 묻는 질문 (FAQ)</h3>
 
 
     <!-- FAQ 리스트 -->
@@ -97,34 +97,25 @@
     </div>
 
 
-
-
-
-    <%--
     <!-- 페이징 -->
-    <%
-        int totalPages = (int)Math.ceil(totalFAQs / (double)pageSize);
-        if (totalPages > 1) {
-    %>
+
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
-            <li class="page-item <%= currentPage == 1 ? "disabled" : "" %>">
-                <a class="page-link" href="?page=<%= currentPage - 1 %>&keyword=<%= keyword %>">이전</a>
+            <li class="page-item">
+                <a class="page-link" href="?page=${pageDto.page - 1}">이전</a>
             </li>
-            <%
-                for (int i = 1; i <= totalPages; i++) {
-            %>
-            <li class="page-item <%= currentPage == i ? "active" : "" %>">
-                <a class="page-link" href="?page=<%= i %>&keyword=<%= keyword %>"><%= i %></a>
-            </li>
-            <%
-                }
-            %>
-            <li class="page-item <%= currentPage == totalPages ? "disabled" : "" %>">
-                <a class="page-link" href="?page=<%= currentPage + 1 %>&keyword=<%= keyword %>">다음</a>
+            <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
+                <li class="page-item ">
+                    <a class="page-link" href="?page=${p}">${p}</a>
+                </li>
+            </c:forEach>
+
+
+            <li class="page-item">
+                <a class="page-link" href="?page=${pageDto.page+1}">다음</a>
             </li>
         </ul>
-    </nav> --%>
+    </nav>
 
 </div>
 
