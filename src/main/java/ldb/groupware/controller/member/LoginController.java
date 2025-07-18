@@ -2,7 +2,6 @@ package ldb.groupware.controller.member;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import ldb.groupware.dto.member.LoginUserDto;
 import ldb.groupware.service.member.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -30,14 +29,15 @@ public class LoginController {
     @PostMapping("loginProcess")
     public String loginProcess(@RequestParam String id,
                                @RequestParam String password,
-                               HttpSession session, HttpServletRequest request) {
+                               HttpSession session,
+                               HttpServletRequest request) {
 
-        LoginUserDto loginUser = service.getLoginUserDto(id, password);
-        if (loginUser == null) {
-            request.setAttribute("error", "아이디 또는 비밀번호가 올바르지 않습니다.");
+        String loginId = service.login(id, password);
+        if (loginId == null) {
             return "login/doLogin";
         }
-        session.setAttribute("loggedInUser", loginUser);
+
+        session.setAttribute("loginId", loginId); // ✅ ID만 저장
         session.setMaxInactiveInterval(180 * 60);
         return "redirect:/";
     }

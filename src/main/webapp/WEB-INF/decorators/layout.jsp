@@ -95,7 +95,7 @@
                 </ul>
             </div>
 
-            <span class="me-3"><i class="fa-solid fa-user-circle"></i>${sessionScope.loggedInUser.memName} 님</span>
+            <span class="me-3"><i class="fa-solid fa-user-circle"></i>${sessionScope.loginId} 님</span>
             <a href="/login/doLogout" class="btn btn-outline-danger btn-sm">로그아웃</a>
         </div>
     </div>

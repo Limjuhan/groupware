@@ -5,30 +5,33 @@
 
 <mapper namespace="ldb.groupware.mapper.mybatis.member.MemberMapper">
 
-    <select id="selectLoginUser" resultType="LoginUserDto">
-        SELECT
-            m.mem_id,
-            m.mem_name,
-            m.mem_email,
-            m.mem_phone,
-            m.mem_gender,
-            m.mem_address,
-            m.mem_picture,
-            m.mem_status,
-            m.mem_hiredate,
-            m.resign_date,
-            m.dept_id,
-            d.dept_name,
-            m.rank_id,
-            r.rank_name,
-            m.jumin_front,
-            m.jumin_back
+    <select id="loginId" resultType="string">
+        SELECT mem_id
+        FROM member
+        WHERE mem_id = #{id}
+          AND mem_pass = #{password}
+          AND mem_status = '재직중'
+    </select>
+
+    <select id="findMemName" resultType="string">
+        SELECT mem_name
+        FROM member
+        WHERE mem_id = #{id}
+    </select>
+
+    <select id="selectMemberInfo" parameterType="string" resultType="MemberInfoDto">
+        SELECT m.mem_id, m.mem_name, m.mem_email, m.mem_private_email, m.mem_phone,
+               ct1.comm_name AS dept_name,
+               ct2.comm_name AS rank_name,
+               m.mem_status, m.mem_hiredate, m.mem_gender,
+               CONCAT(m.jumin_front, '-', LEFT(m.jumin_back, 1), '******') AS birth_date,
+               m.mem_address,
+               CONCAT(a.file_path, '/', a.saved_name) AS mem_picture
         FROM member m
-                 LEFT JOIN dept d ON m.dept_id = d.dept_id
-                 LEFT JOIN rank r ON m.rank_id = r.rank_id
-        WHERE m.mem_id = #{id}
-          AND m.mem_pass = #{password}
-          AND m.mem_status = '재직'
+                 LEFT JOIN common_type ct1 ON m.dept_id = ct1.comm_code AND ct1.code_group = 'dept'
+                 LEFT JOIN common_type ct2 ON m.rank_id = ct2.comm_code AND ct2.code_group = 'rank'
+                 LEFT JOIN attachment a ON a.business_id = m.mem_id AND a.attach_type = 'P'
+        WHERE m.mem_id = #{memId}
     </select>
 
 
