@@ -9,7 +9,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class member {
+public class Member {
    private String memId;
    private String deptId;
    private String rankId;

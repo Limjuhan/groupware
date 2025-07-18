@@ -9,9 +9,10 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class dept {
-    private String deptId;
-    private String deptName;
+public class Authority {
+    private String authCode;
+    private String authName;
+    private String description;
     private String useYn;
     private String createdBy;
     private Date createdDate;

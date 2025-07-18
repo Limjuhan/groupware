@@ -23,6 +23,6 @@ public class HomeController {
 
     @GetMapping("/profile")
     public String profile(){
-        return "profile/profile";
+        return "getMemberInfo";
     }
 }
