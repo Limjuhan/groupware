@@ -96,7 +96,7 @@
             </div>
 
             <span class="me-3"><i class="fa-solid fa-user-circle"></i>${sessionScope.loggedInUser.memName} 님</span>
-            <a href="login/doLogout" class="btn btn-outline-danger btn-sm">로그아웃</a>
+            <a href="/login/doLogout" class="btn btn-outline-danger btn-sm">로그아웃</a>
         </div>
     </div>
 </nav>
@@ -165,7 +165,7 @@
                     </a>
                     <div class="collapse ps-3" id="adminMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/admin/adminMemberManage">사원관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/member/searchMemberList">사원관리</a></li>
                             <li class="nav-item"><a class="nav-link" href="/admin/deptAuth">부서권한관리</a></li>
                             <li class="nav-item"><a class="nav-link" href="/admin/dashBoard">연차사용률</a></li>
                         </ul>
@@ -235,8 +235,8 @@
         });
     });
 
-    const timeoutSec = 10800; // 세션 시간 3시간
-    const warnSec = timeoutSec- 300; // 세션 남은 시간 5분전
+    const timeoutSec = 10800;
+    const warnSec = timeoutSec - 300; // 세션 남은 시간 5분전
 
     // 세선 5분전 알림
     setTimeout(() =>{
@@ -246,7 +246,7 @@
     // 세션 만료 시 로그 아웃
     setTimeout(() => {
         alert("세션이 만료되어 자동 로그아웃됩니다.");
-        local.href ="/login/dodoLogout";
+        location.href ="/login/doLogout";
     }, timeoutSec * 1000);
 
 </script>

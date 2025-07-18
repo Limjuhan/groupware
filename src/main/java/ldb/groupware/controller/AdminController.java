@@ -8,10 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @GetMapping("adminMemberManage")
-    public String adminMemberManage(){
-        return "admin/adminMemberManage";
-    }
     
     @GetMapping("dashBoard")
     public String dashBoard(){

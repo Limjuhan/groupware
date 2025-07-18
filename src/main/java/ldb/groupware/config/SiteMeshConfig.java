@@ -16,7 +16,8 @@ public class SiteMeshConfig {
             @Override
             protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
                 builder.addDecoratorPath("/*", "layout.jsp")
-                        .addExcludedPath("/login/doLogin");
+                        .addExcludedPath("/login/doLogin")
+                        .addExcludedPath("/member/getPassEditForm");
 //                builder.addDecoratorPath("/mypage/getCourseTimetable","sitemesh/layout.jsp");
 
             }

@@ -6,11 +6,30 @@
 <mapper namespace="ldb.groupware.mapper.mybatis.member.MemberMapper">
 
     <select id="selectLoginUser" resultType="LoginUserDto">
-        SELECT mem_id, mem_name, mem_email
-        FROM member
-        WHERE mem_id = #{id}
-          AND mem_pass = #{password}
-          AND mem_status = '재직'
+        SELECT
+            m.mem_id,
+            m.mem_name,
+            m.mem_email,
+            m.mem_phone,
+            m.mem_gender,
+            m.mem_address,
+            m.mem_picture,
+            m.mem_status,
+            m.mem_hiredate,
+            m.resign_date,
+            m.dept_id,
+            d.dept_name,
+            m.rank_id,
+            r.rank_name,
+            m.jumin_front,
+            m.jumin_back
+        FROM member m
+                 LEFT JOIN dept d ON m.dept_id = d.dept_id
+                 LEFT JOIN rank r ON m.rank_id = r.rank_id
+        WHERE m.mem_id = #{id}
+          AND m.mem_pass = #{password}
+          AND m.mem_status = '재직'
     </select>
+
 
 </mapper>
