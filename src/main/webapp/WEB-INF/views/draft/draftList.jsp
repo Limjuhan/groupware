@@ -161,7 +161,7 @@
 
                     var row = "<tr>" +
                         "<td>" + draft.docId + "</td>" +
-                        "<td><a href='draftDetail?id=" + draft.docId + "' class='link-white'>" + draft.docTitle + "</a></td>" +
+                        "<td><a href='getMyDraftDetail?docId=" + draft.docId + "&writerId=" + draft.writer +"' class='link-white'>" + draft.docTitle + "</a></td>" +
                         "<td>" + draft.docEndDate + "</td>" +
                         "<td>" + draft.writer + "</td>" +
                         "<td>" + draft.approver1 + "</td>" +

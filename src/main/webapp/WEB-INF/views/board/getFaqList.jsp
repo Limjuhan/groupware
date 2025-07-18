@@ -2,49 +2,6 @@
 <%@ page import="java.util.*" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%--
-    // 예시 로그인 정보 (실제 환경에서는 세션에서 가져옴)
-    String loginDept = "인사팀";
-    int loginLevel = 2;
-
-    // 검색 키워드 받기
-    String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword") : "";
-
-    // 페이징 하드코딩 (실제 데이터베이스 연동 시 DAO에서 처리)
-    int currentPage = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
-    int pageSize = 10;
-
-    class FAQ {
-        int id;
-        String question;
-        String answer;
-        String dept;
-        FAQ(int id, String q, String a, String d) {
-            this.id = id; this.question = q; this.answer = a; this.dept = d;
-        }
-    }
-
-    List<FAQ> faqList = new ArrayList<>();
-    faqList.add(new FAQ(1, "연차 신청 방법은?", "인사시스템에서 신청 가능합니다.", "인사팀"));
-    faqList.add(new FAQ(2, "재택근무 기준은?", "부서장 승인 후 가능하며 사전 보고가 필요합니다.", "총무팀"));
-    faqList.add(new FAQ(3, "보안 교육 수강은 어디서?", "보안 포털에서 로그인 후 수강 가능합니다.", "보안팀"));
-    faqList.add(new FAQ(4, "회사 이메일 세팅은?", "IT팀에 요청 후 매뉴얼 제공됩니다.", "IT팀"));
-    faqList.add(new FAQ(5, "사내 메신저 설치는?", "인프라 포털에서 다운로드 가능합니다.", "IT팀"));
-    // 총 5개만 예시로 표시 (실제 환경에서는 페이징 고려)
-
-    // 검색 필터링
-    List<FAQ> filteredList = new ArrayList<>();
-    for (FAQ faq : faqList) {
-        if (faq.question.contains(keyword)) {
-            filteredList.add(faq);
-        }
-    }
-
-    int totalFAQs = filteredList.size();
-    int start = (currentPage - 1) * pageSize;
-    int end = Math.min(start + pageSize, totalFAQs);
---%>
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>

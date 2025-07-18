@@ -20,4 +20,11 @@ public class DraftService {
     public List<DraftListDto> searchMyDraftList(String memId, String type, String keyword) {
         return draftMapper.getMyDraftList(memId, type, keyword);
     }
+
+    public void getMyDraft(String docId, String writerId) {
+        
+    }
+
+    public void getMyannualInfo(String docId, String writerId) {
+    }
 }
