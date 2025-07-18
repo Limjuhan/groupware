@@ -1,6 +1,7 @@
 package ldb.groupware.service.board;
 
 import jakarta.servlet.http.HttpServletRequest;
+import ldb.groupware.dto.board.FaqFormDto;
 import ldb.groupware.dto.board.FaqListDto;
 import ldb.groupware.dto.board.PaginationDto;
 import ldb.groupware.mapper.mybatis.board.FaqMapper;
@@ -30,4 +31,13 @@ public class FaqService {
         return map;
     }
 
+    public boolean insertFaq(FaqFormDto dto) {
+        int a = mapper.insertFaq(dto);
+        if(a>0) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
