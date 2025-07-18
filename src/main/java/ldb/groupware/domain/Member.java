@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -22,12 +22,12 @@ public class Member {
     private String juminFront;
     private String juminBack;
     private String memAddress;
-    private String memPicture;
     private String memStatus;
-    private Date memHiredate;
-    private Date resignDate;
+    private LocalDate memHiredate;
+    private LocalDate resignDate;
     private String createdBy;
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
     private String updatedBy;
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedAt;
+    private String memPrivateEmail;
 }

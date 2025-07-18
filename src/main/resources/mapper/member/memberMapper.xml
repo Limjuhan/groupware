@@ -10,7 +10,7 @@
         FROM member
         WHERE mem_id = #{id}
           AND mem_pass = #{password}
-          AND mem_status = '재직중'
+          AND mem_status = '재직'
     </select>
 
     <select id="findMemName" resultType="string">

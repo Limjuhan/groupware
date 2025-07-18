@@ -31,13 +31,13 @@ public class LoginController {
                                @RequestParam String password,
                                HttpSession session,
                                HttpServletRequest request) {
-
         String loginId = service.login(id, password);
         if (loginId == null) {
+            request.setAttribute("error", "아이디 또는 비밀번호가 올바르지 않습니다.");
             return "login/doLogin";
         }
 
-        session.setAttribute("loginId", loginId); // ✅ ID만 저장
+        session.setAttribute("loginId", loginId);
         session.setMaxInactiveInterval(180 * 60);
         return "redirect:/";
     }
