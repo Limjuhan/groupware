@@ -1,11 +1,39 @@
 package ldb.groupware.mapper.mybatis.member;
 
+import ldb.groupware.dto.member.AttachmentDto;
 import ldb.groupware.dto.member.MemberInfoDto;
+import ldb.groupware.dto.member.MemberListDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface MemberMapper {
-    String loginId(String id,String password);
-    String findMemName(String id);
-    MemberInfoDto selectMemberInfo(String memId);
+
+    String loginId(@Param("id") String id, @Param("password") String password);
+
+    MemberInfoDto selectInfo(String memId);
+
+    int updateInfo(@Param("memId") String memId,
+                   @Param("phone") String phone,
+                   @Param("privateEmail") String privateEmail,
+                   @Param("address") String address);
+
+    int deletePhoto(String memId);
+
+    int insertPhoto(AttachmentDto dto);
+
+    int countMembers(@Param("dept") String dept,
+                     @Param("rank") String rank,
+                     @Param("name") String name);
+
+    List<MemberListDto> getPagedMembers(@Param("dept") String dept,
+                                        @Param("rank") String rank,
+                                        @Param("name") String name,
+                                        @Param("start") int start,
+                                        @Param("limit") int limit);
+
+    List<String> getDeptNames();
+    List<String> getRankNames();
 }

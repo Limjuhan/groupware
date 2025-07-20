@@ -3,37 +3,35 @@ package ldb.groupware.controller.member;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import ldb.groupware.service.member.LoginService;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @Controller
 @RequestMapping("/login")
+@RequiredArgsConstructor
 public class LoginController {
 
-    private final LoginService service;
+    private final LoginService loginService;
 
-    public LoginController(LoginService service) {
-        this.service = service;
-    }
-
+    // 로그인 화면
     @GetMapping("doLogin")
     public String doLogin() {
         return "login/doLogin";
     }
 
+    // 로그인 처리
     @PostMapping("loginProcess")
     public String loginProcess(@RequestParam String id,
                                @RequestParam String password,
                                HttpSession session,
-                               HttpServletRequest request) {
-        String loginId = service.login(id, password);
+                               Model model) {
+
+        String loginId = loginService.login(id, password);
+
         if (loginId == null) {
-            request.setAttribute("error", "아이디 또는 비밀번호가 올바르지 않습니다.");
+            model.addAttribute("error", "아이디 또는 비밀번호가 올바르지 않습니다.");
             return "login/doLogin";
         }
 
@@ -42,9 +40,10 @@ public class LoginController {
         return "redirect:/";
     }
 
+    // 로그아웃 처리
     @GetMapping("doLogout")
     public String doLogout(HttpServletRequest request) {
-        service.logout(request);
+        loginService.logout(request);
         return "redirect:/login/doLogin";
     }
 }

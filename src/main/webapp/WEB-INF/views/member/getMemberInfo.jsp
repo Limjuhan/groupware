@@ -50,14 +50,13 @@
     </script>
 </head>
 <body>
-
 <div class="container shadow rounded">
     <h2 class="mb-4">개인정보</h2>
     <form method="post" action="UpdateMemberInfo" enctype="multipart/form-data">
         <div class="row mb-4">
             <div class="col-md-3 text-center">
-                <img src="${user.memPicture != null ? user.memPicture : 'profile_default.png'}"
-                     alt="사원 사진" class="img-thumbnail mb-2">
+                <img src="${not empty user.memPicture ? user.memPicture : '/img/profile_default.png'}" alt="사원 사진"
+                     class="img-thumbnail mb-2">
                 <input type="file" class="form-control" name="photo">
             </div>
             <div class="col-md-9">
@@ -67,8 +66,15 @@
                         <input type="text" class="form-control bg-light" name="name" value="${user.memName}" readonly>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">이메일</label>
-                        <input type="email" class="form-control bg-light" name="email" value="${user.memEmail}"
+                        <label class="form-label">성별</label>
+                        <select class="form-select bg-light" name="gender" disabled>
+                            <option value="남" ${user.memGender == '남' ? 'selected' : ''}>남</option>
+                            <option value="여" ${user.memGender == '여' ? 'selected' : ''}>여</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">생년월일</label>
+                        <input type="date" class="form-control bg-light" name="birthDate" value="${user.birthDate}"
                                readonly>
                     </div>
                     <div class="col-md-6">
@@ -97,16 +103,13 @@
                                readonly>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">성별</label>
-                        <select class="form-select bg-light" name="gender" disabled>
-                            <option value="남" ${user.memGender == '남' ? 'selected' : ''}>남</option>
-                            <option value="여" ${user.memGender == '여' ? 'selected' : ''}>여</option>
-                        </select>
+                        <label class="form-label">이메일</label>
+                        <input type="email" class="form-control bg-light" name="email" value="${user.memEmail}"
+                               readonly>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">생년월일</label>
-                        <input type="date" class="form-control bg-light" name="birthDate" value="${user.birthDate}"
-                               readonly>
+                        <label class="form-label">2차 이메일</label>
+                        <input type="email" class="form-control" name="privateEmail" value="${user.memPrivateEmail}">
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">주소*</label>
@@ -115,7 +118,6 @@
                 </div>
             </div>
         </div>
-
         <!-- ✅ 연차 정보 (나중에 연동 가능) -->
         <!--
         <h5 class="section-title">연차 정보</h5>
@@ -152,14 +154,14 @@
             </tbody>
         </table>
         -->
-
         <div class="text-end">
             <button type="button" class="btn btn-warning me-2" onclick="getPassEditForm()">비밀번호 변경</button>
             <button type="submit" class="btn btn-primary">저장</button>
             <a href="/" class="btn btn-secondary">취소</a>
         </div>
     </form>
-</div>
 
+
+</div>
 </body>
 </html>

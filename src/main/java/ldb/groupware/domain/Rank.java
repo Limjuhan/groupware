@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ public class Rank {
     private String rankName;
     private String useYn;
     private String createdBy;
-    private Date createdDate;
+    private LocalDate createdDate;
     private String updatedBy;
-    private Date updatedDate;
+    private LocalDate updatedDate;
 }

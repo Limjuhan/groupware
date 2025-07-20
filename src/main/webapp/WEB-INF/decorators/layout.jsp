@@ -95,7 +95,7 @@
                 </ul>
             </div>
 
-            <span class="me-3"><i class="fa-solid fa-user-circle"></i>${sessionScope.loginId} 님</span>
+            <span class="me-3 text-dark"><i class="fa-solid fa-user-circle"></i>${sessionScope.loginId} 님</span>
             <a href="/login/doLogout" class="btn btn-outline-danger btn-sm">로그아웃</a>
         </div>
     </div>
@@ -165,7 +165,7 @@
                     </a>
                     <div class="collapse ps-3" id="adminMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/member/searchMemberList">사원관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/getMemberList">사원관리</a></li>
                             <li class="nav-item"><a class="nav-link" href="/admin/deptAuth">부서권한관리</a></li>
                             <li class="nav-item"><a class="nav-link" href="/admin/dashBoard">연차사용률</a></li>
                         </ul>

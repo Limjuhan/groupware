@@ -5,6 +5,7 @@
 
 <mapper namespace="ldb.groupware.mapper.mybatis.member.MemberMapper">
 
+    <!-- 로그인 체크 -->
     <select id="loginId" resultType="string">
         SELECT mem_id
         FROM member
@@ -13,26 +14,111 @@
           AND mem_status = '재직'
     </select>
 
-    <select id="findMemName" resultType="string">
-        SELECT mem_name
-        FROM member
-        WHERE mem_id = #{id}
-    </select>
-
-    <select id="selectMemberInfo" parameterType="string" resultType="MemberInfoDto">
-        SELECT m.mem_id, m.mem_name, m.mem_email, m.mem_private_email, m.mem_phone,
-               ct1.comm_name AS dept_name,
-               ct2.comm_name AS rank_name,
-               m.mem_status, m.mem_hiredate, m.mem_gender,
+    <!-- 회원 정보 조회 -->
+    <select id="selectInfo" parameterType="string" resultType="MemberInfoDto">
+        SELECT m.mem_id,
+               m.mem_name,
+               m.mem_email,
+               m.mem_private_email,
+               m.mem_phone,
+               d.dept_name,
+               r.rank_name,
+               m.mem_status,
+               m.mem_hiredate,
+               m.mem_gender,
                CONCAT(m.jumin_front, '-', LEFT(m.jumin_back, 1), '******') AS birth_date,
                m.mem_address,
-               CONCAT(a.file_path, '/', a.saved_name) AS mem_picture
+               CONCAT(a.file_path, '/', a.saved_name)                      AS mem_picture
         FROM member m
-                 LEFT JOIN common_type ct1 ON m.dept_id = ct1.comm_code AND ct1.code_group = 'dept'
-                 LEFT JOIN common_type ct2 ON m.rank_id = ct2.comm_code AND ct2.code_group = 'rank'
+                 LEFT JOIN dept d ON m.dept_id = d.dept_id
+                 LEFT JOIN rank r ON m.rank_id = r.rank_id
                  LEFT JOIN attachment a ON a.business_id = m.mem_id AND a.attach_type = 'P'
         WHERE m.mem_id = #{memId}
     </select>
 
+    <!-- 개인정보 수정 -->
+    <update id="updateInfo" parameterType="map">
+        UPDATE member
+        SET
+            mem_phone = #{phone},
+            mem_private_email = #{privateEmail},
+            mem_address = #{address}
+        WHERE mem_id = #{memId}
+    </update>
 
+    <!-- 프로필 사진 삭제 -->
+    <delete id="deletePhoto" parameterType="string">
+        DELETE FROM attachment
+        WHERE business_id = #{memId}
+          AND attach_type = 'P'
+    </delete>
+
+    <!-- 프로필 사진 등록 -->
+    <insert id="insertPhoto" parameterType="AttachmentDto">
+        INSERT INTO attachment (
+            business_id,
+            attach_type,
+            original_name,
+            saved_name,
+            file_path,
+            created_at
+        )
+        VALUES (
+                   #{businessId},
+                   #{attachType},
+                   #{originalName},
+                   #{savedName},
+                   #{filePath},
+                   #{createdAt}
+               )
+    </insert>
+
+    <!-- 사원 수 카운트 -->
+    <select id="countMembers" resultType="int">
+        SELECT COUNT(*)
+        FROM member m
+        LEFT JOIN dept d ON m.dept_id = d.dept_id
+        LEFT JOIN rank r ON m.rank_id = r.rank_id
+        WHERE 1=1
+        <if test="dept != null and dept != ''">
+            AND d.dept_name = #{dept}
+        </if>
+        <if test="rank != null and rank != ''">
+            AND r.rank_name = #{rank}
+        </if>
+        <if test="name != null and name != ''">
+            AND m.mem_name LIKE CONCAT('%', #{name}, '%')
+        </if>
+    </select>
+
+    <!-- 페이징 포함 사원 조회 -->
+    <select id="getPagedMembers" resultType="MemberListDto">
+        SELECT m.mem_id,
+        m.mem_name,
+        d.dept_name AS deptName,
+        r.rank_name AS rankName
+        FROM member m
+        LEFT JOIN dept d ON m.dept_id = d.dept_id
+        LEFT JOIN rank r ON m.rank_id = r.rank_id
+        WHERE 1=1
+        <if test="dept != null and dept != ''">
+            AND d.dept_name = #{dept}
+        </if>
+        <if test="rank != null and rank != ''">
+            AND r.rank_name = #{rank}
+        </if>
+        <if test="name != null and name != ''">
+            AND m.mem_name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        ORDER BY m.mem_id DESC
+        LIMIT #{limit} OFFSET #{start}
+    </select>
+
+    <select id="getDeptNames" resultType="string">
+        SELECT dept_name FROM dept WHERE use_yn = 'Y'
+    </select>
+
+    <select id="getRankNames" resultType="string">
+        SELECT rank_name FROM rank WHERE use_yn = 'Y'
+    </select>
 </mapper>
