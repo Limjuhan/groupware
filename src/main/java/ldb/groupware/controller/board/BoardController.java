@@ -23,7 +23,7 @@ public class BoardController {
     }
     @GetMapping("noticeList")
     public String noticeList(){
-        return "board/noticeList";
+        return "getNoticeList";
     }
     @GetMapping("noticeWrite")
     public String noticeWrite(){

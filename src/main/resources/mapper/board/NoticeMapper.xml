@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ldb.groupware.mapper.mybatis.board.NoticeMapper">
+
+    <select id="noticeCount" resultType="int">
+        select count(*) from notice
+    </select>
+
+    <select id="getNoticeList" parameterType="PaginationDto" resultType="NoticeListDto">
+        select
+            m.mem_name ,
+            n.notice_id ,
+        n.notice_title,
+        n.mem_id,
+        n.notice_cnt,
+        n.is_pinned,
+        n.updated_at
+        from notice n  left join member m on n.mem_id = m.mem_id
+        <where>
+        <!-- 검색 조건이 있을 경우, 검색 유형에 따라 동적으로 WHERE 절 생성 -->
+            <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
+                <choose>
+                    <when test="searchType eq 'noticeTitle'">
+                         AND  n.notice_title LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="searchType eq 'memId'">
+                        AND m.mem_name LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                </choose>
+            </if>
+    </where>
+        order by n.is_pinned desc ,  n.updated_at desc
+        LIMIT #{startNum},#{itemsPerPage}
+    </select>
+
+</mapper>
