@@ -1,5 +1,6 @@
 package ldb.groupware.mapper.mybatis.board;
 
+import ldb.groupware.dto.board.DeptDto;
 import ldb.groupware.dto.board.FaqFormDto;
 import ldb.groupware.dto.board.FaqListDto;
 import ldb.groupware.dto.board.PaginationDto;
@@ -15,4 +16,12 @@ public interface FaqMapper {
     int faqCount();
 
     int insertFaq(FaqFormDto dto);
+
+    FaqFormDto findById(int faqId);
+
+    List<DeptDto> deptAll();
+
+    int updateFaq(FaqFormDto dto);
+
+    int deleteFaq(int i);
 }

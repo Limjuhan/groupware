@@ -1,9 +1,12 @@
 package ldb.groupware.service.board;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import ldb.groupware.dto.board.DeptDto;
 import ldb.groupware.dto.board.FaqFormDto;
 import ldb.groupware.dto.board.FaqListDto;
 import ldb.groupware.dto.board.PaginationDto;
+import ldb.groupware.mapper.mapstruct.ConvertDtoMapper;
 import ldb.groupware.mapper.mybatis.board.FaqMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,7 @@ import java.util.Map;
 public class FaqService {
 
     private  final FaqMapper mapper;
-
+    private  final ConvertDtoMapper convertDtoMapper;
 
     public Map<String,Object> findFaqList(PaginationDto pageDto) {
         HashMap<String, Object> map = new HashMap<>();
@@ -39,5 +42,32 @@ public class FaqService {
         else{
             return false;
         }
+    }
+
+    public FaqFormDto findById(String faqId) {
+        Integer i = Integer.valueOf(faqId);
+        FaqFormDto faq = mapper.findById(i);
+
+        return faq;
+    }
+
+    public List<DeptDto> deptAll() {
+        List<DeptDto> dto = mapper.deptAll();
+
+        return dto;
+    }
+
+    public boolean updateFaq(FaqFormDto dto) {
+        int result = mapper.updateFaq(dto);
+        return true;
+    }
+
+    public boolean deleteFaq(String faqId) {
+        Integer i = Integer.valueOf(faqId);
+        int result = mapper.deleteFaq(i);
+        if(result>0) {
+            return true;
+        }
+        return false;
     }
 }

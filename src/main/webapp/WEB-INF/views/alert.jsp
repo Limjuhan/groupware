@@ -21,7 +21,9 @@
     }).then((result) => {
         if (result.isConfirmed) {
             window.close();
+            window.location.href='${url}';
             opener.location.reload();
+
         }
     });
 </script>

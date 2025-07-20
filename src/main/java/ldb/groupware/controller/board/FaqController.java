@@ -3,6 +3,8 @@ package ldb.groupware.controller.board;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import ldb.groupware.domain.Faq;
+import ldb.groupware.dto.board.DeptDto;
 import ldb.groupware.dto.board.FaqFormDto;
 import ldb.groupware.dto.board.FaqListDto;
 import ldb.groupware.dto.board.PaginationDto;
@@ -75,6 +77,46 @@ public class FaqController {
        }
         return "alert";
     }
+
+    //페이지접근 전 권한체크 추가
+    @GetMapping("getQuestionEditForm")
+    public String getQuestionEditForm(@RequestParam("id") String faqId, Model model){
+        System.out.println("faqId = " + faqId);
+        FaqFormDto dto = faqService.findById(faqId);
+        System.out.println("getQuestionEditForm :: "+dto);
+        List<DeptDto> deptDtos = faqService.deptAll();
+        model.addAttribute("faq", dto);
+        model.addAttribute("dept", deptDtos);
+        return "board/getQuestionEditForm";
+    }
+
+    //권한설정필요
+    @PostMapping("updateFaqByMng")
+    public String updateFaqByMng(@Valid FaqFormDto dto, BindingResult bresult,Model model){
+        if(bresult.hasErrors()){
+            return  "board/getFaqForm";
+        }
+        if(faqService.updateFaq(dto)){
+            model.addAttribute("msg","업데이트성공");
+        }
+        else{
+            model.addAttribute("msg","업데이트실패");
+        }
+        return "alert";
+    }
+
+    @GetMapping("deleteFaqByMng")
+    public String deleteFaqByMng(@RequestParam("id") String faqId, Model model){
+        if(faqService.deleteFaq(faqId)){
+            model.addAttribute("msg","삭제성공");
+        }
+        else{
+            model.addAttribute("msg","삭제실패");
+        }
+        model.addAttribute("url","getFaqListManage");
+        return "alert";
+    }
+
 
 
 

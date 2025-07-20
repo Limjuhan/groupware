@@ -12,7 +12,24 @@
 
     <insert id="insertFaq" parameterType="FaqFormDto" >
         INSERT INTO faq (faq_title, faq_content, dept_id, created_at, updated_at)
-        VALUES (#{faqTitle}, #{faqContent}, #{deptId}, NOW(), NOW())
+        VALUES (#{faqTitle}, #{faqContent}, #{deptId}, NOW(), null)
     </insert>
+
+    <select id="findById" parameterType="int" resultType="FaqFormDto">
+        select * from faq where faq_id=#{val}
+    </select>
+
+    <select id="deptAll" resultType="DeptDto">
+        select * from dept
+    </select>
+
+    <update id="updateFaq" parameterType="FaqFormDto">
+        update faq set faq_title=#{faqTitle},faq_id=#{faqId},faq_content=#{faqContent},dept_id=#{deptId},updated_at=now()
+        where faq_id = #{faqId}
+    </update>
+
+    <delete id="deleteFaq" parameterType="int">
+        delete from faq where faq_id = #{val}
+    </delete>
 
 </mapper>

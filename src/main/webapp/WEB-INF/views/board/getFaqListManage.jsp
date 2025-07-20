@@ -54,7 +54,7 @@
                         </div>
                         <div class="mt-2">
                             <a onclick="goForm('getQuestionEditForm?id=${q.faqId}')" class="btn btn-sm btn-outline-secondary">수정</a>
-                            <a href="faqDelete?id=${q.faqId}" class="btn btn-sm btn-outline-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                            <a href="deleteFaqByMng?id=${q.faqId}" class="btn btn-sm btn-outline-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
                         </div>
                     </div>
 
