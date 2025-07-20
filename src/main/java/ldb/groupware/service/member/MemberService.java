@@ -91,7 +91,7 @@ public class MemberService {
 
         List<MemberListDto> list = memberMapper.getPagedMembers(
                 dept, rank, name,
-                paginationDto.getStartNum() - 1,
+                paginationDto.getStartNum() ,
                 paginationDto.getItemsPerPage()
         );
 
