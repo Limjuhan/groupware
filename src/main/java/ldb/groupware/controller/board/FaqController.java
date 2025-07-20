@@ -80,7 +80,9 @@ public class FaqController {
 
     //페이지접근 전 권한체크 추가
     @GetMapping("getQuestionEditForm")
-    public String getQuestionEditForm(@RequestParam("id") String faqId, Model model){
+    public String getQuestionEditForm(@RequestParam("id") String faqId,
+                                      @RequestParam(value = "page", defaultValue = "1") int currentPage,
+                                      Model model){
         System.out.println("faqId = " + faqId);
         FaqFormDto dto = faqService.findById(faqId);
         System.out.println("getQuestionEditForm :: "+dto);
@@ -106,14 +108,16 @@ public class FaqController {
     }
 
     @GetMapping("deleteFaqByMng")
-    public String deleteFaqByMng(@RequestParam("id") String faqId, Model model){
+    public String deleteFaqByMng(@RequestParam("id") String faqId,
+                                 @RequestParam(value = "page", defaultValue = "1") int currentPage,
+                                 Model model){
         if(faqService.deleteFaq(faqId)){
             model.addAttribute("msg","삭제성공");
         }
         else{
             model.addAttribute("msg","삭제실패");
         }
-        model.addAttribute("url","getFaqListManage");
+        model.addAttribute("url","getFaqListManage?page="+currentPage);
         return "alert";
     }
 

@@ -144,7 +144,7 @@
 
     <!-- 버튼 그룹 -->
     <div class="button-group">
-        <a href="noticeList.jsp" class="btn btn-outline-secondary btn-custom">← 목록</a>
+        <a href="getNoticeList.jsp" class="btn btn-outline-secondary btn-custom">← 목록</a>
         <%
             if (loginUser.equals(writer) || userLevel >= 2) {
         %>

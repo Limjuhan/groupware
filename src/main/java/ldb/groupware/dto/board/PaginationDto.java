@@ -19,6 +19,8 @@ public class PaginationDto {
     private String search;   			// 검색 키워드 
     private String sortDirection;   	// 정렬방향
     private int startNum;//페이지조회시 시작할 지점
+    private String searchType;
+    private String keyword;
 
 
 
@@ -43,7 +45,7 @@ public class PaginationDto {
         int pageBlockSize = 5;
         startPage = ((page - 1) / pageBlockSize) * pageBlockSize + 1;
         endPage = Math.min(startPage + pageBlockSize - 1, totalPages);
-        startNum = ((page - 1) * itemsPerPage) +1;
+        startNum = ((page - 1) * itemsPerPage);
     }
     
 }

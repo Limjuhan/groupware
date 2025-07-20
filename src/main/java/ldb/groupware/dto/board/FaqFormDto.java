@@ -17,4 +17,5 @@ public class FaqFormDto {
     @NotEmpty(message = "내용을 입력하세요")
     private String faqContent;
     private String deptId;
+    private int page;
 }

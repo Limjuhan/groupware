@@ -35,7 +35,9 @@
             </font>
         </spring:hasBindErrors>
 
-        <input type="hidden" name="faqId" value="${faq.faqId}"></inputhidden>
+        <input type="hidden" name="faqId" value="${faq.faqId}"/>
+        <input type="hidden" name="page" value="${faq.page}"/>
+
         <!-- 질문 -->
         <div class="mb-3">
             <label for="faqTitle" class="form-label">질문</label>
