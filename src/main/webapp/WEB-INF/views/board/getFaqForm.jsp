@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -53,10 +54,9 @@
             <label for="deptId" class="form-label">작성 부서</label>
             <select class="form-select" id="deptId" name="deptId" required>
                 <option value="">-- 부서 선택 --</option>
-                <option value="dept_001" >개발팀</option>
-                <option value="dept_002">영업팀</option>
-                <option value="dept_003">고객지원팀</option>
-                <option value="dept_004">경영지원팀</option>
+                <c:forEach items="${dept}" var="d">
+                    <option value="${d.deptId}" >${d.deptName}</option>
+                </c:forEach>
             </select>
         </div>
 
@@ -70,7 +70,5 @@
         </div>
     </form:form>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

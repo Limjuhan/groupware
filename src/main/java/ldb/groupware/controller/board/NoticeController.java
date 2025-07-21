@@ -1,14 +1,19 @@
 package ldb.groupware.controller.board;
 
 
+import ldb.groupware.dto.board.NoticeFormDto;
+import ldb.groupware.dto.board.NoticeListDto;
 import ldb.groupware.dto.common.PaginationDto;
 import ldb.groupware.service.board.NoticeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -38,4 +43,17 @@ public class NoticeController {
 
         return "board/getNoticeList";
     }
+
+    @GetMapping("getNoticeForm")
+    public String getNoticeForm(){
+        return "board/getNoticeForm";
+    }
+
+    @PostMapping("insertNotice")
+    public String insertNotice(@RequestParam("uploadFile") List<MultipartFile> files , NoticeFormDto dto){
+        System.out.println(dto);
+        System.out.println(files);
+        return "alert";
+    }
+
 }

@@ -27,7 +27,7 @@ public class BoardController {
     }
     @GetMapping("noticeWrite")
     public String noticeWrite(){
-        return "board/noticeWrite";
+        return "getNoticeForm";
     }
 
     @GetMapping("questionDetail")

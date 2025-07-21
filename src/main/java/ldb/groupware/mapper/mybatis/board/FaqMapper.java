@@ -24,4 +24,6 @@ public interface FaqMapper {
     int updateFaq(FaqFormDto dto);
 
     int deleteFaq(int i);
+
+    List<DeptDto> findDept();
 }
