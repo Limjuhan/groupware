@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.dto.member.MemberUpdateDto;
 import ldb.groupware.service.member.MemberService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;

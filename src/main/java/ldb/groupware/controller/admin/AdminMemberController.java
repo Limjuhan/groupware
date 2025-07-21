@@ -1,11 +1,14 @@
 package ldb.groupware.controller.admin;
 
+import jakarta.validation.Valid;
+import ldb.groupware.dto.member.MemberFormDto;
 import ldb.groupware.service.member.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Controller
@@ -32,5 +35,25 @@ public class AdminMemberController {
         return "admin/getMemberForm";
     }
 
+    @PostMapping("insertMemberByMng")
+    public String insertMemberByMng(@Valid @ModelAttribute MemberFormDto dto, BindingResult bresult, Model model) {
+        if (bresult.hasErrors()) {
+            model.addAttribute("deptList", memberService.getDeptList());
+            model.addAttribute("rankList", memberService.getRankList());
+            return "admin/getMemberForm";
+        }
+
+        boolean success = memberService.insertMember(dto);
+
+        if (success) {
+            model.addAttribute("msg", "사원 등록 성공");
+            model.addAttribute("url", "/admin/getMemberList");
+        } else {
+            model.addAttribute("msg", "사원 등록 실패");
+            model.addAttribute("url", "/admin/getMemberForm");
+        }
+
+        return "alert";
+    }
 
 }

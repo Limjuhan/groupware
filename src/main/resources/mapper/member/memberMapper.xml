@@ -127,4 +127,29 @@
         WHERE use_yn = 'Y'
         ORDER BY rank_id
     </select>
+
+    <!-- 다음 사원번호 숫자 조회 -->
+    <select id="nextMemId" resultType="string">
+        SELECT LPAD(IFNULL(MAX(SUBSTRING(mem_id, 4)), 0) + 1, 8, '0') FROM member
+    </select>
+
+    <!-- 사원 등록 -->
+    <insert id="insertMember" parameterType="map">
+        INSERT INTO member (
+            mem_id, mem_pass, mem_email, mem_private_email,
+            mem_name, mem_gender, mem_phone,
+            jumin_front, jumin_back, mem_address,
+            mem_status, mem_hiredate,
+            dept_id, rank_id,
+            created_by, created_at
+        ) VALUES (
+                     #{memId}, #{memPass}, #{memEmail}, #{memPrivateEmail},
+                     #{memName}, #{memGender}, #{memPhone},
+                     #{juminFront}, #{juminBack}, #{memAddress},
+                     #{memStatus}, #{memHiredate},
+                     #{deptId}, #{rankId},
+                     #{createdBy}, #{createdAt}
+                 )
+    </insert>
+
 </mapper>
