@@ -8,8 +8,10 @@ import ldb.groupware.service.member.MemberService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/member")
@@ -42,7 +44,7 @@ public class MemberController {
     @PostMapping("updateMemberInfo")
     public String updateMemberInfo(@Valid @ModelAttribute MemberUpdateDto dto,
                                    BindingResult bresult,
-                                   @RequestParam(value = "photo", required = false) MultipartFile photo,
+//                                   @RequestParam(value = "photo", required = false) MultipartFile photo,
                                    HttpSession session,
                                    Model model) {
         if (bresult.hasErrors()) return "member/getMemberInfo";
@@ -50,7 +52,7 @@ public class MemberController {
         String loginId = (String) session.getAttribute("loginId");
         if (loginId == null) return "redirect:/login/doLogin";
 
-        boolean result = memberService.updateInfo(loginId, dto, photo);
+        boolean result = memberService.updateInfo(loginId, dto);
 
         model.addAttribute("msg", result ? "수정 성공" : "수정 실패");
         model.addAttribute("url", "getMemberInfo");

@@ -45,7 +45,8 @@
         }
 
         .btn-outline-light {
-            color: #fff; border-color: #fff;
+            color: #fff;
+            border-color: #fff;
         }
 
         .btn-outline-light:hover {
@@ -86,11 +87,81 @@
             pointer-events: none;
             opacity: 0.5;
         }
+
+        .modal-content {
+            background-color: rgba(52, 58, 64, 0.9) !important;
+            color: #fff !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5) !important;
+        }
+
+        .modal-header, .modal-footer {
+            border-color: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .modal-title {
+            color: #fff !important;
+        }
+
+        .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        .modal-body .form-label {
+            color: #fff !important;
+        }
+
+        .modal-body .form-control,
+        .modal-body .form-select {
+            background-color: rgba(255,255,255,0.1) !important;
+            color: #fff !important;
+            border-color: rgba(255,255,255,0.3) !important;
+        }
+
+        .modal-body .form-select option {
+            background-color: #343a40 !important;
+            color: #fff !important;
+        }
+
     </style>
     <script>
         function openEmployeeDetail(empNo) {
             const url = "employeeDetail?empNo=" + empNo;
             window.open(url, "_blank", "width=800,height=600,scrollbars=yes,resizable=yes");
+        }
+
+        function openEditModal(memId, memName, deptId, rankId) {
+            $('#editMemId').val(memId);
+            $('#editMemIdDisplay').val(memId);
+            $('#editMemName').val(memName);
+            $('#editDept').val(deptId);
+            $('#editRank').val(rankId);
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        }
+
+        function saveEdit() {
+            const memId = $('#editMemId').val();
+            const deptId = $('#editDept').val();
+            const rankId = $('#editRank').val();
+
+            $.ajax({
+                url: '/admin/updateMemberByMng',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    memId: memId,
+                    deptId: deptId,
+                    rankId: rankId
+                }),
+                success: function(response) {
+                    bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+                    searchMembers();
+                },
+                error: function(xhr) {
+                    console.error("AJAX Error: ", xhr.status, xhr.responseText);
+                    alert("수정 실패: " + xhr.responseText);
+                }
+            });
         }
 
         function searchMembers(page = 1) {
@@ -99,7 +170,7 @@
             const name = $('#nameFilter').val().trim();
 
             $.ajax({
-                url: '/member/searchMembers',
+                url: '/admin/searchMembers',
                 method: 'GET',
                 data: {
                     dept: dept,
@@ -123,7 +194,9 @@
                                 '<td>' + mem.deptName + '</td>' +
                                 '<td>' + mem.rankName + '</td>' +
                                 '<td>' + (mem.memLevel ?? '-') + '</td>' +
-                                '<td><a href="memberInfoUpdate?empNo=' + mem.memId + '" class="btn btn-sm btn-outline-primary">설정</a></td>' +
+                                '<td><button type="button" class="btn btn-sm btn-outline-primary" onclick="openEditModal(\'' +
+                                mem.memId + '\', \'' + mem.memName + '\', \'' + (mem.deptId || '') + '\', \'' + (mem.rankId || '') +
+                                '\')">설정</button></td>' +
                                 '</tr>';
                             $tbody.append(row);
                         });
@@ -135,7 +208,6 @@
                     $paging.empty();
 
                     let html = '<nav><ul class="pagination justify-content-center">';
-
                     html += '<li class="page-item' + (pagination.page === 1 ? ' disabled' : '') + '">';
                     html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
                         (pagination.page > 1 ? 'searchMembers(' + (pagination.page - 1) + ');' : '') +
@@ -150,7 +222,6 @@
                     html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
                         (pagination.page < pagination.totalPages ? 'searchMembers(' + (pagination.page + 1) + ');' : '') +
                         '">다음</a></li>';
-
                     html += '</ul></nav>';
                     $paging.append(html);
                 },
@@ -217,6 +288,52 @@
     </table>
 
     <div id="paginationArea" class="pagination-nav"></div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">사원 설정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editMemId">
+
+                <div class="mb-3">
+                    <label class="form-label">사원번호</label>
+                    <input type="text" id="editMemIdDisplay" class="form-control" readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">사원 이름</label>
+                    <input type="text" id="editMemName" class="form-control" readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">부서</label>
+                    <select id="editDept" class="form-select">
+                        <c:forEach var="dept" items="${deptList}">
+                            <option value="${dept.deptId}">${dept.deptName}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">직급</label>
+                    <select id="editRank" class="form-select">
+                        <c:forEach var="rank" items="${rankList}">
+                            <option value="${rank.rankId}">${rank.rankName}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-primary" onclick="saveEdit()">저장</button>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

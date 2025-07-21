@@ -26,7 +26,7 @@
                m.mem_status,
                m.mem_hiredate,
                m.mem_gender,
-               CONCAT(m.jumin_front, '-', LEFT(m.jumin_back, 1), '******') AS birth_date,
+               STR_TO_DATE(m.jumin_front, '%y%m%d') AS birth_date,
                m.mem_address,
                CONCAT(a.file_path, '/', a.saved_name)                      AS mem_picture
         FROM member m
@@ -93,19 +93,22 @@
 
     <!-- 페이징 포함 사원 조회 -->
     <select id="getPagedMembers" resultType="MemberListDto">
-        SELECT m.mem_id,
+        SELECT
+        m.mem_id,
         m.mem_name,
-        d.dept_name AS deptName,
-        r.rank_name AS rankName
+        m.dept_id,
+        m.rank_id,
+        d.dept_name,
+        r.rank_name
         FROM member m
         LEFT JOIN dept d ON m.dept_id = d.dept_id
         LEFT JOIN rank r ON m.rank_id = r.rank_id
         WHERE 1=1
         <if test="dept != null and dept != ''">
-            AND d.dept_name = #{dept}
+            AND d.dept_id = #{dept}
         </if>
         <if test="rank != null and rank != ''">
-            AND r.rank_name = #{rank}
+            AND r.rank_id = #{rank}
         </if>
         <if test="name != null and name != ''">
             AND m.mem_name LIKE CONCAT('%', #{name}, '%')
@@ -113,6 +116,8 @@
         ORDER BY m.mem_id DESC
         LIMIT #{limit} OFFSET #{start}
     </select>
+
+
 
     <select id="getDeptList" resultType="DeptDto">
         SELECT dept_id, dept_name
@@ -130,9 +135,10 @@
 
     <!-- 다음 사원번호 숫자 조회 -->
     <select id="nextMemId" resultType="string">
-        SELECT LPAD(IFNULL(MAX(SUBSTRING(mem_id, 4)), 0) + 1, 8, '0') FROM member
+        SELECT LPAD(IFNULL(MAX(CAST(SUBSTRING(mem_id, 9, 4) AS UNSIGNED)), 0) + 1,4,'0')
+        FROM member
+        WHERE mem_id LIKE CONCAT('LDB', #{year}, '%')
     </select>
-
     <!-- 사원 등록 -->
     <insert id="insertMember" parameterType="map">
         INSERT INTO member (
@@ -151,5 +157,10 @@
                      #{createdBy}, #{createdAt}
                  )
     </insert>
-
+    <update id="updateMemberByMng">
+        UPDATE member
+        SET dept_id = #{deptId},
+            rank_id = #{rankId}
+        WHERE mem_id = #{memId}
+    </update>
 </mapper>

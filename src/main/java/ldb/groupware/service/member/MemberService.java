@@ -1,22 +1,18 @@
 package ldb.groupware.service.member;
 
-import ldb.groupware.dto.common.AttachmentDto;
+import ldb.groupware.dto.common.ApiResponseDto;
 import ldb.groupware.dto.common.DeptDto;
 import ldb.groupware.dto.common.PaginationDto;
 import ldb.groupware.dto.member.*;
 import ldb.groupware.mapper.mybatis.member.MemberMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -34,7 +30,7 @@ public class MemberService {
     }
 
     // 개인정보 수정 처리
-    public boolean updateInfo(String memId, MemberUpdateDto dto, MultipartFile photo) {
+    public boolean updateInfo(String memId, MemberUpdateDto dto) {
         MemberInfoDto existing = memberMapper.selectInfo(memId);
 
         String phone = isBlank(dto.getPhone()) ? existing.getMemPhone() : dto.getPhone();
@@ -43,42 +39,42 @@ public class MemberService {
 
         boolean result = memberMapper.updateInfo(memId, phone, privateEmail, address) > 0;
 
-        if (photo != null && !photo.isEmpty()) {
-            result = result && updatePhoto(memId, photo);
-        }
+//        if (photo != null && !photo.isEmpty()) {
+//            result = result && updatePhoto(memId, photo);
+//        }
 
         return result;
     }
 
-    private boolean updatePhoto(String memId, MultipartFile photo) {
-        try {
-            memberMapper.deletePhoto(memId); // 이전 사진 삭제
-
-            String saveDir = "/upload/profile";
-            File dir = new File(saveDir);
-            if (!dir.exists()) dir.mkdirs();
-
-            String originalName = photo.getOriginalFilename();
-            String savedName = UUID.randomUUID() + "_" + originalName;
-            File target = new File(saveDir, savedName);
-            photo.transferTo(target);
-
-            AttachmentDto attach = new AttachmentDto();
-            attach.setBusinessId(memId); // 여기가 핵심: 문자열 memId 저장
-            attach.setAttachType("P");
-            attach.setOriginalName(originalName);
-            attach.setSavedName(savedName);
-            attach.setFilePath(saveDir);
-            attach.setCreatedAt(LocalDateTime.now());
-
-            memberMapper.insertPhoto(attach);
-            return true;
-
-        } catch (IOException e) {
-            log.error("프로필 사진 저장 실패", e);
-            return false;
-        }
-    }
+//    private boolean updatePhoto(String memId, MultipartFile photo) {
+//        try {
+//            memberMapper.deletePhoto(memId); // 이전 사진 삭제
+//
+//            String saveDir = "/upload/profile";
+//            File dir = new File(saveDir);
+//            if (!dir.exists()) dir.mkdirs();
+//
+//            String originalName = photo.getOriginalFilename();
+//            String savedName = UUID.randomUUID() + "_" + originalName;
+//            File target = new File(saveDir, savedName);
+//            photo.transferTo(target);
+//
+//            AttachmentDto attach = new AttachmentDto();
+//            attach.setBusinessId(memId); // 여기가 핵심: 문자열 memId 저장
+//            attach.setAttachType("P");
+//            attach.setOriginalName(originalName);
+//            attach.setSavedName(savedName);
+//            attach.setFilePath(saveDir);
+//            attach.setCreatedAt(LocalDateTime.now());
+//
+//            memberMapper.insertPhoto(attach);
+//            return true;
+//
+//        } catch (IOException e) {
+//            log.error("프로필 사진 저장 실패", e);
+//            return false;
+//        }
+//    }
 
 
     private boolean isBlank(String s) {
@@ -114,20 +110,25 @@ public class MemberService {
     }
 
     public boolean insertMember(MemberFormDto dto) {
-        // 사원번호 생성 (예: LDB00000001)
-        String memNum = memberMapper.nextMemId();
-        String memId = "LDB" + memNum;
+        // 1. 입사년도 추출
+        String year = String.valueOf(dto.getMemHiredate().getYear()); // 예: "2025"
 
-        // 회사 이메일 자동생성
-        String memEmail = memId + "@LDB.com";
+        // 2. 해당 입사년도 기준 다음 일련번호 조회 (4자리)
+        String seq = memberMapper.nextMemId(year); // 예: "0001"
 
-        // 기본 비밀번호 (추후 암호화로 변경 예정)
+        // 3. 사번 생성 (입사년도 + 4자리 일련번호)
+        String memId = "LDB" + year + seq;
+
+        // 4. 회사 이메일 생성
+        String memEmail = memId + "@ldb.com";
+
+        // 5. 기본 비밀번호 (추후 암호화)
         String memPass = "1234";
 
-        // 주민번호 뒷자리 (평문 저장, 나중에 암호화 예정)
+        // 6. 주민번호 뒷자리 (추후 암호화)
         String juminBack = dto.getJuminBack();
 
-        // DB 저장용 Map 구성
+        // 7. DB 저장용 맵 구성
         Map<String, Object> map = new HashMap<>();
         map.put("memId", memId);
         map.put("memPass", memPass);
@@ -143,18 +144,22 @@ public class MemberService {
         map.put("memHiredate", dto.getMemHiredate());
         map.put("deptId", dto.getDeptId());
         map.put("rankId", dto.getRankId());
-        map.put("createdBy", "system");
+        map.put("createdBy", "admin");
         map.put("createdAt", LocalDateTime.now());
 
-        // 사원 INSERT
-        int result = memberMapper.insertMember(map);
+        return memberMapper.insertMember(map) > 0;
+    }
 
-//        // 프로필 사진 저장
-//        if (result > 0 && photo != null && !photo.isEmpty()) {
-//            return updatePhoto(memId, photo);
-//        }
+    public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(String memId, String deptId, String rankId) {
 
-        return result > 0;
+        int updated = memberMapper.updateMemberByMng(memId, deptId, rankId);
+
+        if (updated <= 0) {
+            return ApiResponseDto.fail("사원 정보 수정 실패");
+        }
+
+        UpdateMemberDto dto = new UpdateMemberDto(memId, deptId, rankId);
+        return ApiResponseDto.ok(dto, "사원 정보 수정 완료");
     }
 
 }

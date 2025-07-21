@@ -46,7 +46,6 @@ public class AdminMemberController {
         boolean success = memberService.insertMember(dto);
 
         if (success) {
-            model.addAttribute("msg", "사원 등록 성공");
             model.addAttribute("url", "/admin/getMemberList");
         } else {
             model.addAttribute("msg", "사원 등록 실패");

@@ -13,7 +13,7 @@
         .form-section {
             max-width: 900px;
             margin: 50px auto;
-            background: rgba(255, 255, 255, 0.1); /* 반투명 */
+            background: rgba(255, 255, 255, 0.1);
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -130,9 +130,9 @@
             </div>
         </div>
         <div class="text-end mt-4">
+            <a href="/admin/getMemberList" class="btn btn-secondary">목록</a>
             <button type="submit" class="btn btn-primary">저장</button>
-            <button type="reset" class="btn btn-secondary">취소</button>
-            <a href="/admin/getMemberList" class="btn btn-outline-light">목록</a>
+            <button type="reset" class="btn btn-outline-light">입력 초기화</button>
         </div>
     </form>
 </div>

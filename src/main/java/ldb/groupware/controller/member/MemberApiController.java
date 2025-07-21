@@ -14,8 +14,4 @@ public class MemberApiController {
         this.service = memberService;
     }
 
-//    @GetMapping("searchMembers")
-//    public List<MemberListDto>  searchMembers(
-//
-//    )
 }

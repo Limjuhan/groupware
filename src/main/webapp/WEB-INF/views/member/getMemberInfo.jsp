@@ -17,8 +17,6 @@
             margin-top: 40px;
             padding: 20px;
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
             border-radius: 10px;
         }
 
@@ -52,7 +50,7 @@
 <body>
 <div class="container shadow rounded">
     <h2 class="mb-4">개인정보</h2>
-    <form method="post" action="UpdateMemberInfo" enctype="multipart/form-data">
+    <form method="post" action="updateMemberInfo">
         <div class="row mb-4">
             <div class="col-md-3 text-center">
                 <img src="${not empty user.memPicture ? user.memPicture : '/img/profile_default.png'}" alt="사원 사진"
@@ -98,9 +96,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">입사일</label>
-                        <fmt:formatDate value="${user.memHiredate}" pattern="yyyy-MM-dd" var="formattedHireDate"/>
-                        <input type="date" class="form-control bg-light" name="hireDate" value="${formattedHireDate}"
-                               readonly>
+                        <input type="date" class="form-control bg-light" name="hireDate" value="${user.memHiredate}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">이메일</label>
@@ -157,11 +153,9 @@
         <div class="text-end">
             <button type="button" class="btn btn-warning me-2" onclick="getPassEditForm()">비밀번호 변경</button>
             <button type="submit" class="btn btn-primary">저장</button>
-            <a href="/" class="btn btn-secondary">취소</a>
+            <button type="reset" class="btn btn-outline-light">↺ 되돌리기</button>
         </div>
     </form>
-
-
 </div>
 </body>
 </html>

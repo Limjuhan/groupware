@@ -2,7 +2,7 @@ package ldb.groupware.dto.member;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 public class MemberInfoDto {
@@ -14,9 +14,9 @@ public class MemberInfoDto {
     private String deptName;
     private String rankName;
     private String memStatus;
-    private Date memHiredate;
+    private LocalDate memHiredate;
     private String memGender;
-    private String birthDate;
+    private LocalDate birthDate;
     private String memAddress;
     private String memPicture;
 }
