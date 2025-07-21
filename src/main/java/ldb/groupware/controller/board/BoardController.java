@@ -15,7 +15,7 @@ public class BoardController {
 
     @GetMapping("noticeDetail")
     public String noticeDetail(){
-        return "board/noticeDetail";
+        return "getNoticeDetail";
     }
     @GetMapping("noticeEdit")
     public String noticeEdit(){

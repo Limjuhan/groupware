@@ -33,4 +33,41 @@
         LIMIT #{startNum},#{itemsPerPage}
     </select>
 
+    <insert id="insertNotice" parameterType="NoticeFormDto">
+        insert into notice
+            (notice_title, notice_content,mem_id, notice_cnt, is_pinned, created_at, updated_at)
+        values
+            (#{noticeTitle},#{noticeContent}, #{memId}, #{noticeCnt}, #{isPinned}, now(), now())
+    </insert>
+
+    <select id="getMember" parameterType="String" resultType="String">
+        select mem_name from member where mem_id = #{val}
+    </select>
+
+    <select id="getMaxNum" resultType="int" parameterType="String">
+        select max(notice_id) from notice where mem_id = #{val}
+    </select>
+
+    <insert id="insertAttach" parameterType="AttachmentDto">
+insert into attachment
+    (business_id,attach_type,original_name ,saved_name , file_path , created_at )
+values(#{businessId},#{attachType},#{originalName},#{savedName},#{filePath},now())
+    </insert>
+
+
+    <!--공지사항의 detail(상세보기)를 위함-->
+    <select id="getNoticeById" parameterType="String" resultType="NoticeDetailDto">
+            select
+                m.mem_name ,
+                n.notice_id ,
+                n.notice_title,
+                n.notice_content,
+                n.mem_id
+            from notice n  join member m ON n.mem_id = m.mem_id
+            where n.notice_id = #{val}
+    </select>
+
+    <select id="getAttachByNoticeId" parameterType="String" resultType="AttachmentDto">
+        select * from attachment where business_id = #{val}
+    </select>
 </mapper>

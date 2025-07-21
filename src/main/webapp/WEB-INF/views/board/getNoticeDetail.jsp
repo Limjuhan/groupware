@@ -1,16 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.io.*, java.util.*" %>
-<%
-    // Mock 데이터 (DB에서 가져오는 부분은 실제 코드로 대체하세요)
-    String title = "서버 점검 안내 (7/15)";
-    String content = "7월 15일(월) 00:00 ~ 04:00 서버 점검이 예정되어 있습니다.\n해당 시간 동안 그룹웨어 서비스가 일시 중단됩니다.";
-    String filename = "server_maintenance.pdf";
-    String filepath = "/upload/notice/server_maintenance.pdf";
-    String imagePath = "/upload/notice/server_image.png";
-    String writer = "관리자";
-    String loginUser = "관리자"; // 로그인 세션 사용자
-    int userLevel = 2;
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -113,52 +103,45 @@
 <body>
 <div class="wrapper">
     <!-- 제목 및 메타 정보 -->
-    <div class="title"><%= title %></div>
-    <div class="meta">작성자: <%= writer %></div>
+    <div class="title">${notice.noticeTitle}</div>
+    <div class="meta">작성자: ${notice.memName}</div>
 
     <!-- 본문 내용 -->
-    <div class="content-box"><%= content %></div>
+    <div class="content-box">${notice.noticeContent}</div>
 
-    <!-- 첨부파일 -->
-    <%
-        if (filename != null && !filename.isEmpty()) {
-    %>
-    <div class="file-section mt-4">
-        첨부파일:
-        <a href="<%= filepath %>" download><%= filename %></a>
-    </div>
-    <%
-        }
-    %>
 
-    <!-- 이미지 미리보기 -->
+
+    <c:forEach items="${attach}" var="a">
+        <c:if test="${a.filePath != null}">
+            <div class="file-section mt-4">
+                첨부파일:
+                <a href="${a.filePath}${a.savedName}" download>${a.originalName}</a>
+            </div>
+        </c:if>
+    </c:forEach>
+
+
+    <%--<!-- 이미지 미리보기 -->
     <%
         if (imagePath != null && !imagePath.isEmpty()) {
-    %>
-    <div class="image-preview">
-        <img src="<%= imagePath %>" alt="첨부 이미지">
-    </div>
-    <%
-        }
-    %>
+         <c:if test="${attach.filePath != null}">
+        <div class="image-preview">
+            <img src="${attach.filePath}" alt="첨부 이미지">
+        </div>
+    </c:if>
+    %>--%>
+
+
 
     <!-- 버튼 그룹 -->
     <div class="button-group">
-        <a href="getNoticeList.jsp" class="btn btn-outline-secondary btn-custom">← 목록</a>
-        <%
-            if (loginUser.equals(writer) || userLevel >= 2) {
-        %>
+        <a href="getNoticeList" class="btn btn-outline-secondary btn-custom">← 목록</a>
         <div class="d-flex gap-2">
-            <a href="noticeEdit?id=101" class="btn btn-outline-primary btn-custom">수정</a>
-            <a href="noticeDelete.jsp?id=101" class="btn btn-outline-danger btn-custom"
+            <a href="getNoticeEditForm?id=${notice.noticeId}" class="btn btn-outline-primary btn-custom">수정</a>
+            <a href="deleteNoticeByMng?id=101" class="btn btn-outline-danger btn-custom"
                onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
         </div>
-        <%
-            }
-        %>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

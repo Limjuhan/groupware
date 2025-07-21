@@ -1,19 +1,19 @@
 package ldb.groupware.dto.board;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Data
-public class NoticeFormDto {
+@Getter
+@Setter
+@ToString
+public class NoticeDetailDto {
 
     private Integer noticeId;
     private String noticeTitle;
     private String noticeContent;
     private String memId;
     private String memName;
-    private Integer noticeCnt;
-    private Character isPinned;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

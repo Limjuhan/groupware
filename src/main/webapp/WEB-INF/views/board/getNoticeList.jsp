@@ -68,7 +68,7 @@
                                 ${n.noticeId}
                         </td>
                         <td class="notice-title">
-                            <a href="board/getNoticeDetail?id=${n.noticeId}" class="text-decoration-none text-dark">
+                            <a href="getNoticeDetail?id=${n.noticeId}" class="text-decoration-none text-dark">
                                     ${n.noticeTitle}
                             </a>
                         </td>

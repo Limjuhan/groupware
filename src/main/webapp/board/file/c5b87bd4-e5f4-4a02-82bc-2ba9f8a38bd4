@@ -1,0 +1,3 @@
+public class ApprovalLine {
+    private Integer line_id;
+}

@@ -64,7 +64,7 @@
         </div>
 
         <div class="d-flex justify-content-between mt-4">
-            <a href="noticeDetail.jsp?id=<%= id %>" class="btn btn-secondary btn-custom">취소</a>
+            <a href="getNoticeDetail.jsp?id=<%= id %>" class="btn btn-secondary btn-custom">취소</a>
             <button type="submit" class="btn btn-primary btn-custom">저장</button>
         </div>
     </form>

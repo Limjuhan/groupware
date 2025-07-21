@@ -28,8 +28,9 @@
 
         <!-- 작성자 -->
         <div class="mb-3">
-            <label for="memId" class="form-label">작성자</label>
-            <input type="text" class="form-control" id="memId" name="memId" required placeholder="작성자 이름">
+            <label for="memName" class="form-label">작성자</label>
+            <input type="text" class="form-control" id="memName"   value="${memName}" readonly >
+            <input type="hidden" name="memId" value="${memId}">
         </div>
 
         <!-- 내용 -->
@@ -39,11 +40,16 @@
         </div>
 
         <!-- 상단 고정 여부 -->
+        <!-- 기본값: N -->
+        <input type="hidden" name="isPinned" value="N" id="isPinnedHidden">
+
+        <!-- 체크 시: Y -->
         <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="isPinned" name="isPinned"  >
+            <input type="checkbox" class="form-check-input" id="isPinned"   onclick="updateIsPinnedHidden(this)">
             <label class="form-check-label" for="isPinned">상단 고정</label>
         </div>
 
+        <input  type="hidden" name="noticeCnt" value=0>
         <!-- 첨부파일 -->
         <div id="fileInputs">
             <div class="mb-2">
@@ -68,6 +74,10 @@
         newInput.className = "mb-2";
         newInput.innerHTML = '<input class="form-control" type="file" name="uploadFile" />';
         container.appendChild(newInput);
+    }
+    function updateIsPinnedHidden(checkbox) {
+        const hidden = document.getElementById('isPinnedHidden');
+        hidden.value = checkbox.checked ? 'Y' : 'N'; //체크박스가 선택됐다면 Y로바꿔
     }
 </script>
 

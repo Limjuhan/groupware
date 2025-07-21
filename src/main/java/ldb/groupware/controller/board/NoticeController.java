@@ -1,9 +1,12 @@
 package ldb.groupware.controller.board;
 
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import ldb.groupware.dto.board.NoticeFormDto;
 import ldb.groupware.dto.board.NoticeListDto;
 import ldb.groupware.dto.common.PaginationDto;
+import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.service.board.NoticeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,14 +48,26 @@ public class NoticeController {
     }
 
     @GetMapping("getNoticeForm")
-    public String getNoticeForm(){
+    public String getNoticeForm(Model model , HttpServletRequest request) {
+        //String id = request.getSession().getAttribute("loginId");
+        String id   = "admin";
+       String name = service.getMember(id);
+       model.addAttribute("memName",name);
+       model.addAttribute("memId",id);
         return "board/getNoticeForm";
     }
 
     @PostMapping("insertNotice")
-    public String insertNotice(@RequestParam("uploadFile") List<MultipartFile> files , NoticeFormDto dto){
-        boolean result = service.insertNotice(dto,files);
+    public String insertNotice(@RequestParam("uploadFile") List<MultipartFile> files , NoticeFormDto dto, HttpServletRequest request){
+        boolean result = service.insertNotice(dto,files,request);
         return "alert";
+    }
+    @GetMapping("getNoticeDetail")
+    public String getNoticeDetail(Model model , @RequestParam("id")  String id) {
+        Map<String,Object> map = service.getNoticeById(id);
+        model.addAttribute("notice",map.get("notice"));
+        model.addAttribute("attach",map.get("attach"));
+        return "board/getNoticeDetail";
     }
 
 }
