@@ -115,33 +115,26 @@
         <c:if test="${a.filePath != null}">
             <div class="file-section mt-4">
                 첨부파일:
-                <a href="${a.filePath}${a.savedName}" download>${a.originalName}</a>
+                <a href="${a.filePath}${a.savedName}" download="${a.originalName}">${a.originalName}</a>
             </div>
         </c:if>
     </c:forEach>
-
-
-    <%--<!-- 이미지 미리보기 -->
-    <%
-        if (imagePath != null && !imagePath.isEmpty()) {
-         <c:if test="${attach.filePath != null}">
-        <div class="image-preview">
-            <img src="${attach.filePath}" alt="첨부 이미지">
-        </div>
-    </c:if>
-    %>--%>
-
-
-
     <!-- 버튼 그룹 -->
     <div class="button-group">
         <a href="getNoticeList" class="btn btn-outline-secondary btn-custom">← 목록</a>
         <div class="d-flex gap-2">
-            <a href="getNoticeEditForm?id=${notice.noticeId}" class="btn btn-outline-primary btn-custom">수정</a>
-            <a href="deleteNoticeByMng?id=101" class="btn btn-outline-danger btn-custom"
+            <a onclick="goForm('getNoticeEditForm?id=${notice.noticeId}')" class="btn btn-outline-primary btn-custom">수정</a>
+            <a href="deleteNoticeByMng?id=${notice.noticeId}" class="btn btn-outline-danger btn-custom"
                onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
         </div>
     </div>
 </div>
+<script>
+    function goForm(url){
+        let op = "width=600,height=800,top=50,left=150";
+        window.open(url, "", op);
+    }
+
+</script>
 </body>
 </html>

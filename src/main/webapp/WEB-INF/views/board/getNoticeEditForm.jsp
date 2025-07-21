@@ -1,9 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>공지사항 작성</title>
+    <title>공지사항 수정</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- jQuery (필수) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -26,24 +27,24 @@
     <h3 class="fw-bold mb-4">공지사항 작성</h3>
 
     <!-- 파일 업로드를 위해 multipart/form-data 필요 -->
-    <form action="insertNotice" method="post" enctype="multipart/form-data">
+    <form action="updateNoticeByMng" method="post" enctype="multipart/form-data">
         <!-- 제목 -->
         <div class="mb-3">
             <label for="noticeTitle" class="form-label">제목</label>
-            <input type="text" class="form-control" id="noticeTitle" name="noticeTitle" required placeholder="공지 제목을 입력하세요">
+            <input type="text" class="form-control" id="noticeTitle" name="noticeTitle" required value="${notice.noticeTitle}">
         </div>
 
         <!-- 작성자 -->
         <div class="mb-3">
             <label for="memName" class="form-label">작성자</label>
-            <input type="text" class="form-control" id="memName"   value="${memName}" readonly >
-            <input type="hidden" name="memId" value="${memId}">
+            <input type="text" class="form-control" id="memName"   value="${notice.memName}" readonly >
+            <input type="hidden" name="memId" value="${notice.memId}">
         </div>
 
         <!-- 내용 -->
         <div class="mb-3">
             <label for="noticeContent" class="form-label">내용</label>
-            <textarea class="form-control" id="noticeContent" name="noticeContent" rows="8" required></textarea>
+            <textarea class="form-control" id="noticeContent" name="noticeContent" rows="8"  required>${notice.noticeContent}</textarea>
         </div>
 
         <!-- 상단 고정 여부 -->
@@ -52,15 +53,34 @@
 
         <!-- 체크 시: Y -->
         <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="isPinned"   onclick="updateIsPinnedHidden(this)">
+            <c:choose>
+                <c:when test="${notice.isPinned.toString() eq 'Y'}">
+                    <input type="checkbox" class="form-check-input" id="isPinned"   onclick="updateIsPinnedHidden(this)" checked>
+                </c:when>
+                <c:otherwise>
+                    <input type="checkbox" class="form-check-input" id="isPinned"   onclick="updateIsPinnedHidden(this)" >
+                </c:otherwise>
+            </c:choose>
+
+
             <label class="form-check-label" for="isPinned">상단 고정</label>
         </div>
 
         <input  type="hidden" name="noticeCnt" value=0>
         <!-- 첨부파일 -->
+        <c:forEach var="file" items="${attachedFiles}">
+            <div class="d-flex align-items-center mb-2">
+                <a href="${file.filePath}${file.savedName}" download="${file.originalName}" id="${file.savedName}">
+                        ${file.originalName}
+                </a>
+                <button type="button" class="btn btn-sm btn-outline-danger ms-2"
+                        onclick="removeFile('${file.savedName}', this)">삭제</button>
+                <input type="hidden" name="existingFiles" id="${file.savedName}" value="${file.savedName}">
+            </div>
+        </c:forEach>
         <div id="fileInputs">
             <div class="mb-2">
-                <input class="form-control" type="file" name="uploadFile" multiple/>
+                <input class="form-control" type="file" name="uploadFile" />
             </div>
         </div>
         <button type="button" class="btn btn-outline-secondary" onclick="addFileInput()">+ 파일 추가</button>
@@ -75,6 +95,12 @@
     </form>
 </div>
 <script>
+    function removeFile(f){
+        if(confirm("삭제할건가요??")){
+            document.getElementById(f).remove();
+        }
+    }
+
     function addFileInput() {
         const container = document.getElementById("fileInputs");
         const newInput = document.createElement("div");

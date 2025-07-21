@@ -25,7 +25,8 @@ public class SiteMeshConfig {
                         .addExcludedPath("/board/getQuestionEditForm")
                         .addExcludedPath("/board/updateFaqByMng")
 
-                        .addExcludedPath("/board/getNoticeForm");
+                        .addExcludedPath("/board/getNoticeForm")
+                        .addExcludedPath("/board/getNoticeEditForm");
 
 //                builder.addDecoratorPath("/mypage/getCourseTimetable","sitemesh/layout.jsp");
 

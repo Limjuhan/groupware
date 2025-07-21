@@ -62,6 +62,7 @@ values(#{businessId},#{attachType},#{originalName},#{savedName},#{filePath},now(
                 n.notice_id ,
                 n.notice_title,
                 n.notice_content,
+                n.is_pinned,
                 n.mem_id
             from notice n  join member m ON n.mem_id = m.mem_id
             where n.notice_id = #{val}

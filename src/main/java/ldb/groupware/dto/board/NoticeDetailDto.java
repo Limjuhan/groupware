@@ -14,6 +14,7 @@ public class NoticeDetailDto {
     private Integer noticeId;
     private String noticeTitle;
     private String noticeContent;
+    private Character isPinned;
     private String memId;
     private String memName;
 }

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,11 @@ public class NoticeService {
       pageDto.calculatePagination(); //보여줄 페이지의갯수 , 페이지당 제한갯수 등 설정
         System.out.println("pageDto : "+pageDto);
         List<NoticeListDto> dto = mapper.getNoticeList(pageDto);
-        System.out.println("dto :: "+dto);
+        for (NoticeListDto dto1 : dto) {
+            dto1.updatedAtToString(); //LocalDateTime-->String 변환
+        }
+
+        System.out.println("getNoticeListDto :: "+dto);
         map.put("notice", dto);
         map.put("pageDto", pageDto);
         return map;
@@ -87,8 +93,8 @@ public class NoticeService {
         HashMap<String, Object> map = new HashMap<>();
         NoticeDetailDto notice = mapper.getNoticeById(id);
         List<AttachmentDto> attach = mapper.getAttachByNoticeId(id);
-        System.out.println("noticeById :: "+notice);
-        System.out.println("attach :: "+attach);
+        //System.out.println("noticeById :: "+notice);
+        //System.out.println("attach :: "+attach);
         map.put("notice", notice);
         map.put("attach", attach);
         return map;

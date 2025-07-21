@@ -5,6 +5,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import ldb.groupware.dto.board.NoticeFormDto;
 import ldb.groupware.dto.board.NoticeListDto;
+import ldb.groupware.dto.board.NoticeUpdateDto;
 import ldb.groupware.dto.common.PaginationDto;
 import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.service.board.NoticeService;
@@ -68,6 +69,21 @@ public class NoticeController {
         model.addAttribute("notice",map.get("notice"));
         model.addAttribute("attach",map.get("attach"));
         return "board/getNoticeDetail";
+    }
+
+    @GetMapping("getNoticeEditForm")
+    public String getNoticeEditForm(Model model , @RequestParam("id")  String id) {
+        Map<String, Object> noticeById = service.getNoticeById(id);
+        model.addAttribute("notice",noticeById.get("notice"));
+        model.addAttribute("attachedFiles",noticeById.get("attach"));
+        return "board/getNoticeEditForm";
+    }
+
+    @PostMapping("updateNoticeByMng")
+    public String updateNoticeByMng(@RequestParam("uploadFile") List<MultipartFile> files ,
+                                    NoticeUpdateDto dto, Model model , HttpServletRequest request) {
+        System.out.println("dto ::::: "+dto.getExistingFiles().substring(1,10));
+        return "alert";
     }
 
 }
