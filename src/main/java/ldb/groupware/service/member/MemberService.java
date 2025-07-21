@@ -1,10 +1,8 @@
 package ldb.groupware.service.member;
 
+import ldb.groupware.dto.board.DeptDto;
 import ldb.groupware.dto.board.PaginationDto;
-import ldb.groupware.dto.member.AttachmentDto;
-import ldb.groupware.dto.member.MemberInfoDto;
-import ldb.groupware.dto.member.MemberListDto;
-import ldb.groupware.dto.member.MemberUpdateDto;
+import ldb.groupware.dto.member.*;
 import ldb.groupware.mapper.mybatis.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,7 +89,7 @@ public class MemberService {
 
         List<MemberListDto> list = memberMapper.getPagedMembers(
                 dept, rank, name,
-                paginationDto.getStartNum() ,
+                paginationDto.getStartNum(),
                 paginationDto.getItemsPerPage()
         );
 
@@ -102,11 +100,11 @@ public class MemberService {
         return map;
     }
 
-    public List<String> getAllDeptNames() {
-        return memberMapper.getDeptNames(); // SELECT dept_name FROM dept WHERE use_yn = 'Y'
+    public List<DeptDto> getDeptList() {
+        return memberMapper.getDeptList();
     }
 
-    public List<String> getAllRankNames() {
-        return memberMapper.getRankNames(); // SELECT rank_name FROM rank WHERE use_yn = 'Y'
+    public List<RankDto> getRankList() {
+        return memberMapper.getRankList();
     }
 }

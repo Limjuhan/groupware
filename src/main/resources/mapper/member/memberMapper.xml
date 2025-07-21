@@ -114,11 +114,17 @@
         LIMIT #{limit} OFFSET #{start}
     </select>
 
-    <select id="getDeptNames" resultType="string">
-        SELECT dept_name FROM dept WHERE use_yn = 'Y'
+    <select id="getDeptList" resultType="DeptDto">
+        SELECT dept_id, dept_name
+        FROM dept
+        WHERE use_yn = 'Y'
+        ORDER BY dept_id
     </select>
 
-    <select id="getRankNames" resultType="string">
-        SELECT rank_name FROM rank WHERE use_yn = 'Y'
+    <select id="getRankList" resultType="RankDto">
+        SELECT rank_id, rank_name
+        FROM rank
+        WHERE use_yn = 'Y'
+        ORDER BY rank_id
     </select>
 </mapper>

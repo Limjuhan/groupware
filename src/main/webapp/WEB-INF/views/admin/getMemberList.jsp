@@ -7,53 +7,67 @@
     <title>사원 관리</title>
     <style>
         body { background-color: transparent; }
-        .container, .form-control, .form-select,
-        .table-bordered, .table-light, .table-light th,
+
+        .container,
+        .form-control,
+        .form-select,
+        .table-bordered,
+        .table-light,
+        .table-light th,
         .table-bordered tbody td {
             background-color: rgba(255,255,255,0.1);
             color: #fff;
             border-color: rgba(255,255,255,0.3);
         }
+
         .form-control, .form-select {
             background-color: rgba(255,255,255,0.1) !important;
             border-color: rgba(255,255,255,0.3) !important;
             color: #fff !important;
         }
+
         .form-control::placeholder { color: #ccc; }
-        .table td, .table th { text-align: center; vertical-align: middle; color: #fff; }
+
+        .table td, .table th {
+            text-align: center;
+            vertical-align: middle;
+            color: #fff;
+        }
+
         .table-light th {
             color: #fff !important;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
         }
-        .name-link {
-            color: #0d6efd;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        h4 { color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.7); }
+
         .form-select option {
             background-color: rgba(52,58,64,0.9);
             color: #fff;
         }
+
         .btn-outline-light {
             color: #fff; border-color: #fff;
         }
+
         .btn-outline-light:hover {
             background-color: rgba(255,255,255,0.2);
         }
+
         .btn-success {
             background-color: #198754;
             border-color: #198754;
             color: #fff;
         }
+
         .btn-success:hover {
             background-color: #157347;
             border-color: #146c43;
         }
+
         .pagination-nav {
             margin-top: 20px;
             text-align: center;
         }
+
         .pagination-nav .page-link {
             color: white;
             background-color: rgba(255,255,255,0.1);
@@ -61,17 +75,18 @@
             margin: 0 2px;
             padding: 6px 12px;
         }
+
         .pagination-nav .page-item.active .page-link {
             background-color: #0d6efd;
             border-color: #0d6efd;
             font-weight: bold;
         }
+
         .pagination-nav .page-item.disabled .page-link {
             pointer-events: none;
             opacity: 0.5;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script>
         function openEmployeeDetail(empNo) {
             const url = "employeeDetail?empNo=" + empNo;
@@ -116,25 +131,21 @@
                         $tbody.append('<tr><td colspan="6" class="text-center text-muted">검색 결과가 없습니다.</td></tr>');
                     }
 
-                    // 페이징 영역
                     const $paging = $('#paginationArea');
                     $paging.empty();
 
                     let html = '<nav><ul class="pagination justify-content-center">';
 
-                    // 이전 버튼
                     html += '<li class="page-item' + (pagination.page === 1 ? ' disabled' : '') + '">';
                     html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
                         (pagination.page > 1 ? 'searchMembers(' + (pagination.page - 1) + ');' : '') +
                         '">이전</a></li>';
 
-                    // 페이지 번호
                     for (let i = pagination.startPage; i <= pagination.endPage; i++) {
                         html += '<li class="page-item' + (i === pagination.page ? ' active' : '') + '">';
                         html += '<a class="page-link" href="#" onclick="event.preventDefault();searchMembers(' + i + ');">' + i + '</a></li>';
                     }
 
-                    // 다음 버튼
                     html += '<li class="page-item' + (pagination.page === pagination.totalPages ? ' disabled' : '') + '">';
                     html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
                         (pagination.page < pagination.totalPages ? 'searchMembers(' + (pagination.page + 1) + ');' : '') +
@@ -165,7 +176,7 @@
             <select id="deptFilter" class="form-select">
                 <option value="">전체</option>
                 <c:forEach var="dept" items="${deptList}">
-                    <option value="${dept}">${dept}</option>
+                    <option value="${dept.deptId}">${dept.deptName}</option>
                 </c:forEach>
             </select>
         </div>
@@ -174,7 +185,7 @@
             <select id="rankFilter" class="form-select">
                 <option value="">전체</option>
                 <c:forEach var="rank" items="${rankList}">
-                    <option value="${rank}">${rank}</option>
+                    <option value="${rank.rankId}">${rank.rankName}</option>
                 </c:forEach>
             </select>
         </div>
@@ -188,7 +199,7 @@
     </form>
 
     <div class="text-end mb-3">
-        <a href="/member/getMemberForm" class="btn btn-success btn-sm">+ 등록</a>
+        <a href="/admin/getMemberForm" class="btn btn-success btn-sm">+ 등록</a>
     </div>
 
     <table class="table table-bordered mt-3">

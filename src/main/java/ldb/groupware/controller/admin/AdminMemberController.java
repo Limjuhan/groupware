@@ -20,9 +20,17 @@ public class AdminMemberController {
 
     @GetMapping("getMemberList")
     public String getMemberList(Model model) {
-        model.addAttribute("deptList", memberService.getAllDeptNames());
-        model.addAttribute("rankList", memberService.getAllRankNames());
+        model.addAttribute("deptList", memberService.getDeptList());
+        model.addAttribute("rankList", memberService.getRankList());
         return "admin/getMemberList";
     }
+
+    @GetMapping("getMemberForm")
+    public String getMemberForm(Model model) {
+        model.addAttribute("deptList", memberService.getDeptList());
+        model.addAttribute("rankList", memberService.getRankList());
+        return "admin/getMemberForm";
+    }
+
 
 }

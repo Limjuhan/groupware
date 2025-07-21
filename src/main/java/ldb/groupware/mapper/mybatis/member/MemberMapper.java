@@ -1,8 +1,10 @@
 package ldb.groupware.mapper.mybatis.member;
 
+import ldb.groupware.dto.board.DeptDto;
 import ldb.groupware.dto.member.AttachmentDto;
 import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.dto.member.MemberListDto;
+import ldb.groupware.dto.member.RankDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,6 +36,7 @@ public interface MemberMapper {
                                         @Param("start") int start,
                                         @Param("limit") int limit);
 
-    List<String> getDeptNames();
-    List<String> getRankNames();
+    List<DeptDto> getDeptList();
+
+    List<RankDto> getRankList();
 }
