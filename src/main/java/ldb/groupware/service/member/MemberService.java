@@ -1,5 +1,6 @@
 package ldb.groupware.service.member;
 
+import ldb.groupware.dto.common.AttachmentDto;
 import ldb.groupware.dto.common.DeptDto;
 import ldb.groupware.dto.common.PaginationDto;
 import ldb.groupware.dto.member.*;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +67,7 @@ public class MemberService {
             attach.setOriginalName(originalName);
             attach.setSavedName(savedName);
             attach.setFilePath(saveDir);
-            attach.setCreatedAt(LocalDate.now());
+            attach.setCreatedAt(LocalDateTime.now());
 
             memberMapper.insertPhoto(attach);
             return true;

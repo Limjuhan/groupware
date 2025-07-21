@@ -31,7 +31,7 @@ public class FaqController {
 
         Map<String, Object> map = faqService.findFaqList(pageDto);
         pageDto = (PaginationDto)map.get("pageDto");
-        System.out.println("pageDto = " + pageDto);
+        System.out.println("faqListPageDto = " + pageDto);
         model.addAttribute("faq", map.get("list"));
         model.addAttribute("pageDto", pageDto);
         return "board/getFaqList";
@@ -53,7 +53,9 @@ public class FaqController {
 
     //(권한 및 세션검증필요)
     @GetMapping("getFaqForm")
-    public String getFaqForm(){
+    public String getFaqForm(Model model){
+        List<DeptDto> dept = faqService.findDept();
+        model.addAttribute("dept", dept);
         return"board/getFaqForm";
     }
 

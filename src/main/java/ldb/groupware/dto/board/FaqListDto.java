@@ -13,4 +13,5 @@ public class FaqListDto {
     private String deptId;
     private String faqTitle;
     private String faqContent;
+    private String deptName;
 }

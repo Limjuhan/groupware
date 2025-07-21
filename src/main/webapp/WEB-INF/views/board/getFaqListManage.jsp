@@ -50,7 +50,7 @@
                     <div id="collapse${q.faqId}" class="accor ion">
                         <div class="accordion-body">
                             <div class="faq-answer mb-2">${q.faqContent}</div>
-                            <div class="text-muted small">작성 부서: ${q.deptId}</div>
+                            <div class="text-muted small">작성 부서: ${q.deptName}</div>
                         </div>
                         <div class="mt-2">
                             <a onclick="goForm('getQuestionEditForm?id=${q.faqId}&page=${pageDto.page}')" class="btn btn-sm btn-outline-secondary">수정</a>

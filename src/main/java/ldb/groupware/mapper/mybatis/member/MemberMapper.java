@@ -1,7 +1,7 @@
 package ldb.groupware.mapper.mybatis.member;
 
+import ldb.groupware.dto.common.AttachmentDto;
 import ldb.groupware.dto.common.DeptDto;
-import ldb.groupware.dto.member.AttachmentDto;
 import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.dto.member.MemberListDto;
 import ldb.groupware.dto.member.RankDto;

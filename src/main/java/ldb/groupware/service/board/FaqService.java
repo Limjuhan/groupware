@@ -67,4 +67,9 @@ public class FaqService {
         }
         return false;
     }
+
+    public List<DeptDto> findDept() {
+        List<DeptDto> dto = mapper.findDept();
+        return dto;
+    }
 }

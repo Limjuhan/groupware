@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <title>FAQ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
             background-color: #f8f9fa;
@@ -45,7 +45,7 @@
             <div id="collapse${q.faqId}" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                 <div class="accordion-body">
                     <div class="faq-answer mb-2">${q.faqContent}</div>
-                    <div class="text-muted small">작성 부서: ${q.deptId}</div>
+                    <div class="text-muted small">작성 부서: ${q.deptName}</div>
                 </div>
             </div>
         </div>
@@ -76,6 +76,5 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -7,7 +7,9 @@
     </select>
 
     <select id="findFaqList" resultType="FaqListDto" parameterType="PaginationDto">
-        select * from faq LIMIT #{startNum},#{itemsPerPage}
+        select f.faq_id , d.dept_name , f.faq_title , f.faq_content , f.dept_id
+        from faq f left join dept d on f.dept_id = d.dept_id
+        LIMIT #{startNum},#{itemsPerPage}
     </select>
 
     <insert id="insertFaq" parameterType="FaqFormDto" >
@@ -31,5 +33,9 @@
     <delete id="deleteFaq" parameterType="int">
         delete from faq where faq_id = #{val}
     </delete>
+
+    <select id="findDept" resultType="DeptDto">
+        select dept_name , dept_id from dept
+    </select>
 
 </mapper>

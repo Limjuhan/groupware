@@ -5,7 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .notice-table th, .notice-table td {
@@ -27,7 +26,7 @@
     <!-- 제목 + 등록 버튼 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold">공지사항</h3>
-        <a href="noticeWrite.jsp" class="btn btn-primary">공지 등록</a>
+        <a onclick="goForm('getNoticeForm')" class="btn btn-primary">공지 등록</a>
     </div>
 
     <!-- 검색 폼 -->
@@ -102,7 +101,13 @@
         </ul>
     </nav>
 </div>
+<script>
+    function goForm(url){
+        let op = "width=500,height=700,top=50,left=150";
+        window.open(url, "", op);
+    }
+</script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
