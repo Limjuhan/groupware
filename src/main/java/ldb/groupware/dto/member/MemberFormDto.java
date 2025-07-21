@@ -35,4 +35,10 @@ public class MemberFormDto {
 
     @NotNull(message = "입사일은 필수입니다.")
     private LocalDate memHiredate;
+
+    @NotEmpty(message = "이메일을 입력하세요")
+    private String memPrivateEmail;
+
+    private String deptId;
+    private String rankId;
 }

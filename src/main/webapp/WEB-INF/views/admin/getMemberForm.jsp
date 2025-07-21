@@ -9,28 +9,33 @@
         body {
             background-color: #f8f9fa;
         }
+
         .form-section {
             max-width: 900px;
             margin: 50px auto;
             background: rgba(255, 255, 255, 0.1); /* 반투명 */
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             color: white;
         }
+
         .form-control, .form-select {
             background-color: rgba(255, 255, 255, 0.15) !important;
             color: white !important;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
+
         .form-select option {
             background-color: #343a40;
             color: white;
         }
+
         .form-label {
             font-weight: bold;
             color: white;
         }
+
         .photo-preview {
             width: 150px;
             height: 150px;
@@ -49,13 +54,13 @@
 <body>
 <div class="form-section">
     <h3 class="mb-4 fw-bold">사원등록</h3>
-    <form action="/admin/insertMember" method="post" enctype="multipart/form-data">
+    <form action="insertMemberByMng" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-9">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">이름 *</label>
-                        <input type="text" name="memName" class="form-control" required />
+                        <input type="text" name="memName" class="form-control" required/>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">성별</label>
@@ -67,15 +72,20 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">전화번호 *</label>
-                        <input type="text" name="memPhone" class="form-control" required />
+                        <input type="text" name="memPhone" class="form-control" required/>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">2차 이메일 (개인 이메일)</label>
+                        <input type="email" name="memPrivateEmail" class="form-control"
+                               placeholder="example@gmail.com"/>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">주민번호 앞자리 *</label>
-                        <input type="text" name="juminFront" maxlength="6" class="form-control" required />
+                        <input type="text" name="juminFront" maxlength="6" class="form-control" required/>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">주민번호 뒷자리 *</label>
-                        <input type="password" name="juminBack" maxlength="7" class="form-control" required />
+                        <input type="password" name="juminBack" maxlength="7" class="form-control" required/>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">부서 *</label>
@@ -97,7 +107,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">입사일 *</label>
-                        <input type="date" name="memHiredate" class="form-control" required />
+                        <input type="date" name="memHiredate" class="form-control" required/>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">재직상태 *</label>
@@ -109,13 +119,14 @@
                     </div>
                     <div class="col-md-12 mb-3">
                         <label class="form-label">주소</label>
-                        <input type="text" name="memAddress" class="form-control" />
+                        <input type="text" name="memAddress" class="form-control"/>
                     </div>
+
                 </div>
             </div>
             <div class="col-md-3 text-center">
                 <div class="photo-preview">사진<br>없음</div>
-                <input type="file" name="photo" class="form-control form-control-sm" />
+                <input type="file" name="photo" class="form-control form-control-sm"/>
             </div>
         </div>
         <div class="text-end mt-4">
