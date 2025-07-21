@@ -1,11 +1,14 @@
 package ldb.groupware.service.board;
 
+import ldb.groupware.dto.board.NoticeFormDto;
 import ldb.groupware.dto.board.NoticeListDto;
 import ldb.groupware.dto.common.PaginationDto;
 import ldb.groupware.mapper.mybatis.board.NoticeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,5 +30,22 @@ public class NoticeService {
         map.put("notice", dto);
         map.put("pageDto", pageDto);
         return map;
+    }
+
+    private void uploadFileCreate(MultipartFile file, String path) {
+        String orgFile = file.getOriginalFilename();
+        File f = new File(path);
+        if(!f.exists()) {
+            f.mkdirs();
+        }
+        try {
+            file.transferTo(new File(path+orgFile));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean insertNotice(NoticeFormDto dto, List<MultipartFile> files) {
+        return true;
     }
 }

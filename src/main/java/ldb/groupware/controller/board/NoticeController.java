@@ -51,8 +51,7 @@ public class NoticeController {
 
     @PostMapping("insertNotice")
     public String insertNotice(@RequestParam("uploadFile") List<MultipartFile> files , NoticeFormDto dto){
-        System.out.println(dto);
-        System.out.println(files);
+        boolean result = service.insertNotice(dto,files);
         return "alert";
     }
 
