@@ -54,7 +54,7 @@
 <body>
 <div class="form-section">
     <h3 class="mb-4 fw-bold">사원등록</h3>
-    <form action="insertMemberByMng" method="post" enctype="multipart/form-data">
+    <form action="insertMemberByMng" method="post" >
         <div class="row">
             <div class="col-md-9">
                 <div class="row">
