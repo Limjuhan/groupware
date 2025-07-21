@@ -1,10 +1,8 @@
 package ldb.groupware.service.board;
 
 import ldb.groupware.dto.board.NoticeListDto;
-import ldb.groupware.dto.board.PaginationDto;
-import ldb.groupware.mapper.mapstruct.ConvertDtoMapper;
+import ldb.groupware.dto.common.PaginationDto;
 import ldb.groupware.mapper.mybatis.board.NoticeMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

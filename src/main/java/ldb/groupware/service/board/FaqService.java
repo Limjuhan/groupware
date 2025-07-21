@@ -1,11 +1,9 @@
 package ldb.groupware.service.board;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import ldb.groupware.dto.board.DeptDto;
 import ldb.groupware.dto.board.FaqFormDto;
 import ldb.groupware.dto.board.FaqListDto;
-import ldb.groupware.dto.board.PaginationDto;
+import ldb.groupware.dto.common.DeptDto;
+import ldb.groupware.dto.common.PaginationDto;
 import ldb.groupware.mapper.mapstruct.ConvertDtoMapper;
 import ldb.groupware.mapper.mybatis.board.FaqMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +17,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class FaqService {
 
-    private  final FaqMapper mapper;
-    private  final ConvertDtoMapper convertDtoMapper;
+    private final FaqMapper mapper;
+    private final ConvertDtoMapper convertDtoMapper;
 
-    public Map<String,Object> findFaqList(PaginationDto pageDto) {
+    public Map<String, Object> findFaqList(PaginationDto pageDto) {
         HashMap<String, Object> map = new HashMap<>();
         int count = mapper.faqCount();
         pageDto.setTotalRows(count);
@@ -36,10 +34,9 @@ public class FaqService {
 
     public boolean insertFaq(FaqFormDto dto) {
         int a = mapper.insertFaq(dto);
-        if(a>0) {
+        if (a > 0) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -65,7 +62,7 @@ public class FaqService {
     public boolean deleteFaq(String faqId) {
         Integer i = Integer.valueOf(faqId);
         int result = mapper.deleteFaq(i);
-        if(result>0) {
+        if (result > 0) {
             return true;
         }
         return false;

@@ -1,16 +1,10 @@
 package ldb.groupware.controller.board;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import ldb.groupware.domain.Faq;
-import ldb.groupware.dto.board.DeptDto;
 import ldb.groupware.dto.board.FaqFormDto;
-import ldb.groupware.dto.board.FaqListDto;
-import ldb.groupware.dto.board.PaginationDto;
+import ldb.groupware.dto.common.DeptDto;
+import ldb.groupware.dto.common.PaginationDto;
 import ldb.groupware.service.board.FaqService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;

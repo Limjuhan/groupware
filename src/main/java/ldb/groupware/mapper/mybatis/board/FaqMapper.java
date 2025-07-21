@@ -1,9 +1,9 @@
 package ldb.groupware.mapper.mybatis.board;
 
-import ldb.groupware.dto.board.DeptDto;
 import ldb.groupware.dto.board.FaqFormDto;
 import ldb.groupware.dto.board.FaqListDto;
-import ldb.groupware.dto.board.PaginationDto;
+import ldb.groupware.dto.common.DeptDto;
+import ldb.groupware.dto.common.PaginationDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

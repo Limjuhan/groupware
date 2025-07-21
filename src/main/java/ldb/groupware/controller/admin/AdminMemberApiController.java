@@ -1,7 +1,7 @@
 package ldb.groupware.controller.admin;
 
 import jakarta.servlet.http.HttpSession;
-import ldb.groupware.dto.board.PaginationDto;
+import ldb.groupware.dto.common.PaginationDto;
 import ldb.groupware.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

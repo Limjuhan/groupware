@@ -1,7 +1,7 @@
 package ldb.groupware.service.member;
 
-import ldb.groupware.dto.board.DeptDto;
-import ldb.groupware.dto.board.PaginationDto;
+import ldb.groupware.dto.common.DeptDto;
+import ldb.groupware.dto.common.PaginationDto;
 import ldb.groupware.dto.member.*;
 import ldb.groupware.mapper.mybatis.member.MemberMapper;
 import lombok.RequiredArgsConstructor;

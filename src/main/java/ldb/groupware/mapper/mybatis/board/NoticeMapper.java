@@ -1,7 +1,7 @@
 package ldb.groupware.mapper.mybatis.board;
 
 import ldb.groupware.dto.board.NoticeListDto;
-import ldb.groupware.dto.board.PaginationDto;
+import ldb.groupware.dto.common.PaginationDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
