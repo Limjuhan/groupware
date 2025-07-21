@@ -54,8 +54,12 @@
 <body>
 <div class="form-section">
     <h3 class="mb-4 fw-bold">사원등록</h3>
-    <form action="insertMemberByMng" method="post" >
+    <form action="insertMemberByMng" method="post">
         <div class="row">
+            <div class="col-md-3 text-center">
+                <div class="photo-preview">사진<br>없음</div>
+                <input type="file" name="photo" class="form-control form-control-sm"/>
+            </div>
             <div class="col-md-9">
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -121,12 +125,7 @@
                         <label class="form-label">주소</label>
                         <input type="text" name="memAddress" class="form-control"/>
                     </div>
-
                 </div>
-            </div>
-            <div class="col-md-3 text-center">
-                <div class="photo-preview">사진<br>없음</div>
-                <input type="file" name="photo" class="form-control form-control-sm"/>
             </div>
         </div>
         <div class="text-end mt-4">

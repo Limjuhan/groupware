@@ -115,7 +115,6 @@
             </div>
         </div>
         <!-- ✅ 연차 정보 (나중에 연동 가능) -->
-        <!--
         <h5 class="section-title">연차 정보</h5>
         <div class="row mb-3">
             <div class="col-md-4">
@@ -149,7 +148,7 @@
                 </tr>
             </tbody>
         </table>
-        -->
+
         <div class="text-end">
             <button type="button" class="btn btn-warning me-2" onclick="getPassEditForm()">비밀번호 변경</button>
             <button type="submit" class="btn btn-primary">저장</button>

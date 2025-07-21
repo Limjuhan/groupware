@@ -3,6 +3,7 @@ package ldb.groupware.controller.admin;
 import jakarta.servlet.http.HttpSession;
 import ldb.groupware.dto.common.ApiResponseDto;
 import ldb.groupware.dto.common.PaginationDto;
+import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.dto.member.UpdateMemberDto;
 import ldb.groupware.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,15 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
+
 @RequestMapping("/admin")
 public class AdminMemberApiController {
 
     private final MemberService memberService;
+
+    public AdminMemberApiController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     @GetMapping("searchMembers")
     public Map<String, Object> searchMembers(@ModelAttribute PaginationDto paginationDto,
@@ -27,7 +32,6 @@ public class AdminMemberApiController {
                                              @RequestParam(required = false) String rank,
                                              @RequestParam(required = false) String name,
                                              HttpSession session) {
-
         // 로그인 ID는 추후 사용 가능
         // String loginId = (String) session.getAttribute("loginId");
         log.debug("📥 페이지 요청 들어옴: {}", paginationDto.getPage());
@@ -41,5 +45,15 @@ public class AdminMemberApiController {
                 map.get("deptId"),
                 map.get("rankId")
         );
+    }
+
+    @GetMapping("getMemberInfo")
+    public ResponseEntity<ApiResponseDto<MemberInfoDto>> getMemberInfo(@RequestParam String memId) {
+
+        MemberInfoDto memberInfo = memberService.getInfo(memId);
+        if (memberInfo == null) {
+            return ApiResponseDto.fail("사원 정보를 찾을 수 없습니다.");
+        }
+        return ApiResponseDto.ok(memberInfo, "사원 정보 조회 성공");
     }
 }
