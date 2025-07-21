@@ -71,4 +71,8 @@ values(#{businessId},#{attachType},#{originalName},#{savedName},#{filePath},now(
     <select id="getAttachByNoticeId" parameterType="String" resultType="AttachmentDto">
         select * from attachment where business_id = #{val}
     </select>
+
+    <delete id="deleteFile" parameterType="AttachUpdateDto">
+        delete from attachment where business_id = #{businessId} and saved_name=#{fileName}
+    </delete>
 </mapper>

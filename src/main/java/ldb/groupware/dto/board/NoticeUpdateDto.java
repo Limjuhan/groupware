@@ -12,7 +12,7 @@ public class NoticeUpdateDto {
     private String noticeContent;
     private String memId;
     private String memName;
-    private String existingFiles;
+    private String[] existingFiles;
     private Integer noticeCnt;
     private Character isPinned;
     private LocalDateTime createdAt;

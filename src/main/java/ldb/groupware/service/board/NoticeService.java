@@ -1,6 +1,7 @@
 package ldb.groupware.service.board;
 
 import jakarta.servlet.http.HttpServletRequest;
+import ldb.groupware.dto.board.AttachUpdateDto;
 import ldb.groupware.dto.board.NoticeDetailDto;
 import ldb.groupware.dto.board.NoticeFormDto;
 import ldb.groupware.dto.board.NoticeListDto;
@@ -98,5 +99,15 @@ public class NoticeService {
         map.put("notice", notice);
         map.put("attach", attach);
         return map;
+    }
+
+    //파일삭제 서비스
+    public void deleteFile(String[] existingFiles, String businessId) {
+        for (String file : existingFiles) {
+            AttachUpdateDto attach = new AttachUpdateDto();
+            attach.setFileName(file);
+            attach.setBusinessId(businessId);
+            mapper.deleteFile(attach);
+        }
     }
 }

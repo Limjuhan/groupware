@@ -34,6 +34,7 @@
             <input type="text" class="form-control" id="noticeTitle" name="noticeTitle" required value="${notice.noticeTitle}">
         </div>
 
+        <input type="hidden" name="noticeId" value="${notice.noticeId}">
         <!-- 작성자 -->
         <div class="mb-3">
             <label for="memName" class="form-label">작성자</label>
@@ -69,15 +70,17 @@
         <input  type="hidden" name="noticeCnt" value=0>
         <!-- 첨부파일 -->
         <c:forEach var="file" items="${attachedFiles}">
-            <div class="d-flex align-items-center mb-2">
-                <a href="${file.filePath}${file.savedName}" download="${file.originalName}" id="${file.savedName}">
+            <div class="d-flex align-items-center mb-2" id="${file.savedName}">
+                <a href="${file.filePath}${file.savedName}" download="${file.originalName}">
                         ${file.originalName}
                 </a>
                 <button type="button" class="btn btn-sm btn-outline-danger ms-2"
-                        onclick="removeFile('${file.savedName}', this)">삭제</button>
-                <input type="hidden" name="existingFiles" id="${file.savedName}" value="${file.savedName}">
+                        onclick="removeFile('${file.savedName}')">삭제</button>
             </div>
         </c:forEach>
+        <div id="deleteFile">
+
+        </div>
         <div id="fileInputs">
             <div class="mb-2">
                 <input class="form-control" type="file" name="uploadFile" />
@@ -96,8 +99,13 @@
 </div>
 <script>
     function removeFile(f){
-        if(confirm("삭제할건가요??")){
+        if(confirm("삭제할건가요??")) {
             document.getElementById(f).remove();
+            let container = document.getElementById("deleteFile");
+            let newInput = document.createElement("div");
+            newInput.innerHTML = '<input type="hidden" name="existingFiles" value="' + f + '"/>';
+            container.appendChild(newInput);
+
         }
     }
 
@@ -108,12 +116,13 @@
         newInput.innerHTML = '<input class="form-control" type="file" name="uploadFile" />';
         container.appendChild(newInput);
     }
+
     function updateIsPinnedHidden(checkbox) {
         const hidden = document.getElementById('isPinnedHidden');
         hidden.value = checkbox.checked ? 'Y' : 'N'; //체크박스가 선택됐다면 Y로바꿔
     }
 
-        $(document).ready(function() {
+    $(document).ready(function () {
         $('#noticeContent').summernote({
             height: 300,
             placeholder: '공지 내용을 입력하세요',
@@ -121,7 +130,7 @@
         });
     });
 
-        function addFileInput() {
+    function addFileInput() {
         const container = document.getElementById("fileInputs");
         const newInput = document.createElement("div");
         newInput.className = "mb-2";
@@ -130,7 +139,7 @@
     }
 
     //체크박스가선택되면 isPinned를 Y로 바꾸기위함
-        function updateIsPinnedHidden(checkbox) {
+    function updateIsPinnedHidden(checkbox) {
         const hidden = document.getElementById('isPinnedHidden');
         hidden.value = checkbox.checked ? 'Y' : 'N';
     }

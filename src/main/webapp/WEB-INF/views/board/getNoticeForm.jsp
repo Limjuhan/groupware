@@ -60,7 +60,7 @@
         <!-- 첨부파일 -->
         <div id="fileInputs">
             <div class="mb-2">
-                <input class="form-control" type="file" name="uploadFile" multiple/>
+                <input class="form-control" type="file" name="uploadFile" />
             </div>
         </div>
         <button type="button" class="btn btn-outline-secondary" onclick="addFileInput()">+ 파일 추가</button>

@@ -82,7 +82,13 @@ public class NoticeController {
     @PostMapping("updateNoticeByMng")
     public String updateNoticeByMng(@RequestParam("uploadFile") List<MultipartFile> files ,
                                     NoticeUpdateDto dto, Model model , HttpServletRequest request) {
-        System.out.println("dto ::::: "+dto.getExistingFiles().substring(1,10));
+        String[] existingFiles = dto.getExistingFiles(); //삭제한 파일들
+        //아마 삭제한파일을 where절에넣어서 삭제 후
+        // 새로추가한걸 notice_id이용해서 insert문으로 따로넣을듯?
+        int s = dto.getNoticeId();
+        String businessId = String.valueOf(s);
+        //service.deleteFile(existingFiles,businessId); //삭제버튼을 누른 파일들 삭제
+
         return "alert";
     }
 

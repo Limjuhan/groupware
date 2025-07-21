@@ -1,5 +1,6 @@
 package ldb.groupware.mapper.mybatis.board;
 
+import ldb.groupware.dto.board.AttachUpdateDto;
 import ldb.groupware.dto.board.NoticeDetailDto;
 import ldb.groupware.dto.board.NoticeFormDto;
 import ldb.groupware.dto.board.NoticeListDto;
@@ -26,4 +27,6 @@ public interface NoticeMapper {
    NoticeDetailDto getNoticeById(String id);
 
    List<AttachmentDto> getAttachByNoticeId(String id);
+
+    void deleteFile(AttachUpdateDto attach);
 }
