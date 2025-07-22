@@ -68,12 +68,12 @@ public class NoticeService {
         for (MultipartFile file : files) {
             if(file!=null && !file.isEmpty()) {
                 //String path = request.getServletContext().getRealPath("/")+"board/file/";
-                String uploadDir = System.getProperty("user.dir") + "/upload/board/";
+                String uploadDir = System.getProperty("user.dir") + "/upload/notice/";
                 String savedName = this.uploadFileCreate(file, uploadDir);
                 attach.setAttachType("N");
                 String originalFilename = file.getOriginalFilename();
                 attach.setSavedName(savedName); // saveName
-                attach.setFilePath("/files/"); // 경로 + saveName
+                attach.setFilePath("/N/"); // 경로 + saveName
                 attach.setOriginalName(originalFilename); //원본이름
                 attach.setBusinessId(noId);
                 mapper.insertAttach(attach);
