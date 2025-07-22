@@ -16,11 +16,11 @@ import java.util.Map;
 @RestController
 
 @RequestMapping("/admin")
-public class AdminMemberApiController {
+public class AdminApiController {
 
     private final MemberService memberService;
 
-    public AdminMemberApiController(MemberService memberService) {
+    public AdminApiController(MemberService memberService) {
         this.memberService = memberService;
     }
 

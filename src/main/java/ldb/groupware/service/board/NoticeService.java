@@ -1,12 +1,8 @@
 package ldb.groupware.service.board;
 
 import jakarta.servlet.http.HttpServletRequest;
-import ldb.groupware.dto.board.AttachUpdateDto;
-import ldb.groupware.dto.board.NoticeDetailDto;
-import ldb.groupware.dto.board.NoticeFormDto;
-import ldb.groupware.dto.board.NoticeListDto;
+import ldb.groupware.dto.board.*;
 import ldb.groupware.dto.attach.AttachmentDto;
-import ldb.groupware.dto.board.PaginationDto;
 import ldb.groupware.mapper.mybatis.board.NoticeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,16 +22,27 @@ public class NoticeService {
 
     public Map<String, Object> getNoticeList(PaginationDto pageDto) {
         HashMap<String, Object> map = new HashMap<>();
-        int count = mapper.noticeCount(); //공지사항의 전체 row 갯수
+        List<NoticeListDto> pinnedList = mapper.getPinnedList(pageDto);
+
+
+        int pinnedCount = mapper.pinnedCount();
+        int count = mapper.noticeCount(); //공지사항(상단고정X)의 갯수
       pageDto.setTotalRows(count);
+        pageDto.setItemsPerPage(pageDto.getItemsPerPage()-pinnedCount); //10개 - 고정된 핀 갯수만 출력
       pageDto.calculatePagination(); //보여줄 페이지의갯수 , 페이지당 제한갯수 등 설정
+
+
         System.out.println("pageDto : "+pageDto);
         List<NoticeListDto> dto = mapper.getNoticeList(pageDto);
+
         for (NoticeListDto dto1 : dto) {
             dto1.updatedAtToString(); //LocalDateTime-->String 변환
         }
-
+        for (NoticeListDto dto2 : pinnedList) {
+            dto2.updatedAtToString();
+        }
         System.out.println("getNoticeListDto :: "+dto);
+        map.put("pinnedList", pinnedList);
         map.put("notice", dto);
         map.put("pageDto", pageDto);
         return map;
@@ -68,12 +75,12 @@ public class NoticeService {
         for (MultipartFile file : files) {
             if(file!=null && !file.isEmpty()) {
                 //String path = request.getServletContext().getRealPath("/")+"board/file/";
-                String uploadDir = System.getProperty("user.dir") + "/upload/board/";
+                String uploadDir = System.getProperty("user.dir") + "/upload/notice/";
                 String savedName = this.uploadFileCreate(file, uploadDir);
                 attach.setAttachType("N");
                 String originalFilename = file.getOriginalFilename();
                 attach.setSavedName(savedName); // saveName
-                attach.setFilePath("/files/"); // 경로 + saveName
+                attach.setFilePath("/N/"); // 경로 + saveName
                 attach.setOriginalName(originalFilename); //원본이름
                 attach.setBusinessId(noId);
                 mapper.insertAttach(attach);
@@ -91,20 +98,56 @@ public class NoticeService {
         HashMap<String, Object> map = new HashMap<>();
         NoticeDetailDto notice = mapper.getNoticeById(id);
         List<AttachmentDto> attach = mapper.getAttachByNoticeId(id);
-        //System.out.println("noticeById :: "+notice);
-        //System.out.println("attach :: "+attach);
         map.put("notice", notice);
-        map.put("attach", attach);
+        if(attach!=null && attach.size()>0){
+            map.put("attach", attach);
+        }
         return map;
     }
 
     //파일삭제 서비스
-    public void deleteFile(String[] existingFiles, String businessId) {
+    public void deleteFile(String[] existingFiles) {
         for (String file : existingFiles) {
-            AttachUpdateDto attach = new AttachUpdateDto();
-            attach.setFileName(file);
-            attach.setBusinessId(businessId);
-            mapper.deleteFile(attach);
+            mapper.deleteFile(file);
+        }
+    }
+
+    public boolean updateNotice(List<MultipartFile> files, NoticeUpdateDto dto) {
+        AttachmentDto attach = new AttachmentDto();
+        String noId = String.valueOf(dto.getNoticeId());
+        if(mapper.updateNotice(dto)>0){
+            for (MultipartFile file : files) {
+                if(file!=null && !file.isEmpty()) {
+                    //String path = request.getServletContext().getRealPath("/")+"board/file/";
+                    String uploadDir = System.getProperty("user.dir") + "/upload/notice/";
+                    String savedName = this.uploadFileCreate(file, uploadDir);
+                    attach.setAttachType("N");
+                    String originalFilename = file.getOriginalFilename();
+                    attach.setSavedName(savedName); // saveName
+                    attach.setFilePath("/N/"); // 경로 + saveName
+                    attach.setOriginalName(originalFilename); //원본이름
+                    attach.setBusinessId(noId);
+                    mapper.insertAttach(attach);
+                }
+            }
+            return true;
+        }
+        else{
+            return  false;
+        }
+    }
+
+    public void plusCnt(String id) {
+        mapper.plusCnt(id);
+    }
+
+    public boolean deleteNotice(String id) {
+        Integer noticeId = Integer.valueOf(id);
+        if(mapper.deleteNotice(noticeId)>0){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 }

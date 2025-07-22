@@ -3,13 +3,45 @@
 <mapper namespace="ldb.groupware.mapper.mybatis.board.NoticeMapper">
 
     <select id="noticeCount" resultType="int">
-        select count(*) from notice
+        select count(*) from notice where is_pinned='N'
     </select>
+
+    <select id="pinnedCount">
+        select count(*) from notice where is_pinned='Y'
+    </select>
+
+    <select id="getPinnedList" parameterType="PaginationDto" resultType="NoticeListDto">
+    select
+        m.mem_name ,
+        n.notice_id ,
+        n.notice_title,
+        n.mem_id,
+        n.notice_cnt,
+        n.is_pinned,
+        n.updated_at
+        from notice n  left join member m on n.mem_id = m.mem_id
+        <where>
+            <!-- 검색 조건이 있을 경우, 검색 유형에 따라 동적으로 WHERE 절 생성 -->
+            <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
+                <choose>
+                    <when test="searchType eq 'noticeTitle'">
+                        AND  n.notice_title LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="searchType eq 'memId'">
+                        AND m.mem_name LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                </choose>
+            </if>
+             and n.is_pinned='Y'
+        </where>
+        order by   n.updated_at desc
+    </select>
+
 
     <select id="getNoticeList" parameterType="PaginationDto" resultType="NoticeListDto">
         select
-            m.mem_name ,
-            n.notice_id ,
+        m.mem_name ,
+        n.notice_id ,
         n.notice_title,
         n.mem_id,
         n.notice_cnt,
@@ -28,10 +60,13 @@
                     </when>
                 </choose>
             </if>
+            and n.is_pinned='N'
     </where>
-        order by n.is_pinned desc ,  n.updated_at desc
+        order by n.updated_at desc
         LIMIT #{startNum},#{itemsPerPage}
     </select>
+
+
 
     <insert id="insertNotice" parameterType="NoticeFormDto">
         insert into notice
@@ -72,7 +107,20 @@ values(#{businessId},#{attachType},#{originalName},#{savedName},#{filePath},now(
         select * from attachment where business_id = #{val}
     </select>
 
-    <delete id="deleteFile" parameterType="AttachUpdateDto">
-        delete from attachment where business_id = #{businessId} and saved_name=#{fileName}
+    <delete id="deleteFile" parameterType="String">
+        delete from attachment where saved_name=#{val}
+    </delete>
+
+    <update id="plusCnt">
+        update notice set notice_cnt= notice_cnt+1 where notice_id=#{val}
+    </update>
+
+    <update id="updateNotice" parameterType="NoticeUpdateDto">
+        update notice set notice_title = #{noticeTitle},notice_content=#{noticeContent},is_pinned=#{isPinned}
+        where notice_id = #{noticeId}
+    </update>
+
+    <delete id="deleteNotice" parameterType="int">
+        delete from notice where notice_id=#{val}
     </delete>
 </mapper>

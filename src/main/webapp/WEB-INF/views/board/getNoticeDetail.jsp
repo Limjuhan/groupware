@@ -110,7 +110,7 @@
     <div class="content-box">${notice.noticeContent}</div>
 
 
-
+<c:if test="${attach != null }">
     <c:forEach items="${attach}" var="a">
         <c:if test="${a.filePath != null}">
             <div class="file-section mt-4">
@@ -119,6 +119,8 @@
             </div>
         </c:if>
     </c:forEach>
+</c:if>
+
     <!-- 버튼 그룹 -->
     <div class="button-group">
         <a href="getNoticeList" class="btn btn-outline-secondary btn-custom">← 목록</a>
