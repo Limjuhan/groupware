@@ -6,10 +6,10 @@ import ldb.groupware.service.member.MemberService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -23,11 +23,6 @@ public class AdminController {
     @GetMapping("dashBoard")
     public String dashBoard() {
         return "admin/dashBoard";
-    }
-
-    @GetMapping("employeeDetail")
-    public String employeeDetail() {
-        return "admin/employeeDetail";
     }
 
     @GetMapping("itemListManage")
@@ -50,17 +45,6 @@ public class AdminController {
         return "admin/meetingRoomRegisterForm";
     }
 
-    @GetMapping("memberInfoUpdate")
-    public String memberInfoUpdate() {
-        return "admin/memberInfoUpdate";
-    }
-
-    @GetMapping("faqWrite")
-    public String faqWrite() {
-        return "admin/faqWrite";
-    }
-
-
     @GetMapping("vehicleManage")
     public String vehicleManage() {
         return "admin/vehicleManage";
@@ -71,25 +55,13 @@ public class AdminController {
         return "admin/vehicleRegisterForm";
     }
 
-    @GetMapping("registerUser")
-    public String registerUser() {
-        return "admin/registerUser";
-    }
-
     @GetMapping("calendarWrite")
     public String calendarWrite() {
         return "admin/calendarWrite";
     }
 
-    @GetMapping("calendarManage")
-    public String calendarManage() {
-        return "admin/calendarManage";
-    }
 
-    @GetMapping("faqManage")
-    public String faqManage() {
-        return "admin/faqManage";
-    }
+
 
     @GetMapping("deptAuth")
     public String deptAuth() {
@@ -101,29 +73,33 @@ public class AdminController {
         return "admin/commTypeManage";
     }
 
-    @GetMapping("getMemberList")
+    @GetMapping("memberList")
     public String getMemberList(Model model) {
         model.addAttribute("deptList", memberService.getDeptList());
         model.addAttribute("rankList", memberService.getRankList());
-        return "admin/getMemberList";
+        return "admin/memberList";
     }
 
-    @GetMapping("getMemberForm")
+    @GetMapping("memberForm")
     public String getMemberForm(Model model) {
         model.addAttribute("deptList", memberService.getDeptList());
         model.addAttribute("rankList", memberService.getRankList());
-        return "admin/getMemberForm";
+        return "admin/memberForm";
     }
 
     @PostMapping("insertMemberByMng")
-    public String insertMemberByMng(@Valid @ModelAttribute MemberFormDto dto, BindingResult bresult, Model model) {
+    public String insertMemberByMng(@Valid @ModelAttribute MemberFormDto dto,
+                                    BindingResult bresult,
+                                    @RequestParam("uploadFile") List<MultipartFile> files,
+                                    Model model) {
+        System.out.println("photo"+files);
         if (bresult.hasErrors()) {
             model.addAttribute("deptList", memberService.getDeptList());
             model.addAttribute("rankList", memberService.getRankList());
-            return "admin/getMemberForm";
+            return "admin/memberForm";
         }
 
-        boolean success = memberService.insertMember(dto);
+        boolean success = memberService.insertMember(dto,files);
 
         if (success) {
             model.addAttribute("url", "/admin/getMemberList");

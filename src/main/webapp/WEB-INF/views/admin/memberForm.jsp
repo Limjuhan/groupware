@@ -48,20 +48,22 @@
             color: white;
             margin-bottom: 10px;
             border: 1px solid #ccc;
+            object-fit: cover;
         }
     </style>
 </head>
 <body>
 <div class="form-section">
     <h3 class="mb-4 fw-bold">사원등록</h3>
-    <form action="insertMemberByMng" method="post">
+    <form action="insertMemberByMng" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-3 text-center">
-                <div class="photo-preview">사진<br>없음</div>
-                <input type="file" name="photo" class="form-control form-control-sm"/>
+                <img id="preview" src="/img/profile_default.png" alt="사진 미리보기" class="photo-preview" />
+                <input type="file" name="uploadFile" class="form-control form-control-sm" onchange="previewPhoto(event)" />
             </div>
             <div class="col-md-9">
                 <div class="row">
+                    <!-- 기존 폼 내용 그대로 유지 -->
                     <div class="col-md-6 mb-3">
                         <label class="form-label">이름 *</label>
                         <input type="text" name="memName" class="form-control" required/>
@@ -79,9 +81,8 @@
                         <input type="text" name="memPhone" class="form-control" required/>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">2차 이메일 (개인 이메일)</label>
-                        <input type="email" name="memPrivateEmail" class="form-control"
-                               placeholder="example@gmail.com"/>
+                        <label class="form-label">2차 이메일</label>
+                        <input type="email" name="memPrivateEmail" class="form-control" placeholder="example@gmail.com"/>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">주민번호 앞자리 *</label>
@@ -129,11 +130,29 @@
             </div>
         </div>
         <div class="text-end mt-4">
-            <a href="/admin/getMemberList" class="btn btn-secondary">목록</a>
+            <a href="/admin/memberList" class="btn btn-secondary">목록</a>
             <button type="submit" class="btn btn-primary">저장</button>
             <button type="reset" class="btn btn-outline-light">입력 초기화</button>
         </div>
     </form>
 </div>
+
+<!-- ✅ 미리보기 스크립트 -->
+<script type="text/javascript">
+    function previewPhoto(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById("preview");
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "/img/profile_default.png"; // 기본 이미지
+        }
+    }
+</script>
 </body>
 </html>

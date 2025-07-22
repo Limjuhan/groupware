@@ -17,7 +17,7 @@ public class SiteMeshConfig {
             protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
                 builder.addDecoratorPath("/*", "layout.jsp")
                         .addExcludedPath("/login/doLogin")
-                        .addExcludedPath("/member/getPassEditForm")
+                        .addExcludedPath("/member/passEditForm")
 
 
                         .addExcludedPath("/board/getFaqForm")

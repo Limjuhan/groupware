@@ -39,40 +39,25 @@
     <!-- 개인정보 수정 -->
     <update id="updateInfo" parameterType="map">
         UPDATE member
-        SET
-            mem_phone = #{phone},
+        SET mem_phone         = #{phone},
             mem_private_email = #{privateEmail},
-            mem_address = #{address}
+            mem_address       = #{address}
         WHERE mem_id = #{memId}
     </update>
 
     <!-- 프로필 사진 삭제 -->
     <delete id="deletePhoto" parameterType="string">
-        DELETE FROM attachment
+        DELETE
+        FROM attachment
         WHERE business_id = #{memId}
           AND attach_type = 'P'
     </delete>
 
-    <!-- 프로필 사진 등록 -->
-    <insert id="insertPhoto" parameterType="AttachmentDto">
-        INSERT INTO attachment (
-            business_id,
-            attach_type,
-            original_name,
-            saved_name,
-            file_path,
-            created_at
-        )
-        VALUES (
-                   #{businessId},
-                   #{attachType},
-                   #{originalName},
-                   #{savedName},
-                   #{filePath},
-                   #{createdAt}
-               )
+    <insert id="insertAttach" parameterType="AttachmentDto">
+        insert into attachment
+        (business_id, attach_type, original_name, saved_name, file_path, created_at)
+        values (#{businessId}, #{attachType}, #{originalName}, #{savedName}, #{filePath}, now())
     </insert>
-
     <!-- 사원 수 카운트 -->
     <select id="countMembers" resultType="int">
         SELECT COUNT(*)
@@ -133,27 +118,24 @@
 
     <!-- 다음 사원번호 숫자 조회 -->
     <select id="nextMemId" resultType="string">
-        SELECT LPAD(IFNULL(MAX(CAST(SUBSTRING(mem_id, 9, 4) AS UNSIGNED)), 0) + 1,4,'0')
+        SELECT LPAD(IFNULL(MAX(CAST(SUBSTRING(mem_id, 9, 4) AS UNSIGNED)), 0) + 1, 4, '0')
         FROM member
         WHERE mem_id LIKE CONCAT('LDB', #{year}, '%')
     </select>
     <!-- 사원 등록 -->
     <insert id="insertMember" parameterType="map">
-        INSERT INTO member (
-            mem_id, mem_pass, mem_email, mem_private_email,
-            mem_name, mem_gender, mem_phone,
-            jumin_front, jumin_back, mem_address,
-            mem_status, mem_hiredate,
-            dept_id, rank_id,
-            created_by, created_at
-        ) VALUES (
-                     #{memId}, #{memPass}, #{memEmail}, #{memPrivateEmail},
-                     #{memName}, #{memGender}, #{memPhone},
-                     #{juminFront}, #{juminBack}, #{memAddress},
-                     #{memStatus}, #{memHiredate},
-                     #{deptId}, #{rankId},
-                     #{createdBy}, #{createdAt}
-                 )
+        INSERT INTO member (mem_id, mem_pass, mem_email, mem_private_email,
+                            mem_name, mem_gender, mem_phone,
+                            jumin_front, jumin_back, mem_address,
+                            mem_status, mem_hiredate,
+                            dept_id, rank_id,
+                            created_by, created_at)
+        VALUES (#{memId}, #{memPass}, #{memEmail}, #{memPrivateEmail},
+                #{memName}, #{memGender}, #{memPhone},
+                #{juminFront}, #{juminBack}, #{memAddress},
+                #{memStatus}, #{memHiredate},
+                #{deptId}, #{rankId},
+                #{createdBy}, #{createdAt})
     </insert>
 
     <update id="updateMemberByMng">
@@ -162,4 +144,6 @@
             rank_id = #{rankId}
         WHERE mem_id = #{memId}
     </update>
+
+
 </mapper>

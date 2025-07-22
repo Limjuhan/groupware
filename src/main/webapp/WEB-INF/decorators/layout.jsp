@@ -106,7 +106,7 @@
         <div class="col-md-2 bg-glass me-2 sidebar">
             <ul class="nav flex-column nav-pills">
                 <li class="nav-item"><a class="nav-link active" href="/"><i class="fa-solid fa-house"></i> 홈</a></li>
-                <li class="nav-item"><a class="nav-link" href="/member/getMemberInfo"><i class="fa-solid fa-user"></i> 개인정보</a></li>
+                <li class="nav-item"><a class="nav-link" href="/member/memberInfo"><i class="fa-solid fa-user"></i> 개인정보</a></li>
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#boardMenu" role="button" aria-expanded="false" aria-controls="boardMenu">
                         <i class="fa-solid fa-thumbtack me-1"></i> 게시판 ▾
@@ -153,8 +153,8 @@
                     </a>
                     <div class="collapse ps-3" id="calendarMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/calendar"><i class="fa-regular fa-calendar-check me-1"></i> 내 캘린더</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/calendarManage"><i class="fa-solid fa-sliders me-1"></i> 일정관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/calendar/calendar"><i class="fa-regular fa-calendar-check me-1"></i> 내 캘린더</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/calendar/calendarList"><i class="fa-solid fa-sliders me-1"></i> 일정관리</a></li>
                         </ul>
                     </div>
                 </li>
@@ -165,7 +165,7 @@
                     </a>
                     <div class="collapse ps-3" id="adminMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/admin/getMemberList">사원관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/memberList">사원관리</a></li>
                             <li class="nav-item"><a class="nav-link" href="/admin/deptAuth">부서권한관리</a></li>
                             <li class="nav-item"><a class="nav-link" href="/admin/dashBoard">연차사용률</a></li>
                         </ul>

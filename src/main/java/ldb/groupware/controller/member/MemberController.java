@@ -24,20 +24,20 @@ public class MemberController {
     }
 
     //  개인정보 조회 화면
-    @GetMapping("getMemberInfo")
+    @GetMapping("memberInfo")
     public String getMemberInfo(HttpSession session, Model model) {
         String loginId = (String) session.getAttribute("loginId");
         if (loginId == null) return "redirect:/login/doLogin";
 
         MemberInfoDto dto = memberService.getInfo(loginId);
         model.addAttribute("user", dto);
-        return "member/getMemberInfo";
+        return "member/memberInfo";
     }
 
     // 비밀번호 수정 폼
-    @GetMapping("getPassEditForm")
+    @GetMapping("passEditForm")
     public String getPassEditForm() {
-        return "member/getPassEditForm";
+        return "member/passEditForm";
     }
 
     //  개인정보 수정 처리
@@ -47,7 +47,7 @@ public class MemberController {
 //                                   @RequestParam(value = "photo", required = false) MultipartFile photo,
                                    HttpSession session,
                                    Model model) {
-        if (bresult.hasErrors()) return "member/getMemberInfo";
+        if (bresult.hasErrors()) return "member/memberInfo";
 
         String loginId = (String) session.getAttribute("loginId");
         if (loginId == null) return "redirect:/login/doLogin";
@@ -55,7 +55,7 @@ public class MemberController {
         boolean result = memberService.updateInfo(loginId, dto);
 
         model.addAttribute("msg", result ? "수정 성공" : "수정 실패");
-        model.addAttribute("url", "getMemberInfo");
+        model.addAttribute("url", "member/memberInfo");
         return "alert";
     }
 }

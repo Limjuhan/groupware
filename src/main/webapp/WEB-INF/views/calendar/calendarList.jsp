@@ -25,7 +25,7 @@
   <div class="container bg-white p-4 shadow rounded">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h3 class="fw-bold">📋 일정 목록</h3>
-      <a href="calendarWrite" class="btn btn-primary">+ 일정 등록</a>
+      <a href="getCalendarForm" class="btn btn-primary">+ 일정 등록</a>
     </div>
 
     <table class="table table-bordered align-middle text-center">

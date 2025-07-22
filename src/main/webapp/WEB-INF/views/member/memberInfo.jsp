@@ -43,14 +43,14 @@
     <script>
         function getPassEditForm() {
             let op = "width=500,height=600,top=100,left=300,resizable=no,scrollbars=no";
-            window.open("/member/getPassEditForm", "비밀번호변경", op);
+            window.open("/member/passEditForm", "비밀번호변경", op);
         }
     </script>
 </head>
 <body>
 <div class="container shadow rounded">
     <h2 class="mb-4">개인정보</h2>
-    <form method="post" action="updateMemberInfo">
+    <form method="post" action="updateMemberInfo" enctype="multipart/form-data">
         <div class="row mb-4">
             <div class="col-md-3 text-center">
                 <img src="${not empty user.memPicture ? user.memPicture : '/img/profile_default.png'}" alt="사원 사진"

@@ -1,5 +1,6 @@
 package ldb.groupware.mapper.mybatis.member;
 
+import ldb.groupware.dto.attach.AttachmentDto;
 import ldb.groupware.dto.member.DeptDto;
 import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.dto.member.MemberListDto;
@@ -23,9 +24,7 @@ public interface MemberMapper {
                    @Param("privateEmail") String privateEmail,
                    @Param("address") String address);
 
-//    int deletePhoto(String memId);
-//
-//    int insertPhoto(AttachmentDto dto);
+
 
     int countMembers(@Param("dept") String dept,
                      @Param("rank") String rank,
@@ -49,4 +48,6 @@ public interface MemberMapper {
     int updateMemberByMng(@Param("memId") String memId,
                           @Param("deptId") String deptId,
                           @Param("rankId") String rankId);
+
+    void insertAttach(AttachmentDto attach);
 }

@@ -1,6 +1,7 @@
 package ldb.groupware.service.member;
 
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
+import ldb.groupware.dto.attach.AttachmentDto;
 import ldb.groupware.dto.member.DeptDto;
 import ldb.groupware.dto.board.PaginationDto;
 import ldb.groupware.dto.member.*;
@@ -8,11 +9,14 @@ import ldb.groupware.mapper.mybatis.member.MemberMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -46,35 +50,7 @@ public class MemberService {
         return result;
     }
 
-//    private boolean updatePhoto(String memId, MultipartFile photo) {
-//        try {
-//            memberMapper.deletePhoto(memId); // 이전 사진 삭제
-//
-//            String saveDir = "/upload/profile";
-//            File dir = new File(saveDir);
-//            if (!dir.exists()) dir.mkdirs();
-//
-//            String originalName = photo.getOriginalFilename();
-//            String savedName = UUID.randomUUID() + "_" + originalName;
-//            File target = new File(saveDir, savedName);
-//            photo.transferTo(target);
-//
-//            AttachmentDto attach = new AttachmentDto();
-//            attach.setBusinessId(memId); // 여기가 핵심: 문자열 memId 저장
-//            attach.setAttachType("P");
-//            attach.setOriginalName(originalName);
-//            attach.setSavedName(savedName);
-//            attach.setFilePath(saveDir);
-//            attach.setCreatedAt(LocalDateTime.now());
-//
-//            memberMapper.insertPhoto(attach);
-//            return true;
-//
-//        } catch (IOException e) {
-//            log.error("프로필 사진 저장 실패", e);
-//            return false;
-//        }
-//    }
+
 
 
     private boolean isBlank(String s) {
@@ -109,7 +85,9 @@ public class MemberService {
         return memberMapper.getRankList();
     }
 
-    public boolean insertMember(MemberFormDto dto) {
+    public boolean insertMember(MemberFormDto dto ,List<MultipartFile> files) {
+
+        AttachmentDto attach = new AttachmentDto();
         // 1. 입사년도 추출
         String year = String.valueOf(dto.getMemHiredate().getYear()); // 예: "2025"
 
@@ -146,8 +124,22 @@ public class MemberService {
         map.put("rankId", dto.getRankId());
         map.put("createdBy", "admin");
         map.put("createdAt", LocalDateTime.now());
-
-        return memberMapper.insertMember(map) > 0;
+        memberMapper.insertMember(map);
+        for (MultipartFile file : files) {
+            if(file!=null && !file.isEmpty()) {
+                //String path = request.getServletContext().getRealPath("/")+"board/file/";
+                String uploadDir = System.getProperty("user.dir") + "/upload/notice/";
+                String savedName = this.uploadFileCreate(file, uploadDir);
+                attach.setAttachType("P");
+                String originalFilename = file.getOriginalFilename();
+                attach.setSavedName(savedName); // saveName
+                attach.setFilePath("/P/"); // 경로 + saveName
+                attach.setOriginalName(originalFilename); //원본이름
+                attach.setBusinessId(memId);
+                memberMapper.insertAttach(attach);
+            }
+        }
+        return true;
     }
 
     public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(String memId, String deptId, String rankId) {
@@ -162,4 +154,20 @@ public class MemberService {
         return ApiResponseDto.ok(dto, "사원 정보 수정 완료");
     }
 
+    private String uploadFileCreate(MultipartFile file, String path) {
+        String name = file.getOriginalFilename();
+        String extension = name.substring(name.lastIndexOf("."));
+        String orgFile = UUID.randomUUID().toString()+extension;
+        File f = new File(path);
+        if(!f.exists()) {
+            f.mkdirs();
+        }
+        try {
+            file.transferTo(new File(path+orgFile));
+            return orgFile;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
