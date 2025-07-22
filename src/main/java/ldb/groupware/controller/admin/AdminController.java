@@ -90,24 +90,21 @@ public class AdminController {
     @PostMapping("insertMemberByMng")
     public String insertMemberByMng(@Valid @ModelAttribute MemberFormDto dto,
                                     BindingResult bresult,
-                                    @RequestParam("uploadFile") List<MultipartFile> files,
+                                    @RequestParam(value = "uploadFile", required = false) MultipartFile file,
                                     Model model) {
-        System.out.println("photo"+files);
         if (bresult.hasErrors()) {
             model.addAttribute("deptList", memberService.getDeptList());
             model.addAttribute("rankList", memberService.getRankList());
             return "admin/memberForm";
         }
 
-        boolean success = memberService.insertMember(dto,files);
-
+        boolean success = memberService.insertMember(dto, file);
         if (success) {
-            model.addAttribute("url", "/admin/getMemberList");
+            model.addAttribute("url", "/admin/memberList");
         } else {
             model.addAttribute("msg", "사원 등록 실패");
-            model.addAttribute("url", "/admin/getMemberForm");
+            model.addAttribute("url", "/admin/memberForm");
         }
-
         return "alert";
     }
 }

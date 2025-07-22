@@ -59,7 +59,7 @@
         <div class="row">
             <div class="col-md-3 text-center">
                 <img id="preview" src="/img/profile_default.png" alt="사진 미리보기" class="photo-preview" />
-                <input type="file" name="uploadFile" class="form-control form-control-sm" onchange="previewPhoto(event)" />
+                <input type="file" name="uploadFile" class="form-control form-control-sm" onchange="previewPhoto(event)" accept="image/*" />
             </div>
             <div class="col-md-9">
                 <div class="row">
@@ -142,8 +142,13 @@
     function previewPhoto(event) {
         const file = event.target.files[0];
         const preview = document.getElementById("preview");
-
         if (file) {
+            if (!file.type.startsWith("image/")) {
+                alert("이미지 파일만 업로드 가능합니다.");
+                event.target.value = ""; // 파일 선택 초기화
+                preview.src = "/img/profile_default.png";
+                return;
+            }
             const reader = new FileReader();
             reader.onload = function(e) {
                 preview.src = e.target.result;

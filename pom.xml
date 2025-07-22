@@ -91,13 +91,6 @@
 			<version>1.1.1</version>
 		</dependency>
 
-		<!--사진업로드관련-->
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.5</version>
-		</dependency>
-
 		<!-- sitemesh -->
 		<dependency>
 			<groupId>org.sitemesh</groupId>
