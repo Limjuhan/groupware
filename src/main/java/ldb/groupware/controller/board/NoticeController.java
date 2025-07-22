@@ -30,17 +30,12 @@ public class NoticeController {
     @GetMapping("getNoticeList")
     public String getNoticeList(
             @RequestParam(value = "page", defaultValue = "1") int currentPage ,
-            @RequestParam(value="searchType", required = false) String searchType,
-            @RequestParam(value = "keyword", required = false) String keyword , Model model ) {
-        System.out.println(searchType);
-        System.out.println(keyword);
-        PaginationDto paging = new PaginationDto();
+           PaginationDto paging, Model model  ) {
         paging.setPage(currentPage);
-        paging.setSearchType(searchType);
-        paging.setKeyword(keyword);
         Map<String,Object> map =service.getNoticeList(paging);
         model.addAttribute("notice",map.get("notice"));
         model.addAttribute("pageDto",map.get("pageDto"));
+        model.addAttribute("pinnedList",map.get("pinnedList"));
 
         return "board/getNoticeList";
     }
@@ -62,9 +57,10 @@ public class NoticeController {
     }
     @GetMapping("getNoticeDetail")
     public String getNoticeDetail(Model model , @RequestParam("id")  String id) {
+
         Map<String,Object> map = service.getNoticeById(id);
         model.addAttribute("notice",map.get("notice"));
-        model.addAttribute("attach",map.get("attach"));
+        service.plusCnt(id);
         return "board/getNoticeDetail";
     }
 
@@ -78,14 +74,30 @@ public class NoticeController {
 
     @PostMapping("updateNoticeByMng")
     public String updateNoticeByMng(@RequestParam("uploadFile") List<MultipartFile> files ,
-                                    NoticeUpdateDto dto, Model model , HttpServletRequest request) {
-        String[] existingFiles = dto.getExistingFiles(); //삭제한 파일들
-        //아마 삭제한파일을 where절에넣어서 삭제 후
-        // 새로추가한걸 notice_id이용해서 insert문으로 따로넣을듯?
-        int s = dto.getNoticeId();
-        String businessId = String.valueOf(s);
-        //service.deleteFile(existingFiles,businessId); //삭제버튼을 누른 파일들 삭제
+                                    NoticeUpdateDto dto, Model model) {
+        String[] existingFiles = dto.getExistingFiles();//삭제버튼을 누른 파일들
+        if(existingFiles!=null && existingFiles.length>0) { //삭제를 아무것도안했을경우를 대비
+            service.deleteFile(existingFiles);
+        }
+        if(service.updateNotice(files,dto)){
+            model.addAttribute("msg","업뎃성공");
+        }
+        else{
+            model.addAttribute("msg","업뎃 실패");
+        }
+        return "alert";
+    }
 
+    @GetMapping("deleteNoticeByMng")
+    public String deleteNoticeByMng(Model model , @RequestParam("id")  String id ) {
+        System.out.println(id);
+        if(service.deleteNotice(id)){
+            model.addAttribute("msg","삭제성공");
+        }
+        else{
+            model.addAttribute("msg","삭제실패");
+        }
+        model.addAttribute("url","getNoticeList");
         return "alert";
     }
 

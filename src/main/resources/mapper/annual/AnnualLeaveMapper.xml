@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ldb.groupware.mapper.mybatis.annual.AnnualLeaveMapper">
+
+    <select id="selectByMemIdAndYear" resultType="AnnualLeave">
+        SELECT * FROM annual_leave
+        WHERE mem_id = #{memId} AND year = #{year}
+    </select>
+
+    <select id="existsByMemIdAndYear" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM annual_leave
+        WHERE mem_id = #{memId} AND year = #{year}
+    </select>
+
+    <insert id="insertAnnualLeave">
+        INSERT INTO annual_leave (mem_id, year, total_date, use_date, remain_date, created_at, created_by)
+        VALUES (#{memId}, #{year}, #{totalDate}, #{useDate}, #{remainDate}, #{createdAt}, #{createdBy})
+    </insert>
+
+    <update id="updateAnnualLeave">
+        UPDATE annual_leave
+        SET total_date = #{totalDate},
+            remain_date = #{remainDate},
+            updated_at = #{updatedAt},
+            updated_by = #{updatedBy}
+        WHERE mem_id = #{memId} AND year = #{year}
+    </update>
+
+    <select id="findAllActiveMembers" resultType="Member">
+        SELECT *
+        from member
+    </select>
+
+</mapper>

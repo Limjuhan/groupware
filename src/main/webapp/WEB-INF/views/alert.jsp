@@ -23,8 +23,11 @@
             window.close();
             if(${url!=null}){
                 window.location.href='${url}';
+
             }
             opener.location.reload();
+            window.location.reload();
+
 
         }
     });

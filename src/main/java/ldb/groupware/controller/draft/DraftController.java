@@ -1,12 +1,19 @@
 package ldb.groupware.controller.draft;
 
+import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import ldb.groupware.dto.draft.DraftForMemberDto;
+import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.service.draft.DraftService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -41,11 +48,64 @@ public class DraftController {
 //    }
 
     @GetMapping("draftForm")
-    public String draftForm() {
+    public String draftForm(Model model, HttpSession session) {
+//        String memId = (String) session.getAttribute("user");
+
+        String memId = "user001";
+
+        Integer remainAnnual = draftService.getReaminAnnual(memId);
+        List<DraftForMemberDto> memberList = draftService.getMemberList();
+
+        model.addAttribute("draftMembers", memberList);
+        model.addAttribute("remainAnnual", remainAnnual);
+        model.addAttribute("draftFormDto", new DraftFormDto());
+
         return "draft/draftForm";
     }
 
+    @PostMapping("/insertMyDraft")
+    public String insertMyDraft(
+            @RequestParam(value = "attachments", required = false) List<MultipartFile> attachments,
+            @Valid @ModelAttribute("draftFormDto") DraftFormDto dto,
+            BindingResult bindingResult,
+            @RequestParam("action") String action,
+            Model model) {
 
+        System.out.println("action = " + action);
+        attachments.forEach(attachment -> {
+            System.out.println("attachment = " + attachment);
+        });
+
+
+
+        // 추가 유효성 검증 (양식별 필드)
+        if ("app_01".equals(dto.getFormType())) {
+            if (dto.getLeaveStart() == null || dto.getLeaveEnd() == null || StringUtils.isBlank(dto.getLeaveType())) {
+                bindingResult.reject("leave.required", "휴가 유형 및 기간은 필수입니다.");
+            }
+        } else if ("app_02".equals(dto.getFormType())) {
+            if (StringUtils.isBlank(dto.getProjectTitle()) || StringUtils.isBlank(dto.getExpectedDuration())) {
+                bindingResult.reject("project.required", "프로젝트 정보는 필수입니다.");
+            }
+        } else if ("app_03".equals(dto.getFormType())) {
+            if (dto.getAmount() == null || StringUtils.isBlank(dto.getExpenseItem())) {
+                bindingResult.reject("expense.required", "지출 항목 및 금액은 필수입니다.");
+            }
+        } else if ("app_04".equals(dto.getFormType())) {
+            if (dto.getResignDate() == null || StringUtils.isBlank(dto.getResignReason())) {
+                bindingResult.reject("resign.required", "사직일 및 사유는 필수입니다.");
+            }
+        }
+
+        if (bindingResult.hasErrors()) {
+            List<DraftForMemberDto> memberList = draftService.getMemberList();
+            model.addAttribute("draftMembers", memberList);
+            return "draft/draftForm";
+        }
+
+//        draftService.saveDraft(dto, attachments, action, loginId);
+        return "redirect:/draft/getMyDraftList";
+    }
 
     @GetMapping("draftManagement")
     public String draftManagement() {
