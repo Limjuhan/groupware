@@ -1,4 +1,4 @@
-package ldb.groupware.dto.common;
+package ldb.groupware.dto.board;
 
 import lombok.Getter;
 import lombok.Setter;

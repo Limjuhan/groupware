@@ -1,4 +1,4 @@
-package ldb.groupware.dto.common;
+package ldb.groupware.dto.apiresponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

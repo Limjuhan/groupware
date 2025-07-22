@@ -4,8 +4,8 @@ import ldb.groupware.dto.board.AttachUpdateDto;
 import ldb.groupware.dto.board.NoticeDetailDto;
 import ldb.groupware.dto.board.NoticeFormDto;
 import ldb.groupware.dto.board.NoticeListDto;
-import ldb.groupware.dto.common.AttachmentDto;
-import ldb.groupware.dto.common.PaginationDto;
+import ldb.groupware.dto.attach.AttachmentDto;
+import ldb.groupware.dto.board.PaginationDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

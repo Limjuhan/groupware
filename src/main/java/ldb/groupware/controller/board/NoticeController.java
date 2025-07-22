@@ -1,13 +1,10 @@
 package ldb.groupware.controller.board;
 
 
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import ldb.groupware.dto.board.NoticeFormDto;
-import ldb.groupware.dto.board.NoticeListDto;
 import ldb.groupware.dto.board.NoticeUpdateDto;
-import ldb.groupware.dto.common.PaginationDto;
-import ldb.groupware.dto.member.MemberInfoDto;
+import ldb.groupware.dto.board.PaginationDto;
 import ldb.groupware.service.board.NoticeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

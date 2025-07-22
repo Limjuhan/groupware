@@ -2,8 +2,8 @@ package ldb.groupware.controller.board;
 
 import jakarta.validation.Valid;
 import ldb.groupware.dto.board.FaqFormDto;
-import ldb.groupware.dto.common.DeptDto;
-import ldb.groupware.dto.common.PaginationDto;
+import ldb.groupware.dto.member.DeptDto;
+import ldb.groupware.dto.board.PaginationDto;
 import ldb.groupware.service.board.FaqService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

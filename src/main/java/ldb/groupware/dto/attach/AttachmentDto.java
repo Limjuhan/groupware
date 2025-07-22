@@ -1,4 +1,4 @@
-package ldb.groupware.dto.common;
+package ldb.groupware.dto.attach;
 
 import lombok.Data;
 

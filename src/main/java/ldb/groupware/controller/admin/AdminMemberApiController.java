@@ -1,14 +1,12 @@
 package ldb.groupware.controller.admin;
 
 import jakarta.servlet.http.HttpSession;
-import ldb.groupware.dto.common.ApiResponseDto;
-import ldb.groupware.dto.common.PaginationDto;
+import ldb.groupware.dto.apiresponse.ApiResponseDto;
+import ldb.groupware.dto.board.PaginationDto;
 import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.dto.member.UpdateMemberDto;
 import ldb.groupware.service.member.MemberService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
