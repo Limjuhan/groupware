@@ -1,5 +1,6 @@
 package ldb.groupware.mapper.mybatis.member;
 
+import ldb.groupware.domain.Member;
 import ldb.groupware.dto.member.DeptDto;
 import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.dto.member.MemberListDto;
@@ -49,4 +50,5 @@ public interface MemberMapper {
     int updateMemberByMng(@Param("memId") String memId,
                           @Param("deptId") String deptId,
                           @Param("rankId") String rankId);
+
 }

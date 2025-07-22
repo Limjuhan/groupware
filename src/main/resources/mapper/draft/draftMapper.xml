@@ -31,4 +31,23 @@
         ORDER BY d.doc_id DESC
     </select>
 
+    <select id="getMemberList" resultType="DraftForMemberDto">
+        SELECT m.mem_id as mem_id,
+               m.mem_name as mem_name,
+               d.dept_name as dept_name,
+               r.rank_name as rank_name,
+               m.mem_email as mem_email
+        FROM member m
+        LEFT JOIN dept d ON m.dept_id = d.dept_id
+        LEFT JOIN rank r ON m.rank_id = r.rank_id
+    </select>
+
+    <select id="getReaminAnnual">
+        SELECT remain_days
+        FROM annual_leave
+        WHERE mem_id = #{memId}
+        and year = year(CURDATE())
+    </select>
+
+
 </mapper>

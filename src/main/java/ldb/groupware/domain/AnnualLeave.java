@@ -13,9 +13,9 @@ public class AnnualLeave {
     private Integer anId;
     private String memId;
     private Integer year;
-    private Double totalDate;
-    private Double useDate;
-    private Double remainDate;
+    private Double totalDays;
+    private Double useDays;
+    private Double remainDays;
     private LocalDateTime createdAt;
     private String createdBy;
     private LocalDateTime updatedAt;
