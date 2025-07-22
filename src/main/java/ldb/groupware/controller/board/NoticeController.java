@@ -60,6 +60,7 @@ public class NoticeController {
 
         Map<String,Object> map = service.getNoticeById(id);
         model.addAttribute("notice",map.get("notice"));
+        model.addAttribute("attach",map.get("attach"));
         service.plusCnt(id);
         return "board/getNoticeDetail";
     }
