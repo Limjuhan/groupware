@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -241,7 +241,7 @@
 
         <!-- 첨부파일 -->
         <div class="mb-3 form-template d-none">
-            <label class="form-label">첨부파일 (여러 개 선택 가능, 최대 50MB)</label>
+            <label class="form-label">첨부파일</label>
             <input type="file" class="form-control bg-glass" name="attachments">
         </div>
 
@@ -252,6 +252,8 @@
             <a href="draftList" class="btn btn-light bg-glass">취소</a>
         </div>
     </form:form>
+
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>

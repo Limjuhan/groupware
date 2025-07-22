@@ -63,20 +63,18 @@ public class DraftController {
         return "draft/draftForm";
     }
 
-    @PostMapping("/insertMyDraft")
+    @PostMapping("insertMyDraft")
     public String insertMyDraft(
-            @RequestParam(value = "attachments", required = false) List<MultipartFile> attachments,
             @Valid @ModelAttribute("draftFormDto") DraftFormDto dto,
             BindingResult bindingResult,
-            @RequestParam("action") String action,
+            @RequestParam(value = "attachments", required = false) List<MultipartFile> attachments,
+            @RequestParam(value = "action", required = false) String action,
             Model model) {
 
         System.out.println("action = " + action);
-        attachments.forEach(attachment -> {
-            System.out.println("attachment = " + attachment);
-        });
-
-
+//        attachments.forEach(attachment -> {
+//            System.out.println("attachment = " + attachment);
+//        });
 
         // 추가 유효성 검증 (양식별 필드)
         if ("app_01".equals(dto.getFormType())) {

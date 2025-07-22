@@ -32,27 +32,34 @@ public class DraftFormDto {
     // 휴가신청서
     @NotBlank(message = "휴가 종료류를 선택하세요.")
     private String leaveType;
-    @NotBlank(message = "휴가 시작일을 지정하세요.")
+
+    @NotNull(message = "휴가 시작일을 지정하세요.")
     private LocalDate leaveStart;
-    @NotBlank(message = "휴가 마감일 선택하세요.")
+
+    @NotNull(message = "휴가 마감일 선택하세요.")
     private LocalDate leaveEnd;
 
     // 프로젝트 제안서
     private String projectTitle;
+
     @NotBlank(message = "기간입력은 필수입니다.")
     private String expectedDuration;
+
     private String projectGoal;
 
     // 지출결의서
     @NotBlank(message = "지출항목을 입력해주세요.")
     private String expenseItem;
-    @NotBlank(message = "금액 입력은 필수입니다.")
+
+    @NotNull(message = "금액 입력은 필수입니다.")
     private Integer amount;
+
     private LocalDate usedDate;
 
     // 사직서
-    @NotBlank(message = "퇴직 희망일을 입력해주세요.")
+    @NotNull(message = "퇴직 희망일을 입력해주세요.")
     private LocalDate resignDate;
+
     private String resignReason;
 }
 
