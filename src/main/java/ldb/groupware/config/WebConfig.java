@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/files/**")
+        registry.addResourceHandler("/files/**") //유형별로 이름 다르게
                 .addResourceLocations("file:upload/board/"); // 상대 경로
 
     }
