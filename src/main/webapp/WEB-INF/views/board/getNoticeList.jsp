@@ -60,12 +60,23 @@
             </thead>
             <tbody>
                 <!-- 상단 고정 공지 -->
+                <c:forEach var="p" items="${pinnedList}">
+                <tr class='fixed-row'>
+                    <td><i class="bi bi-pin-angle-fill text-danger"></i>
+                    </td>
+                    <td class="notice-title">
+                        <a href="getNoticeDetail?id=${p.noticeId}" class="text-decoration-none text-dark">
+                            ${p.noticeTitle}
+                        </a>
+                    </td>
+                    <td>${p.memName}</td>
+                    <td>${p.dateFormat}</td>
+                    <td>${p.noticeCnt}</td>
+                </tr>
+                </c:forEach>
                 <c:forEach var="n" items="${notice}">
-                    <tr class="${n.isPinned == 'Y' ? 'fixed-row' : ''}">
+                    <tr>
                         <td>
-                            <c:if test="${n.isPinned == 'Y'}">
-                                <i class="bi bi-pin-angle-fill text-danger"></i>
-                            </c:if>
                                 ${n.noticeId}
                         </td>
                         <td class="notice-title">

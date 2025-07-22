@@ -1,11 +1,7 @@
 package ldb.groupware.mapper.mybatis.board;
 
-import ldb.groupware.dto.board.AttachUpdateDto;
-import ldb.groupware.dto.board.NoticeDetailDto;
-import ldb.groupware.dto.board.NoticeFormDto;
-import ldb.groupware.dto.board.NoticeListDto;
+import ldb.groupware.dto.board.*;
 import ldb.groupware.dto.attach.AttachmentDto;
-import ldb.groupware.dto.board.PaginationDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -28,5 +24,15 @@ public interface NoticeMapper {
 
    List<AttachmentDto> getAttachByNoticeId(String id);
 
-    void deleteFile(AttachUpdateDto attach);
+    void deleteFile(String file);
+
+    int updateNotice(NoticeUpdateDto dto);
+
+    void plusCnt(String id);
+
+    int deleteNotice(int id);
+
+    List<NoticeListDto> getPinnedList(PaginationDto pageDto);
+
+    int pinnedCount();
 }
