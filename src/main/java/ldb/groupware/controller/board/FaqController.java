@@ -17,8 +17,7 @@ import java.util.Map;
 @RequestMapping("/board")
 public class FaqController {
 
-
-    private  FaqService faqService;
+    private  final FaqService faqService;
 
     public FaqController(FaqService faqService) {
         this.faqService = faqService;
