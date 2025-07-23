@@ -26,14 +26,13 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    //   개인정보 조회 화면
     @GetMapping("memberInfo")
     public String getMemberInfo(HttpSession session, Model model) {
         String loginId = (String) session.getAttribute("loginId");
         if (loginId == null) return "redirect:/login/doLogin";
 
-        MemberAnnualLeaveDto annual = memberService.getAnnualInfo(loginId);
         MemberUpdateDto dto = memberService.getInfo(loginId);
+        MemberAnnualLeaveDto annual = memberService.getAnnualInfo(loginId);
         List<MemberAnnualLeaveHistoryDto> annualHistoryList = memberService.getAnnualLeaveHistory(loginId);
 
         model.addAttribute("user", dto);
@@ -44,7 +43,6 @@ public class MemberController {
     }
 
 
-    // 비밀번호 변경
     @GetMapping("passEditForm")
     public String getPassEditForm() {
         return "member/passEditForm";
@@ -56,11 +54,12 @@ public class MemberController {
                                    HttpSession session,
                                    Model model) {
         if (bindingResult.hasErrors()) {
+            List<MemberAnnualLeaveHistoryDto> annualHistoryList = memberService.getAnnualLeaveHistory((String) session.getAttribute("loginId"));
+            model.addAttribute("annualHistoryList", annualHistoryList);
             return "member/memberInfo";
         }
 
         String loginId = (String) session.getAttribute("loginId");
-
         dto.setMemId(loginId);
         boolean success = memberService.updateInfo(dto);
 

@@ -20,13 +20,11 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    // 로그인 화면
     @GetMapping("doLogin")
     public String doLogin() {
         return "login/doLogin";
     }
 
-    // 로그인 처리
     @PostMapping("loginProcess")
     public String loginProcess(@RequestParam String id,
                                @RequestParam String password,
@@ -45,7 +43,6 @@ public class LoginController {
         return "redirect:/";
     }
 
-    // 로그아웃 처리
     @GetMapping("doLogout")
     public String doLogout(HttpServletRequest request) {
         loginService.logout(request);

@@ -1,12 +1,6 @@
 package ldb.groupware.mapper.mybatis.member;
 
-import ldb.groupware.dto.member.MemberAnnualLeaveDto;
-import ldb.groupware.dto.member.MemberAnnualLeaveHistoryDto;
-import ldb.groupware.dto.attach.AttachmentDto;
-import ldb.groupware.dto.member.DeptDto;
-import ldb.groupware.dto.member.MemberListDto;
-import ldb.groupware.dto.member.MemberUpdateDto;
-import ldb.groupware.dto.member.RankDto;
+import ldb.groupware.dto.member.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,10 +10,15 @@ import java.util.Map;
 @Mapper
 public interface MemberMapper {
 
-    String loginId(@Param("id") String id,
-                   @Param("password") String password);
+    String getPasswordByMemId(@Param("memId") String memId);
+
+    String getMemStatus(@Param("memId") String memId);
+
+    String getJuminBackByMemId(@Param("memId") String memId);
 
     MemberUpdateDto selectInfo(String memId);
+
+    List<MemberAnnualLeaveHistoryDto> selectAnnualLeaveHistory(String memId);
 
     int countMembers(@Param("dept") String dept,
                      @Param("rank") String rank,
@@ -35,7 +34,6 @@ public interface MemberMapper {
 
     List<RankDto> getRankList();
 
-
     String nextMemId(@Param("year") String year);
 
     int insertMember(Map<String, Object> map);
@@ -44,11 +42,9 @@ public interface MemberMapper {
                           @Param("deptId") String deptId,
                           @Param("rankId") String rankId);
 
-    void insertAttach(AttachmentDto attach);
-
     int updateInfo(MemberUpdateDto dto);
 
-    MemberAnnualLeaveDto selectAnnualByMemId(@Param("memId") String memId);
+    int updatePassword(@Param("memId") String memId, @Param("encodedPassword") String encodedPassword);
 
-    List<MemberAnnualLeaveHistoryDto> selectAnnualLeaveHistory(String memId);
+    MemberAnnualLeaveDto selectAnnualByMemId(String memId);
 }

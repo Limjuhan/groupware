@@ -74,7 +74,7 @@ public class DraftService {
             insertDraft(dto, memId);
 
 
-            attachmentService.saveAttachments(21, "D", attachments);
+            attachmentService.saveAttachments("21", "D", attachments);
         }
     }
 

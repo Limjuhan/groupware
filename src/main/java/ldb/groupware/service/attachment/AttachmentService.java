@@ -22,7 +22,7 @@ public class AttachmentService {
     }
 
     // 파일 업로드 및 Attachment DB저장
-    public void saveAttachments(Integer businessId, String attachType, List<MultipartFile> attachments) {
+    public void saveAttachments(String businessId, String attachType, List<MultipartFile> attachments) {
 
         String uploadDir = System.getProperty("user.dir");
 
@@ -33,6 +33,9 @@ public class AttachmentService {
                     break;
                 case "N":
                     uploadDir += "/upload/notice/";
+                    break;
+                case "P":
+                    uploadDir += "/upload/profile/";
                     break;
                 default:
                     throw new IllegalArgumentException("첨부파일 타입 확인불가");

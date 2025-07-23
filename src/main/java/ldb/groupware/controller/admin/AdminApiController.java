@@ -30,8 +30,6 @@ public class AdminApiController {
                                              @RequestParam(required = false) String rank,
                                              @RequestParam(required = false) String name,
                                              HttpSession session) {
-        // 로그인 ID는 추후 사용 가능
-        // String loginId = (String) session.getAttribute("loginId");
         log.debug("📥 페이지 요청 들어옴: {}", paginationDto.getPage());
         return memberService.getMembers(paginationDto, dept, rank, name);
     }

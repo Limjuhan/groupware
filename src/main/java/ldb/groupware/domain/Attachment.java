@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 @ToString
 public class Attachment {
     private Integer attachId;
-    private Integer businessId;
+    private String businessId;
     private String attachType;
     private String originalName;
     private String savedName;
     private String filePath;
     private LocalDateTime createdAt;
 
-    public void setData(Integer businessId, String attachType, String originalName, String savedName, String filePath) {
+    public void setData(String businessId, String attachType, String originalName, String savedName, String filePath) {
         this.businessId = businessId;
         this.attachType = attachType;
         this.originalName = originalName;

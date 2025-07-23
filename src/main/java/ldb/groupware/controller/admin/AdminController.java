@@ -60,7 +60,6 @@ public class AdminController {
         return "admin/calendarWrite";
     }
 
-
     @GetMapping("deptAuth")
     public String deptAuth() {
         return "admin/deptAuth";
@@ -86,8 +85,6 @@ public class AdminController {
         return "admin/memberForm";
     }
 
-
-
     @PostMapping("insertMemberByMng")
     public String insertMemberByMng(@Valid @ModelAttribute("memberFormDto") MemberFormDto dto,
                                     BindingResult bindingResult,
@@ -110,5 +107,4 @@ public class AdminController {
             return "alert";
         }
     }
-
 }

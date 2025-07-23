@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class MemberUpdateDto {
-
     private String memId;
     private String memName;
     private String memEmail;
@@ -20,9 +19,10 @@ public class MemberUpdateDto {
     private String memStatus;
     private LocalDate memHiredate;
     private String memGender;
-    private LocalDate birthDate;
+    private String juminBack;
     private String memPicture;
-
+    private String juminFront;
+    private LocalDate birthDate;
 
     @NotBlank(message = "전화번호를 입력하세요")
     private String memPhone;
@@ -36,4 +36,24 @@ public class MemberUpdateDto {
 
     private MultipartFile photo;
     private String deletePhoto;
+
+
+    public void setJuminFront(String juminFront) {
+        this.juminFront = juminFront;
+
+        if (juminFront != null && juminFront.length() == 6) {
+            try {
+                int year = Integer.parseInt(juminFront.substring(0, 2));
+                int month = Integer.parseInt(juminFront.substring(2, 4));
+                int day = Integer.parseInt(juminFront.substring(4, 6));
+                int currentYear = LocalDate.now().getYear() % 100;
+                int fullYear = (year <= currentYear) ? 2000 + year : 1900 + year;
+                this.birthDate = LocalDate.of(fullYear, month, day);
+            } catch (Exception e) {
+                this.birthDate = null;
+            }
+        } else {
+            this.birthDate = null;
+        }
+    }
 }
