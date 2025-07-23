@@ -32,11 +32,11 @@ public class BoardController {
 
     @GetMapping("questionDetail")
     public String questionDetail(){
-        return "board/questionDetail";
+        return "qnaDetail";
     }
     @GetMapping("questionList")
     public String questionList(){
-        return "board/questionList";
+        return "qnaList";
     }
     @GetMapping("questionWrite")
     public String questionWrite(){

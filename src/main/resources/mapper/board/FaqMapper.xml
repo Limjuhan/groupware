@@ -38,4 +38,7 @@
         select dept_name , dept_id from dept
     </select>
 
+    <select id="findList" parameterType="int" resultType="FaqListDto">
+        select * from faq limit 5,#{val}
+    </select>
 </mapper>

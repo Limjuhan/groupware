@@ -4,7 +4,7 @@
 
 <mapper namespace="ldb.groupware.mapper.mybatis.annual.AnnualLeaveMapper">
 
-    <select id="selectByMemIdAndYear" resultType="ldb.groupware.domain.AnnualLeave">
+    <select id="selectByMemIdAndYear" resultType="AnnualLeave">
         SELECT * FROM annual_leave
         WHERE mem_id = #{memId} AND year = #{year}
     </select>
@@ -28,7 +28,7 @@
         WHERE mem_id = #{memId} AND year = #{year}
     </update>
 
-    <select id="findAllActiveMembers" resultType="ldb.groupware.domain.Member">
+    <select id="findAllActiveMembers" resultType="Member">
         SELECT *
         from member
     </select>

@@ -55,20 +55,19 @@ public class NoticeController {
                                HttpServletRequest request , Model model) {
         String id   = "admin";
         String name = service.getMember(id);
-
+        model.addAttribute("memName",name);
+        model.addAttribute("memId",id);
         if(result.hasErrors()) {
-            model.addAttribute("memName",name);
-            model.addAttribute("memId",id);
             return "board/noticeForm";
         }
         String text = Jsoup.parse(dto.getNoticeContent()).text();
-        System.out.println("HTML을 제거한 순수한 문자열 : "+text);
+        System.out.println("HTML태그를  제거한 순수한 문자열 : "+text);
         if(text.trim().length()<8){
-            model.addAttribute("memName",name);
-            model.addAttribute("memId",id);
-            result.rejectValue("noticeContent", "error.content.size", "내용은 8자 이상 입력하세요.");
+            result.rejectValue("noticeContent", "error.content.size");
             return "board/noticeForm";
         }
+        
+        //유효성검사 모두성공시
         if(service.insertNotice(dto,files,request)){
             model.addAttribute("msg","등록 성공");
         }

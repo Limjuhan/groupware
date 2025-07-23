@@ -1,6 +1,8 @@
 package ldb.groupware.mapper.mybatis.draft;
 
+import ldb.groupware.domain.FormAnnualLeave;
 import ldb.groupware.dto.draft.DraftForMemberDto;
+import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.dto.draft.DraftListDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,4 +19,9 @@ public interface DraftMapper {
     List<DraftForMemberDto> getMemberList();
 
     Integer getReaminAnnual(@Param("memId") String memId);
+
+    void insertApprovalDocument(@Param("dto") DraftFormDto dto, @Param("memId") String memId);
+
+    void insertFormAnnualLeave(FormAnnualLeave formAnnualLeave);
+
 }

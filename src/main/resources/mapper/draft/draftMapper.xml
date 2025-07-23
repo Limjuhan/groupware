@@ -49,5 +49,31 @@
         and year = year(CURDATE())
     </select>
 
+    <insert id="insertApprovalDocument" useGeneratedKeys="true" keyProperty="dto.docId">
+        INSERT INTO approval_document
+        (form_code, doc_title, mem_id, created_at, status, updated_at, del_yn, doc_endDate)
+        VALUES
+            (#{dto.formType}, #{dto.title}, #{memId}, NOW(), 1, NOW(), 'N', #{dto.deadline})
+    </insert>
+
+    <insert id="insertFormAnnualLeave" parameterType="FormAnnualLeave">
+        INSERT INTO `form_annual_leave` (
+            `doc_id`,
+            `form_code`,
+            `leave_code`,
+            `start_date`,
+            `end_date`,
+            `total_days`,
+            `annual_content`
+        ) VALUES (
+                     #{docId},
+                     #{formCode},
+                     #{leaveCode},
+                     #{startDate},
+                     #{endDate},
+                     #{totalDays},
+                     #{annualContent}
+                 )
+    </insert>
 
 </mapper>

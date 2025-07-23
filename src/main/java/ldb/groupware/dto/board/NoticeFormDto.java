@@ -11,7 +11,7 @@ public class NoticeFormDto {
     private Integer noticeId;
     @NotEmpty(message = "제목입력하세요")
     private String noticeTitle;
-
+    @NotEmpty(message = "내용입력바람")
     private String noticeContent;
     private String memId;
     private String memName;
