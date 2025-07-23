@@ -29,7 +29,7 @@ public class DraftApiController {
         List<DraftListDto> draftListDtos = null;
 
 //        String memId = session.getAttribute("memId").toString();
-        String memId = "user003";
+        String memId = "user008";
         System.out.println("type = " + type);
         System.out.println("keyword = " + keyword);
 
