@@ -85,14 +85,13 @@ public class MemberService {
         return memberMapper.getRankList();
     }
 
-    public boolean insertMember(MemberFormDto dto ,List<MultipartFile> files) {
-
+    public boolean insertMember(MemberFormDto dto, MultipartFile file) {
         AttachmentDto attach = new AttachmentDto();
         // 1. 입사년도 추출
-        String year = String.valueOf(dto.getMemHiredate().getYear()); // 예: "2025"
+        String year = String.valueOf(dto.getMemHiredate().getYear());
 
         // 2. 해당 입사년도 기준 다음 일련번호 조회 (4자리)
-        String seq = memberMapper.nextMemId(year); // 예: "0001"
+        String seq = memberMapper.nextMemId(year);
 
         // 3. 사번 생성 (입사년도 + 4자리 일련번호)
         String memId = "LDB" + year + seq;
@@ -124,22 +123,29 @@ public class MemberService {
         map.put("rankId", dto.getRankId());
         map.put("createdBy", "admin");
         map.put("createdAt", LocalDateTime.now());
-        memberMapper.insertMember(map);
-        for (MultipartFile file : files) {
-            if(file!=null && !file.isEmpty()) {
-                //String path = request.getServletContext().getRealPath("/")+"board/file/";
-                String uploadDir = System.getProperty("user.dir") + "/upload/notice/";
-                String savedName = this.uploadFileCreate(file, uploadDir);
-                attach.setAttachType("P");
-                String originalFilename = file.getOriginalFilename();
-                attach.setSavedName(savedName); // saveName
-                attach.setFilePath("/P/"); // 경로 + saveName
-                attach.setOriginalName(originalFilename); //원본이름
-                attach.setBusinessId(memId);
-                memberMapper.insertAttach(attach);
+
+        try {
+            memberMapper.insertMember(map);
+            if (file != null && !file.isEmpty()) {
+                String uploadDir = System.getProperty("user.dir") + "/upload/profile/";
+                String savedName = uploadFileCreate(file, uploadDir);
+                if (savedName != null) {
+                    attach.setAttachType("P");
+                    attach.setSavedName(savedName);
+                    attach.setFilePath("/P/");
+                    attach.setOriginalName(file.getOriginalFilename());
+                    attach.setBusinessId(memId);
+                    memberMapper.insertAttach(attach);
+                } else {
+                    log.error("File upload failed for: {}", file.getOriginalFilename());
+                    return false;
+                }
             }
+            return true;
+        } catch (Exception e) {
+            log.error("Error inserting member: {}", e.getMessage());
+            return false;
         }
-        return true;
     }
 
     public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(String memId, String deptId, String rankId) {

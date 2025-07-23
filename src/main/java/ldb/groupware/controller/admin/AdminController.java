@@ -3,14 +3,14 @@ package ldb.groupware.controller.admin;
 import jakarta.validation.Valid;
 import ldb.groupware.dto.member.MemberFormDto;
 import ldb.groupware.service.member.MemberService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
+@Slf4j
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -61,8 +61,6 @@ public class AdminController {
     }
 
 
-
-
     @GetMapping("deptAuth")
     public String deptAuth() {
         return "admin/deptAuth";
@@ -84,30 +82,35 @@ public class AdminController {
     public String getMemberForm(Model model) {
         model.addAttribute("deptList", memberService.getDeptList());
         model.addAttribute("rankList", memberService.getRankList());
+        model.addAttribute("memberFormDto", new MemberFormDto());  // 반드시 초기화 필요
         return "admin/memberForm";
     }
 
+
+
     @PostMapping("insertMemberByMng")
-    public String insertMemberByMng(@Valid @ModelAttribute MemberFormDto dto,
-                                    BindingResult bresult,
-                                    @RequestParam("uploadFile") List<MultipartFile> files,
-                                    Model model) {
-        System.out.println("photo"+files);
-        if (bresult.hasErrors()) {
+    public String insertMemberByMng(@Valid @ModelAttribute("memberFormDto") MemberFormDto dto,
+                                    BindingResult bindingResult,
+                                    Model model,
+                                    @RequestParam(value = "profileFile", required = false) MultipartFile file) {
+
+        // 1. 유효성 검사 실패 시
+        if (bindingResult.hasErrors()) {
             model.addAttribute("deptList", memberService.getDeptList());
             model.addAttribute("rankList", memberService.getRankList());
-            return "admin/memberForm";
+            return "admin/memberForm";  // 다시 입력 페이지로
         }
 
-        boolean success = memberService.insertMember(dto,files);
-
+        // 2. 서비스 호출
+        boolean success = memberService.insertMember(dto, file);
         if (success) {
-            model.addAttribute("url", "/admin/getMemberList");
+            model.addAttribute("url", "/admin/memberList");
+            return "alert";
         } else {
             model.addAttribute("msg", "사원 등록 실패");
-            model.addAttribute("url", "/admin/getMemberForm");
+            model.addAttribute("url", "/admin/memberForm");
+            return "alert";
         }
-
-        return "alert";
     }
+
 }

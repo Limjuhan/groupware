@@ -2,16 +2,16 @@ package ldb.groupware.controller.board;
 
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import ldb.groupware.dto.board.NoticeFormDto;
 import ldb.groupware.dto.board.NoticeUpdateDto;
 import ldb.groupware.dto.board.PaginationDto;
 import ldb.groupware.service.board.NoticeService;
+import org.jsoup.Jsoup;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class NoticeController {
         model.addAttribute("pageDto",map.get("pageDto"));
         model.addAttribute("pinnedList",map.get("pinnedList"));
 
-        return "board/getNoticeList";
+        return "board/noticeList";
     }
 
     @GetMapping("getNoticeForm")
@@ -47,14 +47,37 @@ public class NoticeController {
        String name = service.getMember(id);
        model.addAttribute("memName",name);
        model.addAttribute("memId",id);
-        return "board/getNoticeForm";
+        return "board/noticeForm";
     }
 
     @PostMapping("insertNotice")
-    public String insertNotice(@RequestParam("uploadFile") List<MultipartFile> files , NoticeFormDto dto, HttpServletRequest request){
-        boolean result = service.insertNotice(dto,files,request);
+    public String insertNotice(@Valid @ModelAttribute("noticeFormDto") NoticeFormDto dto, BindingResult result, @RequestParam("uploadFile") List<MultipartFile> files ,
+                               HttpServletRequest request , Model model) {
+        String id   = "admin";
+        String name = service.getMember(id);
+
+        if(result.hasErrors()) {
+            model.addAttribute("memName",name);
+            model.addAttribute("memId",id);
+            return "board/noticeForm";
+        }
+        String text = Jsoup.parse(dto.getNoticeContent()).text();
+        System.out.println("HTML을 제거한 순수한 문자열 : "+text);
+        if(text.trim().length()<8){
+            model.addAttribute("memName",name);
+            model.addAttribute("memId",id);
+            result.rejectValue("noticeContent", "error.content.size", "내용은 8자 이상 입력하세요.");
+            return "board/noticeForm";
+        }
+        if(service.insertNotice(dto,files,request)){
+            model.addAttribute("msg","등록 성공");
+        }
+        else{
+            model.addAttribute("msg","등록 실패");
+        }
         return "alert";
     }
+
     @GetMapping("getNoticeDetail")
     public String getNoticeDetail(Model model , @RequestParam("id")  String id) {
 
@@ -62,7 +85,7 @@ public class NoticeController {
         model.addAttribute("notice",map.get("notice"));
         model.addAttribute("attach",map.get("attach"));
         service.plusCnt(id);
-        return "board/getNoticeDetail";
+        return "board/noticeDetail";
     }
 
     @GetMapping("getNoticeEditForm")
@@ -70,12 +93,34 @@ public class NoticeController {
         Map<String, Object> noticeById = service.getNoticeById(id);
         model.addAttribute("notice",noticeById.get("notice"));
         model.addAttribute("attachedFiles",noticeById.get("attach"));
-        return "board/getNoticeEditForm";
+        return "board/noticeEditForm";
     }
 
     @PostMapping("updateNoticeByMng")
-    public String updateNoticeByMng(@RequestParam("uploadFile") List<MultipartFile> files ,
-                                    NoticeUpdateDto dto, Model model) {
+    public String updateNoticeByMng(@Valid @ModelAttribute("noticeUpdateDto") NoticeUpdateDto dto,BindingResult result
+            ,@RequestParam("uploadFile") List<MultipartFile> files , Model model) {
+        int length = dto.getNoticeContent().length();
+        System.out.println("getNoticeContent"+length);
+        if(result.hasErrors()) {
+            String id = String.valueOf(dto.getNoticeId());
+            Map<String, Object> noticeById = service.getNoticeById(id);
+            model.addAttribute("notice",noticeById.get("notice"));
+            model.addAttribute("attachedFiles",noticeById.get("attach"));
+            return "board/noticeEditForm";
+        }
+        //summerNote는 태그값으로 들어오기때문에 문자열파싱해줌
+        String text = Jsoup.parse(dto.getNoticeContent()).text();
+        System.out.println("HTML을 제거한 순수한 문자열 : "+text);
+        if(text.trim().length()<8){
+            String id = String.valueOf(dto.getNoticeId());
+            Map<String, Object> noticeById = service.getNoticeById(id);
+            model.addAttribute("notice",noticeById.get("notice"));
+            model.addAttribute("attachedFiles",noticeById.get("attach"));
+            result.rejectValue("noticeContent", "error.content.size", "내용은 8자 이상 입력하세요.");
+            return "board/noticeEditForm";
+        }
+
+
         String[] existingFiles = dto.getExistingFiles();//삭제버튼을 누른 파일들
         if(existingFiles!=null && existingFiles.length>0) { //삭제를 아무것도안했을경우를 대비
             service.deleteFile(existingFiles);

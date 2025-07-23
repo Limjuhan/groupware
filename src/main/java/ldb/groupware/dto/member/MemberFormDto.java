@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -41,4 +42,5 @@ public class MemberFormDto {
 
     private String deptId;
     private String rankId;
+    private MultipartFile profileFile;
 }

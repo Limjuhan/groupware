@@ -1,5 +1,6 @@
 package ldb.groupware.dto.board;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -8,7 +9,9 @@ import java.time.LocalDateTime;
 public class NoticeFormDto {
 
     private Integer noticeId;
+    @NotEmpty(message = "제목입력하세요")
     private String noticeTitle;
+
     private String noticeContent;
     private String memId;
     private String memName;

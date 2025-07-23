@@ -10,27 +10,36 @@
 </head>
 <body>
 <script>
-    // SweetAlert2로 커스텀 알림 표시
     Swal.fire({
-        icon: 'warning', // 경고 아이콘
+        icon: 'success',
         title: '알림',
-        text: '${msg}', // JSP에서 전달된 메시지
+        text: '${msg}',
         confirmButtonText: '확인',
         confirmButtonColor: '#3085d6',
-        allowOutsideClick: false // 외부 클릭으로 닫히지 않음
+        allowOutsideClick: false
     }).then((result) => {
         if (result.isConfirmed) {
-            window.close();
-            if(${url!=null}){
-                window.location.href='${url}';
-
+            let url = '${url}';
+            if (url && url !== 'null' && url !== '') {
+                // 팝업창이면 부모창 이동
+                if (window.opener) {
+                    window.opener.location.href = url;
+                    window.close();
+                } else {
+                    window.location.href = url;
+                }
+            } else {
+                if (window.opener) {
+                    window.opener.location.reload();
+                    window.close();
+                } else {
+                    window.location.reload();
+                }
             }
-            opener.location.reload();
-            window.location.reload();
-
-
         }
     });
+
 </script>
+
 </body>
 </html>

@@ -52,17 +52,18 @@
         <!-- 작성 부서 -->
         <div class="mb-4">
             <label for="deptId" class="form-label">작성 부서</label>
-            <select class="form-select" id="deptId" name="deptId" required>
+            <select class="form-select" id="deptId" name="deptId">
                 <option value="">-- 부서 선택 --</option>
                 <c:forEach items="${dept}" var="d">
                     <option value="${d.deptId}" >${d.deptName}</option>
                 </c:forEach>
             </select>
+            <p style="color: red"><form:errors path="deptId"/></p>
         </div>
 
         <!-- 버튼 -->
         <div class="d-flex justify-content-between">
-            <a href="getFaqListManage" class="btn btn-outline-secondary">← 목록으로</a>
+            <a onclick="window.close()" class="btn btn-outline-secondary">← 닫기</a>
             <div>
                 <button type="reset" class="btn btn-outline-warning me-2">초기화</button>
                 <button type="submit" class="btn btn-primary">등록</button>

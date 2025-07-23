@@ -32,12 +32,18 @@ public class FaqService {
         return map;
     }
 
-    public boolean insertFaq(FaqFormDto dto) {
+    public int insertFaq(FaqFormDto dto) {
         int a = mapper.insertFaq(dto);
+
         if (a > 0) {
-            return true;
+            int count = mapper.faqCount();
+            PaginationDto paginationDto = new PaginationDto();
+            paginationDto.setTotalRows(count);
+            paginationDto.calculatePagination();
+            int endPage = paginationDto.getEndPage();
+            return endPage;
         } else {
-            return false;
+            return 0;
         }
     }
 
