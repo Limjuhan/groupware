@@ -16,7 +16,7 @@ public class Attachment {
     private String originalName;
     private String savedName;
     private String filePath;
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     public void setData(Integer businessId, String attachType, String originalName, String savedName, String filePath) {
         this.businessId = businessId;
@@ -24,7 +24,6 @@ public class Attachment {
         this.originalName = originalName;
         this.savedName = savedName;
         this.filePath = filePath;
-        this.createdAt = LocalDateTime.now().toString();
     }
 }
 

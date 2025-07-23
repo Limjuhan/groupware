@@ -2,12 +2,15 @@ package ldb.groupware.dto.draft;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class DraftFormDto {
 
     @NotBlank(message = "제목은 필수 입력입니다.")
@@ -31,7 +34,6 @@ public class DraftFormDto {
     private String referrers;
 
     // 휴가신청서
-
     private String leaveType;
     private LocalDate leaveStart;
     private LocalDate leaveEnd;

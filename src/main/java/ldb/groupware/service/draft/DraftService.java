@@ -45,6 +45,7 @@ public class DraftService {
     public void saveDraft(DraftFormDto dto, List<MultipartFile> attachments, String action, String memId) {
 
         if (action.equals("save")) {
+
             attachmentService.saveAttachments(21, "D", attachments);
         }
     }
