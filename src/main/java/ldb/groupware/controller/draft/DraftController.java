@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
+import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.draft.DraftService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -49,16 +50,15 @@ public class DraftController {
 
     @GetMapping("draftForm")
     public String draftForm(Model model, HttpSession session) {
-//        String memId = (String) session.getAttribute("user");
 
-        String memId = "user001";
-
+        String memId = "user008";
         Integer remainAnnual = draftService.getReaminAnnual(memId);
         List<DraftForMemberDto> memberList = draftService.getMemberList();
 
         model.addAttribute("draftMembers", memberList);
         model.addAttribute("remainAnnual", remainAnnual);
         model.addAttribute("draftFormDto", new DraftFormDto());
+
         return "draft/draftForm";
     }
 
@@ -68,15 +68,36 @@ public class DraftController {
             BindingResult bindingResult,
             @RequestParam(value = "attachments", required = false) List<MultipartFile> attachments,
             @RequestParam(value = "action", required = false) String action,
+            @SessionAttribute(name = "memId", required = false) String memId,
             Model model) {
 
-        if (attachments != null) {
-            attachments.forEach(attachment -> {
-                System.out.println("attachment = " + attachment);
-            });
+        memId = "user008";
+        // 추가 유효성 검증 (양식별 필드)
+        validFormType(dto, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            List<DraftForMemberDto> memberList = draftService.getMemberList();
+            model.addAttribute("draftMembers", memberList);
+            return "draft/draftForm";
         }
 
-        // 추가 유효성 검증 (양식별 필드)
+        draftService.saveDraft(dto, attachments, action, memId);
+        return "redirect:/draft/getMyDraftList";
+    }
+
+
+    @GetMapping("draftManagement")
+    public String draftManagement() {
+        return "draft/receivedDraftDetail";
+    }
+
+    @GetMapping("receivedDraftList")
+    public String receivedDraftList() {
+        return "draft/receivedDraftList";
+    }
+
+    private void validFormType(DraftFormDto dto, BindingResult bindingResult) {
+
         if ("app_01".equals(dto.getFormType())) {
             if (dto.getLeaveStart() == null || dto.getLeaveEnd() == null || StringUtils.isBlank(dto.getLeaveType())) {
                 bindingResult.reject("leave.required", "휴가 유형 및 기간은 필수입니다.");
@@ -90,31 +111,9 @@ public class DraftController {
                 bindingResult.reject("expense.required", "지출 항목 및 금액은 필수입니다.");
             }
         } else if ("app_04".equals(dto.getFormType())) {
-            if (dto.getResignDate() == null || StringUtils.isBlank(dto.getResignReason())) {
-                bindingResult.reject("resign.required", "사직일 및 사유는 필수입니다.");
+            if (dto.getResignDate() == null) {
+                bindingResult.reject("resign.required", "사직일 선택은 필수입니다.");
             }
         }
-
-        if (bindingResult.hasErrors()) {
-            List<DraftForMemberDto> memberList = draftService.getMemberList();
-            model.addAttribute("draftMembers", memberList);
-//            model.addAttribute("errors", bindingResult);
-            return "draft/draftForm";
-        }
-
-//        draftService.saveDraft(dto, attachments, action, loginId);
-        return "redirect:/draft/getMyDraftList";
     }
-
-    @GetMapping("draftManagement")
-    public String draftManagement() {
-        return "draft/receivedDraftDetail";
-    }
-
-    @GetMapping("receivedDraftList")
-    public String receivedDraftList() {
-        return "draft/receivedDraftList";
-    }
-
-
 }
