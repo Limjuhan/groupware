@@ -109,7 +109,7 @@
 </div>
 <script>
     function goForm(url){
-        let op = "width=500,height=700,top=50,left=150";
+        let op = "width=600,height=1000,top=50,left=150";
         window.open(url, "", op);
     }
 </script>
