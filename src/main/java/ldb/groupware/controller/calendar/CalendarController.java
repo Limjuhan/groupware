@@ -10,16 +10,16 @@ public class CalendarController {
 
     @GetMapping("calendar")
     public String getCalendar() {
-        return "calendar";
+        return "calendar/calendar";
     }
 
     @GetMapping("calendarForm")
     public String getCalendarForm() {
-        return "calendarForm";
+        return "calendar/calendarForm";
     }
 
     @GetMapping("calendarList")
     public String getCalendarList() {
-        return "calendarList";
+        return "calendar/calendarList";
     }
 }
