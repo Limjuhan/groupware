@@ -34,7 +34,7 @@ public class FaqController {
         System.out.println("faqListPageDto = " + pageDto);
         model.addAttribute("faq", map.get("list"));
         model.addAttribute("pageDto", pageDto);
-        return "board/getFaqList";
+        return "board/faqList";
     }
 
     //관리자의 자주묻는질문 관리페이지(권한 및 세션검증필요)
@@ -48,7 +48,7 @@ public class FaqController {
         System.out.println("pageDto = " + pageDto);
         model.addAttribute("faq", map.get("list"));
         model.addAttribute("pageDto", pageDto);
-        return "board/getFaqListManage";
+        return "board/faqListManage";
     }
 
     //(권한 및 세션검증필요)
@@ -56,17 +56,22 @@ public class FaqController {
     public String getFaqForm(Model model){
         List<DeptDto> dept = faqService.findDept();
         model.addAttribute("dept", dept);
-        return"board/getFaqForm";
+        return"board/faqForm";
     }
 
     //(권한 및 세션검증필요)
     @PostMapping("insertFaqByMng")
     public String insertFaqByMng(@Valid @ModelAttribute("faqFormDto")FaqFormDto dto , BindingResult bresult,Model model){
         if(bresult.hasErrors()){
-            return  "board/getFaqForm";
+            List<DeptDto> dept = faqService.findDept();
+            model.addAttribute("dept", dept);
+            return  "board/faqForm";
         }
-       if(faqService.insertFaq(dto)){
+        int count = faqService.insertFaq(dto);
+        System.out.println("count : " + count);
+        if(count>0){
            model.addAttribute("msg","등록성공");
+           model.addAttribute("url","getFaqListManage?page="+count);
        }
        else{
            model.addAttribute("msg","등록실패");
@@ -75,24 +80,25 @@ public class FaqController {
     }
 
     //페이지접근 전 권한체크 추가
-    @GetMapping("getQuestionEditForm")
-    public String getQuestionEditForm(@RequestParam("id") String faqId,
+    @GetMapping("getFaqEditForm")
+    public String getFaqEditForm(@RequestParam("id") String faqId,
                                       @RequestParam(value = "page", defaultValue = "1") int currentPage,
                                       Model model){
-        System.out.println("faqId = " + faqId);
         FaqFormDto dto = faqService.findById(faqId);
-        System.out.println("getQuestionEditForm :: "+dto);
         List<DeptDto> deptDtos = faqService.deptAll();
         model.addAttribute("faq", dto);
         model.addAttribute("dept", deptDtos);
-        return "board/getQuestionEditForm";
+        return "board/faqEditForm";
     }
 
     //권한설정필요
     @PostMapping("updateFaqByMng")
     public String updateFaqByMng(@Valid FaqFormDto dto, BindingResult bresult,Model model){
         if(bresult.hasErrors()){
-            return  "board/getFaqForm";
+            List<DeptDto> deptDtos = faqService.deptAll();
+            model.addAttribute("faq", dto);
+            model.addAttribute("dept", deptDtos);
+            return "board/faqEditForm";
         }
         if(faqService.updateFaq(dto)){
             model.addAttribute("msg","업데이트성공");

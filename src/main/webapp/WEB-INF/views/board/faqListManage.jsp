@@ -53,7 +53,7 @@
                             <div class="text-muted small">작성 부서: ${q.deptName}</div>
                         </div>
                         <div class="mt-2">
-                            <a onclick="goForm('getQuestionEditForm?id=${q.faqId}&page=${pageDto.page}')" class="btn btn-sm btn-outline-secondary">수정</a>
+                            <a onclick="goForm('getFaqEditForm?id=${q.faqId}&page=${pageDto.page}')" class="btn btn-sm btn-outline-secondary">수정</a>
                             <a href="deleteFaqByMng?id=${q.faqId}&page=${pageDto.page}" class="btn btn-sm btn-outline-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
                         </div>
                     </div>

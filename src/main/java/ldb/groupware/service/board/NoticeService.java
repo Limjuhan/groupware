@@ -67,9 +67,15 @@ public class NoticeService {
 
     public boolean insertNotice(NoticeFormDto dto, List<MultipartFile> files
             , HttpServletRequest request) {
+
+
         AttachmentDto attach = new AttachmentDto();
         mapper.insertNotice(dto);
+
         int noticeId  = mapper.getMaxNum(dto.getMemId());
+
+
+
         String noId = String.valueOf(noticeId);
 
         for (MultipartFile file : files) {
