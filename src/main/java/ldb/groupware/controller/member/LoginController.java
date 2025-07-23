@@ -4,10 +4,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import ldb.groupware.service.member.LoginService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+@Slf4j
 @Controller
 @RequestMapping("/login")
 @RequiredArgsConstructor
@@ -45,5 +50,10 @@ public class LoginController {
     public String doLogout(HttpServletRequest request) {
         loginService.logout(request);
         return "redirect:/login/doLogin";
+    }
+
+    @GetMapping("findPass")
+    public String findPass() {
+        return "login/findPass";
     }
 }

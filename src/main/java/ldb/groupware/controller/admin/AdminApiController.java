@@ -3,18 +3,18 @@ package ldb.groupware.controller.admin;
 import jakarta.servlet.http.HttpSession;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.board.PaginationDto;
-import ldb.groupware.dto.member.MemberInfoDto;
+import ldb.groupware.dto.member.MemberUpdateDto;
 import ldb.groupware.dto.member.UpdateMemberDto;
 import ldb.groupware.service.member.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @RestController
-
 @RequestMapping("/admin")
 public class AdminApiController {
 
@@ -46,12 +46,18 @@ public class AdminApiController {
     }
 
     @GetMapping("getMemberInfo")
-    public ResponseEntity<ApiResponseDto<MemberInfoDto>> getMemberInfo(@RequestParam String memId) {
-
-        MemberInfoDto memberInfo = memberService.getInfo(memId);
+    public ResponseEntity<ApiResponseDto<Map<String, Object>>> getMemberInfo(@RequestParam String memId) {
+        MemberUpdateDto memberInfo = memberService.getInfo(memId);
         if (memberInfo == null) {
             return ApiResponseDto.fail("사원 정보를 찾을 수 없습니다.");
         }
-        return ApiResponseDto.ok(memberInfo, "사원 정보 조회 성공");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("user", memberInfo);
+        data.put("annual", memberService.getAnnualInfo(memId));
+        data.put("annualHistoryList", memberService.getAnnualLeaveHistory(memId));
+
+        return ApiResponseDto.ok(data, "사원 정보 조회 성공");
     }
+
 }

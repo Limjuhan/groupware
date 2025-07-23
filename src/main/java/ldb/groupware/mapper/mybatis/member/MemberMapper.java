@@ -1,9 +1,11 @@
 package ldb.groupware.mapper.mybatis.member;
 
+import ldb.groupware.dto.member.MemberAnnualLeaveDto;
+import ldb.groupware.dto.member.MemberAnnualLeaveHistoryDto;
 import ldb.groupware.dto.attach.AttachmentDto;
 import ldb.groupware.dto.member.DeptDto;
-import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.dto.member.MemberListDto;
+import ldb.groupware.dto.member.MemberUpdateDto;
 import ldb.groupware.dto.member.RankDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,14 +19,7 @@ public interface MemberMapper {
     String loginId(@Param("id") String id,
                    @Param("password") String password);
 
-    MemberInfoDto selectInfo(String memId);
-
-    int updateInfo(@Param("memId") String memId,
-                   @Param("phone") String phone,
-                   @Param("privateEmail") String privateEmail,
-                   @Param("address") String address);
-
-
+    MemberUpdateDto selectInfo(String memId);
 
     int countMembers(@Param("dept") String dept,
                      @Param("rank") String rank,
@@ -50,4 +45,10 @@ public interface MemberMapper {
                           @Param("rankId") String rankId);
 
     void insertAttach(AttachmentDto attach);
+
+    int updateInfo(MemberUpdateDto dto);
+
+    MemberAnnualLeaveDto selectAnnualByMemId(@Param("memId") String memId);
+
+    List<MemberAnnualLeaveHistoryDto> selectAnnualLeaveHistory(String memId);
 }

@@ -2,7 +2,6 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="ldb.groupware.mapper.mybatis.member.MemberMapper">
 
     <!-- 로그인 체크 -->
@@ -15,20 +14,20 @@
     </select>
 
     <!-- 회원 정보 조회 -->
-    <select id="selectInfo" parameterType="string" resultType="MemberInfoDto">
+    <select id="selectInfo" parameterType="string" resultType="MemberUpdateDto">
         SELECT m.mem_id,
                m.mem_name,
                m.mem_email,
-               m.mem_private_email,
+               m.mem_private_email                    AS privateEmail,
                m.mem_phone,
                d.dept_name,
                r.rank_name,
                m.mem_status,
                m.mem_hiredate,
                m.mem_gender,
-               STR_TO_DATE(m.jumin_front, '%y%m%d')   AS birth_date,
-               m.mem_address,
-               CONCAT(a.file_path, '/', a.saved_name) AS mem_picture
+               STR_TO_DATE(m.jumin_front, '%y%m%d')   AS birthDate,
+               m.mem_address                          AS address,
+               CONCAT(a.file_path, '/', a.saved_name) AS memPicture
         FROM member m
                  LEFT JOIN dept d ON m.dept_id = d.dept_id
                  LEFT JOIN rank r ON m.rank_id = r.rank_id
@@ -39,25 +38,19 @@
     <!-- 개인정보 수정 -->
     <update id="updateInfo" parameterType="map">
         UPDATE member
-        SET mem_phone         = #{phone},
+        SET mem_phone         = #{memPhone},
             mem_private_email = #{privateEmail},
             mem_address       = #{address}
         WHERE mem_id = #{memId}
     </update>
 
-    <!-- 프로필 사진 삭제 -->
-    <delete id="deletePhoto" parameterType="string">
-        DELETE
-        FROM attachment
-        WHERE business_id = #{memId}
-          AND attach_type = 'P'
-    </delete>
-
+    <!-- 이미지 등록 -->
     <insert id="insertAttach" parameterType="AttachmentDto">
-        insert into attachment
+        INSERT INTO attachment
         (business_id, attach_type, original_name, saved_name, file_path, created_at)
-        values (#{businessId}, #{attachType}, #{originalName}, #{savedName}, #{filePath}, now())
+        VALUES (#{businessId}, #{attachType}, #{originalName}, #{savedName}, #{filePath}, NOW())
     </insert>
+
     <!-- 사원 수 카운트 -->
     <select id="countMembers" resultType="int">
         SELECT COUNT(*)
@@ -102,6 +95,7 @@
         LIMIT #{limit} OFFSET #{start}
     </select>
 
+    <!-- 부서 이름 조회 -->
     <select id="getDeptList" resultType="DeptDto">
         SELECT dept_id, dept_name
         FROM dept
@@ -109,6 +103,7 @@
         ORDER BY dept_id
     </select>
 
+    <!-- 직급 이름 조회 -->
     <select id="getRankList" resultType="RankDto">
         SELECT rank_id, rank_name
         FROM rank
@@ -122,6 +117,7 @@
         FROM member
         WHERE mem_id LIKE CONCAT('LDB', #{year}, '%')
     </select>
+
     <!-- 사원 등록 -->
     <insert id="insertMember" parameterType="map">
         INSERT INTO member (mem_id, mem_pass, mem_email, mem_private_email,
@@ -138,6 +134,7 @@
                 #{createdBy}, #{createdAt})
     </insert>
 
+    <!-- 사원 정보 수정 -->
     <update id="updateMemberByMng">
         UPDATE member
         SET dept_id = #{deptId},
@@ -145,5 +142,27 @@
         WHERE mem_id = #{memId}
     </update>
 
+    <!-- 연차 정보 조회 (가장 최근 연도) -->
+    <select id="selectAnnualByMemId" parameterType="string" resultType="MemberAnnualLeaveDto">
+        SELECT an_id, mem_id, year, total_days, use_days, remain_days
+        FROM annual_leave
+        WHERE mem_id = #{memId}
+        ORDER BY year DESC
+            LIMIT 1
+    </select>
 
+    <!-- 연차 사용 이력 -->
+    <select id="selectAnnualLeaveHistory" resultType="MemberAnnualLeaveHistoryDto">
+        SELECT ah.start_date  AS startDate,
+               ah.end_date    AS endDate,
+               ah.leave_code  AS leaveCode,
+               lt.leave_name  AS leaveName,
+               ah.approved_by AS approvedBy,
+               m.mem_name     AS approvedByName
+        FROM annual_leave_history ah
+                 LEFT JOIN leave_type lt ON ah.leave_code = lt.leave_code
+                 LEFT JOIN member m ON ah.approved_by = m.mem_id
+        WHERE ah.mem_id = #{memId}
+        ORDER BY ah.start_date DESC
+    </select>
 </mapper>

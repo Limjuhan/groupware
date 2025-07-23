@@ -42,5 +42,5 @@ public class MemberFormDto {
 
     private String deptId;
     private String rankId;
-    private MultipartFile profileFile;
+    private MultipartFile photo;
 }

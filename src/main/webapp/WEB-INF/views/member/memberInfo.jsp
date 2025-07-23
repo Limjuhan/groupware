@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -28,7 +29,8 @@
             font-weight: bold;
         }
 
-        .form-control.bg-light, .form-select.bg-light {
+        .form-control.bg-light,
+        .form-select.bg-light {
             background-color: rgba(255, 255, 255, 0.1) !important;
             color: white !important;
             border-color: rgba(255, 255, 255, 0.3);
@@ -39,122 +41,157 @@
             border-color: rgba(255, 255, 255, 0.3);
             background-color: rgba(255, 255, 255, 0.15);
         }
+
+        .semi-box {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .annual-table th,
+        .annual-table td {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .text-center-white {
+            text-align: center;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
     </style>
     <script>
         function getPassEditForm() {
             let op = "width=500,height=600,top=100,left=300,resizable=no,scrollbars=no";
             window.open("/member/passEditForm", "비밀번호변경", op);
         }
+
+        function removePhoto() {
+            if (confirm("사진을 삭제하시겠습니까?")) {
+                document.getElementById("profileImg").src = "/img/profile_default.png";
+                document.getElementById("deletePhoto").value = "Y";
+                const fileInput = document.getElementById("photoInput");
+                if (fileInput) fileInput.value = "";
+            }
+        }
     </script>
 </head>
 <body>
 <div class="container shadow rounded">
     <h2 class="mb-4">개인정보</h2>
-    <form method="post" action="updateMemberInfo" enctype="multipart/form-data">
+    <form:form method="post" action="updateMemberInfo" modelAttribute="user" enctype="multipart/form-data">
         <div class="row mb-4">
             <div class="col-md-3 text-center">
-                <img src="${not empty user.memPicture ? user.memPicture : '/img/profile_default.png'}" alt="사원 사진"
-                     class="img-thumbnail mb-2">
-                <input type="file" class="form-control" name="photo">
+                <img id="profileImg" src="${not empty user.memPicture ? user.memPicture : '/img/profile_default.png'}"
+                     alt="사원 사진" class="img-thumbnail mb-2">
+                <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removePhoto()">사진 삭제</button>
+                <form:input path="photo" type="file" cssClass="form-control" id="photoInput"/>
+                <input type="hidden" name="deletePhoto" id="deletePhoto" value="N">
             </div>
             <div class="col-md-9">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">이름</label>
-                        <input type="text" class="form-control bg-light" name="name" value="${user.memName}" readonly>
+                        <input type="text" class="form-control bg-light" value="${user.memName}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">성별</label>
-                        <select class="form-select bg-light" name="gender" disabled>
+                        <select class="form-select bg-light" disabled>
                             <option value="남" ${user.memGender == '남' ? 'selected' : ''}>남</option>
                             <option value="여" ${user.memGender == '여' ? 'selected' : ''}>여</option>
                         </select>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">생년월일</label>
-                        <input type="date" class="form-control bg-light" name="birthDate" value="${user.birthDate}"
-                               readonly>
+                        <input type="date" class="form-control bg-light" value="${user.birthDate}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">전화번호*</label>
-                        <input type="text" class="form-control" name="phone" value="${user.memPhone}">
+                        <form:input path="memPhone" cssClass="form-control"/>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">부서</label>
-                        <input type="text" class="form-control bg-light" name="department" value="${user.deptName}"
-                               readonly>
+                        <input type="text" class="form-control bg-light" value="${user.deptName}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">직급</label>
-                        <input type="text" class="form-control bg-light" name="position" value="${user.rankName}"
-                               readonly>
+                        <input type="text" class="form-control bg-light" value="${user.rankName}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">재직상태</label>
-                        <input type="text" class="form-control bg-light" name="status" value="${user.memStatus}"
-                               readonly>
+                        <input type="text" class="form-control bg-light" value="${user.memStatus}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">입사일</label>
-                        <input type="date" class="form-control bg-light" name="hireDate" value="${user.memHiredate}" readonly>
+                        <input type="date" class="form-control bg-light" value="${user.memHiredate}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">이메일</label>
-                        <input type="email" class="form-control bg-light" name="email" value="${user.memEmail}"
-                               readonly>
+                        <input type="email" class="form-control bg-light" value="${user.memEmail}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">2차 이메일</label>
-                        <input type="email" class="form-control" name="privateEmail" value="${user.memPrivateEmail}">
+                        <form:input path="privateEmail" type="email" cssClass="form-control"/>
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">주소*</label>
-                        <input type="text" class="form-control" name="address" value="${user.memAddress}">
+                        <form:input path="address" cssClass="form-control"/>
                     </div>
-                </div>
-            </div>
-        </div>
-        <!-- ✅ 연차 정보 (나중에 연동 가능) -->
-        <h5 class="section-title">연차 정보</h5>
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <div class="border p-3 bg-light text-dark rounded">
-                    <strong>총 연차:</strong> 15일<br>
-                    <strong>사용 연차:</strong> 6일<br>
-                    <strong>잔여 연차:</strong> 9일
                 </div>
             </div>
         </div>
 
+        <!-- 연차 정보 -->
+        <h5 class="section-title">연차 정보</h5>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="semi-box">
+                    <strong>연도:</strong> ${annual.year}년<br>
+                    <strong>총 연차:</strong> ${annual.totalDays}일<br>
+                    <strong>사용 연차:</strong> ${annual.useDays}일<br>
+                    <strong>잔여 연차:</strong> ${annual.remainDays}일
+                </div>
+            </div>
+        </div>
+
+        <!-- 연차 사용 내역 -->
         <h6 class="mt-3">연차 사용 내역</h6>
-        <table class="table table-bordered text-white">
-            <thead class="table-light text-dark">
+        <div class="semi-box p-2">
+            <table class="table table-bordered annual-table mb-0">
+                <thead>
                 <tr>
                     <th>기간</th>
                     <th>결재자</th>
                     <th>휴가 종류</th>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>2025-01-15 ~ 2025-01-16</td>
-                    <td>김이사</td>
-                    <td>연차</td>
-                </tr>
-                <tr>
-                    <td>2025-05-03</td>
-                    <td>김이사</td>
-                    <td>오전 반차</td>
-                </tr>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                <c:forEach var="his" items="${annualHistoryList}">
+                    <tr>
+                        <td>${his.startDate} ~ ${his.endDate}</td>
+                        <td>${his.approvedByName != null ? his.approvedByName : his.approvedBy}</td>
+                        <td>${his.leaveName != null ? his.leaveName : his.leaveCode}</td>
+                    </tr>
+                </c:forEach>
+                <c:if test="${empty annualHistoryList}">
+                    <tr>
+                        <td colspan="3" class="text-center-white">연차 사용 이력이 없습니다.</td>
+                    </tr>
+                </c:if>
+                </tbody>
+            </table>
+        </div>
 
-        <div class="text-end">
+        <!-- 하단 버튼 -->
+        <div class="text-end mt-4">
             <button type="button" class="btn btn-warning me-2" onclick="getPassEditForm()">비밀번호 변경</button>
             <button type="submit" class="btn btn-primary">저장</button>
             <button type="reset" class="btn btn-outline-light">↺ 되돌리기</button>
         </div>
-    </form>
+    </form:form>
 </div>
 </body>
 </html>

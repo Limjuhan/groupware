@@ -82,7 +82,7 @@ public class AdminController {
     public String getMemberForm(Model model) {
         model.addAttribute("deptList", memberService.getDeptList());
         model.addAttribute("rankList", memberService.getRankList());
-        model.addAttribute("memberFormDto", new MemberFormDto());  // 반드시 초기화 필요
+        model.addAttribute("memberFormDto", new MemberFormDto());
         return "admin/memberForm";
     }
 
@@ -92,16 +92,14 @@ public class AdminController {
     public String insertMemberByMng(@Valid @ModelAttribute("memberFormDto") MemberFormDto dto,
                                     BindingResult bindingResult,
                                     Model model,
-                                    @RequestParam(value = "profileFile", required = false) MultipartFile file) {
+                                    @RequestParam(value = "photo", required = false) MultipartFile file) {
 
-        // 1. 유효성 검사 실패 시
         if (bindingResult.hasErrors()) {
             model.addAttribute("deptList", memberService.getDeptList());
             model.addAttribute("rankList", memberService.getRankList());
-            return "admin/memberForm";  // 다시 입력 페이지로
+            return "admin/memberForm";
         }
 
-        // 2. 서비스 호출
         boolean success = memberService.insertMember(dto, file);
         if (success) {
             model.addAttribute("url", "/admin/memberList");

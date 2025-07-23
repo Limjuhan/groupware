@@ -141,7 +141,11 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        const user = response.data;
+                        const user = response.data.user;
+                        const annual = response.data.annual;
+                        const annualHistoryList = response.data.annualHistoryList;
+
+                        // 사용자 정보 채우기
                         $('#detailMemPicture').attr('src', user.memPicture || '/img/profile_default.png');
                         $('#detailName').val(user.memName);
                         $('#detailGender').val(user.memGender);
@@ -154,6 +158,38 @@
                         $('#detailEmail').val(user.memEmail);
                         $('#detailPrivateEmail').val(user.memPrivateEmail);
                         $('#detailAddress').val(user.memAddress);
+
+                        // 연차 정보 채우기
+                        const $annualInfo = $('#annualInfo');
+                        $annualInfo.empty();
+                        if (annual) {
+                            $annualInfo.html(
+                                '<strong>연도:</strong> ' + annual.year + '년<br>' +
+                                '<strong>총 연차:</strong> ' + annual.totalDays + '일<br>' +
+                                '<strong>사용 연차:</strong> ' + annual.useDays + '일<br>' +
+                                '<strong>잔여 연차:</strong> ' + annual.remainDays + '일'
+                            );
+                        } else {
+                            $annualInfo.html('연차 정보가 없습니다.');
+                        }
+
+                        // 연차 이력 채우기
+                        const $annualHistoryBody = $('#annualHistoryBody');
+                        $annualHistoryBody.empty();
+                        if (annualHistoryList && annualHistoryList.length > 0) {
+                            $.each(annualHistoryList, function(index, his) {
+                                const row =
+                                    '<tr>' +
+                                    '<td>' + his.startDate + ' ~ ' + his.endDate + '</td>' +
+                                    '<td>' + (his.approvedByName || his.approvedBy) + '</td>' +
+                                    '<td>' + (his.leaveName || his.leaveCode) + '</td>' +
+                                    '</tr>';
+                                $annualHistoryBody.append(row);
+                            });
+                        } else {
+                            $annualHistoryBody.append('<tr><td colspan="3" class="text-center">연차 사용 이력이 없습니다.</td></tr>');
+                        }
+
                         new bootstrap.Modal(document.getElementById('infoModal')).show();
                     } else {
                         alert("정보를 불러오는 데 실패했습니다: " + response.message);
@@ -418,10 +454,7 @@
                     </div>
                 </div>
                 <h5 class="mt-4">연차 정보</h5>
-                <div class="border p-3 bg-light text-dark rounded mb-3">
-                    <strong>총 연차:</strong> 15일<br>
-                    <strong>사용 연차:</strong> 6일<br>
-                    <strong>잔여 연차:</strong> 9일
+                <div id="annualInfo" class="border p-3 rounded mb-3" style="background-color: rgba(255, 255, 255, 0.1); color: #fff;">
                 </div>
                 <table class="table table-bordered text-white">
                     <thead class="table-light text-dark">
@@ -431,17 +464,7 @@
                         <th>휴가 종류</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>2025-01-15 ~ 2025-01-16</td>
-                        <td>김이사</td>
-                        <td>연차</td>
-                    </tr>
-                    <tr>
-                        <td>2025-05-03</td>
-                        <td>김이사</td>
-                        <td>오전 반차</td>
-                    </tr>
+                    <tbody id="annualHistoryBody">
                     </tbody>
                 </table>
             </div>

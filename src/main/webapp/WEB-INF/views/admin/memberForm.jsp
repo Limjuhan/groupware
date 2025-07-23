@@ -60,7 +60,7 @@
         <div class="row">
             <div class="col-md-3 text-center">
                 <img id="preview" src="/img/profile_default.png" alt="사진 미리보기" class="photo-preview" />
-                <form:input path="profileFile" type="file" class="form-control form-control-sm mt-2" onchange="previewPhoto(event)" accept="image/*" />
+                <form:input path="photo" type="file" class="form-control form-control-sm mt-2" onchange="previewPhoto(event)" accept="image/*" />
             </div>
             <div class="col-md-9">
                 <div class="row">

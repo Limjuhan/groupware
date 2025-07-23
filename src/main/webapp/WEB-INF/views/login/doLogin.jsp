@@ -56,9 +56,8 @@
       color: #ffffff;
     }
 
-    /* ✅ 로그인 버튼 - 파란색 반투명 배경 + 파란 텍스트 */
     .btn-login {
-      background-color: rgba(13, 110, 253, 0.01); /* 연한 반투명 파란색 */
+      background-color: rgba(13, 110, 253, 0.01);
       border: 1px solid rgba(13, 110, 253, 0.4);
       color: #0d6efd;
       font-weight: bold;
@@ -110,7 +109,8 @@
     </div>
 
     <div class="text-center mt-3">
-      <a href="findPass" class="text-decoration-none text-light">
+      <a href="#" class="text-decoration-none text-light"
+         onclick="window.open('findPass', 'findPasswordPopup', 'width=500,height=600,scrollbars=no'); return false;">
         비밀번호를 잃어버리셨나요? <span class="underline-text"><strong>비밀번호 찾기</strong></span>
       </a>
     </div>

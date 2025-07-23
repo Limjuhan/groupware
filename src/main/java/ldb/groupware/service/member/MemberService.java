@@ -1,8 +1,9 @@
 package ldb.groupware.service.member;
 
+import ldb.groupware.dto.member.MemberAnnualLeaveDto;
+import ldb.groupware.dto.member.MemberAnnualLeaveHistoryDto;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.attach.AttachmentDto;
-import ldb.groupware.dto.member.DeptDto;
 import ldb.groupware.dto.board.PaginationDto;
 import ldb.groupware.dto.member.*;
 import ldb.groupware.mapper.mybatis.member.MemberMapper;
@@ -29,34 +30,11 @@ public class MemberService {
     }
 
     // 개인정보 조회용
-    public MemberInfoDto getInfo(String memId) {
+    public MemberUpdateDto getInfo(String memId) {
         return memberMapper.selectInfo(memId);
     }
 
-    // 개인정보 수정 처리
-    public boolean updateInfo(String memId, MemberUpdateDto dto) {
-        MemberInfoDto existing = memberMapper.selectInfo(memId);
-
-        String phone = isBlank(dto.getPhone()) ? existing.getMemPhone() : dto.getPhone();
-        String privateEmail = isBlank(dto.getPrivateEmail()) ? existing.getMemPrivateEmail() : dto.getPrivateEmail();
-        String address = isBlank(dto.getAddress()) ? existing.getMemAddress() : dto.getAddress();
-
-        boolean result = memberMapper.updateInfo(memId, phone, privateEmail, address) > 0;
-
-//        if (photo != null && !photo.isEmpty()) {
-//            result = result && updatePhoto(memId, photo);
-//        }
-
-        return result;
-    }
-
-
-
-
-    private boolean isBlank(String s) {
-        return s == null || s.trim().isEmpty();
-    }
-
+    // 사원관리 List 조회용
     public Map<String, Object> getMembers(PaginationDto paginationDto, String dept, String rank, String name) {
         if (paginationDto.getPage() <= 0) paginationDto.setPage(1);
 
@@ -77,14 +55,17 @@ public class MemberService {
         return map;
     }
 
+    // 부서이름 조회용
     public List<DeptDto> getDeptList() {
         return memberMapper.getDeptList();
     }
 
+    // 직급 이름 조회용
     public List<RankDto> getRankList() {
         return memberMapper.getRankList();
     }
 
+    // 사원등록
     public boolean insertMember(MemberFormDto dto, MultipartFile file) {
         AttachmentDto attach = new AttachmentDto();
         // 1. 입사년도 추출
@@ -123,31 +104,26 @@ public class MemberService {
         map.put("rankId", dto.getRankId());
         map.put("createdBy", "admin");
         map.put("createdAt", LocalDateTime.now());
-
-        try {
-            memberMapper.insertMember(map);
-            if (file != null && !file.isEmpty()) {
-                String uploadDir = System.getProperty("user.dir") + "/upload/profile/";
-                String savedName = uploadFileCreate(file, uploadDir);
-                if (savedName != null) {
-                    attach.setAttachType("P");
-                    attach.setSavedName(savedName);
-                    attach.setFilePath("/P/");
-                    attach.setOriginalName(file.getOriginalFilename());
-                    attach.setBusinessId(memId);
-                    memberMapper.insertAttach(attach);
-                } else {
-                    log.error("File upload failed for: {}", file.getOriginalFilename());
-                    return false;
-                }
+        memberMapper.insertMember(map);
+        if (file != null && !file.isEmpty()) {
+            String uploadDir = System.getProperty("user.dir") + "/upload/profile/";
+            String savedName = uploadFileCreate(file, uploadDir);
+            if (savedName != null) {
+                attach.setAttachType("P");
+                attach.setSavedName(savedName);
+                attach.setFilePath("/P/");
+                attach.setOriginalName(file.getOriginalFilename());
+                attach.setBusinessId(memId);
+                memberMapper.insertAttach(attach);
+            } else {
+                log.error("File upload failed for: {}", file.getOriginalFilename());
+                return false;
             }
-            return true;
-        } catch (Exception e) {
-            log.error("Error inserting member: {}", e.getMessage());
-            return false;
         }
+        return true;
     }
 
+    // 사원설정 (부서,직급)
     public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(String memId, String deptId, String rankId) {
 
         int updated = memberMapper.updateMemberByMng(memId, deptId, rankId);
@@ -160,20 +136,36 @@ public class MemberService {
         return ApiResponseDto.ok(dto, "사원 정보 수정 완료");
     }
 
+    // 첨부파일 이미지 저장
     private String uploadFileCreate(MultipartFile file, String path) {
         String name = file.getOriginalFilename();
         String extension = name.substring(name.lastIndexOf("."));
-        String orgFile = UUID.randomUUID().toString()+extension;
+        String orgFile = UUID.randomUUID().toString() + extension;
         File f = new File(path);
-        if(!f.exists()) {
+        if (!f.exists()) {
             f.mkdirs();
         }
         try {
-            file.transferTo(new File(path+orgFile));
+            file.transferTo(new File(path + orgFile));
             return orgFile;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    // 개인 정보 수정
+    public boolean updateInfo(MemberUpdateDto dto) {
+        return memberMapper.updateInfo(dto) > 0;
+    }
+
+    // 연차 정보 조회
+    public MemberAnnualLeaveDto getAnnualInfo(String memId) {
+        return memberMapper.selectAnnualByMemId(memId);
+    }
+
+    // 연차 사용 내역 조회
+    public List<MemberAnnualLeaveHistoryDto> getAnnualLeaveHistory(String memId) {
+        return memberMapper.selectAnnualLeaveHistory(memId);
     }
 }
