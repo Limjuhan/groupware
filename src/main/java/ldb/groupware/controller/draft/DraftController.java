@@ -59,7 +59,6 @@ public class DraftController {
         model.addAttribute("draftMembers", memberList);
         model.addAttribute("remainAnnual", remainAnnual);
         model.addAttribute("draftFormDto", new DraftFormDto());
-
         return "draft/draftForm";
     }
 
@@ -71,10 +70,11 @@ public class DraftController {
             @RequestParam(value = "action", required = false) String action,
             Model model) {
 
-        System.out.println("action = " + action);
-//        attachments.forEach(attachment -> {
-//            System.out.println("attachment = " + attachment);
-//        });
+        if (attachments != null) {
+            attachments.forEach(attachment -> {
+                System.out.println("attachment = " + attachment);
+            });
+        }
 
         // 추가 유효성 검증 (양식별 필드)
         if ("app_01".equals(dto.getFormType())) {
@@ -98,6 +98,7 @@ public class DraftController {
         if (bindingResult.hasErrors()) {
             List<DraftForMemberDto> memberList = draftService.getMemberList();
             model.addAttribute("draftMembers", memberList);
+//            model.addAttribute("errors", bindingResult);
             return "draft/draftForm";
         }
 

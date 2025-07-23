@@ -2,6 +2,7 @@ package ldb.groupware.dto.draft;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -51,7 +52,8 @@ public class DraftFormDto {
     @NotBlank(message = "지출항목을 입력해주세요.")
     private String expenseItem;
 
-    @NotNull(message = "금액 입력은 필수입니다.")
+    @NotNull(message = "금액은 필수입니다.")
+    @Positive(message = "금액은 0보다 커야 합니다.")
     private Integer amount;
 
     private LocalDate usedDate;
