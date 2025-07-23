@@ -41,9 +41,9 @@
     }
 
     List<FAQ> faqList = Arrays.asList(
-        new FAQ("연차 신청은 어떻게 하나요?", "인사 시스템에서 신청 가능합니다."),
-        new FAQ("재택근무 기준은 어떻게 되나요?", "부서장 승인 후 가능합니다."),
-        new FAQ("메신저는 어디서 설치하나요?", "인트라넷에서 설치 가능합니다.")
+            new FAQ("연차 신청은 어떻게 하나요?", "인사 시스템에서 신청 가능합니다."),
+            new FAQ("재택근무 기준은 어떻게 되나요?", "부서장 승인 후 가능합니다."),
+            new FAQ("메신저는 어디서 설치하나요?", "인트라넷에서 설치 가능합니다.")
     );
 %>
 
@@ -86,31 +86,31 @@
     <!-- 질문 테이블 -->
     <table class="table table-bordered table-hover bg-white">
         <thead class="table-light">
-            <tr>
-                <th style="width: 10%;">번호</th>
-                <th style="width: 50%;">제목</th>
-                <th style="width: 20%;">작성자</th>
-                <th style="width: 20%;">작성일</th>
-            </tr>
+        <tr>
+            <th style="width: 10%;">번호</th>
+            <th style="width: 50%;">제목</th>
+            <th style="width: 20%;">작성자</th>
+            <th style="width: 20%;">작성일</th>
+        </tr>
         </thead>
         <tbody>
         <%
             if (total == 0) {
         %>
-            <tr><td colspan="4" class="text-center text-muted">질문이 없습니다.</td></tr>
+        <tr><td colspan="4" class="text-center text-muted">질문이 없습니다.</td></tr>
         <%
-            } else {
-                for (int i = start; i < end; i++) {
-                    Question q = filtered.get(i);
+        } else {
+            for (int i = start; i < end; i++) {
+                Question q = filtered.get(i);
         %>
-            <tr>
-                <td><%= q.id %></td>
-                <td class="question-title">
-                    <a href="questionDetail?id=<%= q.id %>" class="text-decoration-none"><%= q.title %></a>
-                </td>
-                <td><%= q.writer %></td>
-                <td><%= q.date %></td>
-            </tr>
+        <tr>
+            <td><%= q.id %></td>
+            <td class="question-title">
+                <a href="questionDetail?id=<%= q.id %>" class="text-decoration-none"><%= q.title %></a>
+            </td>
+            <td><%= q.writer %></td>
+            <td><%= q.date %></td>
+        </tr>
         <%
                 }
             }

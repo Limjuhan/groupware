@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ldb.groupware.mapper.mybatis.board.QnaMapper">
+
+    <select id="countQna" resultType="int">
+        select count(*) from qna
+    </select>
+
+
+    <select id="getQnaList" parameterType="PaginationDto" resultType="QnaListDto">
+        select
+        m.mem_name ,
+        q.qna_id ,
+        q.qna_title,
+        q.mem_id,
+        q.view_count,
+        q.updated_at
+        from qna q  left join member m on q.mem_id = m.mem_id
+        <where>
+            <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
+                <choose>
+                    <when test="searchType eq 'qnaTitle'">
+                         AND  q.qna_title LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="searchType eq 'memId'">
+                        AND m.mem_name LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="searchType eq 'all'">
+                        AND (m.mem_name  LIKE CONCAT('%', #{keyword}, '%')
+                                 OR  q.qna_title LIKE CONCAT('%', #{keyword}, '%'))
+                    </when>
+                </choose>
+            </if>
+    </where>
+        order by q.updated_at desc
+        LIMIT #{startNum},#{itemsPerPage}
+    </select>
+
+
+
+
+</mapper>
