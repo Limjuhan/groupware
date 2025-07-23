@@ -2,13 +2,14 @@ package ldb.groupware.mapper.mapstruct;
 
 
 import ldb.groupware.domain.Faq;
+import ldb.groupware.domain.FormAnnualLeave;
 import ldb.groupware.dto.board.FaqFormDto;
+import ldb.groupware.dto.draft.DraftFormDto;
 import org.mapstruct.Mapper;
 
 import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ConvertDtoMapper {
@@ -16,8 +17,6 @@ public interface ConvertDtoMapper {
 	public FaqFormDto toFaqFormDto(Faq faq);
 
 	public Faq toFaq(FaqFormDto faqFormDto);
-	
-
 	
 	default Time map(String timeStr) {
 	    if (timeStr == null) return null;

@@ -134,10 +134,9 @@
                     <td>
                         <form:select path="leaveType" cssClass="form-select bg-glass">
                             <form:option value="">선택</form:option>
-                            <form:option value="연차">연차</form:option>
-                            <form:option value="반차">반차</form:option>
-                            <form:option value="경조사">경조사</form:option>
-                            <form:option value="병가">병가</form:option>
+                            <form:option value="ANNUAL">연차</form:option>
+                            <form:option value="HALF">반차</form:option>
+                            <form:option value="EVENT">경조사</form:option>
                         </form:select>
                         <form:errors path="leaveType" cssClass="text-danger" />
                     </td>

@@ -2,16 +2,21 @@ package ldb.groupware.dto.draft;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import ldb.groupware.domain.AnnualLeave;
+import ldb.groupware.domain.FormAnnualLeave;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Setter
 @ToString
 public class DraftFormDto {
+
+    private Integer docId;
 
     @NotBlank(message = "제목은 필수 입력입니다.")
     private String title;
@@ -51,6 +56,20 @@ public class DraftFormDto {
     // 사직서
     private LocalDate resignDate;
     private String resignReason;
+
+    public FormAnnualLeave createFormAnnualLeave() {
+        FormAnnualLeave formAnnualLeave = new FormAnnualLeave();
+        formAnnualLeave.setDocId(docId);
+        formAnnualLeave.setFormCode(formType);
+        formAnnualLeave.setLeaveCode(leaveType);
+        formAnnualLeave.setStartDate(leaveStart);
+        formAnnualLeave.setEndDate(leaveEnd);
+        formAnnualLeave.setTotalDays((double) (ChronoUnit.DAYS.between(leaveStart, leaveEnd) + 1));
+        formAnnualLeave.setAnnualContent(content);
+
+        return formAnnualLeave;
+    }
+
 }
 
 
