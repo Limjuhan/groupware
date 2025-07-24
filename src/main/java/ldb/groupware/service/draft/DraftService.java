@@ -9,11 +9,13 @@ import ldb.groupware.mapper.mapstruct.ConvertDtoMapper;
 import ldb.groupware.mapper.mybatis.draft.DraftMapper;
 import ldb.groupware.service.attachment.AttachmentService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -22,11 +24,13 @@ public class DraftService {
     private final DraftMapper draftMapper;
     private final AttachmentService attachmentService;
     private final ConvertDtoMapper convertDtoMapper;
+    private final MessageSource messageSource;
 
-    public DraftService(DraftMapper draftMapper, AttachmentService attachmentService, ConvertDtoMapper convertDtoMapper) {
+    public DraftService(DraftMapper draftMapper, AttachmentService attachmentService, ConvertDtoMapper convertDtoMapper, MessageSource messageSource) {
         this.draftMapper = draftMapper;
         this.attachmentService = attachmentService;
         this.convertDtoMapper = convertDtoMapper;
+        this.messageSource = messageSource;
     }
 
     public List<DraftListDto> searchMyDraftList(String memId, String type, String keyword) {
@@ -59,8 +63,16 @@ public class DraftService {
     @Transactional
     public void saveDraft(DraftFormDto dto, List<MultipartFile> attachments, String action, String memId) throws IllegalArgumentException {
 
+        if (!"save".equals(action) && !"temporary".equals(action)) {
+            throw new IllegalArgumentException(
+                    messageSource.getMessage("error.action.invalid", null, Locale.KOREA)
+            );
+        }
+
         if (StringUtils.isBlank(dto.getFormType())) {
-            throw new IllegalArgumentException("결재양식을 선택하세요.");
+            throw new IllegalArgumentException(
+                    messageSource.getMessage("error.formtype.missing", null, Locale.KOREA)
+            );
         }
 
         int status = action.equals("temporary") ? ApprovalConst.STATUS_TEMP : ApprovalConst.STATUS_FIRST_APPROVAL_WAITING;
@@ -79,7 +91,9 @@ public class DraftService {
         double remainAnnualLeave = getRemainAnnual(memId);
 
         if (remainAnnualLeave < dto.getTotalDays()) {
-            throw new IllegalArgumentException("신청한 휴가기간이 잔여연차를 초과합니다.");
+            throw new IllegalArgumentException(
+                    messageSource.getMessage("error.annual.overflow", null, Locale.KOREA)
+            );
         }
     }
 

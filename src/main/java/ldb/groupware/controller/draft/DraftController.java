@@ -114,7 +114,7 @@ public class DraftController {
         }
     }
 
-    @GetMapping("draftManagement")
+    @GetMapping("getMyDraftDetail")
     public String draftManagement() {
         return "draft/receivedDraftDetail";
     }
