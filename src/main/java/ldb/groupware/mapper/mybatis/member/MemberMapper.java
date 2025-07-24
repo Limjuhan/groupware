@@ -10,25 +10,16 @@ import java.util.Map;
 @Mapper
 public interface MemberMapper {
 
-    String getPasswordByMemId(@Param("memId") String memId);
+    String checkPw(@Param("memId") String memId);
 
     String getMemStatus(@Param("memId") String memId);
 
-    String getJuminBackByMemId(@Param("memId") String memId);
-
-    MemberUpdateDto selectInfo(String memId);
 
     List<MemberAnnualLeaveHistoryDto> selectAnnualLeaveHistory(String memId);
 
-    int countMembers(@Param("dept") String dept,
-                     @Param("rank") String rank,
-                     @Param("name") String name);
+    int countMembers(MemberSearchDto dto);
 
-    List<MemberListDto> getPagedMembers(@Param("dept") String dept,
-                                        @Param("rank") String rank,
-                                        @Param("name") String name,
-                                        @Param("start") int start,
-                                        @Param("limit") int limit);
+    List<MemberListDto> getPagedMembers(MemberSearchDto dto);
 
     List<DeptDto> getDeptList();
 
@@ -38,13 +29,12 @@ public interface MemberMapper {
 
     int insertMember(Map<String, Object> map);
 
-    int updateMemberByMng(@Param("memId") String memId,
-                          @Param("deptId") String deptId,
-                          @Param("rankId") String rankId);
+    int updateMemberByMng(UpdateMemberDto dto);
 
     int updateInfo(MemberUpdateDto dto);
 
-    int updatePassword(@Param("memId") String memId, @Param("encodedPassword") String encodedPassword);
+    int changePw(@Param("memId") String memId, @Param("encodedPassword") String encodedPassword);
 
-    MemberAnnualLeaveDto selectAnnualByMemId(String memId);
+
+    MemberInfoDto selectMemberInfo(String memId);
 }

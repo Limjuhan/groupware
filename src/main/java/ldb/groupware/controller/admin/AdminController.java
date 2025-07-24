@@ -70,6 +70,7 @@ public class AdminController {
         return "admin/commTypeManage";
     }
 
+    // 사원 관리 페이지 
     @GetMapping("memberList")
     public String getMemberList(Model model) {
         model.addAttribute("deptList", memberService.getDeptList());
@@ -77,6 +78,7 @@ public class AdminController {
         return "admin/memberList";
     }
 
+    // 사원 등록 페이지
     @GetMapping("memberForm")
     public String getMemberForm(Model model) {
         model.addAttribute("deptList", memberService.getDeptList());
@@ -84,7 +86,8 @@ public class AdminController {
         model.addAttribute("memberFormDto", new MemberFormDto());
         return "admin/memberForm";
     }
-
+    
+    // 사원 등록
     @PostMapping("insertMemberByMng")
     public String insertMemberByMng(@Valid @ModelAttribute("memberFormDto") MemberFormDto dto,
                                     BindingResult bindingResult,

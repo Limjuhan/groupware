@@ -1,15 +1,24 @@
 package ldb.groupware.dto.member;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Data
+
+@Getter
+@Setter
 public class MemberAnnualLeaveHistoryDto {
+    private int hisId;
+    private String memId;
+    private String leaveCode;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String leaveCode;
-    private String leaveName;
+    private double totalDays;
+    private String reason;
     private String approvedBy;
+    private LocalDateTime createdAt;
     private String approvedByName;
+    private String leaveName;
 }

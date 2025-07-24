@@ -1,4 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -83,6 +85,10 @@
     .underline-text {
       text-decoration: underline;
     }
+
+    .text-danger {
+      font-size: 0.875rem;
+    }
   </style>
 </head>
 <body>
@@ -92,16 +98,18 @@
     <div class="brand-title mb-2">LDBSOFT Groupware</div>
     <p class="text-light">스마트한 업무, 효율적인 협업</p>
   </div>
-  <form action="loginProcess" method="post">
+
+  <form:form method="post" modelAttribute="loginDto" action="loginProcess">
     <div class="mb-3">
       <label for="id" class="form-label">아이디</label>
-      <input type="text" class="form-control" id="id" name="id" required autofocus
-             placeholder="사원번호를 입력해주세요">
+      <form:input path="id" id="id" cssClass="form-control" placeholder="사원번호를 입력해주세요" autofocus="autofocus"/>
+      <form:errors path="id" cssClass="text-danger"/>
     </div>
+
     <div class="mb-3">
       <label for="password" class="form-label">비밀번호</label>
-      <input type="password" class="form-control" id="password" name="password" required
-             placeholder="비밀번호를 입력해주세요">
+      <form:password path="password" id="password" cssClass="form-control" placeholder="비밀번호를 입력해주세요"/>
+      <form:errors path="password" cssClass="text-danger"/>
     </div>
 
     <div class="d-grid gap-2 mb-3">
@@ -114,7 +122,7 @@
         비밀번호를 잃어버리셨나요? <span class="underline-text"><strong>비밀번호 찾기</strong></span>
       </a>
     </div>
-  </form>
+  </form:form>
 
   <div class="footer mt-4">
     ⓒ 2025 LDBSOFT. All rights reserved.

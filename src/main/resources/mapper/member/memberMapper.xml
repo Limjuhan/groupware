@@ -4,77 +4,80 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ldb.groupware.mapper.mybatis.member.MemberMapper">
 
-    <!-- 비밀번호, 상태, 주민번호 뒷자리 조회 -->
-    <select id="getPasswordByMemId" parameterType="string" resultType="string">
-        SELECT mem_pass FROM member WHERE mem_id = #{memId}
+    <!-- 비밀번호 조회-->
+    <select id="checkPw" parameterType="string" resultType="string">
+        SELECT mem_pass
+        FROM member
+        WHERE mem_id = #{memId}
     </select>
 
+    <!-- 상태 조회-->
     <select id="getMemStatus" parameterType="string" resultType="string">
-        SELECT mem_status FROM member WHERE mem_id = #{memId}
-    </select>
-
-    <select id="getJuminBackByMemId" parameterType="string" resultType="string">
-        SELECT jumin_back FROM member WHERE mem_id = #{memId}
+        SELECT mem_status
+        FROM member
+        WHERE mem_id = #{memId}
     </select>
 
     <!-- 사원 상세 정보 조회 -->
-    <select id="selectInfo" parameterType="string" resultType="MemberUpdateDto">
+    <select id="selectMemberInfo" parameterType="string" resultType="MemberInfoDto">
         SELECT m.mem_id,
                m.mem_name,
                m.mem_email,
-               m.mem_private_email AS privateEmail,
+               m.mem_private_email  AS privateEmail,
                m.mem_phone,
-               d.dept_name,
-               r.rank_name,
+               m.mem_gender,
                m.mem_status,
                m.mem_hiredate,
-               m.mem_gender,
                m.jumin_front,
                m.jumin_back,
                m.mem_address,
-               CONCAT(a.file_path, '/', a.saved_name) AS memPicture
+               d.dept_name,
+               r.rank_name,
+               CONCAT(a.file_path, '/', a.saved_name) AS memPicture,
+               a.saved_name AS memPictureSavedName,
+               al.an_id,
+               al.year,
+               al.total_days,
+               al.use_days,
+               al.remain_days
         FROM member m
                  LEFT JOIN dept d ON m.dept_id = d.dept_id
                  LEFT JOIN rank r ON m.rank_id = r.rank_id
                  LEFT JOIN attachment a ON a.business_id = m.mem_id AND a.attach_type = 'P'
+                 LEFT JOIN annual_leave al ON al.mem_id = m.mem_id
         WHERE m.mem_id = #{memId}
+        ORDER BY al.year DESC LIMIT 1
     </select>
 
-    <!-- 연차 정보 조회 (최신 연도 1건) -->
-    <select id="selectAnnualByMemId" parameterType="string" resultType="MemberAnnualLeaveDto">
-        SELECT an_id, mem_id, year, total_days, use_days, remain_days
-        FROM annual_leave
-        WHERE mem_id = #{memId}
-        ORDER BY year DESC
-            LIMIT 1
-    </select>
+    <!--연차 사용내역 조회-->
+    <select id="selectAnnualLeaveHistory" resultType="MemberAnnualLeaveHistoryDto">
+        SELECT
+            a.mem_id,
+            a.leave_code,
+            lt.leave_name ,
+            a.start_date,
+            a.end_date,
+            a.approved_by,
+            m.mem_name AS approvedByName
+        FROM annual_leave_history a
+        LEFT JOIN leave_type lt ON a.leave_code = lt.leave_code
+        LEFT JOIN member m ON a.approved_by = m.mem_id
+        WHERE a.mem_id = #{memId}
+        ORDER BY a.start_date DESC
 
-    <!-- 연차 사용 이력 -->
-    <select id="selectAnnualLeaveHistory" parameterType="string" resultType="MemberAnnualLeaveHistoryDto">
-        SELECT ah.start_date,
-               ah.end_date,
-               ah.leave_code,
-               lt.leave_name,
-               ah.approved_by,
-               m.mem_name
-        FROM annual_leave_history ah
-                 LEFT JOIN leave_type lt ON ah.leave_code = lt.leave_code
-                 LEFT JOIN member m ON ah.approved_by = m.mem_id
-        WHERE ah.mem_id = #{memId}
-        ORDER BY ah.start_date DESC
     </select>
 
     <!-- 개인정보 수정 -->
     <update id="updateInfo" parameterType="MemberUpdateDto">
         UPDATE member
-        SET mem_phone = #{memPhone},
+        SET mem_phone         = #{memPhone},
             mem_private_email = #{privateEmail},
-            mem_address = #{address}
+            mem_address       = #{memAddress}
         WHERE mem_id = #{memId}
     </update>
 
     <!-- 페이징 조회 관련 -->
-    <select id="countMembers" resultType="int">
+    <select id="countMembers" parameterType="MemberSearchDto" resultType="int">
         SELECT COUNT(*)
         FROM member m
         LEFT JOIN dept d ON m.dept_id = d.dept_id
@@ -91,7 +94,7 @@
         </if>
     </select>
 
-    <select id="getPagedMembers" resultType="MemberListDto">
+    <select id="getPagedMembers" parameterType="MemberSearchDto" resultType="MemberListDto">
         SELECT m.mem_id, m.mem_name, m.dept_id, m.rank_id, d.dept_name, r.rank_name
         FROM member m
         LEFT JOIN dept d ON m.dept_id = d.dept_id
@@ -107,16 +110,23 @@
             AND m.mem_name LIKE CONCAT('%', #{name}, '%')
         </if>
         ORDER BY m.mem_id DESC
-        LIMIT #{limit} OFFSET #{start}
+        LIMIT #{startNum}, #{itemsPerPage}
     </select>
 
-    <!-- 부서, 직급 목록 -->
+    <!-- 부서 목록 -->
     <select id="getDeptList" resultType="DeptDto">
-        SELECT dept_id, dept_name FROM dept WHERE use_yn = 'Y' ORDER BY dept_id
+        SELECT dept_id, dept_name
+        FROM dept
+        WHERE use_yn = 'Y'
+        ORDER BY dept_id
     </select>
 
+    <!-- 직급 목록 -->
     <select id="getRankList" resultType="RankDto">
-        SELECT rank_id, rank_name FROM rank WHERE use_yn = 'Y' ORDER BY rank_id
+        SELECT rank_id, rank_name
+        FROM rank
+        WHERE use_yn = 'Y'
+        ORDER BY rank_id
     </select>
 
     <!-- 사원번호 자동생성용 -->
@@ -143,13 +153,18 @@
     </insert>
 
     <!-- 부서/직급 변경 -->
-    <update id="updateMemberByMng">
-        UPDATE member SET dept_id = #{deptId}, rank_id = #{rankId} WHERE mem_id = #{memId}
+    <update id="updateMemberByMng" parameterType="UpdateMemberDto">
+        UPDATE member
+        SET dept_id = #{deptId},
+            rank_id = #{rankId}
+        WHERE mem_id = #{memId}
     </update>
 
     <!-- 비밀번호 변경 -->
-    <update id="updatePassword">
-        UPDATE member SET mem_pass = #{encodedPassword} WHERE mem_id = #{memId}
+    <update id="changePw">
+        UPDATE member
+        SET mem_pass = #{encodedPassword}
+        WHERE mem_id = #{memId}
     </update>
 
 </mapper>

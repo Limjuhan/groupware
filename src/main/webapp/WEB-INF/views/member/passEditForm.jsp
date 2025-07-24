@@ -1,4 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -68,6 +70,12 @@
       margin-top: 20px;
     }
 
+    .error {
+      color: red;
+      font-size: 0.9em;
+      margin-top: 5px;
+    }
+
     @media (max-width: 480px) {
       .btn-group {
         flex-direction: column;
@@ -80,27 +88,56 @@
 
 <div class="password-card">
   <h4><i class="fa-solid fa-key"></i> 비밀번호 변경</h4>
-  <form method="post" action="/member/updatePassword">
-    <div class="mb-3">
-      <label for="currentPassword" class="form-label"><i class="fa-solid fa-lock"></i> 현재 비밀번호</label>
-      <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+
+  <c:if test="${not empty error}">
+    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        ${error}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+  </c:if>
+
+  <form:form modelAttribute="dto" method="post" action="/member/UpdatePass" id="pwForm">
     <div class="mb-3">
-      <label for="newPassword" class="form-label"><i class="fa-solid fa-lock-open"></i> 새 비밀번호</label>
-      <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+      <label for="curPw" class="form-label"><i class="fa-solid fa-lock"></i> 현재 비밀번호</label>
+      <form:password path="curPw" cssClass="form-control" id="curPw" required="true"/>
+      <form:errors path="curPw" cssClass="error"/>
     </div>
+
     <div class="mb-3">
-      <label for="confirmPassword" class="form-label"><i class="fa-solid fa-check-double"></i> 새 비밀번호 확인</label>
-      <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+      <label for="newPw" class="form-label"><i class="fa-solid fa-lock-open"></i> 새 비밀번호</label>
+      <form:password path="newPw" cssClass="form-control" id="newPw" required="true"/>
+      <form:errors path="newPw" cssClass="error"/>
+    </div>
+
+    <div class="mb-3">
+      <label for="chkPw" class="form-label"><i class="fa-solid fa-check-double"></i> 새 비밀번호 확인</label>
+      <form:password path="chkPw" cssClass="form-control" id="chkPw" required="true"/>
+      <form:errors path="chkPw" cssClass="error"/>
     </div>
 
     <div class="btn-group">
       <button type="submit" class="btn btn-primary"><i class="fa-solid fa-rotate"></i> 변경</button>
       <button type="button" class="btn btn-secondary" onclick="window.close()"><i class="fa-solid fa-xmark"></i> 닫기</button>
     </div>
-  </form>
+  </form:form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // 에러 발생한 첫 필드로 포커스 + 전체 선택
+  document.addEventListener("DOMContentLoaded", function () {
+    const fields = ["curPw", "newPw", "chkPw"];
+    for (let id of fields) {
+      const input = document.getElementById(id);
+      const error = input?.nextElementSibling;
+      if (error && error.classList.contains("error") && error.textContent.trim() !== "") {
+        input.focus();
+        input.select();
+        break;
+      }
+    }
+  });
+</script>
+
 </body>
 </html>

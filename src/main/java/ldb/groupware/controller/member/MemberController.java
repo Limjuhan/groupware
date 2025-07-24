@@ -2,9 +2,10 @@ package ldb.groupware.controller.member;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import ldb.groupware.dto.member.MemberAnnualLeaveDto;
 import ldb.groupware.dto.member.MemberAnnualLeaveHistoryDto;
+import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.dto.member.MemberUpdateDto;
+import ldb.groupware.dto.member.PasswordChangeDto;
 import ldb.groupware.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,28 +27,18 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    // 개인정보 
     @GetMapping("memberInfo")
     public String getMemberInfo(HttpSession session, Model model) {
         String loginId = (String) session.getAttribute("loginId");
         if (loginId == null) return "redirect:/login/doLogin";
 
-        MemberUpdateDto dto = memberService.getInfo(loginId);
-        MemberAnnualLeaveDto annual = memberService.getAnnualInfo(loginId);
-        List<MemberAnnualLeaveHistoryDto> annualHistoryList = memberService.getAnnualLeaveHistory(loginId);
-
+        MemberInfoDto dto = memberService.getMemberInfo(loginId);
         model.addAttribute("user", dto);
-        model.addAttribute("annual", annual);
-        model.addAttribute("annualHistoryList", annualHistoryList);
-
         return "member/memberInfo";
     }
 
-
-    @GetMapping("passEditForm")
-    public String getPassEditForm() {
-        return "member/passEditForm";
-    }
-
+    // 개인 정보 수정
     @PostMapping("updateMemberInfo")
     public String updateMemberInfo(@Valid @ModelAttribute("user") MemberUpdateDto dto,
                                    BindingResult bindingResult,
@@ -67,4 +58,54 @@ public class MemberController {
         model.addAttribute("url", "/member/memberInfo");
         return "alert";
     }
+
+    // 비밀번호 변경
+    @GetMapping("passEditForm")
+    public String getPassEditForm(Model model) {
+        model.addAttribute("dto", new PasswordChangeDto());
+        return "member/passEditForm";
+    }
+
+    // 비밀번호 변경 저장
+    @PostMapping("UpdatePass")
+    public String updatePassword(@Valid @ModelAttribute("dto") PasswordChangeDto dto,
+                                 BindingResult result,
+                                 HttpSession session,
+                                 Model model) {
+        String loginId = (String) session.getAttribute("loginId");
+        if (loginId == null) return "redirect:/login/doLogin";
+
+
+        // 1. 현재 비밀번호 유효성 먼저 검증
+        if (!result.hasFieldErrors("curPw")) {
+            boolean valid = memberService.checkPw(loginId, dto.getCurPw());
+            if (!valid) {
+                result.rejectValue("curPw", "password.incorrect");
+            }
+        }
+
+        // 2. 현재 비번 검증 통과했을 때만 새 비밀번호 불일치 검증
+        if (!result.hasFieldErrors("curPw") &&
+                !dto.getNewPw().equals(dto.getChkPw())) {
+            result.rejectValue("chkPw", "password.mismatch");
+        }
+
+        if (result.hasErrors()) {
+            model.addAttribute("dto", dto);
+            return "member/passEditForm";
+        }
+
+        boolean updated = memberService.changePw(loginId, dto.getNewPw());
+        if (!updated) {
+            model.addAttribute("dto", dto);
+            model.addAttribute("error", "비밀번호 변경에 실패했습니다.");
+            return "member/passEditForm";
+        }
+
+        model.addAttribute("msg", "비밀번호가 변경되었습니다. 다시 로그인해주세요.");
+        model.addAttribute("url", "/login/doLogin");
+        return "alert";
+    }
+
+
 }
