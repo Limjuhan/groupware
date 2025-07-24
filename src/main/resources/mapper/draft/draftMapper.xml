@@ -7,6 +7,7 @@
     <select id="getMyDraftList" resultType="DraftListDto">
         SELECT
         d.doc_id AS docId,
+        d.form_code as formCode,
         d.doc_title AS docTitle,
         DATE_FORMAT(d.doc_endDate, '%Y-%m-%d') AS docEndDate,
         d.mem_id AS writer,
@@ -51,9 +52,9 @@
 
     <insert id="insertApprovalDocument" useGeneratedKeys="true" keyProperty="dto.docId">
         INSERT INTO approval_document
-        (form_code, doc_title, mem_id, created_at, status, updated_at, del_yn, doc_endDate)
+        (form_code, doc_title, doc_content, mem_id, created_at, status, updated_at, del_yn, doc_endDate)
         VALUES
-            (#{dto.formType}, #{dto.title}, #{memId}, NOW(), #{status}, NOW(), 'N', #{dto.deadline})
+            (#{dto.formCode}, #{dto.title},#{dto.content}, #{memId}, NOW(), #{status}, NOW(), 'N', #{dto.docEndDate})
     </insert>
 
     <insert id="insertFormAnnualLeave" parameterType="FormAnnualLeave">
@@ -81,5 +82,31 @@
         VALUES (#{docId}, #{memId}, #{stepOrder}, 1, NOW(), NULL, #{refYn})
     </insert>
 
+    <select id="getApprovalDocumentByDocId" resultType="DraftFormDto">
+        SELECT a.doc_id as docId,
+               a.form_code as formCode,
+               a.doc_title as title,
+               a.doc_content as content,
+               (SELECT mem_id FROM approval_line WHERE doc_id = #{docId} AND step_order = 1) AS approver1,
+               (SELECT mem_id FROM approval_line WHERE doc_id = #{docId} AND step_order = 2) AS approver2
+        FROM approval_document a
+        WHERE a.doc_id = #{docId}
+        AND   a.del_yn = 'N'
+    </select>
 
+    <select id="getFormAnnualLeave" resultType="FormAnnualLeave">
+        SELECT * FROM form_annual_leave WHERE doc_id = #{docId}
+    </select>
+
+    <select id="getFormProject" resultType="FormProject">
+        SELECT * FROM form_project WHERE doc_id = #{docId}
+    </select>
+
+    <select id="getFormExpense" resultType="FormExpense">
+        SELECT * FROM form_expense WHERE doc_id = #{docId}
+    </select>
+
+    <select id="getFormResign" resultType="FormResign">
+        SELECT * FROM form_resign WHERE doc_id = #{docId}
+    </select>
 </mapper>

@@ -1,7 +1,9 @@
 package ldb.groupware.mapper.mybatis.draft;
 
-import jakarta.validation.constraints.NotBlank;
 import ldb.groupware.domain.FormAnnualLeave;
+import ldb.groupware.domain.FormExpense;
+import ldb.groupware.domain.FormProject;
+import ldb.groupware.domain.FormResign;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.dto.draft.DraftListDto;
@@ -31,4 +33,14 @@ public interface DraftMapper {
                             @Param("memId") String memId,
                             @Param("stepOrder") int stepOrder,
                             @Param("refYn") String refYn);
+
+    FormAnnualLeave getFormAnnualLeave(Integer docId);
+
+    FormProject getFormProject(Integer docId);
+
+    FormExpense getFormExpense(Integer docId);
+
+    FormResign getFormResign(Integer docId);
+
+    DraftFormDto getApprovalDocumentByDocId(Integer docId);
 }

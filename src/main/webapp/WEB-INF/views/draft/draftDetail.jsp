@@ -48,45 +48,35 @@
         <tbody>
         <tr>
             <th style="width: 15%;">문서번호</th>
-            <td>${approval.docId}</td>
+            <td>${draftDetail.docId}</td>
             <th style="width: 15%;">양식</th>
-            <td>${approval.formCode}</td>
+            <td>${draftDetail.formCode}</td>
         </tr>
         <tr>
             <th>제목</th>
-            <td colspan="3">${approval.docTitle}</td>
+            <td colspan="3">${draftDetail.docTitle}</td>
         </tr>
         <tr>
             <th>기안자</th>
-            <td>${approval.memName}</td>
+            <td>${draftDetail.memName}</td>
             <th>상태</th>
             <td>
-                <span class="badge bg-warning text-dark">${approval.statusText}</span>
+                <span id="status-badge"></span>
             </td>
         </tr>
         <tr>
             <th>1차 결재자</th>
             <td>
-                <c:forEach var="line" items="${lines}">
-                    <c:if test="${line.stepOrder == 1}">
-                        ${line.memName}
-                        <span class="badge bg-warning text-dark ms-2">${line.statusText}</span>
-                    </c:if>
-                </c:forEach>
+                ${draftDetail.approver1Name}
             </td>
             <th>2차 결재자</th>
             <td>
-                <c:forEach var="line" items="${lines}">
-                    <c:if test="${line.stepOrder == 2}">
-                        ${line.memName}
-                        <span class="badge bg-secondary ms-2">${line.statusText}</span>
-                    </c:if>
-                </c:forEach>
+                ${draftDetail.approver2Name}
             </td>
         </tr>
         <tr>
             <th>문서종료일</th>
-            <td colspan="3">${approval.docEndDate}</td>
+            <td colspan="3">${draftDetail.docEndDate}</td>
         </tr>
         </tbody>
     </table>
@@ -94,15 +84,25 @@
     <!-- 첨부파일 -->
     <div class="mb-3">
         <strong>첨부파일:</strong>
-        <c:forEach var="file" items="${attachments}">
-            <a href="downloadFile?file=${file}" class="link-light ms-2 text-decoration-underline">${file}</a>
-        </c:forEach>
+        <c:if test="${attachments != null }">
+            <c:forEach items="${attachments}" var="a">
+                <c:if test="${a.filePath != null}">
+                    <div class="file-section mt-4">
+                        첨부파일:
+                        <a href="${a.filePath}${a.savedName}" download="${a.originalName}"
+                           class="link-light ms-2 text-decoration-underline">
+                                ${a.originalName}
+                        </a>
+                    </div>
+                </c:if>
+            </c:forEach>
+        </c:if>
     </div>
 
     <!-- 본문 내용 -->
     <div class="section-title text-shadow">본문 내용</div>
     <div class="border p-3 bg-glass">
-        ${approval.docContent}
+        ${draftDetail.docContent}
     </div>
 
     <!-- 양식 정보 -->
@@ -125,5 +125,35 @@
     </div>
 </div>
 
+<script>
+
+    $(document).ready(function () {
+        var status = "${draftDetail.status}";
+        var badgeHtml = getStatusBadge(status);
+        $("#status-badge").html(badgeHtml);
+
+    });
+
+    function getStatusBadge(status) {
+        switch (status) {
+            case "0":
+                return "<span class='badge bg-secondary'>임시저장</span>";
+            case "1":
+                return "<span class='badge bg-warning text-dark'>1차결재 대기</span>";
+            case "2":
+                return "<span class='badge bg-warning text-dark'>1차결재 승인</span>";
+            case "3":
+                return "<span class='badge bg-danger'>1차결재 반려</span>";
+            case "4":
+                return "<span class='badge bg-info text-dark'>2차결재 대기</span>";
+            case "5":
+                return "<span class='badge bg-success'>2차결재 승인</span>";
+            case "6":
+                return "<span class='badge bg-danger'>2차결재 반려</span>";
+            default:
+                return "<span class='badge bg-dark'>알 수 없음</span>";
+        }
+    }
+</script>
 </body>
 </html>

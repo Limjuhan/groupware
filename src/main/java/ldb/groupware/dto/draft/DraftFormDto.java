@@ -4,6 +4,9 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import ldb.groupware.domain.FormAnnualLeave;
+import ldb.groupware.domain.FormExpense;
+import ldb.groupware.domain.FormProject;
+import ldb.groupware.domain.FormResign;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -29,7 +32,7 @@ public class DraftFormDto {
     private String content;
 
     @NotBlank(message = "결재양식을 선택하세요.")
-    private String formType;
+    private String formCode;
 
     @NotBlank(message = "1차 결재자를 선택하세요.")
     private String approver1;
@@ -38,50 +41,35 @@ public class DraftFormDto {
     private String approver2;
 
     @NotNull(message = "문서종료일을 입력하세요.")
-    private LocalDate deadline;
+    private LocalDate docEndDate;
 
     private String referrers;
 
     private String attachType = "D"; // 전자결재 첨부파일 타입
 
     // 휴가신청서
-    private String leaveType;
+    private String leaveCode;
     private LocalDate leaveStart;
     private LocalDate leaveEnd;
 
     // 프로젝트 제안서
-    private String projectTitle;
-    private String expectedDuration;
-    private String projectGoal;
+    private String projectName;
+    private LocalDate projectStart;
+    private LocalDate projectEnd;
 
     // 지출결의서
-    private String expenseItem;
-    private Integer amount;
-    private LocalDate usedDate;
+    private String exName;
+    private Integer exAmount;
+    private LocalDate useDate;
 
     // 사직서
     private LocalDate resignDate;
-    private String resignReason;
-
-    public FormAnnualLeave createFormAnnualLeave() {
-
-        if (leaveStart == null || leaveEnd == null) {
-            throw new IllegalArgumentException("휴가 시작일과 종료일은 필수입니다.");
-        }
-
-        FormAnnualLeave formAnnualLeave = new FormAnnualLeave();
-        formAnnualLeave.setDocId(docId);
-        formAnnualLeave.setFormCode(formType);
-        formAnnualLeave.setLeaveCode(leaveType);
-        formAnnualLeave.setStartDate(leaveStart);
-        formAnnualLeave.setEndDate(leaveEnd);
-        formAnnualLeave.setTotalDays((double) (ChronoUnit.DAYS.between(leaveStart, leaveEnd) + 1));
-        formAnnualLeave.setAnnualContent(content);
-
-        return formAnnualLeave;
-    }
 
     public double getTotalDays() {
+        if (leaveStart == null || leaveEnd == null) {
+            throw new IllegalArgumentException("휴가 시작일or종료일이 존재하지않습니다.");
+        }
+
         return (double) ChronoUnit.DAYS.between(leaveStart, leaveEnd) + 1;
     }
 
@@ -95,6 +83,27 @@ public class DraftFormDto {
         return Collections.emptyList();
     }
 
+    public void setAnnualData(FormAnnualLeave formAnnual) {
+        leaveCode = formAnnual.getLeaveCode();
+        leaveStart = formAnnual.getStartDate();
+        leaveEnd = formAnnual.getEndDate();
+    }
+
+    public void setProjectData(FormProject formProject) {
+        projectName = formProject.getProjectName();
+        projectStart = formProject.getStartDate();
+        projectEnd = formProject.getEndDate();
+    }
+
+    public void setExpenseData(FormExpense formExpense) {
+        exName = formExpense.getExName();
+        exAmount = formExpense.getExAmount();
+        useDate = formExpense.getUseDate();
+    }
+
+    public void setresignData(FormResign formResign) {
+        resignDate = formResign.getResignDate();
+    }
 }
 
 

@@ -1,6 +1,10 @@
 package ldb.groupware.service.draft;
 
 import io.micrometer.common.util.StringUtils;
+import ldb.groupware.domain.FormAnnualLeave;
+import ldb.groupware.domain.FormExpense;
+import ldb.groupware.domain.FormProject;
+import ldb.groupware.domain.FormResign;
 import ldb.groupware.dto.draft.ApprovalConst;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
@@ -46,37 +50,24 @@ public class DraftService {
     }
 
     /**
+     * TODO: 연차생성관련 배치프로세스 정리하기
+     * 최초 상신시 : attachment, approval_document, approval_line
+     *              form_annual_leave, form_expense, form_resign, annual_leave_history
+     * 임시저장한글 불러와서 또 임시저장하는 경우도 생각해야함
      *
      * @param dto
      * @param attachments
      * @param action
      * @param memId
      *
-     *
-     *  최초 상신시 : attachment, approval_document, approval_line
-     *
-     *  2차결재승인시 :form_annual_leave, form_expense, form_resign, annual_leave_history
-     *  draftMapper.insertFormAnnualLeave(dto.createFormAnnualLeave());
-     *
-     * TODO: 연차생성관련 배치프로세스 정리하기
      */
     @Transactional
     public void saveDraft(DraftFormDto dto, List<MultipartFile> attachments, String action, String memId) throws IllegalArgumentException {
 
-        if (!"save".equals(action) && !"temporary".equals(action)) {
-            throw new IllegalArgumentException(
-                    messageSource.getMessage("error.action.invalid", null, Locale.KOREA)
-            );
-        }
-
-        if (StringUtils.isBlank(dto.getFormType())) {
-            throw new IllegalArgumentException(
-                    messageSource.getMessage("error.formtype.missing", null, Locale.KOREA)
-            );
-        }
-
         int status = action.equals("temporary") ? ApprovalConst.STATUS_TEMP : ApprovalConst.STATUS_FIRST_APPROVAL_WAITING;
+
         draftMapper.insertApprovalDocument(dto, status, memId);
+        saveDraftForm(dto);
 
         if (action.equals("save")) {
             validateAnnualLeave(dto, memId); // 연차 검증
@@ -85,6 +76,20 @@ public class DraftService {
 
         // 첨부파일 저장
         attachmentService.saveAttachments(dto.getDocId().toString(), dto.getAttachType(), attachments);
+    }
+
+    private void saveDraftForm(DraftFormDto dto) {
+
+        if (dto.getFormCode().equals(ApprovalConst.FORM_ANNUAL)) {
+            draftMapper.insertFormAnnualLeave(FormAnnualLeave.from(dto));
+        } else if (dto.getFormCode().equals(ApprovalConst.FORM_PROJECT)) {
+
+        } else if (dto.getFormCode().equals(ApprovalConst.FORM_EXPENSE)) {
+
+        } else if (dto.getFormCode().equals(ApprovalConst.FORM_RESIGN)) {
+
+        }
+
     }
 
     private void validateAnnualLeave(DraftFormDto dto, String memId) {
@@ -115,5 +120,24 @@ public class DraftService {
         draftMapper.insertApprovalLine(docId, memId, step, refYn);
     }
 
+    public DraftFormDto getDraftForm(Integer docId, String formCode) {
 
+        DraftFormDto draftFormDto = draftMapper.getApprovalDocumentByDocId(docId);
+
+        if (formCode.equals(ApprovalConst.FORM_ANNUAL)) {
+            draftFormDto.setAnnualData(draftMapper.getFormAnnualLeave(docId));
+        } else if (formCode.equals(ApprovalConst.FORM_PROJECT)) {
+            draftFormDto.setProjectData(draftMapper.getFormProject(docId));
+        } else if (formCode.equals(ApprovalConst.FORM_EXPENSE)) {
+            draftFormDto.setExpenseData(draftMapper.getFormExpense(docId));
+        } else if (formCode.equals(ApprovalConst.FORM_RESIGN)) {
+            draftFormDto.setresignData(draftMapper.getFormResign(docId));
+        } else {
+            throw new IllegalArgumentException(
+                    messageSource.getMessage("error.formtype.missing", null, Locale.KOREA)
+            );
+        }
+
+        return draftFormDto;
+    }
 }

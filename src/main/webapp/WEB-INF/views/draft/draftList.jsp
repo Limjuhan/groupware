@@ -159,9 +159,13 @@
                         draft.approver2 = '-';
                     }
 
+                    var url = (draft.status === "0")
+                        ? "draftForm?docId=" + draft.docId + "&memId=" + draft.writer + "&formCode=" + draft.formCode
+                        : "getMyDraftDetail?docId=" + draft.docId + "&memId=" + draft.writer;
+
                     var row = "<tr>" +
                         "<td>" + draft.docId + "</td>" +
-                        "<td><a href='getMyDraftDetail?docId=" + draft.docId + "&writerId=" + draft.writer +"' class='link-white'>" + draft.docTitle + "</a></td>" +
+                        "<td><a href='" + url + "' class='link-white'>" + draft.docTitle + "</a></td>" +
                         "<td>" + draft.docEndDate + "</td>" +
                         "<td>" + draft.writer + "</td>" +
                         "<td>" + draft.approver1 + "</td>" +

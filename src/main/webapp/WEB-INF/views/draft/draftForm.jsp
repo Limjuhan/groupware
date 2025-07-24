@@ -57,6 +57,16 @@
             top: 50%;
             transform: translateY(-50%);
         }
+        .select2-search__field {
+            background-color: #1e1e1e !important;
+            color: white !important;
+        }
+        .form-select,
+        .form-select,
+        .select2-container--default .select2-selection--single,
+        .select2-container {
+            width: 100% !important;
+        }
     </style>
 </head>
 <body>
@@ -64,21 +74,22 @@
     <h2 class="mb-4">결재문서 작성</h2>
 
     <form:form method="post" action="insertMyDraft" modelAttribute="draftFormDto" enctype="multipart/form-data">
+        <form:errors cssClass="text-danger fw-bold fs-5" />
         <!-- 결재양식 -->
         <div class="mb-3 select-wrapper">
             <label class="form-label">결재양식 선택 *</label>
-            <form:select path="formType" cssClass="form-select bg-glass" id="formTypeSelect">
+            <form:select path="formCode" cssClass="form-select bg-glass" id="formTypeSelect">
                 <form:option value="">양식을 선택하세요</form:option>
                 <form:option value="app_01">휴가신청서</form:option>
                 <form:option value="app_02">프로젝트 제안서</form:option>
                 <form:option value="app_03">지출결의서</form:option>
                 <form:option value="app_04">사직서</form:option>
             </form:select>
-            <form:errors path="formType" cssClass="text-danger" />
+            <form:errors path="formCode" cssClass="text-danger" />
         </div>
 
         <!-- 결재자 선택 -->
-        <div class="row mb-3">
+        <div class="row mb-3 dependent-fields d-none">
             <div class="col-md-6 select-wrapper">
                 <label class="form-label">1차 결재자 *</label>
                 <form:select path="approver1" cssClass="form-select bg-glass employee-select">
@@ -102,7 +113,7 @@
         </div>
 
         <!-- 참조자(다중 선택, JS 사용) -->
-        <div class="mb-3 select-wrapper">
+        <div class="mb-3 select-wrapper dependent-fields d-none">
             <label class="form-label">참조자</label>
             <select class="form-select bg-glass employee-select" id="referrerSelect">
                 <option value="">직원을 선택하세요</option>
@@ -113,16 +124,16 @@
                 </c:forEach>
             </select>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 dependent-fields d-none">
             <input type="text" id="referrerDisplay" class="form-control bg-glass" placeholder="선택된 참조자"/>
             <input type="hidden" name="referrers" id="referrersHidden" value="${draftFormDto.referrers}" />
         </div>
 
         <!-- 마감기한 -->
-        <div class="mb-3">
+        <div class="mb-3 dependent-fields d-none">
             <label class="form-label">문서종료일 *</label>
-            <form:input type="date" path="deadline" cssClass="form-control bg-glass" />
-            <form:errors path="deadline" cssClass="text-danger" />
+            <form:input type="date" path="docEndDate" cssClass="form-control bg-glass" />
+            <form:errors path="docEndDate" cssClass="text-danger" />
         </div>
 
         <!-- 휴가신청서 양식 -->
@@ -132,13 +143,13 @@
                 <tr>
                     <th>휴가 유형</th>
                     <td>
-                        <form:select path="leaveType" cssClass="form-select bg-glass">
+                        <form:select path="leaveCode" cssClass="form-select bg-glass">
                             <form:option value="">선택</form:option>
                             <form:option value="ANNUAL">연차</form:option>
                             <form:option value="HALF">반차</form:option>
                             <form:option value="EVENT">경조사</form:option>
                         </form:select>
-                        <form:errors path="leaveType" cssClass="text-danger" />
+                        <form:errors path="leaveCode" cssClass="text-danger" />
                     </td>
                 </tr>
                 <tr>
@@ -163,15 +174,12 @@
             <table class="table table-bordered">
                 <tr>
                     <th>프로젝트명</th>
-                    <td><form:input path="projectTitle" cssClass="form-control bg-glass" /></td>
+                    <td><form:input path="projectName" cssClass="form-control bg-glass" /></td>
                 </tr>
                 <tr>
                     <th>예상 기간</th>
-                    <td><form:input path="expectedDuration" cssClass="form-control bg-glass" /></td>
-                </tr>
-                <tr>
-                    <th>목표</th>
-                    <td><form:textarea path="projectGoal" cssClass="form-control bg-glass" rows="3" /></td>
+                    <td><form:input type="date" path="projectStart" cssClass="bg-glass" /> ~
+                        <form:input type="date" path="projectEnd" cssClass="bg-glass" /></td>
                 </tr>
             </table>
         </div>
@@ -182,15 +190,15 @@
             <table class="table table-bordered">
                 <tr>
                     <th>지출 항목</th>
-                    <td><form:input path="expenseItem" cssClass="form-control bg-glass" /></td>
+                    <td><form:input path="exName" cssClass="form-control bg-glass" /></td>
                 </tr>
                 <tr>
                     <th>금액</th>
-                    <td><form:input type="number" path="amount" cssClass="form-control bg-glass" /></td>
+                    <td><form:input type="number" path="exAmount" cssClass="form-control bg-glass" /></td>
                 </tr>
                 <tr>
                     <th>사용일자</th>
-                    <td><form:input type="date" path="usedDate" cssClass="form-control bg-glass" /></td>
+                    <td><form:input type="date" path="useDate" cssClass="form-control bg-glass" /></td>
                 </tr>
             </table>
         </div>
@@ -231,13 +239,12 @@
     </form:form>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function () {
-
+        // 에러발생시 alert
         var errorMessage = '${globalError}';
-
         if (errorMessage !== '') {
             alert(errorMessage);
         }
@@ -262,11 +269,15 @@
         // 양식 선택 시 양식 영역 표시 + 기존 선택 유지
         function showFormTemplate(selected) {
             $('.form-template').addClass('d-none');
+            $('.dependent-fields').removeClass('d-none');
+
             if (selected) {
                 $('#' + selected).removeClass('d-none');
                 $("input[name='title']").closest('.form-template').removeClass('d-none');
                 $("textarea[name='content']").closest('.form-template').removeClass('d-none');
                 $("input[name='attachments']").closest('.form-template').removeClass('d-none');
+            } else {
+                $('.dependent-fields').addClass('d-none');
             }
         }
 
