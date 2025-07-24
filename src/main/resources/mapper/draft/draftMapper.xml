@@ -42,7 +42,7 @@
         LEFT JOIN rank r ON m.rank_id = r.rank_id
     </select>
 
-    <select id="getReaminAnnual">
+    <select id="getRemainAnnual">
         SELECT remain_days
         FROM annual_leave
         WHERE mem_id = #{memId}
@@ -53,7 +53,7 @@
         INSERT INTO approval_document
         (form_code, doc_title, mem_id, created_at, status, updated_at, del_yn, doc_endDate)
         VALUES
-            (#{dto.formType}, #{dto.title}, #{memId}, NOW(), 1, NOW(), 'N', #{dto.deadline})
+            (#{dto.formType}, #{dto.title}, #{memId}, NOW(), #{status}, NOW(), 'N', #{dto.deadline})
     </insert>
 
     <insert id="insertFormAnnualLeave" parameterType="FormAnnualLeave">
@@ -75,5 +75,11 @@
                      #{annualContent}
                  )
     </insert>
+
+    <insert id="insertApprovalLine">
+        INSERT INTO approval_line (doc_id, mem_id, step_order, status, approved_at, approved_comment, ref_yn)
+        VALUES (#{docId}, #{memId}, #{stepOrder}, 1, NOW(), NULL, #{refYn})
+    </insert>
+
 
 </mapper>

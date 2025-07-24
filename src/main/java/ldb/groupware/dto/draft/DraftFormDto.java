@@ -1,8 +1,8 @@
 package ldb.groupware.dto.draft;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import ldb.groupware.domain.AnnualLeave;
 import ldb.groupware.domain.FormAnnualLeave;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,10 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -38,6 +42,8 @@ public class DraftFormDto {
 
     private String referrers;
 
+    private String attachType = "D"; // 전자결재 첨부파일 타입
+
     // 휴가신청서
     private String leaveType;
     private LocalDate leaveStart;
@@ -58,6 +64,11 @@ public class DraftFormDto {
     private String resignReason;
 
     public FormAnnualLeave createFormAnnualLeave() {
+
+        if (leaveStart == null || leaveEnd == null) {
+            throw new IllegalArgumentException("휴가 시작일과 종료일은 필수입니다.");
+        }
+
         FormAnnualLeave formAnnualLeave = new FormAnnualLeave();
         formAnnualLeave.setDocId(docId);
         formAnnualLeave.setFormCode(formType);
@@ -68,6 +79,20 @@ public class DraftFormDto {
         formAnnualLeave.setAnnualContent(content);
 
         return formAnnualLeave;
+    }
+
+    public double getTotalDays() {
+        return (double) ChronoUnit.DAYS.between(leaveStart, leaveEnd) + 1;
+    }
+
+    public List<String> getReferrerList() {
+        if (StringUtils.isNotBlank(referrers)) {
+            return Arrays.stream(referrers.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 
 }

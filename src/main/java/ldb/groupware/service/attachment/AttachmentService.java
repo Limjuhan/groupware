@@ -3,6 +3,7 @@ package ldb.groupware.service.attachment;
 import io.micrometer.common.util.StringUtils;
 import ldb.groupware.domain.Attachment;
 import ldb.groupware.mapper.mybatis.attachment.AttachmentMapper;
+import org.jsoup.internal.StringUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +24,10 @@ public class AttachmentService {
 
     // 파일 업로드 및 Attachment DB저장
     public void saveAttachments(String businessId, String attachType, List<MultipartFile> attachments) {
+
+        if (StringUtils.isBlank(businessId)) {
+            throw new IllegalArgumentException("문서ID가 올바르지 않습니다. businessId : " + businessId);
+        }
 
         String uploadDir = System.getProperty("user.dir");
 

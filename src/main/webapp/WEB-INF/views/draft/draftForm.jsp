@@ -203,10 +203,6 @@
                     <th>퇴사 희망일</th>
                     <td><form:input type="date" path="resignDate" cssClass="form-control bg-glass" /></td>
                 </tr>
-                    <%--                <tr>--%>
-                    <%--                    <th>사유</th>--%>
-                    <%--                    <td><form:textarea path="resignReason" cssClass="form-control bg-glass" rows="3" /></td>--%>
-                    <%--                </tr>--%>
             </table>
         </div>
 
@@ -239,6 +235,13 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function () {
+
+        var errorMessage = '${globalError}';
+
+        if (errorMessage !== '') {
+            alert(errorMessage);
+        }
+
         $('.employee-select').select2({ placeholder: '직원 검색...', allowClear: true });
 
         // 참조자(다중) 처리
@@ -249,6 +252,7 @@
             const formatted = "[" + emp.dept + ", " + emp.role + "]" + emp.name + "<" + emp.email + ">";
             const display = $('#referrerDisplay');
             const hidden = $('#referrersHidden');
+
             if (!hidden.val().includes(emp.id)) {
                 display.val(display.val() ? display.val() + ', ' + formatted : formatted);
                 hidden.val(hidden.val() ? hidden.val() + ',' + emp.id : emp.id);

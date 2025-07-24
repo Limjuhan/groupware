@@ -52,7 +52,7 @@ public class DraftController {
     public String draftForm(Model model, HttpSession session) {
 
         String memId = "user008";
-        Integer remainAnnual = draftService.getReaminAnnual(memId);
+        Integer remainAnnual = draftService.getRemainAnnual(memId);
         List<DraftForMemberDto> memberList = draftService.getMemberList();
 
         model.addAttribute("draftMembers", memberList);
@@ -74,26 +74,23 @@ public class DraftController {
         memId = "user008";
         // 추가 유효성 검증 (양식별 필드)
         validFormType(dto, bindingResult);
+        // 1차,2차,참조자 사원리스트
+        List<DraftForMemberDto> memberList = draftService.getMemberList();
 
         if (bindingResult.hasErrors()) {
-            List<DraftForMemberDto> memberList = draftService.getMemberList();
             model.addAttribute("draftMembers", memberList);
             return "draft/draftForm";
         }
 
-        draftService.saveDraft(dto, attachments, action, memId);
+        try {
+            draftService.saveDraft(dto, attachments, action, memId);
+        } catch (Exception e) {
+            model.addAttribute("globalError", e.getMessage());
+            model.addAttribute("draftMembers", memberList);
+            return "draft/draftForm";
+        }
+
         return "redirect:/draft/getMyDraftList";
-    }
-
-
-    @GetMapping("draftManagement")
-    public String draftManagement() {
-        return "draft/receivedDraftDetail";
-    }
-
-    @GetMapping("receivedDraftList")
-    public String receivedDraftList() {
-        return "draft/receivedDraftList";
     }
 
     private void validFormType(DraftFormDto dto, BindingResult bindingResult) {
@@ -115,5 +112,15 @@ public class DraftController {
                 bindingResult.reject("resign.required", "사직일 선택은 필수입니다.");
             }
         }
+    }
+
+    @GetMapping("draftManagement")
+    public String draftManagement() {
+        return "draft/receivedDraftDetail";
+    }
+
+    @GetMapping("receivedDraftList")
+    public String receivedDraftList() {
+        return "draft/receivedDraftList";
     }
 }

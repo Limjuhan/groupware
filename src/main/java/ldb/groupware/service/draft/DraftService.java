@@ -1,7 +1,7 @@
 package ldb.groupware.service.draft;
 
 import io.micrometer.common.util.StringUtils;
-import ldb.groupware.domain.FormAnnualLeave;
+import ldb.groupware.dto.draft.ApprovalConst;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.dto.draft.DraftListDto;
@@ -33,19 +33,12 @@ public class DraftService {
         return draftMapper.getMyDraftList(memId, type, keyword);
     }
 
-    public void getMyDraft(String docId, String writerId) {
-        
-    }
-
-    public void getMyannualInfo(String docId, String writerId) {
-    }
-
     public List<DraftForMemberDto> getMemberList() {
         return draftMapper.getMemberList();
     }
 
-    public Integer getReaminAnnual(String memId) {
-        return draftMapper.getReaminAnnual(memId);
+    public Integer getRemainAnnual(String memId) {
+        return draftMapper.getRemainAnnual(memId);
     }
 
     /**
@@ -54,56 +47,59 @@ public class DraftService {
      * @param attachments
      * @param action
      * @param memId
-     *  상신시 저장DB
-     *  연차 사용시 해당 사용자의 총연차를 구해서 사용가능한지 검증도 해야함
-     *  attachment
-     *  approval_document
-     *  approval_line
-     *  form_annual_leave
-     *  form_expense
-     *  form_resign
      *
-     * TODO: approval_document,form_annual_leave 진행함. 해당프로세스에 남은잔여연차량검증 없음 생성해야함.
-     * TODO: _line테이블 진행 및 연차생성관련 배치프로세스 정리하기
+     *
+     *  최초 상신시 : attachment, approval_document, approval_line
+     *
+     *  2차결재승인시 :form_annual_leave, form_expense, form_resign, annual_leave_history
+     *  draftMapper.insertFormAnnualLeave(dto.createFormAnnualLeave());
+     *
+     * TODO: 연차생성관련 배치프로세스 정리하기
      */
     @Transactional
-    public void saveDraft(DraftFormDto dto, List<MultipartFile> attachments, String action, String memId) {
+    public void saveDraft(DraftFormDto dto, List<MultipartFile> attachments, String action, String memId) throws IllegalArgumentException {
 
+        if (StringUtils.isBlank(dto.getFormType())) {
+            throw new IllegalArgumentException("결재양식을 선택하세요.");
+        }
+
+        int status = action.equals("temporary") ? ApprovalConst.STATUS_TEMP : ApprovalConst.STATUS_FIRST_APPROVAL_WAITING;
+        draftMapper.insertApprovalDocument(dto, status, memId);
 
         if (action.equals("save")) {
-            insertDraft(dto, memId);
+            validateAnnualLeave(dto, memId); // 연차 검증
+            saveApprovalLine(dto); // 결재선 insert
+        }
 
+        // 첨부파일 저장
+        attachmentService.saveAttachments(dto.getDocId().toString(), dto.getAttachType(), attachments);
+    }
 
-            attachmentService.saveAttachments("21", "D", attachments);
+    private void validateAnnualLeave(DraftFormDto dto, String memId) {
+        double remainAnnualLeave = getRemainAnnual(memId);
+
+        if (remainAnnualLeave < dto.getTotalDays()) {
+            throw new IllegalArgumentException("신청한 휴가기간이 잔여연차를 초과합니다.");
         }
     }
 
-    private void insertDraft(DraftFormDto dto, String memId) {
-        // approval_document 삽입
-        draftMapper.insertApprovalDocument(dto, memId);
 
-        if (!StringUtils.isBlank(dto.getFormType())) {
-            switch (dto.getFormType()) {
-                case "app_01": // 연차
-                    FormAnnualLeave formAnnualLeave = dto.createFormAnnualLeave();
-                    draftMapper.insertFormAnnualLeave(formAnnualLeave);
-                    break;
-//                case "app_02": // 프로젝트
-//                    draftMapper.insertProject();
-//                    break;
-//                case "app_03": // 지출결의서
-//                    draftMapper.insertExpense();
-//                    break;
-//                case "app_04": // 사직서
-//                    draftMapper.insertResign();
-//                    break;
+    private void saveApprovalLine(DraftFormDto dto) {
 
-                default: throw new IllegalArgumentException("잘못된 결재양식 입니다.");
+        insertApprovalLine(dto.getDocId(), dto.getApprover1(), 1, ApprovalConst.REF_NO);
+        insertApprovalLine(dto.getDocId(), dto.getApprover2(), 2, ApprovalConst.REF_NO);
+
+        List<String> reffererList = dto.getReferrerList();
+        if (!reffererList.isEmpty()) {
+            for (String refferer : reffererList) {
+                insertApprovalLine(dto.getDocId(), refferer, 0, ApprovalConst.REF_YES);
             }
-        } else {
-            throw new IllegalArgumentException("선택된 결재양식이 존재하지 않습니다.");
         }
-
-
     }
+
+    private void insertApprovalLine(Integer docId, String memId, int step, String refYn) {
+        draftMapper.insertApprovalLine(docId, memId, step, refYn);
+    }
+
+
 }
