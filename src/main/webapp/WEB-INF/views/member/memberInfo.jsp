@@ -72,11 +72,25 @@
         function removePhoto() {
             if (confirm("사진을 삭제하시겠습니까?")) {
                 document.getElementById("profileImg").src = "/img/profile_default.png";
-                document.getElementById("deletePhoto").value = "Y";
+                document.getElementById("deletePhoto").value = "${user.memPictureSavedName}";
                 const fileInput = document.getElementById("photoInput");
                 if (fileInput) fileInput.value = "";
             }
         }
+
+        // 미리보기 기능 추가
+        window.addEventListener("DOMContentLoaded", function () {
+            document.getElementById('photoInput').addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (ev) {
+                        document.getElementById('profileImg').src = ev.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
     </script>
 </head>
 <body>
@@ -88,7 +102,7 @@
                 <img id="profileImg" src="${not empty user.memPicture ? user.memPicture : '/img/profile_default.png'}"
                      alt="사원 사진" class="img-thumbnail mb-2">
                 <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removePhoto()">사진 삭제</button>
-                <form:input path="photo" type="file" cssClass="form-control" id="photoInput"/>
+                <input type="file" name="photo" class="form-control" id="photoInput"/>
                 <input type="hidden" name="deletePhoto" id="deletePhoto" value="N">
             </div>
             <div class="col-md-9">
@@ -138,7 +152,7 @@
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">주소*</label>
-                        <form:input path="address" cssClass="form-control"/>
+                        <form:input path="memAddress" cssClass="form-control"/>
                     </div>
                 </div>
             </div>
@@ -149,10 +163,10 @@
         <div class="row mb-3">
             <div class="col-md-4">
                 <div class="semi-box">
-                    <strong>연도:</strong> ${annual.year}년<br>
-                    <strong>총 연차:</strong> ${annual.totalDays}일<br>
-                    <strong>사용 연차:</strong> ${annual.useDays}일<br>
-                    <strong>잔여 연차:</strong> ${annual.remainDays}일
+                    <strong>연도:</strong> ${user.year}년<br>
+                    <strong>총 연차:</strong> ${user.totalDays}일<br>
+                    <strong>사용 연차:</strong> ${user.useDays}일<br>
+                    <strong>잔여 연차:</strong> ${user.remainDays}일
                 </div>
             </div>
         </div>
@@ -169,7 +183,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="his" items="${annualHistoryList}">
+                <c:forEach var="his" items="${user.annualHistoryList}">
                     <tr>
                         <td>${his.startDate} ~ ${his.endDate}</td>
                         <td>${his.approvedByName != null ? his.approvedByName : his.approvedBy}</td>

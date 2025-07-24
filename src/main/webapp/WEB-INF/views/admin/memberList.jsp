@@ -141,10 +141,8 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        const user = response.data.user;
-                        const annual = response.data.annual;
+                        const user = response.data;
                         const annualHistoryList = response.data.annualHistoryList;
-
                         // 사용자 정보 채우기
                         $('#detailMemPicture').attr('src', user.memPicture || '/img/profile_default.png');
                         $('#detailName').val(user.memName);
@@ -158,20 +156,21 @@
                         $('#detailEmail').val(user.memEmail);
                         $('#detailPrivateEmail').val(user.memPrivateEmail);
                         $('#detailAddress').val(user.memAddress);
-
                         // 연차 정보 채우기
                         const $annualInfo = $('#annualInfo');
                         $annualInfo.empty();
-                        if (annual) {
+
+                        if (user.year != null && user.totalDays != null) {
                             $annualInfo.html(
-                                '<strong>연도:</strong> ' + annual.year + '년<br>' +
-                                '<strong>총 연차:</strong> ' + annual.totalDays + '일<br>' +
-                                '<strong>사용 연차:</strong> ' + annual.useDays + '일<br>' +
-                                '<strong>잔여 연차:</strong> ' + annual.remainDays + '일'
+                                '<strong>연도:</strong> ' + user.year + '년<br>' +
+                                '<strong>총 연차:</strong> ' + user.totalDays + '일<br>' +
+                                '<strong>사용 연차:</strong> ' + user.useDays + '일<br>' +
+                                '<strong>잔여 연차:</strong> ' + user.remainDays + '일'
                             );
                         } else {
                             $annualInfo.html('연차 정보가 없습니다.');
                         }
+
 
                         // 연차 이력 채우기
                         const $annualHistoryBody = $('#annualHistoryBody');

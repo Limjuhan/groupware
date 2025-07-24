@@ -32,28 +32,9 @@ public class MemberUpdateDto {
     private String privateEmail;
 
     @NotBlank(message = "주소를 입력하세요")
-    private String address;
+    private String memAddress;
 
     private MultipartFile photo;
     private String deletePhoto;
 
-
-    public void setJuminFront(String juminFront) {
-        this.juminFront = juminFront;
-
-        if (juminFront != null && juminFront.length() == 6) {
-            try {
-                int year = Integer.parseInt(juminFront.substring(0, 2));
-                int month = Integer.parseInt(juminFront.substring(2, 4));
-                int day = Integer.parseInt(juminFront.substring(4, 6));
-                int currentYear = LocalDate.now().getYear() % 100;
-                int fullYear = (year <= currentYear) ? 2000 + year : 1900 + year;
-                this.birthDate = LocalDate.of(fullYear, month, day);
-            } catch (Exception e) {
-                this.birthDate = null;
-            }
-        } else {
-            this.birthDate = null;
-        }
-    }
 }

@@ -1,7 +1,6 @@
 package ldb.groupware.service.member;
 
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
-import ldb.groupware.dto.board.PaginationDto;
 import ldb.groupware.dto.member.*;
 import ldb.groupware.mapper.mybatis.member.MemberMapper;
 import ldb.groupware.service.attachment.AttachmentService;
@@ -31,56 +30,51 @@ public class MemberService {
         this.cipherUtil = cipherUtil;
     }
 
-    public MemberUpdateDto getInfo(String memId) {
-        MemberUpdateDto dto = memberMapper.selectInfo(memId);
-        if (dto != null && dto.getJuminBack() != null) {
-            try {
-                dto.setJuminBack(cipherUtil.decrypt(dto.getJuminBack(), memId)); // 복호화
-            } catch (Exception e) {
-                log.error("Failed to decrypt jumin_back for memId: {}", memId, e);
-            }
-        }
-        return dto;
-    }
-
+    // 연차사용 내역 조회
     public List<MemberAnnualLeaveHistoryDto> getAnnualLeaveHistory(String memId) {
         return memberMapper.selectAnnualLeaveHistory(memId);
     }
 
-    public Map<String, Object> getMembers(PaginationDto paginationDto, String dept, String rank, String name) {
-        if (paginationDto.getPage() <= 0) paginationDto.setPage(1);
+    // 
+    public Map<String, Object> getMembers(MemberSearchDto dto) {
+        if (dto.getPage() <= 0) dto.setPage(1);
 
-        int totalCount = memberMapper.countMembers(dept, rank, name);
-        paginationDto.setTotalRows(totalCount);
-        paginationDto.calculatePagination();
+        int totalCount = memberMapper.countMembers(dto);
+        dto.setTotalRows(totalCount);
+        dto.calculatePagination();
 
-        List<MemberListDto> list = memberMapper.getPagedMembers(
-                dept, rank, name,
-                paginationDto.getStartNum(),
-                paginationDto.getItemsPerPage()
-        );
+        List<MemberListDto> list = memberMapper.getPagedMembers(dto);
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("list", list);
-        map.put("pagination", paginationDto);
-        return map;
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", list);
+        result.put("pagination", dto);
+        return result;
     }
 
+    // 부서정보 조회
     public List<DeptDto> getDeptList() {
         return memberMapper.getDeptList();
     }
 
+    // 직급 정보 조회
     public List<RankDto> getRankList() {
         return memberMapper.getRankList();
     }
 
+    // 사원등록
     public boolean insertMember(MemberFormDto dto, MultipartFile file) {
+        // 입사년도
         String year = String.valueOf(dto.getMemHiredate().getYear());
+        // 4자리숫자 조회 + 1 
         String seq = memberMapper.nextMemId(year);
+        // 아이디 생성
         String memId = "LDB" + year + seq;
+        // 이메일 : 사원아이디 + 이메일
         String memEmail = memId + "@ldb.com";
-        String memPass = BCrypt.hashpw("1234", BCrypt.gensalt()); // 비밀번호 해싱
-        String juminBack = cipherUtil.encrypt(dto.getJuminBack(), memId); // 주민번호 뒷자리 암호화
+        // 비밀번호 암호화 처리 (1234 자동 발급)
+        String memPass = BCrypt.hashpw("1234", BCrypt.gensalt());
+        // 주민번호 뒷자리 암호화
+        String juminBack = cipherUtil.encrypt(dto.getJuminBack(), memId);
 
         Map<String, Object> map = new HashMap<>();
         map.put("memId", memId);
@@ -102,26 +96,20 @@ public class MemberService {
         memberMapper.insertMember(map);
 
         if (file != null && !file.isEmpty()) {
-            try {
-                attachmentService.saveAttachments(memId, "P", List.of(file));
-            } catch (RuntimeException e) {
-                log.error("File upload failed for: {}", file.getOriginalFilename(), e);
-                return false;
-            }
+            attachmentService.saveAttachments(memId, "P", List.of(file));
         }
-
         return true;
     }
 
-    public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(String memId, String deptId, String rankId) {
-        int updated = memberMapper.updateMemberByMng(memId, deptId, rankId);
+    public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(UpdateMemberDto dto) {
+        int updated = memberMapper.updateMemberByMng(dto);
         if (updated <= 0) {
             return ApiResponseDto.fail("사원 정보 수정 실패");
         }
-        UpdateMemberDto dto = new UpdateMemberDto(memId, deptId, rankId);
         return ApiResponseDto.ok(dto, "사원 정보 수정 완료");
     }
 
+    //
     public boolean updateInfo(MemberUpdateDto dto) {
         if (dto.getDeletePhoto() != null && !dto.getDeletePhoto().isEmpty()) {
             attachmentService.deleteAttachment(List.of(dto.getDeletePhoto()));
@@ -130,24 +118,45 @@ public class MemberService {
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
             attachmentService.saveAttachments(dto.getMemId(), "P", List.of(dto.getPhoto()));
         }
-
-        return memberMapper.updateInfo(dto) > 0;
+        memberMapper.updateInfo(dto);
+        return true;
     }
 
-    public boolean verifyPassword(String memId, String rawPassword) {
-        String pass = memberMapper.getPasswordByMemId(memId);
+    // 새로입력한 비밀번호 암호화
+    public boolean checkPw(String memId, String rawPassword) {
+        String pass = memberMapper.checkPw(memId);
         if (pass == null) {
             return false;
         }
         return BCrypt.checkpw(rawPassword, pass);
     }
 
-    public boolean updatePassword(String memId, String newPassword) {
+    // 비밀번호 변경
+    public boolean changePw(String memId, String newPassword) {
         String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt());
-        return memberMapper.updatePassword(memId, hashPw) > 0;
+        memberMapper.changePw(memId, hashPw);
+        return true;
     }
 
-    public MemberAnnualLeaveDto getAnnualInfo(String memId) {
-        return memberMapper.selectAnnualByMemId(memId);
+    // 개인정보 조회
+    public MemberInfoDto getMemberInfo(String memId) {
+        MemberInfoDto dto = memberMapper.selectMemberInfo(memId);
+        if (dto == null) return null;
+
+        if (dto.getJuminBack() != null && dto.getJuminBack().matches("^[0-9a-fA-F]+$")) {
+            try {
+                dto.setJuminBack(cipherUtil.decrypt(dto.getJuminBack(), memId));
+            } catch (Exception e) {
+                log.error("주민번호 복호화 실패: {}", memId, e);
+            }
+        } else {
+            log.warn("복호화 생략 - 평문 형식으로 판단됨: {}", dto.getJuminBack());
+        }
+
+        List<MemberAnnualLeaveHistoryDto> history = memberMapper.selectAnnualLeaveHistory(memId);
+        dto.setAnnualHistoryList(history);
+
+        return dto;
     }
+
 }
