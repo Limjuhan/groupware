@@ -9,7 +9,6 @@ public class FormResign {
 
     private Integer docId;
     private String formCode;
-    private String resignContent;
     private LocalDate resignDate;
 }
 

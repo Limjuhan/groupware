@@ -9,6 +9,7 @@ import lombok.ToString;
 @ToString
 public class DraftListDto {
     private String docId; //문서ID
+    private String formCode; // 문서양식
     private String docTitle; //문서제목
     private String docEndDate; //문서 종료일
     private String writer; //기안자

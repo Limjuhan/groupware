@@ -26,24 +26,21 @@ public class DraftApiController {
                                                 @RequestParam String keyword,
                                                 HttpSession session) {
 
-        List<DraftListDto> draftListDtos = null;
-
+        List<DraftListDto> draftList = null;
 //        String memId = session.getAttribute("memId").toString();
         String memId = "user008";
-        System.out.println("type = " + type);
-        System.out.println("keyword = " + keyword);
 
         // 검색조건 없으면 전체 조회
         if (StringUtils.isBlank(type) || StringUtils.isBlank(keyword)) {
-            draftListDtos = draftService.searchMyDraftList(memId, null, null);
+            draftList = draftService.searchMyDraftList(memId, null, null);
         } else {
-            draftListDtos = draftService.searchMyDraftList(memId, type, keyword);
+            draftList = draftService.searchMyDraftList(memId, type, keyword);
         }
 
-        draftListDtos.forEach(draftListDto -> {
+        draftList.forEach(draftListDto -> {
             System.out.println("draftListDto = " + draftListDto);
         });
 
-        return draftListDtos;
+        return draftList;
     }
 }
