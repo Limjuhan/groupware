@@ -3,7 +3,10 @@ package ldb.groupware.controller.member;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import ldb.groupware.dto.member.CodeDto;
 import ldb.groupware.dto.member.LoginDto;
+import ldb.groupware.dto.member.PwCodeDto;
+import ldb.groupware.dto.member.ResetPwDto;
 import ldb.groupware.service.member.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +69,10 @@ public class LoginController {
 
     // 비밀번호 찾기
     @GetMapping("findPass")
-    public String findPass() {
+    public String findPass(Model model) {
+        model.addAttribute("pwCodeDto", new PwCodeDto());
+        model.addAttribute("CodeDto", new CodeDto());
+        model.addAttribute("resetPwDto", new ResetPwDto());
         return "login/findPass";
     }
 }

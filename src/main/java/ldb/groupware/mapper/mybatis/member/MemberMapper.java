@@ -14,7 +14,6 @@ public interface MemberMapper {
 
     String getMemStatus(@Param("memId") String memId);
 
-
     List<MemberAnnualLeaveHistoryDto> selectAnnualLeaveHistory(String memId);
 
     int countMembers(MemberSearchDto dto);
@@ -35,6 +34,10 @@ public interface MemberMapper {
 
     int changePw(@Param("memId") String memId, @Param("encodedPassword") String encodedPassword);
 
-
     MemberInfoDto selectMemberInfo(String memId);
+
+    String findNameById(String id);
+    boolean isValidMember(PwCodeDto dto);
+
+    String selectEmail(@Param("memId") String memId);
 }

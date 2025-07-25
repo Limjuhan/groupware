@@ -17,11 +17,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        //클라이언트가 브라우저에서 /**/파일명 요청 시, 실제 서버의 upload/**/ 디렉토리에 있는 파일을 응답으로 보냄.
         registry.addResourceHandler("/N/**") //유형별로 이름 다르게
                 .addResourceLocations("file:upload/notice/"); // 상대 경로
 
         registry.addResourceHandler("/Q/**")
-                .addResourceLocations("file:upload/question/");
+                .addResourceLocations("file:upload/qna/");
 
         registry.addResourceHandler("/D/**")
                 .addResourceLocations("file:upload/draft/");

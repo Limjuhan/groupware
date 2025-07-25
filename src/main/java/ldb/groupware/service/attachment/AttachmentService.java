@@ -67,18 +67,11 @@ public class AttachmentService {
 
         if (!StringUtils.isBlank(attachType)) {
             switch (attachType) {
-                case "D":
-                    uploadDir += "/upload/draft/";
-                    break;
-                case "N":
-                    uploadDir += "/upload/notice/";
-                    break;
-                case "P":
-                    uploadDir += "/upload/profile/";
-                    break;
-                default:
-                    throw new IllegalArgumentException("첨부파일 타입 확인불가");
-
+                case "D"-> uploadDir += "/upload/draft/";
+                case "N"->  uploadDir += "/upload/notice/";
+                case "P"-> uploadDir += "/upload/profile/";
+                case "Q"-> uploadDir += "/upload/qna/";
+                default-> throw new IllegalArgumentException("첨부파일 타입 확인불가");
             }
         }
         return uploadDir;
