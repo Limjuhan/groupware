@@ -167,4 +167,10 @@
         WHERE mem_id = #{memId}
     </update>
 
+
+
+    <!-- id로 name뽑기 (동곤)-->
+    <select id="findNameById" parameterType="String" resultType="String">
+        select mem_name from member where mem_id = #{val}
+    </select>
 </mapper>

@@ -36,6 +36,11 @@
         LIMIT #{startNum},#{itemsPerPage}
     </select>
 
+    <insert id="insertQna" parameterType="QnaFormDto" >
+    insert into qna (qna_title,qna_content,mem_id,created_at,updated_at)
+    values(#{qnaTitle},#{qnaContent},#{memId},now(),now())
+    </insert>
+
 
 
 

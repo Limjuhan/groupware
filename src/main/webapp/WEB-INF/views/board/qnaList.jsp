@@ -24,7 +24,8 @@
             <button type="button" class="btn btn-outline-info me-2" data-bs-toggle="modal" data-bs-target="#faqModal">
                 자주 묻는 질문
             </button>
-            <a href="getQnaForm?login=admin" class="btn btn-primary">질문하기</a>
+            <a onclick= "goForm('getQnaForm')" class="btn btn-primary">질문하기</a>
+
         </div>
     </div>
 
@@ -122,5 +123,11 @@
     </div>
 </div>
 
+<script>
+    function goForm(url){
+      let op = "width=500,height=700,top=50,left=150";
+      window.open(url, "", op);
+    }
+</script>
 </body>
 </html>

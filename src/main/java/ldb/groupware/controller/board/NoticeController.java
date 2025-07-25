@@ -115,7 +115,7 @@ public class NoticeController {
             Map<String, Object> noticeById = service.getNoticeById(id);
             model.addAttribute("notice",noticeById.get("notice"));
             model.addAttribute("attachedFiles",noticeById.get("attach"));
-            result.rejectValue("noticeContent", "error.content.size", "내용은 8자 이상 입력하세요.");
+            result.rejectValue("noticeContent", "error.content.size");
             return "board/noticeEditForm";
         }
 

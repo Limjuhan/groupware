@@ -1,7 +1,9 @@
 package ldb.groupware.service.board;
 
+import jakarta.validation.Valid;
 import ldb.groupware.dto.board.FaqListDto;
 import ldb.groupware.dto.board.PaginationDto;
+import ldb.groupware.dto.board.QnaFormDto;
 import ldb.groupware.dto.board.QnaListDto;
 import ldb.groupware.mapper.mybatis.board.FaqMapper;
 import ldb.groupware.mapper.mybatis.board.QnaMapper;
@@ -35,5 +37,15 @@ public class QnaService {
         map.put("qna", list);
         map.put("faq", faq);
         return map;
+    }
+
+    public boolean insertQna( QnaFormDto dto) {
+        if(mapper.insertQna(dto)>0) {
+            System.out.println("등록성공(service)");
+            return true;
+        }
+        System.out.println("등록실패(service)");
+        return false;
+
     }
 }

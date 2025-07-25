@@ -37,4 +37,6 @@ public interface MemberMapper {
 
 
     MemberInfoDto selectMemberInfo(String memId);
+
+    String findNameById(String id);
 }

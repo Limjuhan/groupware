@@ -159,4 +159,10 @@ public class MemberService {
         return dto;
     }
 
+
+    //id로 이름꺼내오기(동곤)
+    public String findNameById(String id){
+        return memberMapper.findNameById(id);
+    }
+
 }

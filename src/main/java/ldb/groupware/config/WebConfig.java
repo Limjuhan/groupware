@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:upload/notice/"); // 상대 경로
 
         registry.addResourceHandler("/Q/**")
-                .addResourceLocations("file:upload/question/");
+                .addResourceLocations("file:upload/qna/");
 
         registry.addResourceHandler("/D/**")
                 .addResourceLocations("file:upload/draft/");

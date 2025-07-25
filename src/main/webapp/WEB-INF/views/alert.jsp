@@ -10,16 +10,33 @@
 </head>
 <body>
 <script>
+    const msg = '${msg}';
+    const url = '${url}';
+
+    // 아이콘 타입 설정
+    let iconType = 'info';
+    let titleText = '알림';
+
+    if (msg.includes('성공')) {
+        iconType = 'success';
+        titleText = '성공';
+    } else if (msg.includes('실패') || msg.includes('오류') || msg.includes('에러')) {
+        iconType = 'error';
+        titleText = '실패';
+    } else if (msg.includes('경고')) {
+        iconType = 'warning';
+        titleText = '경고';
+    }
+
     Swal.fire({
-        icon: 'success',
-        title: '알림',
-        text: '${msg}',
+        icon: iconType,
+        title: titleText,
+        text: msg,
         confirmButtonText: '확인',
         confirmButtonColor: '#3085d6',
         allowOutsideClick: false
     }).then((result) => {
         if (result.isConfirmed) {
-            let url = '${url}';
             if (url && url !== 'null' && url !== '') {
                 // 팝업창이면 부모창 이동
                 if (window.opener) {
