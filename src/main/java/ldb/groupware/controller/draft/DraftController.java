@@ -3,8 +3,10 @@ package ldb.groupware.controller.draft;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import ldb.groupware.domain.Attachment;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
+import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.draft.DraftService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -24,10 +26,12 @@ public class DraftController {
 
     private final DraftService draftService;
     private final MessageSource messageSource;
+    private final AttachmentService attachmentService;
 
-    public DraftController(DraftService draftService, MessageSource messageSource) {
+    public DraftController(DraftService draftService, MessageSource messageSource, AttachmentService attachmentService) {
         this.draftService = draftService;
         this.messageSource = messageSource;
+        this.attachmentService = attachmentService;
     }
 
     @GetMapping("getMyDraftList")
@@ -56,6 +60,11 @@ public class DraftController {
         try {
             if (docId != null && formCode != null) {
                 dto = draftService.getDraftForm(docId, formCode);
+                List<Attachment> attachments =
+                        attachmentService.getAttachments(docId.toString(), dto.getAttachType());
+                if (attachments != null && !attachments.isEmpty()) {
+                    model.addAttribute("attachments", attachments);
+                }
             } else {
                 dto = new DraftFormDto();
             }
@@ -63,8 +72,6 @@ public class DraftController {
             model.addAttribute("globalError", e.getMessage());
         }
 
-
-        // 모델 등록
         model.addAttribute("draftFormDto", dto);
         model.addAttribute("draftMembers", memberList);
         model.addAttribute("remainAnnual", remainAnnual);

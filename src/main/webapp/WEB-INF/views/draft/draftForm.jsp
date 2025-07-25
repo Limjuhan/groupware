@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <title>결재문서 작성 - LDBSOFT</title>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
         /* 스타일 생략 (기존과 동일) */
         body { color: white; background-color: #1e1e1e; }
@@ -229,6 +230,24 @@
             <label class="form-label">첨부파일</label>
             <input type="file" class="form-control bg-glass" name="attachments" multiple>
         </div>
+        <!-- 첨부파일 존재시 -->
+        <c:if test="${not empty attachments}">
+            <div class="mt-2">
+                <label class="form-label">등록된 첨부파일</label>
+                <ul class="list-unstyled">
+                    <c:forEach var="file" items="${attachments}">
+                        <li class="mb-1" id="attach-${file.savedName}">
+                            <a href="/upload/${file.filePath}/${file.savedName}" download="${file.originalName}" class="link-light">
+                                <i class="bi bi-paperclip"></i> ${file.originalName}
+                            </a>
+                            <button type="button" class="btn btn-sm btn-danger ms-2"
+                                    onclick="deleteAttachment('${file.savedName}', '${file.attachType}')">삭제</button>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </div>
+        </c:if>
+
 
         <!-- 제출 버튼 -->
         <div class="text-end mt-4">
@@ -288,6 +307,25 @@
         $('#formTypeSelect').on('change', function () {
             showFormTemplate($(this).val());
         });
+
+        // 첨부파일 삭제
+        function deleteAttachment(savedName, attachType) {
+            if (!confirm("첨부파일을 삭제하시겠습니까?")) return;
+
+            $.ajax({
+                type: "POST",
+                url: "/draft/delete",
+                data: { savedName: savedName,
+                        attachType: attachType,
+                },
+                success: function () {
+                    $("#attach-" + savedName).remove(); // UI에서도 제거
+                },
+                error: function () {
+                    alert("삭제 중 오류가 발생했습니다.");
+                }
+            });
+        }
     });
 </script>
 </body>

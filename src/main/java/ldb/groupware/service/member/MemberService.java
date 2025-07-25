@@ -112,7 +112,7 @@ public class MemberService {
     //
     public boolean updateInfo(MemberUpdateDto dto) {
         if (dto.getDeletePhoto() != null && !dto.getDeletePhoto().isEmpty()) {
-            attachmentService.deleteAttachment(List.of(dto.getDeletePhoto()));
+            attachmentService.deleteAttachment(List.of(dto.getDeletePhoto()), null);
         }
 
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {

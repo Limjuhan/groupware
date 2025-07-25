@@ -65,7 +65,6 @@ public class DraftService {
     public void saveDraft(DraftFormDto dto, List<MultipartFile> attachments, String action, String memId) throws IllegalArgumentException {
 
         int status = action.equals("temporary") ? ApprovalConst.STATUS_TEMP : ApprovalConst.STATUS_FIRST_APPROVAL_WAITING;
-
         draftMapper.insertApprovalDocument(dto, status, memId);
         saveDraftForm(dto);
 
@@ -77,7 +76,7 @@ public class DraftService {
         // 첨부파일 저장
         attachmentService.saveAttachments(dto.getDocId().toString(), dto.getAttachType(), attachments);
     }
-
+    //TODO:휴가계획서만 완료. 나머지 양식 저장처리 진행해야함
     private void saveDraftForm(DraftFormDto dto) {
 
         if (dto.getFormCode().equals(ApprovalConst.FORM_ANNUAL)) {
