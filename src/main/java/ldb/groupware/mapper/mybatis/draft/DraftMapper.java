@@ -43,4 +43,22 @@ public interface DraftMapper {
     FormResign getFormResign(Integer docId);
 
     DraftFormDto getApprovalDocumentByDocId(Integer docId);
+
+    void updateApprovalDocument(DraftFormDto dto,
+                                @Param("status") int status,
+                                @Param("memId") String memId);
+
+    void updateFormAnnualLeave(FormAnnualLeave from);
+
+    void updateFormProject(FormProject from);
+
+    void updateFormExpense(FormExpense from);
+
+    void updateFormResign(FormResign from);
+
+    void insertFormResign(FormResign from);
+
+    void insertFormProject(FormProject from);
+
+    void insertFormExpense(FormExpense from);
 }

@@ -1,5 +1,6 @@
 package ldb.groupware.domain;
 
+import ldb.groupware.dto.draft.DraftFormDto;
 import lombok.Data;
 import java.time.LocalDate;
 
@@ -13,5 +14,18 @@ public class FormExpense {
     private String exName;
     private Integer exAmount;
     private String exContent;
+
+    public static FormExpense from(DraftFormDto dto) {
+        FormExpense formExpense = new FormExpense();
+
+        formExpense.setDocId(dto.getDocId());
+        formExpense.setFormCode(dto.getFormCode());
+        formExpense.setUseDate(dto.getUseDate());
+        formExpense.setExName(dto.getExName());
+        formExpense.setExAmount(dto.getExAmount());
+        formExpense.setExContent(dto.getContent());
+
+        return formExpense;
+    }
 }
 

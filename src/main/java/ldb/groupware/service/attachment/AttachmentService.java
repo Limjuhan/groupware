@@ -9,7 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -90,7 +92,7 @@ public class AttachmentService {
         savedNames.forEach(savedName -> {
             // null이 아니고, 공백만 있는 문자열이 아닌 경우에만 삭제 로직 실행
             if (savedName != null && !savedName.trim().isEmpty()) {
-                // 실제 파일도 삭제
+                // 실제 파일 삭제
                 String uploadDir = getUploadDir(attachType);
                 String fullPath = uploadDir + File.separator + savedName;
                 File file = new File(fullPath);
@@ -103,19 +105,18 @@ public class AttachmentService {
         });
     }
 
-    public List<Attachment> getAttachments(String businessId, String attachType) {
-        List<Attachment> attachmentList = attachmentMapper.getAttachments(businessId, attachType);
+    public Optional<List<Attachment>> getAttachments(String businessId, String attachType) {
 
-        if (attachmentList == null || attachmentList.isEmpty()) {
-            return null;
-        }
+        List<Attachment> rawAttachmentList = attachmentMapper.getAttachments(businessId, attachType);
 
-        for (Attachment a : attachmentList) {
-            if (a.getSavedName() == null || a.getFilePath() == null) {
-                return null;
-            }
-        }
-
-        return attachmentList;
+        //    가져온 리스트가 null이 아니면서, 비어있지 않은지 확인합니다.
+        //    동시에 각 Attachment 객체의 savedName과 filePath 필드가 null이 아닌지 검증합니다.
+        //    모든 조건이 충족되면 해당 리스트를 Optional로 감싸서 반환하고,
+        //    하나라도 충족되지 않으면 Optional.empty()를 반환합니다.
+        return Optional.ofNullable(rawAttachmentList) // 리스트 자체가 null인 경우 Optional.empty()
+                .filter(list -> !list.isEmpty()) // 리스트가 비어있지 않은 경우에만 통과
+                .filter(list -> list.stream() // 리스트의 모든 요소가 유효한지 검사
+                        .allMatch(a -> a.getSavedName() != null && a.getFilePath() != null))
+                .map(Collections::unmodifiableList); // 반환되는 리스트가 외부에서 수정되지 않도록 불변 리스트로 래핑
     }
 }

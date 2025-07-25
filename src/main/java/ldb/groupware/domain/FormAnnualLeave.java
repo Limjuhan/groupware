@@ -23,9 +23,6 @@ public class FormAnnualLeave {
     private String annualContent;
 
     public static FormAnnualLeave from(DraftFormDto dto) {
-        if (dto.getLeaveStart() == null || dto.getLeaveEnd() == null) {
-            throw new IllegalArgumentException("휴가 시작일과 종료일은 필수입니다.");
-        }
 
         FormAnnualLeave formAnnualLeave = new FormAnnualLeave();
         formAnnualLeave.setDocId(dto.getDocId());

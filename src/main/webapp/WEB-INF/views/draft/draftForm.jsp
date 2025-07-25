@@ -76,6 +76,7 @@
 
     <form:form method="post" action="insertMyDraft" modelAttribute="draftFormDto" enctype="multipart/form-data">
         <form:errors cssClass="text-danger fw-bold fs-5" />
+        <form:input type="hidden" path="docId"/>
         <!-- 결재양식 -->
         <div class="mb-3 select-wrapper">
             <label class="form-label">결재양식 선택 *</label>
@@ -133,7 +134,7 @@
         <!-- 마감기한 -->
         <div class="mb-3 dependent-fields d-none">
             <label class="form-label">문서종료일 *</label>
-            <form:input type="date" path="docEndDate" cssClass="form-control bg-glass" />
+            <input type="date" name="docEndDate" cssClass="form-control bg-glass" value="${draftFormDto.docEndDateStr}"/>
             <form:errors path="docEndDate" cssClass="text-danger" />
         </div>
 
@@ -156,8 +157,8 @@
                 <tr>
                     <th>휴가 기간</th>
                     <td>
-                        <form:input type="date" path="leaveStart" cssClass="bg-glass" /> ~
-                        <form:input type="date" path="leaveEnd" cssClass="bg-glass" />
+                        <input type="date" name="leaveStart" class="bg-glass" value="${draftFormDto.leaveStartStr}" /> ~
+                        <input type="date" name="leaveEnd" class="bg-glass" value="${draftFormDto.leaveEndStr}" />
                         <form:errors path="leaveStart" cssClass="text-danger" />
                         <form:errors path="leaveEnd" cssClass="text-danger" />
                     </td>
@@ -179,8 +180,10 @@
                 </tr>
                 <tr>
                     <th>예상 기간</th>
-                    <td><form:input type="date" path="projectStart" cssClass="bg-glass" /> ~
-                        <form:input type="date" path="projectEnd" cssClass="bg-glass" /></td>
+                    <td>
+                        <input type="date" name="projectStart" class="bg-glass" value="${draftFormDto.projectStartStr}" /> ~
+                        <input type="date" name="projectEnd" class="bg-glass" value="${draftFormDto.projectEndStr}" />
+                    </td>
                 </tr>
             </table>
         </div>
@@ -236,7 +239,7 @@
                 <label class="form-label">등록된 첨부파일</label>
                 <ul class="list-unstyled">
                     <c:forEach var="file" items="${attachments}">
-                        <li class="mb-1" id="attach-${file.savedName}">
+                        <li class="mb-1 attach-item" data-id="${file.savedName}">
                             <a href="/upload/${file.filePath}/${file.savedName}" download="${file.originalName}" class="link-light">
                                 <i class="bi bi-paperclip"></i> ${file.originalName}
                             </a>
@@ -249,11 +252,12 @@
         </c:if>
 
 
+
         <!-- 제출 버튼 -->
         <div class="text-end mt-4">
             <button type="submit" name="action" value="save" class="btn btn-primary bg-glass">제출</button>
             <button type="submit" name="action" value="temporary" class="btn btn-secondary bg-glass">임시저장</button>
-            <a href="draftList" class="btn btn-light bg-glass">취소</a>
+            <a href="getMyDraftList" class="btn btn-light bg-glass">목록으로</a>
         </div>
     </form:form>
 </div>
@@ -307,26 +311,33 @@
         $('#formTypeSelect').on('change', function () {
             showFormTemplate($(this).val());
         });
-
-        // 첨부파일 삭제
-        function deleteAttachment(savedName, attachType) {
-            if (!confirm("첨부파일을 삭제하시겠습니까?")) return;
-
-            $.ajax({
-                type: "POST",
-                url: "/draft/delete",
-                data: { savedName: savedName,
-                        attachType: attachType,
-                },
-                success: function () {
-                    $("#attach-" + savedName).remove(); // UI에서도 제거
-                },
-                error: function () {
-                    alert("삭제 중 오류가 발생했습니다.");
-                }
-            });
-        }
     });
+
+    // 첨부파일 삭제
+    function deleteAttachment(savedName, attachType) {
+        if (!confirm("첨부파일을 삭제하시겠습니까?")) return;
+
+        $.ajax({
+            type: "POST",
+            url: "/draft/delete",
+            data: {
+                savedName: savedName,
+                attachType: attachType
+            },
+            success: function (res) {
+                if (res.success) {
+                    // 백틱 대신 문자열 연결 방식 사용
+                    $(".attach-item[data-id='" + savedName + "']").remove();
+                } else {
+                    alert("삭제 실패: " + res.message);
+                }
+            },
+            error: function () {
+                alert("삭제 중 오류가 발생했습니다.");
+            }
+        });
+    }
+
 </script>
 </body>
 </html>

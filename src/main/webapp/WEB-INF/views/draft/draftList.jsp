@@ -203,9 +203,13 @@
         }
     }
 
-
-    // ✅ 페이지 로딩 시 전체 목록 먼저 출력
     $(document).ready(function () {
+        // 에러발생시 alert
+        var errorMessage = '${globalError}';
+        if (errorMessage !== '') {
+            alert(errorMessage);
+        }
+
         searchMyDraftList();
     });
 </script>

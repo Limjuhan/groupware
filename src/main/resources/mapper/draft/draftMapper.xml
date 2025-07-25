@@ -87,6 +87,7 @@
                a.form_code as formCode,
                a.doc_title as title,
                a.doc_content as content,
+               a.doc_endDate as docEndDate,
                (SELECT mem_id FROM approval_line WHERE doc_id = #{docId} AND step_order = 1) AS approver1,
                (SELECT mem_id FROM approval_line WHERE doc_id = #{docId} AND step_order = 2) AS approver2
         FROM approval_document a
@@ -109,5 +110,44 @@
     <select id="getFormResign" resultType="FormResign">
         SELECT * FROM form_resign WHERE doc_id = #{docId}
     </select>
+
+    <update id="updateFormProject" parameterType="FormProject">
+        UPDATE form_project
+        SET project_name = #{projectName},
+            pro_content = #{proContent},
+            start_date = #{startDate},
+            end_date = #{endDate}
+        WHERE doc_id = #{docId}
+    </update>
+
+    <update id="updateFormExpense" parameterType="FormExpense">
+        UPDATE form_expense
+        SET use_date = #{useDate},
+            ex_name = #{exName},
+            ex_amount = #{exAmount},
+            ex_content = #{exContent}
+        WHERE doc_id = #{docId}
+    </update>
+
+    <update id="updateFormResign" parameterType="FormResign">
+        UPDATE form_resign
+        SET resign_date = #{resignDate}
+        WHERE doc_id = #{docId}
+    </update>
+
+    <update id="updateApprovalDocument">
+        UPDATE approval_document
+        SET
+            form_code = #{dto.formCode},
+            doc_title = #{dto.title},
+            doc_content = #{dto.content},
+            mem_id = #{memId},
+            status = #{status},
+            updated_at = NOW(),
+            doc_endDate = #{dto.docEndDate}
+        WHERE
+            doc_id = #{dto.docId}
+    </update>
+
 
 </mapper>

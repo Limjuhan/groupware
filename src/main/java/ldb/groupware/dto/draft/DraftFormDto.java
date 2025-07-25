@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,6 +65,39 @@ public class DraftFormDto {
 
     // 사직서
     private LocalDate resignDate;
+
+    // LocalDate -> String
+    public String getLeaveStartStr() {
+        return formatDate(leaveStart);
+    }
+
+    public String getLeaveEndStr() {
+        return formatDate(leaveEnd);
+    }
+
+    public String getProjectStartStr() {
+        return formatDate(projectStart);
+    }
+
+    public String getProjectEndStr() {
+        return formatDate(projectEnd);
+    }
+
+    public String getUseDateStr() {
+        return formatDate(useDate);
+    }
+
+    public String getResignDateStr() {
+        return formatDate(resignDate);
+    }
+
+    public String getDocEndDateStr() {
+        return formatDate(docEndDate);
+    }
+
+    private String formatDate(LocalDate date) {
+        return date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
+    }
 
     public double getTotalDays() {
         if (leaveStart == null || leaveEnd == null) {
