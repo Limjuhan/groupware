@@ -33,7 +33,9 @@ public class SiteMeshConfig  {
                         .addExcludedPath("/board/insertNotice")
                         .addExcludedPath("/board/updateNoticeByMng")
                         .addExcludedPath("/board/getQnaForm")
-                        .addExcludedPath("/board/insertQna");
+                        .addExcludedPath("/board/insertQna")
+                        .addExcludedPath("/board/getQnaEditForm")
+                        .addExcludedPath("/board/updateQna");
 
 
 //                builder.addDecoratorPath("/mypage/getCourseTimetable","sitemesh/layout.jsp");

@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import ldb.groupware.dto.board.*;
 import ldb.groupware.dto.attach.AttachmentDto;
 import ldb.groupware.mapper.mybatis.board.NoticeMapper;
+import ldb.groupware.service.attachment.AttachmentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,10 +17,14 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class NoticeService {
 
-    @Autowired
-    private  NoticeMapper mapper;
+
+    private  final  NoticeMapper mapper;
+    private final AttachmentService attachService;
+
+
 
     public Map<String, Object> getNoticeList(PaginationDto pageDto) {
         HashMap<String, Object> map = new HashMap<>();
@@ -48,50 +54,14 @@ public class NoticeService {
         return map;
     }
 
-    private String uploadFileCreate(MultipartFile file, String path) {
-        String name = file.getOriginalFilename();
-        String extension = name.substring(name.lastIndexOf("."));
-        String orgFile = UUID.randomUUID().toString()+extension;
-        File f = new File(path);
-        if(!f.exists()) {
-            f.mkdirs();
-        }
-        try {
-            file.transferTo(new File(path+orgFile));
-            return orgFile;
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public boolean insertNotice(NoticeFormDto dto, List<MultipartFile> files
-            , HttpServletRequest request) {
 
 
+    public boolean insertNotice(NoticeFormDto dto, List<MultipartFile> files) {
         AttachmentDto attach = new AttachmentDto();
         mapper.insertNotice(dto);
-
         int noticeId  = mapper.getMaxNum(dto.getMemId());
-
-
-
         String noId = String.valueOf(noticeId);
-
-        for (MultipartFile file : files) {
-            if(file!=null && !file.isEmpty()) {
-                //String path = request.getServletContext().getRealPath("/")+"board/file/";
-                String uploadDir = System.getProperty("user.dir") + "/upload/notice/";
-                String savedName = this.uploadFileCreate(file, uploadDir);
-                attach.setAttachType("N");
-                String originalFilename = file.getOriginalFilename();
-                attach.setSavedName(savedName); // saveName
-                attach.setFilePath("/N/"); // 경로 + saveName
-                attach.setOriginalName(originalFilename); //원본이름
-                attach.setBusinessId(noId);
-                mapper.insertAttach(attach);
-            }
-        }
+        attachService.saveAttachments(noId,"N",files);
         return true;
     }
 
@@ -122,20 +92,11 @@ public class NoticeService {
         AttachmentDto attach = new AttachmentDto();
         String noId = String.valueOf(dto.getNoticeId());
         if(mapper.updateNotice(dto)>0){
-            for (MultipartFile file : files) {
-                if(file!=null && !file.isEmpty()) {
-                    //String path = request.getServletContext().getRealPath("/")+"board/file/";
-                    String uploadDir = System.getProperty("user.dir") + "/upload/notice/";
-                    String savedName = this.uploadFileCreate(file, uploadDir);
-                    attach.setAttachType("N");
-                    String originalFilename = file.getOriginalFilename();
-                    attach.setSavedName(savedName); // saveName
-                    attach.setFilePath("/N/"); // 경로 + saveName
-                    attach.setOriginalName(originalFilename); //원본이름
-                    attach.setBusinessId(noId);
-                    mapper.insertAttach(attach);
-                }
+            List<String> existingFiles = dto.getExistingFiles();
+            if(existingFiles!=null && existingFiles.size()>0) {
+               attachService.deleteAttachment(existingFiles,"N");
             }
+            attachService.saveAttachments(noId,"N",files);
             return true;
         }
         else{

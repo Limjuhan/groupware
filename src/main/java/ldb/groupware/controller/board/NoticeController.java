@@ -42,7 +42,7 @@ public class NoticeController {
 
     @GetMapping("getNoticeForm")
     public String getNoticeForm(Model model , HttpServletRequest request) {
-        //String id = request.getSession().getAttribute("loginId");
+        //String id = (String)request.getSession().getAttribute("loginId");
         String id   = "admin";
        String name = service.getMember(id);
        model.addAttribute("memName",name);
@@ -53,6 +53,8 @@ public class NoticeController {
     @PostMapping("insertNotice")
     public String insertNotice(@Valid @ModelAttribute("noticeFormDto") NoticeFormDto dto, BindingResult result, @RequestParam("uploadFile") List<MultipartFile> files ,
                                HttpServletRequest request , Model model) {
+        //String id = (String)request.getSession().getAttribute("loginId");
+
         String id   = "admin";
         String name = service.getMember(id);
         model.addAttribute("memName",name);
@@ -68,7 +70,7 @@ public class NoticeController {
         }
         
         //유효성검사 모두성공시
-        if(service.insertNotice(dto,files,request)){
+        if(service.insertNotice(dto,files)){
             model.addAttribute("msg","등록 성공");
         }
         else{
@@ -118,12 +120,6 @@ public class NoticeController {
             result.rejectValue("noticeContent", "error.content.size");
             return "board/noticeEditForm";
         }
-
-
-        String[] existingFiles = dto.getExistingFiles();//삭제버튼을 누른 파일들
-        if(existingFiles!=null && existingFiles.length>0) { //삭제를 아무것도안했을경우를 대비
-            service.deleteFile(existingFiles);
-        }
         if(service.updateNotice(files,dto)){
             model.addAttribute("msg","업뎃성공");
         }
@@ -145,5 +141,7 @@ public class NoticeController {
         model.addAttribute("url","getNoticeList");
         return "alert";
     }
+
+
 
 }

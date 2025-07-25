@@ -1,8 +1,7 @@
 package ldb.groupware.mapper.mybatis.board;
 
-import ldb.groupware.dto.board.PaginationDto;
-import ldb.groupware.dto.board.QnaFormDto;
-import ldb.groupware.dto.board.QnaListDto;
+import ldb.groupware.domain.QnaComment;
+import ldb.groupware.dto.board.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -14,4 +13,20 @@ public interface QnaMapper {
     List<QnaListDto> getQnaList(PaginationDto paging);
 
     int insertQna(QnaFormDto dto);
+
+    int maxQnaId(String memId);
+
+    QnaDetailDto findQnaById(int id);
+
+    void addViewCount(int id);
+
+    List<QnaComment> findCommById(int id);
+
+    int insertComment(CommentFormDto dto);
+
+    int updateQna(QnaUpdateDto dto);
+
+    int deleteById(int id);
+
+    int deleteCommentById(int id);
 }
