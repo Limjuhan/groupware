@@ -65,13 +65,10 @@ public class DraftService {
 
         int status = getStatus(action);
 
-        if (StringUtils.isNotBlank(dto.getDocId().toString())) { // 임시저장 -> 임시저장 or 제출
+        if (dto.getDocId() != null) { // 임시저장 -> 임시저장 or 제출
             updateApprovalDraft(dto, memId, status);
-        } else if (StringUtils.isBlank(dto.getDocId().toString())) { // 새글작성->임시저장 or 제출
+        } else if (dto.getDocId() == null) { // 새글작성->임시저장 or 제출
             insertNewApprovalDraft(dto, memId, status);
-        } else {
-            throw new IllegalArgumentException(
-                    messageSource.getMessage("error.docid.invalid", null, Locale.KOREA));
         }
 
         if (action.equals("save")) {// 새글작성 -> 제출
@@ -133,7 +130,6 @@ public class DraftService {
             );
         }
     }
-
 
     private void saveApprovalLine(DraftFormDto dto) {
 

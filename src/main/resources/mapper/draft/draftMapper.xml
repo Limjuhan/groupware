@@ -149,5 +149,27 @@
             doc_id = #{dto.docId}
     </update>
 
+    <insert id="insertFormProject" parameterType="FormProject">
+        INSERT INTO form_project
+            (doc_id, form_code, project_name, pro_content, start_date, end_date)
+        VALUES
+            (#{docId}, #{formCode}, #{projectName}, #{proContent}, #{startDate}, #{endDate})
+    </insert>
+
+    <insert id="insertFormExpense" parameterType="FormExpense">
+        INSERT INTO form_expense
+            (doc_id, form_code, use_date, ex_name, ex_amount, ex_content)
+        VALUES
+            (#{docId}, #{formCode}, #{useDate}, #{exName}, #{exAmount}, #{exContent})
+    </insert>
+
+    <insert id="insertFormResign" parameterType="FormResign">
+        INSERT INTO form_resign
+            (doc_id, form_code, resign_date)
+        VALUES
+            (#{docId}, #{formCode}, #{resignDate})
+    </insert>
+
+
 
 </mapper>

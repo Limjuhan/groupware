@@ -1,10 +1,15 @@
 package ldb.groupware.domain;
 import ldb.groupware.dto.draft.DraftFormDto;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.time.LocalDate;
 
-@Data
-//프로젝트제안서 폼
+@Getter
+@Setter
+@ToString
 public class FormProject {
 
     private Integer docId;

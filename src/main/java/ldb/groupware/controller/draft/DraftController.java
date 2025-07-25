@@ -59,7 +59,7 @@ public class DraftController {
         // 임시저장 문서 불러오기 또는 빈 DTO 생성
         DraftFormDto dto = null;
         try {
-            if (StringUtils.isNotBlank(docId.toString()) && StringUtils.isNotBlank(formCode)) {
+            if (docId != null && StringUtils.isNotBlank(formCode)) {
                 dto = draftService.getDraftForm(docId, formCode);
 
                 Optional<List<Attachment>> optionalAttachmentList =
