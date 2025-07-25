@@ -3,11 +3,11 @@ package ldb.groupware.controller.draft;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpSession;
 import ldb.groupware.dto.draft.DraftListDto;
+import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.draft.DraftService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,9 +16,11 @@ import java.util.List;
 public class DraftApiController {
 
     private final DraftService draftService;
+    private final AttachmentService attachmentService;
 
-    public DraftApiController(DraftService draftService) {
+    public DraftApiController(DraftService draftService, AttachmentService attachmentService) {
         this.draftService = draftService;
+        this.attachmentService = attachmentService;
     }
 
     @GetMapping("/searchMyDraftList")
@@ -43,4 +45,17 @@ public class DraftApiController {
 
         return draftList;
     }
+
+    @PostMapping("delete")
+    public ResponseEntity<?> deleteAttachment(
+            @RequestParam("savedName") String savedName,
+            @RequestParam("attachType") String attachType) {
+        try {
+            attachmentService.deleteAttachment(List.of(savedName), attachType);
+            return ResponseEntity.ok("success");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+        }
+    }
+
 }

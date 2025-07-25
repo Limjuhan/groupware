@@ -9,6 +9,16 @@
     </insert>
 
     <delete id="delete" parameterType="String">
-        delete from attachment where saved_name=#{savedName}
+        delete from attachment
+        where saved_name=#{savedName}
     </delete>
+
+    <select id="getAttachments" resultType="Attachment">
+        select *
+        from attachment
+        where 1=1
+        and   business_id = #{businessId}
+        and   attach_type = #{attachType}
+    </select>
+
 </mapper>

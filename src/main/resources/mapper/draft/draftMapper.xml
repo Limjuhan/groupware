@@ -109,4 +109,5 @@
     <select id="getFormResign" resultType="FormResign">
         SELECT * FROM form_resign WHERE doc_id = #{docId}
     </select>
+
 </mapper>
