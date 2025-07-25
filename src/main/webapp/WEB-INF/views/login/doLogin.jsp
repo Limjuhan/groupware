@@ -5,7 +5,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>LDBSOFT 그룹웨어 로그인</title>
+  <title> LDBSOFT Groupware 로그인</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {

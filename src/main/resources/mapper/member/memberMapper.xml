@@ -167,4 +167,18 @@
         WHERE mem_id = #{memId}
     </update>
 
+    <!-- 이메일 정보 조회-->
+    <select id="selectEmail" resultType="string" parameterType="string">
+        SELECT mem_private_email
+        from member
+        where mem_id = #{memId}
+    </select>
+
+    <select id="isValidMember" parameterType="PwCodeDto" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM member
+        WHERE mem_id = #{memId}
+          AND mem_name = #{memName}
+          AND mem_private_email = #{memPrivateEmail}
+    </select>
 </mapper>

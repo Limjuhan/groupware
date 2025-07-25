@@ -1,87 +1,263 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>비밀번호 찾기</title>
+  <title>LDBSOFT Groupware - 비밀번호 찾기</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      background: linear-gradient(135deg, #e0eafc, #cfdef3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .find-card {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 500px;
-    }
-
-    .form-label {
-      font-weight: 500;
-    }
-
-    .form-control {
-      border-radius: 8px;
-    }
-
-    .form-control:focus {
-      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-    }
-
-    .btn-primary {
-      font-weight: bold;
-      padding: 10px;
-    }
-
-    .text-title {
-      font-size: 22px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 25px;
-      color: #0d6efd;
-    }
-  </style>
 </head>
-<body>
-<div class="find-card">
-  <div class="text-title">
-    🔐 비밀번호 찾기
-  </div>
-  <form action="findPasswordProc.jsp" method="post">
-    <!-- 이름 -->
-    <div class="mb-3">
-      <label for="name" class="form-label">👤 이름</label>
-      <input type="text" class="form-control" id="name" name="name" required placeholder="예: 홍길동">
-    </div>
+<body class="bg-light d-flex justify-content-center align-items-center" style="height: 100vh;">
 
-    <!-- 사원번호 -->
+<div class="card p-4 shadow" style="max-width: 400px; width: 100%;">
+  <h4 class="text-center mb-4">🔐 비밀번호 찾기</h4>
+  <form id="authForm">
     <div class="mb-3">
-      <label for="memId" class="form-label">🆔 사원번호</label>
-      <input type="text" class="form-control" id="memId" name="memId" required placeholder="예: LDB20240001">
+      <label class="form-label">이름</label>
+      <input type="text" name="memName" class="form-control" required />
     </div>
-
-    <!-- 2차 이메일 -->
+    <div class="mb-3">
+      <label class="form-label">사원번호</label>
+      <input type="text" name="memId" class="form-control" required />
+    </div>
     <div class="mb-4">
-      <label for="memPrivateEmail" class="form-label">📧 2차 이메일 (개인 이메일)</label>
-      <input type="email" class="form-control" id="memPrivateEmail" name="memPrivateEmail" required placeholder="예: example@gmail.com">
+      <label class="form-label">2차 이메일 (개인 이메일)</label>
+      <input type="email" name="memPrivateEmail" class="form-control" required />
     </div>
-
-    <!-- 버튼 -->
-    <div class="d-grid">
-      <button type="submit" class="btn btn-primary">임시 비밀번호 발송</button>
+    <div class="d-grid gap-2">
+      <button type="button" class="btn btn-primary w-100" id="sendCodeBtn">
+        <span class="spinner-border spinner-border-sm me-2 d-none" id="sendSpinner" role="status"></span>
+        인증번호 전송
+      </button>
+      <div id="sendInfoText" class="form-text text-muted mt-1">
+        📧 이메일 전송에는 최대 <strong>10~15초</strong>가 소요될 수 있습니다. 잠시만 기다려 주세요.
+      </div>
     </div>
   </form>
 </div>
 
+<!-- 인증번호 확인 모달 -->
+<div class="modal fade" id="codeModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="verifyForm">
+        <div class="modal-header">
+          <h5 class="modal-title">인증번호 확인</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+        </div>
+        <div class="modal-body">
+          <p>이메일로 발송된 인증번호를 입력해주세요.</p>
+          <input type="text" name="inputCode" class="form-control" required placeholder="인증번호 입력" />
+          <input type="hidden" name="memId" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+          <button type="submit" class="btn btn-success">확인</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 비밀번호 재설정 선택 모달 -->
+<div class="modal fade" id="pwSelectModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">비밀번호 재설정 방법</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+      <div class="modal-body">
+        <p>비밀번호를 어떻게 변경하시겠습니까?</p>
+        <input type="hidden" id="selectMemId" />
+        <div class="d-grid gap-2">
+          <button class="btn btn-outline-primary w-100" onclick="openResetModal()">직접 재설정</button>
+          <input type="hidden" id="tempMemId" />
+          <button type="button" class="btn btn-outline-secondary w-100" id="sendTempBtn">
+            <span class="spinner-border spinner-border-sm me-2 d-none" id="tempSpinner" role="status"></span>
+            임시 비밀번호 발급
+          </button>
+          <div id="tempInfoText" class="form-text text-muted mt-1">
+            📧 이메일 전송에는 최대 <strong>10~15초</strong>가 소요될 수 있습니다. 잠시만 기다려 주세요.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 직접 재설정 모달 -->
+<div class="modal fade" id="resetModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">비밀번호 재설정</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="password" id="newPw" class="form-control mb-2" placeholder="새 비밀번호" required />
+        <input type="password" id="confirmPw" class="form-control" placeholder="비밀번호 확인" required />
+        <input type="hidden" id="resetMemId" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-success" id="resetPwBtn">변경</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // 인증번호 전송
+  document.getElementById("sendCodeBtn").addEventListener("click", function () {
+    const btn = this;
+    const spinner = document.getElementById("sendSpinner");
+    const infoText = document.getElementById("sendInfoText");
+    const formData = new FormData(document.getElementById("authForm"));
+
+    btn.disabled = true;
+    spinner.classList.remove("d-none");
+    infoText.className = "form-text text-muted mt-1";
+    infoText.innerHTML = "📨 이메일 전송 중입니다...";
+
+    fetch("/member/sendCode", {
+      method: "POST",
+      body: formData
+    })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                infoText.className = "form-text text-success mt-1";
+                infoText.innerHTML = "✅ 인증번호가 이메일로 전송되었습니다.";
+                const memId = document.querySelector('#authForm input[name="memId"]').value;
+                document.querySelector('#verifyForm input[name="memId"]').value = memId;
+                document.getElementById('selectMemId').value = memId;
+                document.getElementById('tempMemId').value = memId;
+                new bootstrap.Modal(document.getElementById("codeModal")).show();
+              } else {
+                infoText.className = "form-text text-danger mt-1";
+                infoText.innerHTML = "❌ 인증번호 전송 실패. 다시 시도해주세요.";
+              }
+            })
+            .catch(() => {
+              infoText.className = "form-text text-danger mt-1";
+              infoText.innerHTML = "❌ 서버 오류로 전송에 실패했습니다.";
+            })
+            .finally(() => {
+              btn.disabled = false;
+              spinner.classList.add("d-none");
+            });
+  });
+
+  // 인증번호 확인
+  document.getElementById("verifyForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const btn = this.querySelector("button[type='submit']");
+    btn.disabled = true;
+    const formData = new FormData(this);
+
+    fetch("/member/verifyCode", {
+      method: "POST",
+      body: formData
+    })
+            .then(res => res.json())
+            .then(data => {
+              alert(data.message);
+              if (data.success) {
+                bootstrap.Modal.getInstance(document.getElementById("codeModal")).hide();
+                new bootstrap.Modal(document.getElementById("pwSelectModal")).show();
+              }
+            })
+            .finally(() => btn.disabled = false);
+  });
+
+  // 직접 재설정 열기
+  function openResetModal() {
+    const memId = document.getElementById('selectMemId').value;
+    document.getElementById('resetMemId').value = memId;
+    bootstrap.Modal.getInstance(document.getElementById('pwSelectModal')).hide();
+    new bootstrap.Modal(document.getElementById('resetModal')).show();
+  }
+
+  // 임시 비밀번호 발급
+  document.getElementById("sendTempBtn").addEventListener("click", function () {
+    const btn = this;
+    const spinner = document.getElementById("tempSpinner");
+    const infoText = document.getElementById("tempInfoText");
+    const memId = document.getElementById("tempMemId").value;
+
+    btn.disabled = true;
+    spinner.classList.remove("d-none");
+    infoText.className = "form-text text-muted mt-1";
+    infoText.innerHTML = "📨 이메일 전송 중입니다...";
+
+    fetch("/member/sendTemp", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ memId })
+    })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                infoText.className = "form-text text-success mt-1";
+                infoText.innerHTML = "✅ 임시 비밀번호가 이메일로 전송되었습니다.";
+                bootstrap.Modal.getInstance(document.getElementById("pwSelectModal")).hide();
+                window.opener?.focus();
+                window.close();
+              } else {
+                infoText.className = "form-text text-danger mt-1";
+                infoText.innerHTML = "❌ 발급 실패. 다시 시도해주세요.";
+              }
+            })
+            .catch(() => {
+              infoText.className = "form-text text-danger mt-1";
+              infoText.innerHTML = "❌ 서버 오류로 전송 실패.";
+            })
+            .finally(() => {
+              btn.disabled = false;
+              spinner.classList.add("d-none");
+            });
+  });
+
+  // 비밀번호 재설정
+  document.getElementById("resetPwBtn").addEventListener("click", function () {
+    const btn = this;
+    btn.disabled = true;
+    const memId = document.getElementById("resetMemId").value;
+    const newPw = document.getElementById("newPw").value;
+    const confirmPw = document.getElementById("confirmPw").value;
+
+    fetch("/member/resetPw", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ memId, newPw, confirmPw })
+    })
+            .then(res => res.json())
+            .then(data => {
+              alert(data.message);
+              if (data.success) {
+                bootstrap.Modal.getInstance(document.getElementById("resetModal")).hide();
+                window.opener?.focus();
+                window.close();
+              }
+            })
+            .finally(() => btn.disabled = false);
+  });
+
+  // Enter 키 제출 처리
+  ["authForm", "verifyForm", "resetModal"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("keyup", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const btn = el.querySelector("button[type='submit'], button[type='button']");
+          btn?.click();
+        }
+      });
+    }
+  });
+</script>
 </body>
 </html>
