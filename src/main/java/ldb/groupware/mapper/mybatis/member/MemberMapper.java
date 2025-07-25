@@ -37,6 +37,7 @@ public interface MemberMapper {
     MemberInfoDto selectMemberInfo(String memId);
 
     String findNameById(String id);
+
     boolean isValidMember(PwCodeDto dto);
 
     String selectEmail(@Param("memId") String memId);

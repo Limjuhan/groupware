@@ -18,7 +18,7 @@ public class MailUtil {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-    public MailUtil(JavaMailSender mailSender) {
+    public  MailUtil(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
