@@ -167,6 +167,11 @@
         WHERE mem_id = #{memId}
     </update>
 
+
+
+    <!-- id로 name뽑기 (동곤)-->
+    <select id="findNameById" parameterType="String" resultType="String">
+        select mem_name from member where mem_id = #{val}
     <!-- 이메일 정보 조회-->
     <select id="selectEmail" resultType="string" parameterType="string">
         SELECT mem_private_email

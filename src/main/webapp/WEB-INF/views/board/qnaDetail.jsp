@@ -1,30 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
-<%
-    // 로그인 사용자 정보 (세션에서 대체 가능)
-    String loginUser = "김사원";
-    int loginLevel = 1;
-
-    // 글 정보 예시 (DB에서 가져온다고 가정)
-    int id = Integer.parseInt(request.getParameter("id"));
-    String title = "연차 신청은 어떻게 하나요?";
-    String content = "연차는 사내 HR 시스템에서 신청할 수 있습니다.\n인트라넷 접속 후 [연차 신청] 메뉴를 클릭하세요.";
-    String writer = "김사원";
-    String date = "2025-07-09";
-
-    // 댓글 데이터 예시
-    class Comment {
-        String writer;
-        String text;
-        String date;
-        Comment(String w, String t, String d) { writer = w; text = t; date = d; }
-    }
-
-    List<Comment> comments = Arrays.asList(
-        new Comment("관리자", "해당 내용은 사내 포털에도 안내되어 있습니다.", "2025-07-09"),
-        new Comment("이대리", "저도 궁금했는데 감사합니다!", "2025-07-09")
-    );
-%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags/form" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -67,6 +45,20 @@
             display: flex;
             justify-content: space-between;
         }
+        .file-section {
+            margin-top: 30px;
+            background-color: #f8f9fb;
+            border-left: 4px solid #0d6efd;
+            padding: 15px 20px;
+            border-radius: 6px;
+        }
+
+        .file-section a {
+            font-weight: 500;
+            text-decoration: none;
+            color: #0d6efd;
+        }
+
         .comment-box {
             background-color: #fff;
             border-radius: 12px;
@@ -89,58 +81,127 @@
 
     <!-- 질문 박스 -->
     <div class="question-box">
-        <div class="question-title"><%= title %></div>
-        <div class="question-meta">작성자: <%= writer %> | 작성일: <%= date %></div>
-        <div class="question-content"><%= content %></div>
-
+        <div class="question-title">${q.qnaTitle}</div>
+        <div class="question-meta">작성자: ${q.memName} | 작성일: ${q.createFormat} | 수정일 : ${q.updateFormat}</div>
+        <div class="question-content">${q.qnaContent}</div>
+        <c:if test="${attach != null }">
+            <c:forEach items="${attach}" var="a">
+                <c:if test="${a.filePath != null}">
+                    <div class="file-section mt-4">
+                        첨부파일:
+                        <a href="${a.filePath}${a.savedName}" download="${a.originalName}">${a.originalName}</a>
+                    </div>
+                </c:if>
+            </c:forEach>
+        </c:if>
         <!-- 수정/삭제 버튼 -->
         <div class="btn-group">
-            <a href="questionList" class="btn btn-outline-secondary">← 목록으로</a>
-            <%
-                if (loginUser.equals(writer) || loginLevel >= 2) {
-            %>
+            <a href="getQnaList" class="btn btn-outline-secondary">← 목록으로</a>
             <div>
-                <a href="questionEdit.jsp?id=<%= id %>" class="btn btn-outline-primary me-2">수정</a>
-                <a href="questionDelete.jsp?id=<%= id %>" class="btn btn-outline-danger"
+                <a onclick="goForm('getQnaEditForm?id=${q.qnaId}')" class="btn btn-outline-primary me-2">수정</a>
+                <a href="deleteQnaByMng?id=${q.qnaId}" class="btn btn-outline-danger"
                    onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
             </div>
-            <%
-                }
-            %>
+
         </div>
+
     </div>
+
 
     <!-- 댓글 영역 -->
     <div class="comment-box">
-        <h5 class="mb-3">댓글 <span class="text-muted">(<%= comments.size() %>)</span></h5>
-
-        <!-- 댓글 리스트 -->
-        <%
-            for (Comment c : comments) {
-        %>
-        <div class="comment-item">
-            <div><strong><%= c.writer %></strong></div>
-            <div class="mb-1"><%= c.text %></div>
-            <div class="comment-meta"><%= c.date %></div>
+        <h5 class="mb-3">댓글 <span class="text-muted"></span></h5>
+        <div id="commentList">
+       <%-- ajax이용호출 --%>
         </div>
-        <%
-            }
-        %>
+    </div>
+
 
         <!-- 댓글 작성 폼 -->
-        <form action="commentWriteProc.jsp" method="post" class="mt-4">
-            <input type="hidden" name="questionId" value="<%= id %>">
-            <input type="hidden" name="writer" value="<%= loginUser %>">
+        <form:form  id="commentForm" class="mt-4" >
+            <input type="hidden" name="qnaId" id="qnaId" value="${q.qnaId}">
+            <input type="hidden" name="memId" id="memId" value=${loginId}> <%--나중에세션으로?--%>
             <div class="mb-3">
-                <textarea name="text" class="form-control" rows="3" required placeholder="댓글을 입력하세요."></textarea>
+                <textarea name="commentText"  id="commentText" class="form-control" rows="3"  placeholder="댓글을 입력하세요." onkeyup="delError(this)"></textarea>
+                <p style="color: red" id="commentTextError"></p>
             </div>
             <div class="text-end">
                 <button type="submit" class="btn btn-sm btn-primary">댓글 등록</button>
             </div>
-        </form>
+        </form:form>
     </div>
 
 </div>
+<script>
+
+    function goForm(url){
+        let op = "width=500,height=700,top=50,left=150";
+        window.open(url, "", op);
+    }
+
+    function delError(f){
+        $('#commentTextError').html('');
+    }
+    $(document).ready(function () {
+        loadComments($('#qnaId').val());
+    });
+
+    function loadComments(qnaId) {
+        $.ajax({
+            url: '/api/qna/comments',
+            type: 'GET',
+            data: { qnaId: qnaId },
+            success: function (comments) {
+                console.log(comments);
+                let html = '';
+                comments.forEach(function(c) {
+                    html += '<div class="comment-item position-relative">';
+                    html +=   '<a href="deleteCommentByMng?id=' + c.commentId +"&qnaId="+ qnaId+'" class="btn btn-sm btn-outline-danger position-absolute top-0 end-0" style="margin: 5px;" onclick="return confirm(\'정말 삭제하시겠습니까?\');">삭제</a>';
+                    html +=   '<div><strong>' + c.memName + '</strong></div>';
+                    html +=   '<div class="mb-1">' + c.commentText + '</div>';
+                    html +=   '<div class="comment-meta">' + c.createdAt + '</div>';
+                    html += '</div>';
+                });
+                $('#commentList').html(html); // 새로운 댓글 삽입
+            },
+            error: function () {
+                alert('댓글 불러오기 실패');
+            }
+        });
+    }
+
+    $('#commentForm').on('submit', function (e) {
+        e.preventDefault(); //기본 동작(예: form submit 후 새로고침)을 막는다
+         let commentFormDto = JSON.stringify({
+            qnaId: $('#qnaId').val(),
+            memId: $('#memId').val(),
+            commentText: $('#commentText').val()
+        })
+        $.ajax({
+            url:"/api/qna/insertComment",
+            type: "POST",
+            data: commentFormDto, //JSON객체로변환
+            contentType: 'application/json', //JSON타입임을 명시
+
+            success: function (response) {
+                loadComments($('#qnaId').val());
+                    $('#commentText').val('');
+            },
+            error: function (xhr) {
+                if (xhr.status === 400 && xhr.responseJSON && xhr.responseJSON.data) {
+                    let error = xhr.responseJSON.data;
+                    console.log(error);
+                    $('#commentTextError').html(error.commentText);
+                } else {
+                    alert('수정 실패: ' + (xhr.responseJSON ? xhr.responseJSON.error : "서버 오류"));
+                }
+            }
+
+
+        })
+
+    })
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -36,6 +36,48 @@
         LIMIT #{startNum},#{itemsPerPage}
     </select>
 
+    <insert id="insertQna" parameterType="QnaFormDto" >
+    insert into qna (qna_title,qna_content,mem_id,created_at,updated_at)
+    values(#{qnaTitle},#{qnaContent},#{memId},now(),now())
+    </insert>
+
+    <select id="maxQnaId" parameterType="String" resultType="int">
+        select max(qna_id) from qna where mem_id = #{val}
+    </select>
+
+    <select id="findQnaById" parameterType="int" resultType="QnaDetailDto" >
+        select q.qna_id , q.qna_title , q.qna_content , m.mem_id , m.mem_name , q.created_at , q.updated_at
+        from qna q join member m on(q.mem_id = m.mem_id)
+        where qna_id = #{val}
+    </select>
+
+    <update id="addViewCount" parameterType="int" >
+    update qna set view_count = view_count+1 where qna_id = #{val}
+    </update>
+
+    <select id="findCommById" parameterType="int" resultType="QnaComment">
+        select c.comment_id , c.qna_id ,c.comment_text , m.mem_id , m.mem_name , c.created_at , c.updated_at
+        from qna_comment c join member m on(c.mem_id = m.mem_id)
+        where qna_id = #{val} order by updated_at desc
+    </select>
+
+    <insert id="insertComment" parameterType="CommentFormDto" >
+        insert into qna_comment (qna_id , comment_text,mem_id,created_at,updated_at)
+        values(#{qnaId}, #{commentText},#{memId},now(),now())
+    </insert>
+
+    <update id="updateQna" parameterType="QnaUpdateDto">
+        update qna set qna_title = #{qnaTitle},qna_content =#{qnaContent}
+        where qna_id = #{qnaId}
+    </update>
+
+    <delete id="deleteById" parameterType="int">
+        delete from qna where qna_id = #{val}
+    </delete>
+
+    <delete id="deleteCommentById" parameterType="int">
+        delete from qna_comment where comment_id = #{val}
+    </delete>
 
 
 

@@ -165,6 +165,12 @@ public class MemberService {
         return dto;
     }
 
+
+    //id로 이름꺼내오기(동곤)
+    public String findNameById(String id){
+        return memberMapper.findNameById(id);
+    }
+
     // 인증번호 전송
     public ResponseEntity<ApiResponseDto<Void>> sendCode(PwCodeDto dto) {
         if (!memberMapper.isValidMember(dto)) {

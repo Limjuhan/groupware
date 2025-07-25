@@ -40,7 +40,7 @@ public class BoardController {
     }
     @GetMapping("questionWrite")
     public String questionWrite(){
-        return "board/questionWrite";
+        return "questionForm";
     }
 
 }

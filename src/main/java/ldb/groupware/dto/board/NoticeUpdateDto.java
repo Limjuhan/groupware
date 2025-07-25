@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class NoticeUpdateDto {
@@ -18,7 +19,7 @@ public class NoticeUpdateDto {
     private String noticeContent;
     private String memId;
     private String memName;
-    private String[] existingFiles;
+    private List<String> existingFiles;
     private Integer noticeCnt;
     private Character isPinned;
     private LocalDateTime createdAt;
