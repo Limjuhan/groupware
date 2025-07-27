@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class AnnualLeaveScheduler {
 
     private final AnnualLeaveBatchService batchService;
@@ -14,7 +14,7 @@ public class AnnualLeaveScheduler {
         this.batchService = batchService;
     }
 
-    @Scheduled(cron = "0 0 3 * * *") // 매일 새벽 3시
+    @Scheduled(cron = "0 23 22 * * *")
     public void run() {
         batchService.generateAnnualLeave();
     }

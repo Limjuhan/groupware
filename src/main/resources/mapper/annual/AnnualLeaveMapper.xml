@@ -15,14 +15,14 @@
     </select>
 
     <insert id="insertAnnualLeave">
-        INSERT INTO annual_leave (mem_id, year, total_date, use_date, remain_date, created_at, created_by)
-        VALUES (#{memId}, #{year}, #{totalDate}, #{useDate}, #{remainDate}, #{createdAt}, #{createdBy})
+        INSERT INTO annual_leave (mem_id, year, total_days, use_days, remain_days, created_at, created_by)
+        VALUES (#{memId}, #{year}, #{totalDays}, #{useDays}, #{remainDays}, #{createdAt}, #{createdBy})
     </insert>
 
     <update id="updateAnnualLeave">
         UPDATE annual_leave
-        SET total_date = #{totalDate},
-            remain_date = #{remainDate},
+        SET total_days = #{totalDays},
+            remain_days = #{remainDays},
             updated_at = #{updatedAt},
             updated_by = #{updatedBy}
         WHERE mem_id = #{memId} AND year = #{year}
