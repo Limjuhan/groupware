@@ -35,6 +35,8 @@ public class DraftFormDto {
     @NotBlank(message = "결재양식을 선택하세요.")
     private String formCode;
 
+    private Integer status;
+
     @NotBlank(message = "1차 결재자를 선택하세요.")
     private String approver1;
 

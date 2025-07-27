@@ -1,6 +1,6 @@
 package ldb.groupware.dto.member;
 
-import ldb.groupware.dto.board.PaginationDto;
+import ldb.groupware.dto.page.PaginationDto;
 import lombok.Data;
 
 @Data

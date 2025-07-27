@@ -1,7 +1,6 @@
 package ldb.groupware.controller.draft;
 
 import io.micrometer.common.util.StringUtils;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import ldb.groupware.domain.Attachment;
 import ldb.groupware.dto.draft.DraftForMemberDto;
@@ -74,13 +73,13 @@ public class DraftController {
             }
         } catch (Exception e) {
             model.addAttribute("globalError", e.getMessage());
+        } finally {
+            model.addAttribute("draftFormDto", dto);
+            model.addAttribute("draftMembers", memberList);
+            model.addAttribute("remainAnnual", remainAnnual);
+
+            return "draft/draftForm";
         }
-
-        model.addAttribute("draftFormDto", dto);
-        model.addAttribute("draftMembers", memberList);
-        model.addAttribute("remainAnnual", remainAnnual);
-
-        return "draft/draftForm";
     }
 
     /**

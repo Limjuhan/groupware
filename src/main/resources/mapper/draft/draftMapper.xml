@@ -14,10 +14,30 @@
         (SELECT mem_id FROM approval_line WHERE doc_id = d.doc_id AND step_order = 1) AS approver1,
         (SELECT mem_id FROM approval_line WHERE doc_id = d.doc_id AND step_order = 2) AS approver2,
         d.status AS status
-        FROM
-        approval_document d
-        WHERE
-        d.mem_id = #{memId}
+        FROM approval_document d
+        WHERE d.mem_id = #{memId}
+        AND d.del_yn = 'N'
+
+        <if test="dto.searchType != null and dto.keyword != null and dto.keyword != ''">
+            <choose>
+                <when test="dto.searchType == 'title'">
+                    AND d.doc_title LIKE CONCAT('%', #{dto.keyword}, '%')
+                </when>
+                <when test="dto.searchType == 'writer'">
+                    AND d.mem_id LIKE CONCAT('%', #{dto.keyword}, '%')
+                </when>
+            </choose>
+        </if>
+
+        ORDER BY d.doc_id DESC
+        LIMIT #{dto.startNum}, #{dto.itemsPerPage}
+    </select>
+
+
+    <select id="getMyDraftCount" resultType="int" parameterType="map">
+        SELECT COUNT(*)
+        FROM approval_document d
+        WHERE d.mem_id = #{memId}
         AND d.del_yn = 'N'
         <if test="type != null and keyword != null and keyword != ''">
             <choose>
@@ -29,8 +49,8 @@
                 </when>
             </choose>
         </if>
-        ORDER BY d.doc_id DESC
     </select>
+
 
     <select id="getMemberList" resultType="DraftForMemberDto">
         SELECT m.mem_id as mem_id,
@@ -88,6 +108,7 @@
                a.doc_title as title,
                a.doc_content as content,
                a.doc_endDate as docEndDate,
+               a.status as status,
                (SELECT mem_id FROM approval_line WHERE doc_id = #{docId} AND step_order = 1) AS approver1,
                (SELECT mem_id FROM approval_line WHERE doc_id = #{docId} AND step_order = 2) AS approver2
         FROM approval_document a
