@@ -18,5 +18,4 @@ public interface AnnualLeaveMapper {
 
     void updateAnnualLeave(AnnualLeave annualLeave);
 
-    List<Member> findAllActiveMembers();
 }

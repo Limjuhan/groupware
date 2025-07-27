@@ -1,5 +1,6 @@
 package ldb.groupware.mapper.mybatis.member;
 
+import ldb.groupware.domain.Member;
 import ldb.groupware.dto.member.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -41,4 +42,6 @@ public interface MemberMapper {
     boolean isValidMember(PwCodeDto dto);
 
     String selectEmail(@Param("memId") String memId);
+
+    List<Member> findAllActiveMembers();
 }

@@ -28,9 +28,4 @@
         WHERE mem_id = #{memId} AND year = #{year}
     </update>
 
-    <select id="findAllActiveMembers" resultType="Member">
-        SELECT *
-        from member
-    </select>
-
 </mapper>

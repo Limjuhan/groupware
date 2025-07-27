@@ -188,4 +188,10 @@
           AND mem_name = #{memName}
           AND mem_private_email = #{memPrivateEmail}
     </select>
+
+    <!-- 재직중인 사원전체 조회   -->
+    <select id="findAllActiveMembers" resultType="Member">
+        SELECT *
+        from member
+    </select>
 </mapper>
