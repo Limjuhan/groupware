@@ -4,6 +4,7 @@ import ldb.groupware.domain.AnnualLeave;
 import ldb.groupware.domain.Member;
 import ldb.groupware.mapper.mybatis.annual.AnnualLeaveMapper;
 import ldb.groupware.mapper.mybatis.member.MemberMapper;
+import ldb.groupware.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,16 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class AnnualLeaveBatchService {
 
     private final AnnualLeaveMapper annualLeaveMapper;
+    private final MemberMapper memberMapper;
+
+    public AnnualLeaveBatchService(AnnualLeaveMapper annualLeaveMapper, MemberMapper memberMapper) {
+        this.annualLeaveMapper = annualLeaveMapper;
+        this.memberMapper = memberMapper;
+    }
 
     /**
      * 매일 새벽 실행되는 연차 생성 배치
@@ -30,7 +36,7 @@ public class AnnualLeaveBatchService {
         LocalDate today = LocalDate.now();
         int currentYear = today.getYear();
 
-        List<Member> members = annualLeaveMapper.findAllActiveMembers(); // 재직 중인 사원 목록
+        List<Member> members = memberMapper.findAllActiveMembers(); // 재직 중인 사원 목록
 
         for (Member member : members) {
             String memId = member.getMemId();

@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -28,34 +29,13 @@
     </thead>
     <tbody>
       <!-- 차량목록 하드코딩 -->
-      <tr>
-        <td>K0001</td><td>GN7</td><td>12가1234</td><td>5</td><td>Y</td>
-        <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('K0001', 'GN7')">예약하기</button></td>
-      </tr>
-      <tr>
-        <td>K0002</td><td>CN7</td><td>34나5678</td><td>7</td><td>Y</td>
-        <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('K0002', 'CN7')">예약하기</button></td>
-      </tr>
-      <tr>
-        <td>K0003</td><td>911</td><td>56다2345</td><td>9</td><td>Y</td>
-        <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('K0003', '911')">예약하기</button></td>
-      </tr>
-      <tr>
-        <td>K0004</td><td>530i</td><td>78라6789</td><td>2</td><td>Y</td>
-        <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('K0004', '530i')">예약하기</button></td>
-      </tr>
-      <tr>
-        <td>K0005</td><td>macan</td><td>90마1111</td><td>5</td><td>N</td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <td>K0006</td><td>bencz e-class</td><td>11바2222</td><td>7</td><td>Y</td>
-        <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('K0006', 'bencz e-class')">예약하기</button></td>
-      </tr>
-      <tr>
-        <td>K0007</td><td>avante ad</td><td>22사3333</td><td>5</td><td>Y</td>
-        <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('K0007', 'avante ad')">예약하기</button></td>
-      </tr>
+
+      <c:forEach items="${facility}" var="vehicle">
+        <tr>
+          <td>${vehicle.facId}</td><td>${vehicle.facName}</td><td>${vehicle.facUid}</td><td>${vehicle.capacity}</td><td>${vehicle.rentYn}</td>
+          <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('${vehicle.facId}', '${vehicle.facName}','${vehicle.facType}')">예약하기</button></td>
+        </tr>
+      </c:forEach>
     </tbody>
   </table>
 </div>
@@ -68,8 +48,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <p id="reserveInfo"></p>
+        <form id="reserveForm" action="insertFacilityRent" method="post">
+          <input type="hidden" name="startAt" id="startAt">
+          <input type="hidden" name="endAt" id="endAt">
+          <input type="hidden" name="rentalPurpose" id="rentalPurpose">
+          <input type="hidden" name="facId" id="facId" >
+          <input type="hidden" name="facType" id="facType" >
+          <input type="hidden" name="renterId" value="admin"> <%-- 세션으로변경해야함--%>
+        </form>
 
+        <p id="reserveInfo" ></p>
         <!-- 시작일 -->
         <label class="form-label">시작일</label>
         <input type="date" class="form-control mb-2" id="carStartDate">
@@ -111,13 +99,24 @@
       return;
     }
 
-    var formattedStart = startDate + "T" + (startHour.length == 1 ? "0" + startHour : startHour) + ":00";
-    var formattedEnd = endDate + "T" + (endHour.length == 1 ? "0" + endHour : endHour) + ":00";
 
-    console.log("예약 시작: " + formattedStart);
-    console.log("예약 종료: " + formattedEnd);
+    const start = new Date(startDate + "T" + startHour.padStart(2, "0") + ":00:00");
+    const end = new Date(endDate + "T" + endHour.padStart(2, "0") + ":00:00");
+
+    if (start >= end) {
+      alert("시작일시가 종료일시보다 같거나 늦을 수 없습니다.");
+      return;
+    }
+
+    console.log("예약 시작: " + start);
+    console.log("예약 종료: " + end);
     console.log("목적: " + purpose);
 
+    document.getElementById("startAt").value = start;
+    document.getElementById("endAt").value = end;
+    document.getElementById("rentalPurpose").value = purpose;
+
+    document.getElementById("reserveForm").submit(); // 폼 전송
     // 이후 서버로 전송하거나 form에 값 넣기
   });
 </script>
@@ -125,9 +124,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  function openModal(id, model) {
+  function openModal(id, model , type) {
     document.getElementById('reserveInfo').innerText = '차량번호: ' + id + ' / 차량명: ' + model;
     const modal = new bootstrap.Modal(document.getElementById('reserveModal'));
+    document.querySelector("#facId").value = id; //form에 fac_id값전송
+    document.querySelector("#facType").value = type; //form에 fac_id값전송
     modal.show();
   }
 </script>
