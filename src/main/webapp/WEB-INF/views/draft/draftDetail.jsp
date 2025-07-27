@@ -54,7 +54,7 @@
         </tr>
         <tr>
             <th>제목</th>
-            <td colspan="3">${draftDetail.docTitle}</td>
+            <td colspan="3">${draftDetail.title}</td>
         </tr>
         <tr>
             <th>기안자</th>
@@ -102,22 +102,68 @@
     <!-- 본문 내용 -->
     <div class="section-title text-shadow">본문 내용</div>
     <div class="border p-3 bg-glass">
-        ${draftDetail.docContent}
+        ${draftDetail.content}
     </div>
 
-    <!-- 양식 정보 -->
-    <div class="section-title text-shadow">양식 정보</div>
-    <table class="table table-bordered bg-glass">
-        <tr>
-            <th>휴가 유형</th><td>${formDetail.leaveType}</td>
-        </tr>
-        <tr>
-            <th>휴가 기간</th><td>${formDetail.startDate} ~ ${formDetail.endDate}</td>
-        </tr>
-        <tr>
-            <th>잔여 연차</th><td>${formDetail.remainDays}일</td>
-        </tr>
-    </table>
+    <!-- 양식별 상세 -->
+    <c:choose>
+        <c:when test="${draftDetail.formCode == 'app_01'}">
+            <div class="section-title">휴가신청서</div>
+            <div class="card bg-glass text-white mb-4">
+                <div class="card-body">
+                    <p><strong>휴가 유형:</strong> ${draftDetail.leaveCode}</p>
+                    <p><strong>휴가 기간:</strong> ${draftDetail.leaveStartStr} ~ ${draftDetail.leaveEndStr}</p>
+                    <p><strong>총 일수:</strong> ${draftDetail.totalDays}일</p>
+                </div>
+            </div>
+        </c:when>
+
+        <c:when test="${draftDetail.formCode == 'app_02'}">
+            <div class="section-title">프로젝트 제안서</div>
+            <div class="card bg-glass text-white mb-4">
+                <div class="card-body">
+                    <p><strong>프로젝트명:</strong> ${draftDetail.projectName}</p>
+                    <p><strong>기간:</strong> ${draftDetail.projectStartStr} ~ ${draftDetail.projectEndStr}</p>
+                </div>
+            </div>
+        </c:when>
+
+        <c:when test="${draftDetail.formCode == 'app_03'}">
+            <div class="section-title">지출결의서</div>
+            <div class="card bg-glass text-white mb-4">
+                <div class="card-body">
+                    <p><strong>지출 내역:</strong> ${draftDetail.exName}</p>
+                    <p><strong>지출 금액:</strong>
+                        <fmt:formatNumber value="${draftDetail.exAmount}" type="currency" currencySymbol="₩"/>
+                    </p>
+                    <p><strong>사용일자:</strong> ${draftDetail.useDateStr}</p>
+                </div>
+            </div>
+        </c:when>
+
+        <c:when test="${draftDetail.formCode == 'app_04'}">
+            <div class="section-title">사직서</div>
+            <div class="card bg-glass text-white mb-4">
+                <div class="card-body">
+                    <p><strong>사직일자:</strong> ${draftDetail.resignDateStr}</p>
+                </div>
+            </div>
+        </c:when>
+
+        <c:otherwise>
+            <div class="section-title">기타 양식</div>
+            <div class="card bg-glass text-white mb-4">
+                <div class="card-body">
+                    <p>해당 양식에 대한 상세 정보가 없습니다.</p>
+                </div>
+            </div>
+        </c:otherwise>
+    </c:choose>
+
+
+    <div class="mt-4">
+        <a href="javascript:history.back()" class="btn btn-secondary">← 목록으로</a>
+    </div>
 
     <!-- 인쇄 -->
     <div class="text-end">

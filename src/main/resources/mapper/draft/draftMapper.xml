@@ -4,6 +4,7 @@
 
 <mapper namespace="ldb.groupware.mapper.mybatis.draft.DraftMapper">
 
+    <!-- 내전자결재 목록 조회   -->
     <select id="getMyDraftList" resultType="DraftListDto">
         SELECT
         d.doc_id AS docId,
@@ -63,6 +64,7 @@
         LEFT JOIN rank r ON m.rank_id = r.rank_id
     </select>
 
+    <!-- 잔여연차 조회 -->
     <select id="getRemainAnnual">
         SELECT remain_days
         FROM annual_leave
@@ -114,6 +116,28 @@
         FROM approval_document a
         WHERE a.doc_id = #{docId}
         AND   a.del_yn = 'N'
+    </select>
+
+    <!-- 내 전자결재 상세보기  -->
+    <select id="getMyDraftDetail" resultType="DraftFormDto">
+        SELECT
+            a.doc_id AS docId,
+            m.mem_name AS mem_name,
+            a.form_code AS formCode,
+            a.doc_title AS title,
+            a.doc_content AS content,
+            a.doc_endDate AS docEndDate,
+            a.status AS status,
+            approver1.mem_name AS approver1Name,
+            approver2.mem_name AS approver2Name
+        FROM approval_document a
+        LEFT JOIN member m ON a.mem_id = m.mem_id
+        LEFT JOIN approval_line l1 ON l1.doc_id = a.doc_id AND l1.step_order = 1 AND l1.ref_yn = 'N'
+        LEFT JOIN member approver1 ON l1.mem_id = approver1.mem_id
+        LEFT JOIN approval_line l2 ON l2.doc_id = a.doc_id AND l2.step_order = 2 AND l2.ref_yn = 'N'
+        LEFT JOIN member approver2 ON l2.mem_id = approver2.mem_id
+        WHERE a.doc_id = #{docId}
+          AND a.del_yn = 'N'
     </select>
 
     <select id="getFormAnnualLeave" resultType="FormAnnualLeave">

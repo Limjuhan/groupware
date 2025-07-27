@@ -64,4 +64,6 @@ public interface DraftMapper {
     void insertFormExpense(FormExpense from);
 
     int getMyDraftCount(Map<String, Object> countParam);
+
+    DraftFormDto getMyDraftDetail(Integer docId);
 }

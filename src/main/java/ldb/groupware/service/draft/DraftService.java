@@ -70,7 +70,6 @@ public class DraftService {
     }
 
     /**
-     * TODO: 연차생성관련 배치프로세스 정리하기
      * 최초 상신시 : attachment, approval_document, approval_line
      *              form_annual_leave, form_expense, form_resign, annual_leave_history
      *
@@ -83,12 +82,12 @@ public class DraftService {
     @Transactional
     public void saveDraft(DraftFormDto dto, List<MultipartFile> attachments, String action, String memId) throws IllegalArgumentException {
         //글등록방식(임시저장or제출) 확인
-        int status = getStatus(action);
+        int saveType = getStatus(action);
 
-        if (dto.getStatus() == ApprovalConst.STATUS_TEMP) { // 임시저장 -> 임시저장 or 제출
-            updateApprovalDraft(dto, memId, status);
+        if (dto.getStatus() != null && dto.getStatus() == ApprovalConst.STATUS_TEMP) { // 임시저장 -> 임시저장 or 제출
+            updateApprovalDraft(dto, memId, saveType);
         } else { // 새글작성->임시저장 or 제출
-            insertNewApprovalDraft(dto, memId, status);
+            insertNewApprovalDraft(dto, memId, saveType);
         }
 
         if (action.equals("save")) {// 새글작성 -> 제출
@@ -98,7 +97,7 @@ public class DraftService {
         attachmentService.saveAttachments(dto.getDocId().toString(), dto.getAttachType(), attachments);
     }
 
-    private void updateFormDetail(DraftFormDto dto, String memId, int status) {
+    private void updateFormDetail(DraftFormDto dto, String memId) {
         switch (dto.getFormCode()) {
             case ApprovalConst.FORM_ANNUAL -> {
                 validateAnnualLeave(dto, memId);
@@ -110,7 +109,7 @@ public class DraftService {
         }
     }
 
-    private void insertFormDetail(DraftFormDto dto, String memId, int status) {
+    private void insertFormDetail(DraftFormDto dto, String memId) {
         switch (dto.getFormCode()) {
             case ApprovalConst.FORM_ANNUAL -> {
                 validateAnnualLeave(dto, memId);
@@ -122,14 +121,14 @@ public class DraftService {
         }
     }
 
-    private void updateApprovalDraft(DraftFormDto dto, String memId, int status) {
-        draftMapper.updateApprovalDocument(dto, status, memId);
-        updateFormDetail(dto, memId, status);
+    private void updateApprovalDraft(DraftFormDto dto, String memId, int saveType) {
+        draftMapper.updateApprovalDocument(dto, saveType, memId);
+        updateFormDetail(dto, memId);
     }
 
-    private void insertNewApprovalDraft(DraftFormDto dto, String memId, int status) {
-        draftMapper.insertApprovalDocument(dto, status, memId);
-        insertFormDetail(dto, memId, status);
+    private void insertNewApprovalDraft(DraftFormDto dto, String memId, int saveType) {
+        draftMapper.insertApprovalDocument(dto, saveType, memId);
+        insertFormDetail(dto, memId);
     }
 
     private int getStatus(String action) {
@@ -193,6 +192,43 @@ public class DraftService {
             default -> throw new IllegalArgumentException(
                     messageSource.getMessage("error.formtype.missing", null, Locale.KOREA));
         }
+
+        return dto;
+    }
+
+    public DraftFormDto getDraftForm(DraftFormDto dto) {
+
+        if (dto.getDocId() == null) {
+            throw new IllegalArgumentException("문서가 존재하지 않습니다.");
+        }
+
+        switch (dto.getFormCode()) {
+            case ApprovalConst.FORM_ANNUAL -> {
+                var annual = draftMapper.getFormAnnualLeave(dto.getDocId());
+                if (annual != null) dto.setAnnualData(annual);
+            }
+            case ApprovalConst.FORM_PROJECT -> {
+                var project = draftMapper.getFormProject(dto.getDocId());
+                if (project != null) dto.setProjectData(project);
+            }
+            case ApprovalConst.FORM_EXPENSE -> {
+                var expense = draftMapper.getFormExpense(dto.getDocId());
+                if (expense != null) dto.setExpenseData(expense);
+            }
+            case ApprovalConst.FORM_RESIGN -> {
+                var resign = draftMapper.getFormResign(dto.getDocId());
+                if (resign != null) dto.setresignData(resign);
+            }
+            default -> throw new IllegalArgumentException(
+                    messageSource.getMessage("error.formtype.missing", null, Locale.KOREA));
+        }
+
+        return dto;
+    }
+    public DraftFormDto getMyDraftDetail(DraftFormDto dto) {
+
+        dto = draftMapper.getMyDraftDetail(dto.getDocId());
+        getDraftForm(dto);
 
         return dto;
     }
