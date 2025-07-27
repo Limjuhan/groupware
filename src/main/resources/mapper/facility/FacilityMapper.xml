@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ldb.groupware.mapper.mybatis.facility.FacilityMapper">
+
+    <select id="getList" resultType="FacilityListDto" parameterType="String">
+        SELECT fi.fac_id , fi.fac_name , fi.fac_type,  fi.fac_uid , fi.capacity , fr.rent_yn
+        FROM facility_info fi JOIN facility_rent fr ON (fi.fac_id = fr.fac_id)
+        WHERE fi.fac_type = #{val}
+    </select>
+
+</mapper>
