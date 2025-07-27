@@ -20,6 +20,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -68,7 +69,7 @@ public class QnaService {
 
         //mem_id가 business에존재해서 varchar타입임
         String businessId = String.valueOf(id);
-        List<Attachment> attach = attachmentService.getAttachments(businessId, "Q");
+        Optional<List<Attachment>> attach = attachmentService.getAttachments(businessId, "Q");
         mapper.addViewCount(id);
         qnaDto.formatDates();
         System.out.println("qnaDto :::: "+qnaDto);
