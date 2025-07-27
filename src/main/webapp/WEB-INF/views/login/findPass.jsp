@@ -129,7 +129,7 @@
             .then(data => {
               if (data.success) {
                 infoText.className = "form-text text-success mt-1";
-                infoText.innerHTML = "✅ 인증번호가 이메일로 전송되었습니다.";
+                infoText.innerHTML = "인증번호가 이메일로 전송되었습니다.";
                 const memId = document.querySelector('#authForm input[name="memId"]').value;
                 document.querySelector('#verifyForm input[name="memId"]').value = memId;
                 document.getElementById('selectMemId').value = memId;
@@ -137,12 +137,12 @@
                 new bootstrap.Modal(document.getElementById("codeModal")).show();
               } else {
                 infoText.className = "form-text text-danger mt-1";
-                infoText.innerHTML = "❌ 인증번호 전송 실패. 다시 시도해주세요.";
+                infoText.innerHTML = "인증번호 전송 실패. 다시 시도해주세요.";
               }
             })
             .catch(() => {
               infoText.className = "form-text text-danger mt-1";
-              infoText.innerHTML = "❌ 서버 오류로 전송에 실패했습니다.";
+              infoText.innerHTML = "서버 오류로 전송에 실패했습니다.";
             })
             .finally(() => {
               btn.disabled = false;
@@ -201,18 +201,22 @@
             .then(data => {
               if (data.success) {
                 infoText.className = "form-text text-success mt-1";
-                infoText.innerHTML = "✅ 임시 비밀번호가 이메일로 전송되었습니다.";
-                bootstrap.Modal.getInstance(document.getElementById("pwSelectModal")).hide();
-                window.opener?.focus();
-                window.close();
+                infoText.innerHTML = "임시 비밀번호가 이메일로 전송되었습니다.";
+
+                bootstrap.Modal.getInstance(document.getElementById("pwSelectModal"))?.hide();
+
+                setTimeout(() => {
+                  window.opener?.focus();
+                  window.close();
+                }, 300);
               } else {
                 infoText.className = "form-text text-danger mt-1";
-                infoText.innerHTML = "❌ 발급 실패. 다시 시도해주세요.";
+                infoText.innerHTML = "발급 실패. 다시 시도해주세요.";
               }
             })
             .catch(() => {
               infoText.className = "form-text text-danger mt-1";
-              infoText.innerHTML = "❌ 서버 오류로 전송 실패.";
+              infoText.innerHTML = "서버 오류로 전송 실패.";
             })
             .finally(() => {
               btn.disabled = false;
