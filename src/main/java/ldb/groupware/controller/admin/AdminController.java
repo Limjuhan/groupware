@@ -71,7 +71,7 @@ public class AdminController {
     }
 
     // 사원 관리 페이지 
-    @GetMapping("memberList")
+    @GetMapping("getMemberList")
     public String getMemberList(Model model) {
         model.addAttribute("deptList", memberService.getDeptList());
         model.addAttribute("rankList", memberService.getRankList());
@@ -79,7 +79,7 @@ public class AdminController {
     }
 
     // 사원 등록 페이지
-    @GetMapping("memberForm")
+    @GetMapping("getMemberForm")
     public String getMemberForm(Model model) {
         model.addAttribute("deptList", memberService.getDeptList());
         model.addAttribute("rankList", memberService.getRankList());

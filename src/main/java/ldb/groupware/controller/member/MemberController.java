@@ -28,7 +28,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 개인정보 
-    @GetMapping("memberInfo")
+    @GetMapping("getMemberInfo")
     public String getMemberInfo(HttpSession session, Model model) {
         String loginId = (String) session.getAttribute("loginId");
         if (loginId == null) return "redirect:/login/doLogin";

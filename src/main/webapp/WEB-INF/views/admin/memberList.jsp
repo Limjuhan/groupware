@@ -334,7 +334,7 @@
         </div>
     </form>
     <div class="text-end mb-3">
-        <a href="/admin/memberForm" class="btn btn-success btn-sm">+ 등록</a>
+        <a href="/admin/getMemberForm" class="btn btn-success btn-sm">+ 등록</a>
     </div>
     <table class="table table-bordered mt-3">
         <thead class="table-light">

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ldb.groupware.mapper.mybatis.calendar.CalendarMapper">
+    <select id="selectScheduleList" resultType="ScheduleListDto">
+        SELECT schedule_id,
+               schedule_title,
+               schedule_content,
+               start_at,
+               end_at
+        FROM company_schedule
+        ORDER BY start_at DESC
+            LIMIT #{startNum},
+                 #{itemsPerPage}
+    </select>
+
+    <select id="countScheduleList" resultType="int">
+        SELECT COUNT(*)
+        FROM company_schedule
+    </select>
+
+</mapper>

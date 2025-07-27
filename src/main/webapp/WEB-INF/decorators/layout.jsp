@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -104,19 +104,19 @@
 <div class="container-fluid px-3">
     <div class="content-wrapper">
         <div class="col-md-2 bg-glass me-2 sidebar">
-            <ul class="nav flex-column nav-pills">
-                <li class="nav-item"><a class="nav-link active" href="/"><i class="fa-solid fa-house"></i> 홈</a></li>
-                <li class="nav-item"><a class="nav-link" href="/member/memberInfo"><i class="fa-solid fa-user"></i> 개인정보</a></li>
+            <ul class="nav flex-column nav-pills" id="sidebarMenu">
+                <li class="nav-item"><a class="nav-link" href="/"><i class="fa-solid fa-house"></i> 홈</a></li>
+                <li class="nav-item"><a class="nav-link" href="/member/getMemberInfo"><i class="fa-solid fa-user"></i> 개인정보</a></li>
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#boardMenu" role="button" aria-expanded="false" aria-controls="boardMenu">
                         <i class="fa-solid fa-thumbtack me-1"></i> 게시판 ▾
                     </a>
                     <div class="collapse ps-3" id="boardMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/board/getNoticeList">공지사항</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/board/getFaqList">자주묻는질문</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/board/getQnaList">질문게시판</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage">자주묻는질문 관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getNoticeList"><i class="fa-solid fa-bullhorn"></i> 공지사항</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getFaqList"><i class="fa-solid fa-question"></i> 자주묻는질문</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getQnaList"><i class="fa-solid fa-comments"></i> 질문게시판</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage"><i class="fa-solid fa-tools"></i> 자주묻는질문 관리</a></li>
                         </ul>
                     </div>
                 </li>
@@ -126,8 +126,8 @@
                     </a>
                     <div class="collapse ps-3" id="draftMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/draft/getMyDraftList">내 전자결재</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/draft/receivedDraftList">받은 전자결재</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/draft/getMyDraftList"><i class="fa-solid fa-file-signature"></i> 내 전자결재</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/draft/receivedDraftList"><i class="fa-solid fa-inbox"></i> 받은 전자결재</a></li>
                         </ul>
                     </div>
                 </li>
@@ -137,13 +137,13 @@
                     </a>
                     <div class="collapse ps-3" id="facilityMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/reservation/vehicleList">차량예약</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/reservation/meetingRoomList">회의실예약</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/reservation/itemList">비품예약</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/reservation/reservationList">내 예약내역</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/vehicleManage">차량관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/meetingRoomManage">회의실관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/itemListManage">비품관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/getVehicleList">차량예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/reservation/meetingRoomList"><i class="fa-solid fa-door-open"></i> 회의실예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/reservation/itemList"><i class="fa-solid fa-box"></i> 비품예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/reservation/reservationList"><i class="fa-solid fa-list"></i> 내 예약내역</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/vehicleManage"><i class="fa-solid fa-car-side"></i> 차량관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/meetingRoomManage"><i class="fa-solid fa-building"></i> 회의실관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/itemListManage"><i class="fa-solid fa-tools"></i> 비품관리</a></li>
                         </ul>
                     </div>
                 </li>
@@ -153,21 +153,20 @@
                     </a>
                     <div class="collapse ps-3" id="calendarMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/calendar/calendar"><i class="fa-regular fa-calendar-check me-1"></i> 내 캘린더</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/calendar/calendarList"><i class="fa-solid fa-sliders me-1"></i> 일정관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/calendar/getCalendar"><i class="fa-regular fa-calendar-check me-1"></i> 내 캘린더</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/calendar/getCalendarList"><i class="fa-solid fa-sliders me-1"></i> 일정관리</a></li>
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/email"><i class="fa-solid fa-envelope"></i> 이메일</a></li>
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#adminMenu" role="button" aria-expanded="false" aria-controls="adminMenu">
                         <i class="fa-solid fa-user-gear me-1"></i> 관리자 ▾
                     </a>
                     <div class="collapse ps-3" id="adminMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/admin/memberList">사원관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/deptAuth">부서권한관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/dashBoard">연차사용률</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/getMemberList"><i class="fa-solid fa-users"></i> 사원관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/deptAuth"><i class="fa-solid fa-shield-alt"></i> 부서권한관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/dashBoard"><i class="fa-solid fa-chart-pie"></i> 연차사용률</a></li>
                         </ul>
                     </div>
                 </li>
@@ -194,7 +193,6 @@
         </div>
     </div>
 </div>
-
 
 <script>
     const employees = [
@@ -235,20 +233,79 @@
         });
     });
 
+    // 사이드바 메뉴 활성화 처리
+    document.addEventListener("DOMContentLoaded", function() {
+        const sidebarLinks = document.querySelectorAll('#sidebarMenu .nav-link');
+        const currentPath = window.location.pathname;
+
+        sidebarLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && currentPath === href) {
+                // 하위 링크가 활성화된 경우, 상위 메뉴는 비활성화
+                link.classList.add('active');
+                const parentCollapse = link.closest('.collapse');
+                if (parentCollapse) {
+                    const parentLink = parentCollapse.previousElementSibling;
+                    if (parentLink && parentLink.classList.contains('nav-link')) {
+                        parentLink.classList.remove('active');
+                    }
+                }
+            }
+
+            link.addEventListener('click', function(e) {
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                if (href && currentPath === href) {
+                    this.classList.add('active');
+                    const parentCollapse = this.closest('.collapse');
+                    if (parentCollapse) {
+                        const parentLink = parentCollapse.previousElementSibling;
+                        if (parentLink && parentLink.classList.contains('nav-link')) {
+                            parentLink.classList.remove('active');
+                        }
+                    }
+                }
+
+                // Collapse 메뉴 내 클릭 시 처리
+                if (this.nextElementSibling && this.nextElementSibling.classList.contains('collapse')) {
+                    const subLinks = this.nextElementSibling.querySelectorAll('.nav-link');
+                    subLinks.forEach(subLink => {
+                        if (subLink.getAttribute('href') === currentPath) {
+                            subLink.classList.add('active');
+                            this.classList.remove('active'); // 상위 메뉴 비활성화
+                        }
+                    });
+                }
+            });
+        });
+
+        // 초기 로드 시 collapse 상태 유지
+        sidebarLinks.forEach(link => {
+            if (link.nextElementSibling && link.nextElementSibling.classList.contains('collapse')) {
+                const subLinks = link.nextElementSibling.querySelectorAll('.nav-link');
+                subLinks.forEach(subLink => {
+                    if (subLink.getAttribute('href') === currentPath) {
+                        subLink.classList.add('active');
+                        link.setAttribute('aria-expanded', 'true');
+                        link.nextElementSibling.classList.add('show');
+                    }
+                });
+            }
+        });
+    });
+
     const timeoutSec = 10800;
     const warnSec = timeoutSec - 300; // 세션 남은 시간 5분전
 
-    // 세선 5분전 알림
-    setTimeout(() =>{
-        alert("세션이 5분 후에 만료 됩니다.");
+    // 세션 5분전 알림
+    setTimeout(() => {
+        alert("세션이 5분 후에 만료됩니다.");
     }, warnSec * 1000);
 
     // 세션 만료 시 로그 아웃
     setTimeout(() => {
         alert("세션이 만료되어 자동 로그아웃됩니다.");
-        location.href ="/login/doLogout";
+        location.href = "/login/doLogout";
     }, timeoutSec * 1000);
-
 </script>
 </body>
 </html>
