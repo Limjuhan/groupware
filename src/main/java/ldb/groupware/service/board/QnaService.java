@@ -1,19 +1,16 @@
 package ldb.groupware.service.board;
 
-import jakarta.validation.Valid;
 import ldb.groupware.domain.Attachment;
 import ldb.groupware.domain.QnaComment;
 import ldb.groupware.dto.attach.AttachmentDto;
 import ldb.groupware.dto.board.*;
+import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.mapper.mybatis.attachment.AttachmentMapper;
 import ldb.groupware.mapper.mybatis.board.FaqMapper;
 import ldb.groupware.mapper.mybatis.board.QnaMapper;
 import ldb.groupware.service.attachment.AttachmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
 

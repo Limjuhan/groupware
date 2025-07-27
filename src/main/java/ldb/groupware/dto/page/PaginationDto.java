@@ -1,4 +1,4 @@
-package ldb.groupware.dto.board;
+package ldb.groupware.dto.page;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +22,12 @@ public class PaginationDto {
     private String searchType;
     private String keyword;
 
-
+    public void setPageData(int page, String keyword, String searchType, int totalRows) {
+        this.page = page;
+        this.keyword = keyword;
+        this.searchType = searchType;
+        this.totalRows = totalRows;
+    }
 
     public void calculatePagination() {
         if (totalRows <= 0) {

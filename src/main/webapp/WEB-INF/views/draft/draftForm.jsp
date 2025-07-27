@@ -77,6 +77,7 @@
     <form:form method="post" action="insertMyDraft" modelAttribute="draftFormDto" enctype="multipart/form-data">
         <form:errors cssClass="text-danger fw-bold fs-5" />
         <form:input type="hidden" path="docId"/>
+        <form:input type="hidden" path="status"/>
         <!-- 결재양식 -->
         <div class="mb-3 select-wrapper">
             <label class="form-label">결재양식 선택 *</label>
@@ -319,14 +320,13 @@
 
         $.ajax({
             type: "POST",
-            url: "/draft/delete",
+            url: "/draft/deleteAttachment",
             data: {
                 savedName: savedName,
                 attachType: attachType
             },
             success: function (res) {
                 if (res.success) {
-                    // 백틱 대신 문자열 연결 방식 사용
                     $(".attach-item[data-id='" + savedName + "']").remove();
                 } else {
                     alert("삭제 실패: " + res.message);

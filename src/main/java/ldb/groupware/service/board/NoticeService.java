@@ -1,20 +1,17 @@
 package ldb.groupware.service.board;
 
-import jakarta.servlet.http.HttpServletRequest;
 import ldb.groupware.dto.board.*;
 import ldb.groupware.dto.attach.AttachmentDto;
+import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.mapper.mybatis.board.NoticeMapper;
 import ldb.groupware.service.attachment.AttachmentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

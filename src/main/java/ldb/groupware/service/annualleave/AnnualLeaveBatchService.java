@@ -26,6 +26,7 @@ public class AnnualLeaveBatchService {
      * - 입사 후 1년 이상 직원: 입사 기념일에 정기연차 지급 (2년마다 1일씩 증가, 최대 25일까지)
      */
     public void generateAnnualLeave() {
+        log.info("연차등록 배치 서비스 실행");
         LocalDate today = LocalDate.now();
         int currentYear = today.getYear();
 

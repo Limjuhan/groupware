@@ -3,6 +3,7 @@ package ldb.groupware.controller.board;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import ldb.groupware.dto.board.*;
+import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.service.board.QnaService;
 import ldb.groupware.service.member.MemberService;
 import org.jsoup.Jsoup;
@@ -35,7 +36,7 @@ public class QnaController {
     //질문게시판 목록 (자주묻는질문까지불러와야함)
     @GetMapping("getQnaList")
     public String getQnaList (@RequestParam(value = "page", defaultValue = "1") int currentPage ,
-                                   PaginationDto paging,Model model) {
+                              PaginationDto paging, Model model) {
         paging.setPage(currentPage); //현재페이지설정
         System.out.println("컨트롤러");
         Map<String,Object> map =service.getQnaList(paging);

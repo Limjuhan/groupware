@@ -7,17 +7,18 @@ import ldb.groupware.domain.FormResign;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.dto.draft.DraftListDto;
+import ldb.groupware.dto.page.PaginationDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DraftMapper {
 
-    List<DraftListDto> getMyDraftList(@Param("memId") String memId,
-                                         @Param("type") String type,
-                                         @Param("keyword") String keyword);
+    List<DraftListDto> getMyDraftList(@Param("dto") PaginationDto dto,
+                                      @Param("memId") String memId);
 
     List<DraftForMemberDto> getMemberList();
 
@@ -61,4 +62,6 @@ public interface DraftMapper {
     void insertFormProject(FormProject from);
 
     void insertFormExpense(FormExpense from);
+
+    int getMyDraftCount(Map<String, Object> countParam);
 }

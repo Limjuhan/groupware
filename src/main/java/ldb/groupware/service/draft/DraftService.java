@@ -1,6 +1,5 @@
 package ldb.groupware.service.draft;
 
-import io.micrometer.common.util.StringUtils;
 import ldb.groupware.domain.FormAnnualLeave;
 import ldb.groupware.domain.FormExpense;
 import ldb.groupware.domain.FormProject;
@@ -9,6 +8,7 @@ import ldb.groupware.dto.draft.ApprovalConst;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.dto.draft.DraftListDto;
+import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.mapper.mapstruct.ConvertDtoMapper;
 import ldb.groupware.mapper.mybatis.draft.DraftMapper;
 import ldb.groupware.service.attachment.AttachmentService;
@@ -18,8 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -37,8 +39,26 @@ public class DraftService {
         this.messageSource = messageSource;
     }
 
-    public List<DraftListDto> searchMyDraftList(String memId, String type, String keyword) {
-        return draftMapper.getMyDraftList(memId, type, keyword);
+    public Map<String, Object> searchMyDraftList(String memId, String type, String keyword, int page) {
+
+        Map<String, Object> countParam = new HashMap<>();
+        countParam.put("memId", memId);
+        countParam.put("keyword", keyword);
+        countParam.put("type", type);
+
+        int totalRows = draftMapper.getMyDraftCount(countParam);
+
+        PaginationDto pageDto = new PaginationDto();
+        pageDto.setPageData(page, keyword, type, totalRows);
+        pageDto.calculatePagination();
+
+        List<DraftListDto> list = draftMapper.getMyDraftList(pageDto, memId);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", list);
+        result.put("page", pageDto);
+
+        return result;
     }
 
     public List<DraftForMemberDto> getMemberList() {
@@ -62,12 +82,12 @@ public class DraftService {
      */
     @Transactional
     public void saveDraft(DraftFormDto dto, List<MultipartFile> attachments, String action, String memId) throws IllegalArgumentException {
-
+        //글등록방식(임시저장or제출) 확인
         int status = getStatus(action);
 
-        if (dto.getDocId() != null) { // 임시저장 -> 임시저장 or 제출
+        if (dto.getStatus() == ApprovalConst.STATUS_TEMP) { // 임시저장 -> 임시저장 or 제출
             updateApprovalDraft(dto, memId, status);
-        } else if (dto.getDocId() == null) { // 새글작성->임시저장 or 제출
+        } else { // 새글작성->임시저장 or 제출
             insertNewApprovalDraft(dto, memId, status);
         }
 

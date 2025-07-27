@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/draft")
@@ -25,29 +27,22 @@ public class DraftApiController {
     }
 
     @GetMapping("/searchMyDraftList")
-    public List<DraftListDto> searchMyDraftList(@RequestParam String type,
-                                                @RequestParam String keyword,
-                                                HttpSession session) {
+    public ResponseEntity<ApiResponseDto<Map<String, Object>>> searchMyDraftList(
+            @RequestParam String type,
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "1") int page) {
 
-        List<DraftListDto> draftList = null;
-//        String memId = session.getAttribute("memId").toString();
+        // 로그인 사용자 ID (임시 하드코딩)
         String memId = "user008";
 
-        // 검색조건 없으면 전체 조회
-        if (StringUtils.isBlank(type) || StringUtils.isBlank(keyword)) {
-            draftList = draftService.searchMyDraftList(memId, null, null);
-        } else {
-            draftList = draftService.searchMyDraftList(memId, type, keyword);
-        }
+        Map<String, Object> result = draftService.searchMyDraftList(memId, type, keyword, page);
+        result.forEach((k, v) -> System.out.println("[전자결재리스트조회] " + k + " : " + v));
 
-        draftList.forEach(draftListDto -> {
-            System.out.println("draftListDto = " + draftListDto);
-        });
-
-        return draftList;
+        return ApiResponseDto.ok(result);
     }
 
-    @PostMapping("delete")
+
+    @PostMapping("deleteAttachment")
     public ResponseEntity<ApiResponseDto<Void>> deleteAttachment(
             @RequestParam("savedName") String savedName,
             @RequestParam("attachType") String attachType) {
