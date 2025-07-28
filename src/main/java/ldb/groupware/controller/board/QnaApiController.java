@@ -1,16 +1,16 @@
-package ldb.groupware.service.board;
+package ldb.groupware.controller.board;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import ldb.groupware.domain.QnaComment;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.board.CommentFormDto;
+import ldb.groupware.service.board.QnaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.stream.events.Comment;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -16,7 +16,7 @@
 <div class="container bg-white p-4 shadow rounded">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">🚗 차량관리시스템</h2>
-    <a href="vehicleRegisterForm" class="btn btn-primary">+ 차량 등록</a>
+    <a href="roomRegisterForm" class="btn btn-primary">+ 차량 등록</a>
   </div>
 
   <table class="table table-bordered text-center align-middle">

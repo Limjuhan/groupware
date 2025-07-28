@@ -18,16 +18,20 @@ public class FacilityRentDto {
 
     private Date startAt;
     private Date endAt;
+    private LocalDateTime startLocalDateTime;
+    private LocalDateTime endLocalDateTime;
+    private LocalDateTime createdAt;
+    private String createdBy;
 
 
     //Date --> LocalDateTime
-    public LocalDateTime getStartLocalDate() {
+    public LocalDateTime getStartLocalDateTime() {
         if (startAt == null) return null;
         return startAt.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
     }
-    public LocalDateTime getEndLocalDate() {
+    public LocalDateTime getEndLocalDateTime() {
         if (endAt == null) return null;
         return endAt.toInstant()
                 .atZone(ZoneId.systemDefault())

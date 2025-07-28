@@ -3,6 +3,7 @@ package ldb.groupware.dto.page;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
@@ -20,6 +21,9 @@ public class PaginationDto {
     private int startNum;//페이지조회시 시작할 지점
     private String searchType;
     private String keyword;
+
+
+
 
     public void setPageData(int page, String keyword, String searchType, int totalRows) {
         this.page = page;

@@ -109,6 +109,8 @@ public class MemberService {
 
     // 사원 설정(부서,직급)
     public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(UpdateMemberDto dto) {
+        dto.setUpdatedBy("admin");
+        dto.setUpdatedAt(LocalDateTime.now());
         int updated = memberMapper.updateMemberByMng(dto);
         if (updated <= 0) {
             return ApiResponseDto.fail("사원 정보 수정 실패");
@@ -116,7 +118,7 @@ public class MemberService {
         return ApiResponseDto.ok(dto, "사원 정보 수정 완료");
     }
 
-    public boolean updateInfo(MemberUpdateDto dto) {
+    public boolean updateInfo(MemberUpdateDto dto,String memId) {
         if (dto.getDeletePhoto() != null && !dto.getDeletePhoto().isEmpty()) {
             attachmentService.deleteAttachment(List.of(dto.getDeletePhoto()), "P");
         }
@@ -124,6 +126,8 @@ public class MemberService {
         if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
             attachmentService.saveAttachments(dto.getMemId(), "P", List.of(dto.getPhoto()));
         }
+        dto.setUpdatedBy(memId);
+        dto.setUpdatedAt(LocalDateTime.now());
         memberMapper.updateInfo(dto);
         return true;
     }

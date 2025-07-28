@@ -119,6 +119,7 @@ public class NoticeController {
             model.addAttribute("attachedFiles",noticeById.get("attach"));
             result.rejectValue("noticeContent", "error.content.size");
             return "board/noticeEditForm";
+
         }
         if(service.updateNotice(files,dto)){
             model.addAttribute("msg","업뎃성공");
