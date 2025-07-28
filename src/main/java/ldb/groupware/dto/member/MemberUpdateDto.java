@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -36,5 +37,7 @@ public class MemberUpdateDto {
 
     private MultipartFile photo;
     private String deletePhoto;
+    private String updatedBy;
+    private LocalDateTime updatedAt;
 
 }

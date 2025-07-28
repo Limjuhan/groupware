@@ -52,10 +52,10 @@ public class MemberController {
 
         String loginId = (String) session.getAttribute("loginId");
         dto.setMemId(loginId);
-        boolean success = memberService.updateInfo(dto);
+        boolean success = memberService.updateInfo(dto,loginId);
 
         model.addAttribute("msg", success ? "수정 성공" : "수정 실패");
-        model.addAttribute("url", "/member/memberInfo");
+        model.addAttribute("url", "/member/getMemberInfo");
         return "alert";
     }
 

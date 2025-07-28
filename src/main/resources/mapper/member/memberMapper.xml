@@ -72,7 +72,9 @@
         UPDATE member
         SET mem_phone         = #{memPhone},
             mem_private_email = #{privateEmail},
-            mem_address       = #{memAddress}
+            mem_address       = #{memAddress},
+            updated_by = #{updatedBy},
+            updated_at = #{updatedAt}
         WHERE mem_id = #{memId}
     </update>
 
@@ -94,6 +96,7 @@
         </if>
     </select>
 
+    <!--MemberSearchDto에 따른 직원 목록 조회-->
     <select id="getPagedMembers" parameterType="MemberSearchDto" resultType="MemberListDto">
         SELECT m.mem_id, m.mem_name, m.dept_id, m.rank_id, d.dept_name, r.rank_name
         FROM member m
@@ -156,7 +159,9 @@
     <update id="updateMemberByMng" parameterType="UpdateMemberDto">
         UPDATE member
         SET dept_id = #{deptId},
-            rank_id = #{rankId}
+            rank_id = #{rankId},
+            updated_by = #{updatedBy},
+            updated_at = #{updatedAt}
         WHERE mem_id = #{memId}
     </update>
 
@@ -166,8 +171,6 @@
         SET mem_pass = #{encodedPassword}
         WHERE mem_id = #{memId}
     </update>
-
-
 
     <!-- id로 name뽑기 (동곤)-->
     <select id="findNameById" parameterType="String" resultType="String">
@@ -181,6 +184,7 @@
         where mem_id = #{memId}
     </select>
 
+    <!--비밀번호 찾기-->
     <select id="isValidMember" parameterType="PwCodeDto" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM member
