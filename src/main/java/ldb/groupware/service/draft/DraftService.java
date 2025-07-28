@@ -236,7 +236,7 @@ public class DraftService {
 
     @Transactional
     public void deleteMyDraft(DraftDeleteDto dto) {
-        
+
         if (draftMapper.deleteApprovalDocument(dto) == 0 || deleteDraftForm(dto) == 0) {
             log.warn("기안문서 삭제 실패 - 존재하지 않거나 이미 삭제됨: {}", dto.getDocId());
             throw new IllegalStateException("삭제할 문서가 없거나 실패했습니다.");

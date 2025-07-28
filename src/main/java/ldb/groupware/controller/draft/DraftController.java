@@ -87,6 +87,8 @@ public class DraftController {
      * TODO: 알람테이블 저장 처리 아직 안함.
      * 저장프로세스
      * 1. 임시저장글 -> 임시저장 or 제출
+     *  -. 임시저장한글 다시 처리시 기존저장했던글 양식과 불일치시 저장불가.
+     *
      * 2. 새글 -> 임시저장 or 제출
      *
      * 제출,임시저장 공통
@@ -96,11 +98,14 @@ public class DraftController {
      * 제출(action="save")일때만
      * -> approval_line(결재라인)정보 저장.
      *
+     * 기본적으로 임시저장은 입력값 유효성검사 제외.
+     * 단, 휴가계획서는 임시저장할때도 휴가시작,끝나는날 필수입력받음.
+     *
      * @param dto
      * @param bindingResult
      * @param attachments
      * @param action
-     * @param memId
+     * @param savedFormCode
      * @param model
      * @return
      */
