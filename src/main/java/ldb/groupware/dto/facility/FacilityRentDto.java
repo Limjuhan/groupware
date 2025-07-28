@@ -13,6 +13,7 @@ public class FacilityRentDto {
 
     private String facId;
     private String facType;
+    private String facName;
     private String renterId;
     private String rentalPurpose;
 

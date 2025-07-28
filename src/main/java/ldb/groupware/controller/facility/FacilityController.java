@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Map;
 
+
 @RequestMapping("facility/")
 @Controller
 public class FacilityController {
@@ -68,9 +69,24 @@ public class FacilityController {
     @GetMapping("getReservationList")
     public String getReservationList(Model model,PaginationDto dto , SearchDto sDto,HttpServletRequest request){
         System.out.println("sdto :: "+sDto);
-        Map<String,Object> map = service.getReserveList(dto,request);
+        Map<String,Object> map = service.getReserveList(dto,sDto,request);
+        model.addAttribute("pageDto",map.get("pageDto"));
+        model.addAttribute("facility",map.get("facility"));
         return "facility/reservationList";
     }
+
+    @GetMapping("cancelReservation")
+    public String cancelReservation(Model model, @RequestParam("facId") String facId , HttpServletRequest request){
+        if(service.reserveCancel(facId,request)){
+            model.addAttribute("msg","삭제성공");
+        }
+        else{
+            model.addAttribute("msg","삭제실패");
+        }
+        model.addAttribute("url", "getReservationList");
+        return "alert";
+    }
+
 
 
 
