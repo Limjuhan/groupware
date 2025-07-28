@@ -153,7 +153,8 @@
                     </a>
                     <div class="collapse ps-3" id="calendarMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/calendar/getCalendar"><i class="fa-regular fa-calendar-check me-1"></i> 캘린더</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/calendar/getCalendar"><i class="fa-regular fa-calendar-check me-1"></i>
+                                캘린더</a></li>
                             <li class="nav-item"><a class="nav-link" href="/calendar/getCalendarList"><i class="fa-solid fa-sliders me-1"></i> 일정관리</a></li>
                         </ul>
                     </div>
