@@ -161,6 +161,16 @@
         SELECT * FROM form_resign WHERE doc_id = #{docId}
     </select>
 
+    <update id="updateFormAnnualLeave" parameterType="FormAnnualLeave">
+        UPDATE form_annual_leave
+        SET leave_code = #{leaveCode},
+            start_date = #{startDate},
+            end_date = #{endDate},
+            total_days = #{totalDays},
+            annual_content = #{annualContent}
+        WHERE doc_id = #{docId}
+    </update>
+
     <update id="updateFormProject" parameterType="FormProject">
         UPDATE form_project
         SET project_name = #{projectName},

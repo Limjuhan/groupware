@@ -4,14 +4,11 @@ import ldb.groupware.domain.AnnualLeave;
 import ldb.groupware.domain.Member;
 import ldb.groupware.mapper.mybatis.annual.AnnualLeaveMapper;
 import ldb.groupware.mapper.mybatis.member.MemberMapper;
-import ldb.groupware.service.member.MemberService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -50,10 +47,7 @@ public class AnnualLeaveBatchService {
 
             // 근속년수
             long years = ChronoUnit.YEARS.between(hireDate, today);
-            System.out.println("memId = " + memId);
-            System.out.println("years = " + years);
-            System.out.println("hireDate = " + hireDate);
-            System.out.println("===================================================");
+
             try {
                 if (years < 1) {// 1년차 직원
                     if (isMonthlyGivenDay(hireDate, today)) {
@@ -109,9 +103,7 @@ public class AnnualLeaveBatchService {
     private boolean isRegularAnnualGiveDay(LocalDate hireDate, LocalDate today, long years) {
 
         LocalDate anniversary = hireDate.plusYears(years);
-        System.out.println("anniversary = " + anniversary);
-        System.out.println("today = " + today);
-        System.out.println("===============================================");
+
         // 윤년 2월29일에 입사한 직원은 28일기준으로 연차 계산.
         if (hireDate.getMonth() == Month.FEBRUARY && hireDate.getDayOfMonth() == 29) {
             return today.getMonth() == Month.FEBRUARY && today.getDayOfMonth() == 28;

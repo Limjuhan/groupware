@@ -26,11 +26,13 @@ public class CalendarApiController {
 
     @GetMapping("CalendarList")
     public ResponseEntity<ApiResponseDto<Map<String, Object>>> getCalendarList(
-            @RequestParam(defaultValue = "1") int page) {
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String keyword) {
 
         PaginationDto pageDto = new PaginationDto();
-        int totalCount = calendarService.getTotalCount();
-        pageDto.setPageData(page, null, null, totalCount);
+        int totalCount = calendarService.getTotalCount(searchType, keyword);
+        pageDto.setPageData(page, keyword, searchType, totalCount);
         pageDto.calculatePagination();
 
         List<ScheduleListDto> scheduleList = calendarService.getScheduleList(pageDto);
@@ -41,6 +43,7 @@ public class CalendarApiController {
 
         return ApiResponseDto.ok(data);
     }
+
 
     @PostMapping("deleteCalendarByMng")
     public ResponseEntity<ApiResponseDto<Void>> deleteCalendarByMng(@RequestParam("scheduleId") Integer scheduleId) {

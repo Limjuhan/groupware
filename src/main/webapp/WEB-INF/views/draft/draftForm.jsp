@@ -93,6 +93,7 @@
         <form:errors cssClass="text-danger fw-bold fs-5" />
         <form:input type="hidden" path="docId"/>
         <form:input type="hidden" path="status"/>
+        <input type="hidden" name="savedFormCode" value="${draftFormDto.formCode}">
         <!-- 결재양식 -->
         <div class="mb-3 select-wrapper">
             <label class="form-label">결재양식 선택 *</label>
