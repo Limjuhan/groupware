@@ -138,12 +138,12 @@
                     <div class="collapse ps-3" id="facilityMenu">
                         <ul class="nav flex-column">
                             <li class="nav-item"><a class="nav-link" href="/facility/getVehicleList">차량예약</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/reservation/meetingRoomList"><i class="fa-solid fa-door-open"></i> 회의실예약</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/reservation/itemList"><i class="fa-solid fa-box"></i> 비품예약</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/reservation/reservationList"><i class="fa-solid fa-list"></i> 내 예약내역</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/vehicleManage"><i class="fa-solid fa-car-side"></i> 차량관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/meetingRoomManage"><i class="fa-solid fa-building"></i> 회의실관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/itemListManage"><i class="fa-solid fa-tools"></i> 비품관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/getMeetingRoomList"><i class="fa-solid fa-door-open"></i> 회의실예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/getItemList"><i class="fa-solid fa-box"></i> 비품예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/getReservationList"><i class="fa-solid fa-list"></i> 내 예약내역</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/roomManage"><i class="fa-solid fa-car-side"></i> 차량관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/meetingRoomManage"><i class="fa-solid fa-building"></i> 회의실관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/itemListManage"><i class="fa-solid fa-tools"></i> 비품관리</a></li>
                         </ul>
                     </div>
                 </li>

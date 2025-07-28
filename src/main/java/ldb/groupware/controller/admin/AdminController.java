@@ -45,14 +45,14 @@ public class AdminController {
         return "admin/meetingRoomRegisterForm";
     }
 
-    @GetMapping("vehicleManage")
-    public String vehicleManage() {
-        return "admin/vehicleManage";
+    @GetMapping("roomManage")
+    public String roomManage() {
+        return "admin/roomManage";
     }
 
-    @GetMapping("vehicleRegisterForm")
-    public String vehicleRegisterForm() {
-        return "admin/vehicleRegisterForm";
+    @GetMapping("roomRegisterForm")
+    public String roomRegisterForm() {
+        return "admin/roomRegisterForm";
     }
 
     @GetMapping("calendarWrite")
