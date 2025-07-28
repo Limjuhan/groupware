@@ -30,8 +30,8 @@ public class ReservationController {
     public String reservationList() {
         return "reservation/reservationList";
     }
-    @GetMapping("vehicleList")
-    public String vehicleList() {
-        return "reservation/vehicleList";
+    @GetMapping("roomList")
+    public String roomList() {
+        return "reservation/roomList";
     }
 }

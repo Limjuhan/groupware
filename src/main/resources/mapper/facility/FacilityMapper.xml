@@ -3,9 +3,24 @@
 <mapper namespace="ldb.groupware.mapper.mybatis.facility.FacilityMapper">
 
     <select id="getList" resultType="FacilityListDto" parameterType="String">
-        SELECT fi.fac_id , fi.fac_name , fi.fac_type,  fi.fac_uid , fi.capacity , fr.rent_yn
-        FROM facility_info fi JOIN facility_rent fr ON (fi.fac_id = fr.fac_id)
-        WHERE fi.fac_type = #{val}
+        SELECT fi.fac_id , fi.fac_name , fi.fac_type,  fi.fac_uid , fi.capacity , ifnull(fr.rent_yn,'Y') as rent_yn , fi.created_at , fi.created_by
+        FROM facility_info fi left JOIN facility_rent fr ON (fi.fac_id = fr.fac_id)
+        WHERE fi.fac_type = #{val} order by fi.fac_id asc
     </select>
+
+    <select id="findById" parameterType="String" resultType="FacilityRentDto" >
+        select * from facility_info where fac_id = #{val}
+    </select>
+
+    <insert id="insertFacility" parameterType="FacilityRentDto">
+        INSERT INTO facility_rent (
+            fac_id, fac_type, renter_id, rental_purpose,
+            start_at, end_at, created_at, created_by
+           )
+            values(
+                 #{facId}, #{facType}, #{renterId}, #{rentalPurpose},
+                 #{startLocalDateTime}, #{endLocalDateTime}, #{createdAt}, #{createdBy}
+            )
+    </insert>
 
 </mapper>

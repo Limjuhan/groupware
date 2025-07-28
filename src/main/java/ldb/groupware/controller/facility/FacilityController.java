@@ -26,16 +26,32 @@ public class FacilityController {
         String type = "R_01";
         List<FacilityListDto> dto = service.getFacilityList(type);
         model.addAttribute("facility", dto);
-        return "reservation/vehicleList";
+        return "facility/vehicleList";
     }
     
     @PostMapping("insertFacilityRent")
     public String insertFacility(FacilityRentDto dto , Model model){
-        //service.insertFacility(dto)
-        System.out.println("dto :: "+dto);
-        System.out.println(dto.getEndLocalDate());
-        System.out.println(dto.getStartLocalDate());
-        model.addAttribute("url", "getVehicleList");
+        if(service.insertFacility(dto)){
+            model.addAttribute("msg", "예약성공");
+            model.addAttribute("url", "getReservationList");
+        }
+        else{
+            model.addAttribute("msg","예약실패");
+            model.addAttribute("url", "getVehicleList");
+        }
         return "alert";
     }
+    @GetMapping("getMeetingRoomList")
+    public String getMeetingRoomList(Model model){
+        return "facility/meetingRoomList";
+    }
+
+    @GetMapping("getReservationList")
+    public String getReservationList(Model model){
+        return "facility/reservationList";
+    }
+
+
+
+
 }

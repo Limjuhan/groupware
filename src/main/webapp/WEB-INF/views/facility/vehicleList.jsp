@@ -30,10 +30,12 @@
     <tbody>
       <!-- 차량목록 하드코딩 -->
 
-      <c:forEach items="${facility}" var="vehicle">
+      <c:forEach items="${facility}" var="room">
         <tr>
-          <td>${vehicle.facId}</td><td>${vehicle.facName}</td><td>${vehicle.facUid}</td><td>${vehicle.capacity}</td><td>${vehicle.rentYn}</td>
-          <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('${vehicle.facId}', '${vehicle.facName}','${vehicle.facType}')">예약하기</button></td>
+          <td>${room.facId}</td><td>${room.facName}</td><td>${room.facUid}</td><td>${room.capacity}</td><td>${room.rentYn}</td>
+          <c:if test="${room.rentYn eq 'Y'}">
+            <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('${room.facId}', '${room.facName}')">예약하기</button></td>
+          </c:if>
         </tr>
       </c:forEach>
     </tbody>
@@ -53,8 +55,7 @@
           <input type="hidden" name="endAt" id="endAt">
           <input type="hidden" name="rentalPurpose" id="rentalPurpose">
           <input type="hidden" name="facId" id="facId" >
-          <input type="hidden" name="facType" id="facType" >
-          <input type="hidden" name="renterId" value="admin"> <%-- 세션으로변경해야함--%>
+          <input type="hidden" name="renterId" value="${sessionScope.loginId}"> <%-- 세션으로변경해야함--%>
         </form>
 
         <p id="reserveInfo" ></p>
@@ -80,6 +81,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+
         <button class="btn btn-primary" id="reserveBtn">예약</button>
       </div>
     </div>
@@ -121,14 +123,11 @@
   });
 </script>
 
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   function openModal(id, model , type) {
     document.getElementById('reserveInfo').innerText = '차량번호: ' + id + ' / 차량명: ' + model;
     const modal = new bootstrap.Modal(document.getElementById('reserveModal'));
     document.querySelector("#facId").value = id; //form에 fac_id값전송
-    document.querySelector("#facType").value = type; //form에 fac_id값전송
     modal.show();
   }
 </script>
