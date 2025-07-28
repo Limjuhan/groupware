@@ -232,6 +232,8 @@
     const newPw = document.getElementById("newPw").value;
     const confirmPw = document.getElementById("confirmPw").value;
 
+    console.log("Sending resetPw request with:", { memId, newPw, confirmPw });
+
     fetch("/member/resetPw", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -239,14 +241,49 @@
     })
             .then(res => res.json())
             .then(data => {
+              console.log("resetPw response:", data);
               alert(data.message);
               if (data.success) {
-                bootstrap.Modal.getInstance(document.getElementById("resetModal")).hide();
-                window.opener?.focus();
-                window.close();
+                console.log("Hiding resetModal...");
+                const resetModal = bootstrap.Modal.getInstance(document.getElementById("resetModal"));
+                if (resetModal) {
+                  resetModal.hide();
+                  document.getElementById("resetModal").addEventListener("hidden.bs.modal", () => {
+                    console.log("resetModal hidden, attempting to close window...");
+                    console.log("window.opener exists:", !!window.opener);
+                    if (window.opener) {
+                      window.opener.focus();
+                      window.close();
+                      setTimeout(() => {
+                        if (!window.closed) {
+                          console.error("Window close failed, redirecting to /login...");
+                          alert("창을 닫을 수 없습니다. 로그인 페이지로 이동합니다.");
+                          window.location.href = "/login";
+                        }
+                      }, 500);
+                    } else {
+                      console.warn("No window.opener, redirecting to /login...");
+                      alert("팝업 창이 아니므로 로그인 페이지로 이동합니다.");
+                      window.location.href = "/login";
+                    }
+                  }, { once: true });
+                } else {
+                  console.warn("resetModal instance not found, redirecting to /login...");
+                  alert("모달을 찾을 수 없습니다. 로그인 페이지로 이동합니다.");
+                  window.location.href = "/login";
+                }
+              } else {
+                console.warn("resetPw failed:", data.message);
               }
             })
-            .finally(() => btn.disabled = false);
+            .catch(error => {
+              console.error("Error in resetPw:", error);
+              alert("서버 오류로 비밀번호 변경에 실패했습니다.");
+            })
+            .finally(() => {
+              btn.disabled = false;
+              console.log("resetPwBtn re-enabled");
+            });
   });
 
   // Enter 키 제출 처리

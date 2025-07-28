@@ -3,13 +3,13 @@ package ldb.groupware.dto.page;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
 @ToString
 public class PaginationDto {
-	
-	private String professorId;
+
 	private int page;			// 클라이언트로부터 요청받은 페이지번호
 	private int startPage;          // 클라이언트에 표시할 시작 페이지 번호
 	private int endPage;			// 클라이언트에 표시할 마지막 페이지 번호
@@ -21,6 +21,9 @@ public class PaginationDto {
     private int startNum;//페이지조회시 시작할 지점
     private String searchType;
     private String keyword;
+
+
+
 
     public void setPageData(int page, String keyword, String searchType, int totalRows) {
         this.page = page;

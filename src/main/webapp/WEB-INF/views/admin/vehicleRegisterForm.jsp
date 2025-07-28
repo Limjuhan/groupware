@@ -14,11 +14,11 @@
 <div class="container bg-white shadow-sm rounded p-5">
   <h4 class="mb-4 fw-bold">🚗 차량 등록</h4>
 
-  <form action="vehicleRegisterProc.jsp" method="post">
+  <form action="roomRegisterProc.jsp" method="post">
     <!-- 설비번호 -->
     <div class="mb-3">
-      <label for="vehicleId" class="form-label">공용설비ID</label>
-      <input type="text" class="form-control" id="vehicleId" name="vehicleId" required placeholder="예: K0001">
+      <label for="roomId" class="form-label">공용설비ID</label>
+      <input type="text" class="form-control" id="roomId" name="roomId" required placeholder="예: K0001">
     </div>
 
   <!-- 모델명 -->
@@ -42,7 +42,7 @@
 
     <!-- 버튼 -->
     <div class="d-flex justify-content-between">
-      <a href="vehicleManage" class="btn btn-outline-secondary">← 목록</a>
+      <a href="roomManage" class="btn btn-outline-secondary">← 목록</a>
       <button type="submit" class="btn btn-primary">등록</button>
     </div>
   </form>

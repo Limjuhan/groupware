@@ -1,11 +1,11 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>차량예약리스트 - LDBSOFT 그룹웨어</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>회의실 예약리스트 - LDBSOFT 그룹웨어</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body { background-color: #f4f6f9; }
     .container { max-width: 1000px; margin-top: 40px; }
@@ -15,36 +15,51 @@
 <body>
 
 <div class="container bg-white p-4 shadow rounded">
-  <h2 class="mb-4">🚗 차량예약리스트</h2>
+  <h2 class="mb-4">🏢 회의실 리스트</h2>
   <table class="table table-bordered text-center align-middle">
     <thead class="table-light">
       <tr>
         <th>공용설비ID</th>
-        <th>차량명</th>
-        <th>차량번호</th>
+        <th>이름</th>
+        <th>UID</th>
         <th>수용인원</th>
         <th>반납여부</th>
         <th>예약</th>
       </tr>
     </thead>
     <tbody>
-      <!-- 차량목록 하드코딩 -->
-
-      <c:forEach items="${facility}" var="vehicle">
-        <tr>
-          <td>${vehicle.facId}</td><td>${vehicle.facName}</td><td>${vehicle.facUid}</td><td>${vehicle.capacity}</td><td>${vehicle.rentYn}</td>
-          <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('${vehicle.facId}', '${vehicle.facName}','${vehicle.facType}')">예약하기</button></td>
-        </tr>
-      </c:forEach>
+    <c:forEach items="${facility}" var="room">
+      <tr>
+        <td>${room.facId}</td><td>${room.facName}</td><td>${room.facUid}</td><td>${room.capacity}</td><td>${room.rentYn}</td>
+        <c:if test="${room.rentYn eq 'Y'}">
+          <td><button class="btn btn-outline-primary btn-sm" onclick="openModal('${room.facId}', '${room.facName}')">예약하기</button></td>
+        </c:if>
+      </tr>
+    </c:forEach>
     </tbody>
   </table>
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" href="?page=${pageDto.page - 1}">이전</a>
+      </li>
+      <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
+        <li class="page-item ">
+          <a class="page-link" href="?page=${p}">${p}</a>
+        </li>
+      </c:forEach>
+      <li class="page-item">
+        <a class="page-link" href="?page=${pageDto.page+1}">다음</a>
+      </li>
+    </ul>
+  </nav>
 </div>
-
+<!--모달 -->
 <div class="modal fade" id="reserveModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">차량 예약</h5>
+        <h5 class="modal-title">회의실 예약</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
@@ -53,46 +68,45 @@
           <input type="hidden" name="endAt" id="endAt">
           <input type="hidden" name="rentalPurpose" id="rentalPurpose">
           <input type="hidden" name="facId" id="facId" >
-          <input type="hidden" name="facType" id="facType" >
-          <input type="hidden" name="renterId" value="admin"> <%-- 세션으로변경해야함--%>
+          <input type="hidden" name="renterId" value="${sessionScope.loginId}"> <%-- 세션으로변경해야함--%>
         </form>
 
         <p id="reserveInfo" ></p>
         <!-- 시작일 -->
         <label class="form-label">시작일</label>
-        <input type="date" class="form-control mb-2" id="carStartDate">
+        <input type="date" class="form-control mb-2" id="startDate">
 
         <!-- 시작시간 (직접입력) -->
         <label class="form-label">시작시간 (0~23)</label>
-        <input type="number" class="form-control mb-3" id="carStartHour" min="0" max="23" placeholder="예: 9">
+        <input type="number" class="form-control mb-3" id="startHour" min="0" max="23" placeholder="예: 9">
 
         <!-- 종료일 -->
         <label class="form-label">종료일</label>
-        <input type="date" class="form-control mb-2" id="carEndDate">
+        <input type="date" class="form-control mb-2" id="endDate">
 
         <!-- 종료시간 (직접입력) -->
         <label class="form-label">종료시간 (0~23)</label>
-        <input type="number" class="form-control mb-3" id="carEndHour" min="0" max="23" placeholder="예: 18">
+        <input type="number" class="form-control mb-3" id="endHour" min="0" max="23" placeholder="예: 18">
 
         <!-- 대여 목적 -->
         <label class="form-label">대여 목적</label>
-        <input type="text" class="form-control" id="carPurpose">
+        <input type="text" class="form-control" id="purpose">
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+
         <button class="btn btn-primary" id="reserveBtn">예약</button>
       </div>
     </div>
   </div>
 </div>
-
 <script>
   document.getElementById("reserveBtn").addEventListener("click", function () {
-    var startDate = document.getElementById("carStartDate").value;
-    var startHour = document.getElementById("carStartHour").value;
-    var endDate = document.getElementById("carEndDate").value;
-    var endHour = document.getElementById("carEndHour").value;
-    var purpose = document.getElementById("carPurpose").value.trim();
+    var startDate = document.getElementById("startDate").value;
+    var startHour = document.getElementById("startHour").value;
+    var endDate = document.getElementById("endDate").value;
+    var endHour = document.getElementById("endHour").value;
+    var purpose = document.getElementById("purpose").value.trim();
 
     if (!startDate || !endDate || startHour === "" || endHour === "" || purpose === "") {
       alert("모든 정보를 입력해주세요.");
@@ -121,14 +135,11 @@
   });
 </script>
 
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   function openModal(id, model , type) {
-    document.getElementById('reserveInfo').innerText = '차량번호: ' + id + ' / 차량명: ' + model;
+    document.getElementById('reserveInfo').innerText = '공용설비ID: ' + id + ' / 회의실명: ' + model;
     const modal = new bootstrap.Modal(document.getElementById('reserveModal'));
     document.querySelector("#facId").value = id; //form에 fac_id값전송
-    document.querySelector("#facType").value = type; //form에 fac_id값전송
     modal.show();
   }
 </script>

@@ -1,4 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -41,7 +44,7 @@
 <div class="container bg-glass p-4 shadow rounded">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-shadow">전자결재 상세보기</h2>
-        <a href="draftList" class="btn btn-sm btn-secondary bg-glass">← 목록으로</a>
+
     </div>
 
     <table class="table table-bordered mt-4 bg-glass">
@@ -50,7 +53,7 @@
             <th style="width: 15%;">문서번호</th>
             <td>${draftDetail.docId}</td>
             <th style="width: 15%;">양식</th>
-            <td>${draftDetail.formCode}</td>
+            <td>${draftDetail.formCodeStr}</td>
         </tr>
         <tr>
             <th>제목</th>
@@ -80,30 +83,6 @@
         </tr>
         </tbody>
     </table>
-
-    <!-- 첨부파일 -->
-    <div class="mb-3">
-        <strong>첨부파일:</strong>
-        <c:if test="${attachments != null }">
-            <c:forEach items="${attachments}" var="a">
-                <c:if test="${a.filePath != null}">
-                    <div class="file-section mt-4">
-                        첨부파일:
-                        <a href="${a.filePath}${a.savedName}" download="${a.originalName}"
-                           class="link-light ms-2 text-decoration-underline">
-                                ${a.originalName}
-                        </a>
-                    </div>
-                </c:if>
-            </c:forEach>
-        </c:if>
-    </div>
-
-    <!-- 본문 내용 -->
-    <div class="section-title text-shadow">본문 내용</div>
-    <div class="border p-3 bg-glass">
-        ${draftDetail.content}
-    </div>
 
     <!-- 양식별 상세 -->
     <c:choose>
@@ -160,13 +139,32 @@
         </c:otherwise>
     </c:choose>
 
-
-    <div class="mt-4">
-        <a href="javascript:history.back()" class="btn btn-secondary">← 목록으로</a>
+    <!-- 본문 내용 -->
+    <div class="section-title text-shadow">본문 내용</div>
+    <div class="border p-3 bg-glass">
+        ${draftDetail.content}
     </div>
 
-    <!-- 인쇄 -->
-    <div class="text-end">
+    <!-- 첨부파일 -->
+    <div class="mb-3">
+        <strong>첨부파일:</strong>
+        <c:if test="${attachments != null }">
+            <c:forEach items="${attachments}" var="a">
+                <c:if test="${a.filePath != null}">
+                    <div class="file-section mt-4">
+                        첨부파일:
+                        <a href="${a.filePath}${a.savedName}" download="${a.originalName}"
+                           class="link-light ms-2 text-decoration-underline">
+                                ${a.originalName}
+                        </a>
+                    </div>
+                </c:if>
+            </c:forEach>
+        </c:if>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <a href="javascript:history.back()" class="btn btn-secondary">← 목록으로</a>
         <button onclick="window.print()" class="btn btn-outline-light bg-glass">인쇄</button>
     </div>
 </div>

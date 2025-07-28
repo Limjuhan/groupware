@@ -1,7 +1,6 @@
 package ldb.groupware.scheduler;
 
 import ldb.groupware.service.annualleave.AnnualLeaveBatchService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +13,9 @@ public class AnnualLeaveScheduler {
         this.batchService = batchService;
     }
 
-    @Scheduled(cron = "0 23 22 * * *")
+    @Scheduled(cron = "0 41 17 * * *")
     public void run() {
-        batchService.generateAnnualLeave();
+        batchService.runAnnualLeaveBatch();
     }
 }
 

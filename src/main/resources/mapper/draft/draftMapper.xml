@@ -7,30 +7,35 @@
     <!-- 내전자결재 목록 조회   -->
     <select id="getMyDraftList" resultType="DraftListDto">
         SELECT
-        d.doc_id AS docId,
-        d.form_code as formCode,
-        d.doc_title AS docTitle,
-        DATE_FORMAT(d.doc_endDate, '%Y-%m-%d') AS docEndDate,
-        d.mem_id AS writer,
-        (SELECT mem_id FROM approval_line WHERE doc_id = d.doc_id AND step_order = 1) AS approver1,
-        (SELECT mem_id FROM approval_line WHERE doc_id = d.doc_id AND step_order = 2) AS approver2,
-        d.status AS status
-        FROM approval_document d
-        WHERE d.mem_id = #{memId}
-        AND d.del_yn = 'N'
+        a.doc_id AS docId,
+        m.mem_name AS writer,
+        a.form_code AS formCode,
+        a.doc_title AS docTitle,
+        a.doc_endDate AS docEndDate,
+        a.status AS status,
+        approver1.mem_name AS approver1Name,
+        approver2.mem_name AS approver2Name
+        FROM approval_document a
+        LEFT JOIN member m ON a.mem_id = m.mem_id
+        LEFT JOIN approval_line l1 ON l1.doc_id = a.doc_id AND l1.step_order = 1 AND l1.ref_yn = 'N'
+        LEFT JOIN member approver1 ON l1.mem_id = approver1.mem_id
+        LEFT JOIN approval_line l2 ON l2.doc_id = a.doc_id AND l2.step_order = 2 AND l2.ref_yn = 'N'
+        LEFT JOIN member approver2 ON l2.mem_id = approver2.mem_id
+        WHERE a.mem_id = #{memId}
+        AND a.del_yn = 'N'
 
         <if test="dto.searchType != null and dto.keyword != null and dto.keyword != ''">
             <choose>
                 <when test="dto.searchType == 'title'">
-                    AND d.doc_title LIKE CONCAT('%', #{dto.keyword}, '%')
+                    AND a.doc_title LIKE CONCAT('%', #{dto.keyword}, '%')
                 </when>
                 <when test="dto.searchType == 'writer'">
-                    AND d.mem_id LIKE CONCAT('%', #{dto.keyword}, '%')
+                    AND a.mem_id LIKE CONCAT('%', #{dto.keyword}, '%')
                 </when>
             </choose>
         </if>
 
-        ORDER BY d.doc_id DESC
+        ORDER BY a.doc_id DESC
         LIMIT #{dto.startNum}, #{dto.itemsPerPage}
     </select>
 
@@ -215,6 +220,35 @@
             (#{docId}, #{formCode}, #{resignDate})
     </insert>
 
+    <delete id="deleteApprovalDocument">
+        DELETE FROM approval_document
+        WHERE doc_id = #{docId}
+        AND form_code = #{formCode}
+        AND status = #{status}
+    </delete>
 
+    <!-- 휴가신청서 삭제 -->
+    <delete id="deleteFormAnnualLeave">
+        DELETE FROM form_annual_leave
+        WHERE doc_id = #{docId}
+    </delete>
+
+    <!-- 프로젝트 제안서 삭제 -->
+    <delete id="deleteFormProject">
+        DELETE FROM form_project
+        WHERE doc_id = #{docId}
+    </delete>
+
+    <!-- 지출결의서 삭제 -->
+    <delete id="deleteFormExpense">
+        DELETE FROM form_expense
+        WHERE doc_id = #{docId}
+    </delete>
+
+    <!-- 사직서 삭제 -->
+    <delete id="deleteFormResign">
+        DELETE FROM form_resign
+        WHERE doc_id = #{docId}
+    </delete>
 
 </mapper>

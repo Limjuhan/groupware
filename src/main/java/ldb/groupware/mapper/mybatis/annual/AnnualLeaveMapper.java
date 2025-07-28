@@ -10,12 +10,9 @@ import java.util.List;
 @Mapper
 public interface AnnualLeaveMapper {
 
-    AnnualLeave selectByMemIdAndYear(@Param("memId") String memId, @Param("year") int year);
-
-    boolean existsByMemIdAndYear(@Param("memId") String memId, @Param("year") int year);
-
     void insertAnnualLeave(AnnualLeave annualLeave);
 
     void updateAnnualLeave(AnnualLeave annualLeave);
 
+    AnnualLeave selectAnnualLeave(@Param("memId") String memId,@Param("hireYear") int hireYear);
 }

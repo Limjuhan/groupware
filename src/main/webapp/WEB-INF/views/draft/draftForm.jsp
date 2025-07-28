@@ -7,6 +7,12 @@
 <head>
     <meta charset="UTF-8">
     <title>결재문서 작성 - LDBSOFT</title>
+    <!-- Summernote -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/lang/summernote-ko-KR.min.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -67,6 +73,15 @@
         .select2-container--default .select2-selection--single,
         .select2-container {
             width: 100% !important;
+        }
+        .note-editor.note-frame {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .note-editable {
+            background-color: #2c2c2c;
+            color: white;
         }
     </style>
 </head>
@@ -225,9 +240,10 @@
             <form:input path="title" cssClass="form-control bg-glass" />
             <form:errors path="title" cssClass="text-danger" />
         </div>
+        <!-- 📌 Summernote 적용 -->
         <div class="mb-3 form-template d-none">
             <label class="form-label">내용 *</label>
-            <form:textarea path="content" cssClass="form-control bg-glass" rows="5" />
+            <textarea id="summerContent" name="content">${draftFormDto.content}</textarea>
             <form:errors path="content" cssClass="text-danger" />
         </div>
         <div class="mb-3 form-template d-none">
@@ -251,8 +267,6 @@
                 </ul>
             </div>
         </c:if>
-
-
 
         <!-- 제출 버튼 -->
         <div class="text-end mt-4">
@@ -290,21 +304,6 @@
             }
         });
 
-        // 양식 선택 시 양식 영역 표시 + 기존 선택 유지
-        function showFormTemplate(selected) {
-            $('.form-template').addClass('d-none');
-            $('.dependent-fields').removeClass('d-none');
-
-            if (selected) {
-                $('#' + selected).removeClass('d-none');
-                $("input[name='title']").closest('.form-template').removeClass('d-none');
-                $("textarea[name='content']").closest('.form-template').removeClass('d-none');
-                $("input[name='attachments']").closest('.form-template').removeClass('d-none');
-            } else {
-                $('.dependent-fields').addClass('d-none');
-            }
-        }
-
         // 최초 진입, validation 실패 시에도 기존 선택값에 따라 표시
         let selectedFormType = $('#formTypeSelect').val();
         if (selectedFormType) showFormTemplate(selectedFormType);
@@ -312,7 +311,35 @@
         $('#formTypeSelect').on('change', function () {
             showFormTemplate($(this).val());
         });
+
+        $('#summerContent').summernote({
+            height: 300,
+            lang: 'ko-KR',
+            placeholder: '내용을 입력하세요...',
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['fontsize', 'color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture']],
+                ['view', ['codeview']]
+            ]
+        });
     });
+
+    // 양식 선택 시 양식 영역 표시 + 기존 선택 유지
+    function showFormTemplate(selected) {
+        $('.form-template').addClass('d-none');
+        $('.dependent-fields').removeClass('d-none');
+
+        if (selected) {
+            $('#' + selected).removeClass('d-none');
+            $("input[name='title']").closest('.form-template').removeClass('d-none');
+            $("textarea[name='content']").closest('.form-template').removeClass('d-none');
+            $("input[name='attachments']").closest('.form-template').removeClass('d-none');
+        } else {
+            $('.dependent-fields').addClass('d-none');
+        }
+    }
 
     // 첨부파일 삭제
     function deleteAttachment(savedName, attachType) {

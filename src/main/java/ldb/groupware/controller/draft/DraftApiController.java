@@ -1,18 +1,17 @@
 package ldb.groupware.controller.draft;
 
-import io.micrometer.common.util.StringUtils;
-import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
-import ldb.groupware.dto.draft.DraftListDto;
+import ldb.groupware.dto.draft.DraftDeleteDto;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.draft.DraftService;
-import org.springframework.http.HttpStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/draft")
@@ -41,7 +40,6 @@ public class DraftApiController {
         return ApiResponseDto.ok(result);
     }
 
-
     @PostMapping("deleteAttachment")
     public ResponseEntity<ApiResponseDto<Void>> deleteAttachment(
             @RequestParam("savedName") String savedName,
@@ -53,6 +51,37 @@ public class DraftApiController {
         } catch (Exception e) {
             return ApiResponseDto.error("첨부파일 삭제 중 오류가 발생했습니다.");
         }
+    }
+
+    /**
+     * 삭제프로세스
+     *
+     * 임시저장일경우만 삭제.
+     *  approval_document
+     *  form_양식
+     *
+     *  첨부파일 존재확인. 존재시 삭제
+     *
+     * @param dto
+     * @return
+     */
+    @PostMapping("deleteMyDraft")
+    public ResponseEntity<ApiResponseDto<Void>> deleteMyDraft(@RequestBody @Valid DraftDeleteDto dto,
+                                                              BindingResult br) {
+
+        if (br.hasErrors() || dto.getStatus() != 0) {
+            return ApiResponseDto.error("입력값이 유효하지 않습니다.");
+        }
+
+        try {
+            draftService.deleteMyDraft(dto);
+
+//            attachmentService.deleteAttachment(List.of(savedName), attachType);
+        } catch (RuntimeException e) {
+            return ApiResponseDto.error("삭제처리중 오류발생");
+        }
+
+        return null;
     }
 
 }

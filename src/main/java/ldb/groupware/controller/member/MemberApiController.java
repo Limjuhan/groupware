@@ -7,6 +7,7 @@ import ldb.groupware.dto.member.PwCodeDto;
 import ldb.groupware.dto.member.ResetPwDto;
 import ldb.groupware.service.member.MemberService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,14 +22,22 @@ public class MemberApiController {
 
     // 인증메일 전송
     @PostMapping("sendCode")
-    public ResponseEntity<ApiResponseDto<Void>> sendCode(@Valid @ModelAttribute("pwCodeDto") PwCodeDto dto) {
-        return memberService.sendCode(dto);
+    public ResponseEntity<ApiResponseDto<Void>> sendCode(@Valid @ModelAttribute("pwCodeDto") PwCodeDto pwCodeDto,
+                                                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ApiResponseDto.fail(bindingResult.getFieldError().getDefaultMessage());
+        }
+        return memberService.sendCode(pwCodeDto);
     }
 
     // 인증번호 확인
     @PostMapping("verifyCode")
-    public ResponseEntity<ApiResponseDto<Void>> verifyCode(@Valid @ModelAttribute("CodeDto") CodeDto dto) {
-        return memberService.verifyCode(dto);
+    public ResponseEntity<ApiResponseDto<Void>> verifyCode(@Valid @ModelAttribute("codeDto") CodeDto codeDto,
+                                                           BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ApiResponseDto.fail(bindingResult.getFieldError().getDefaultMessage());
+        }
+        return memberService.verifyCode(codeDto);
     }
 
 
@@ -39,7 +48,11 @@ public class MemberApiController {
 
     // 비밀번호 재설정
     @PostMapping("resetPw")
-    public ResponseEntity<ApiResponseDto<Void>> resetPw(@Valid @ModelAttribute("resetPwDto") ResetPwDto dto) {
-        return memberService.resetPw(dto);
+    public ResponseEntity<ApiResponseDto<Void>> resetPw(@Valid @ModelAttribute("resetPwDto") ResetPwDto resetPwDto,
+                                                        BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ApiResponseDto.fail(bindingResult.getFieldError().getDefaultMessage());
+        }
+        return memberService.resetPw(resetPwDto);
     }
 }

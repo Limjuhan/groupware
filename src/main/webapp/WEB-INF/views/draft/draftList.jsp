@@ -92,6 +92,7 @@
         <thead class="table-light">
         <tr>
             <th>문서번호</th>
+            <td>양식</td>
             <th>제목</th>
             <th>문서종료일</th>
             <th>기안자</th>
@@ -159,18 +160,23 @@
                     data.forEach(function (draft) {
                         var statusBadge = getStatusBadge(draft.status);
 
-                        if (!draft.approver1) draft.approver1 = '-';
-                        if (!draft.approver2) draft.approver2 = '-';
+                        if (!draft.approver1Name) draft.approver1Name = '-';
+                        if (!draft.approver2Name) draft.approver2Name = '-';
+
+                        var isTemp =
+                            draft.status == 0 ? "<td><a href='#' onclick=\"deleteMyDraft('" + draft.docId + "','" + draft.formCode + "','" + draft.status + "')\" " +
+                                "class='btn btn-sm btn-outline-danger bg-glass'>삭제</a></td>" : "<td>-</td>";
 
                         var row = "<tr>" +
                             "<td>" + draft.docId + "</td>" +
+                            "<td>" + draft.formCodeStr + "</td>" +
                             "<td><a href='#' onclick=\"moveToDraft('" + draft.docId + "','" + draft.writer + "','" + draft.formCode + "','" + draft.status + "')\" class='link-white'>" + draft.docTitle + "</a></td>" +
                             "<td>" + draft.docEndDate + "</td>" +
                             "<td>" + draft.writer + "</td>" +
-                            "<td>" + draft.approver1 + "</td>" +
-                            "<td>" + draft.approver2 + "</td>" +
+                            "<td>" + draft.approver1Name + "</td>" +
+                            "<td>" + draft.approver2Name + "</td>" +
                             "<td>" + statusBadge + "</td>" +
-                            "<td><a href='deleteMyDraft?id=" + draft.docId + "' class='btn btn-sm btn-outline-danger bg-glass'>삭제</a></td>" +
+                            isTemp +
                             "</tr>";
 
                         $tbody.append(row);
@@ -232,8 +238,6 @@
         $pagination.html(html);
     }
 
-
-
     function moveToDraft(docId, memId, formCode, status) {
         const form = document.getElementById("draftMoveForm");
 
@@ -248,6 +252,31 @@
         form.submit();
     }
 
+    function deleteMyDraft(docId, formCode, status) {
+        if (!confirm("정말 삭제하시겠습니까?")) return;
+
+        $.ajax({
+            type: "POST",
+            url: "/draft/deleteMyDraft",
+            contentType: "application/json",
+            data: JSON.stringify({
+                docId: docId,
+                formCode: formCode,
+                status: status,
+            }),
+            success: function (res) {
+                if (res.success) {
+                    alert("삭제되었습니다.");
+                    location.reload();
+                } else {
+                    alert("삭제 실패: " + res.message);
+                }
+            },
+            error: function (xhr) {
+                alert("삭제 요청 중 오류 발생");
+            }
+        });
+    }
 
     function getStatusBadge(status) {
         if (status === "0") {

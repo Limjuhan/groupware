@@ -8,9 +8,11 @@ import ldb.groupware.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -26,83 +28,131 @@ public class AnnualLeaveBatchService {
         this.memberMapper = memberMapper;
     }
 
-    /**
-     * 매일 새벽 실행되는 연차 생성 배치
-     * - 입사 후 1년 미만 직원: 매월 1일씩 누적
-     * - 입사 후 1년 이상 직원: 입사 기념일에 정기연차 지급 (2년마다 1일씩 증가, 최대 25일까지)
-     */
-    public void generateAnnualLeave() {
-        log.info("연차등록 배치 서비스 실행");
+    @Transactional
+    public void runAnnualLeaveBatch() {
         LocalDate today = LocalDate.now();
-        int currentYear = today.getYear();
+        log.info("[연차배치,{}] 프로세스 시작", today);
+        List<Member> members = memberMapper.findAllActiveMembers();
 
-        List<Member> members = memberMapper.findAllActiveMembers(); // 재직 중인 사원 목록
+        if (members == null || members.isEmpty()) {
+            log.warn("[연차배치] - 사원목록 불러오기 실패");
+            return;
+        }
 
         for (Member member : members) {
-            String memId = member.getMemId();
             LocalDate hireDate = member.getMemHiredate();
+            String memId = member.getMemId();
 
-            long years = ChronoUnit.YEARS.between(hireDate, today); // 근속 연수
-
-            // 🟢 1년 미만 직원 → 매월 1일씩 누적
-            if (years < 1) {
-                long monthsPassed = ChronoUnit.MONTHS.between(
-                        hireDate.withDayOfMonth(1),
-                        today.withDayOfMonth(1)
-                );
-
-                // 조건: 1개월 이상 ~ 11개월 이하만
-                if (monthsPassed < 1 || monthsPassed > 11) continue;
-
-                AnnualLeave existing = annualLeaveMapper.selectByMemIdAndYear(memId, currentYear);
-                double currentTotal = (existing != null) ? existing.getTotalDays() : 0.0;
-
-                // 누적된 월 수가 현재 totalDate보다 크면 1일 추가 지급
-                if (monthsPassed > currentTotal) {
-                    if (existing == null) {
-                        AnnualLeave newLeave = new AnnualLeave();
-                        newLeave.setMemId(memId);
-                        newLeave.setYear(currentYear);
-                        newLeave.setTotalDays(1.0);
-                        newLeave.setUseDays(0.0);
-                        newLeave.setRemainDays(1.0);
-                        newLeave.setCreatedAt(LocalDateTime.now());
-                        newLeave.setCreatedBy("system");
-                        annualLeaveMapper.insertAnnualLeave(newLeave);
-                        log.info("[신규 생성] {} → 1년차 {}개월차 → 연차 1일 지급", memId, monthsPassed);
-                    } else {
-                        existing.setTotalDays(currentTotal + 1);
-                        existing.setRemainDays(existing.getRemainDays() + 1);
-                        existing.setUpdatedAt(LocalDateTime.now());
-                        existing.setUpdatedBy("system");
-                        annualLeaveMapper.updateAnnualLeave(existing);
-                        log.info("[갱신] {} → {}개월차 → 누적 연차 {}일", memId, monthsPassed, currentTotal + 1);
-                    }
-                }
+            if (hireDate == null || memId == null) {
+                log.warn("[연차배치] 사원정보 미존재.memId={}, hireDate={}", memId, hireDate);
+                continue;
             }
 
-            // 🟡 1년 이상 → 다음해 입사일에 정기연차 지급
-            else {
-                LocalDate anniversary = hireDate.plusYears(years);
-                if (!today.equals(anniversary)) continue;
-
-                // 정기연차 계산: 2년마다 1일씩 증가 (2~3년차:15일, 4~5년차:16일, ..., 최대 25일)
-                int annualDays = Math.min(15 + (int) ((years - 1) / 2), 25);
-
-                if (!annualLeaveMapper.existsByMemIdAndYear(memId, currentYear)) {
-                    AnnualLeave al = new AnnualLeave();
-                    al.setMemId(memId);
-                    al.setYear(currentYear);
-                    al.setTotalDays((double) annualDays);
-                    al.setUseDays(0.0);
-                    al.setRemainDays((double) annualDays);
-                    al.setCreatedAt(LocalDateTime.now());
-                    al.setCreatedBy("system");
-
-                    annualLeaveMapper.insertAnnualLeave(al);
-                    log.info("[정기 연차 지급] {} - {}년차 → 연차 {}일 지급", memId, years, annualDays);
+            // 근속년수
+            long years = ChronoUnit.YEARS.between(hireDate, today);
+            System.out.println("memId = " + memId);
+            System.out.println("years = " + years);
+            System.out.println("hireDate = " + hireDate);
+            System.out.println("===================================================");
+            try {
+                if (years < 1) {// 1년차 직원
+                    if (isMonthlyGivenDay(hireDate, today)) {
+                        givenMonthlyAnnualLeave(memId, hireDate);
+                    }
+                } else { // 2년차 이상
+                    if (isRegularAnnualGiveDay(hireDate, today, years)) {
+                        giveRegularAnnualLeave(memId, hireDate, today);
+                    }
                 }
+            } catch (Exception e) {
+                log.error("[연차배치] - 배치오류- memId={}, hireDate={}, error={}",
+                        memId, hireDate, e.getMessage());
             }
         }
     }
+
+    private void givenMonthlyAnnualLeave(String memId, LocalDate hireDate) {
+        int hireYear = hireDate.getYear();
+        AnnualLeave leave = annualLeaveMapper.selectAnnualLeave(memId, hireYear);
+
+        if (leave == null) {// 입사후 첫 연차 지급
+            leave = new AnnualLeave(memId, hireYear, 1.0, 0.0, 1.0);
+            annualLeaveMapper.insertAnnualLeave(leave);
+            log.info("[연차배치] - 신규 월차 생성 - memId={}, year={}, total=1.0", memId, hireYear);
+        } else {
+            leave.updateMonthAnnualByBatch(leave.getTotalDays()+1, leave.getRemainDays());
+            annualLeaveMapper.updateAnnualLeave(leave);
+            log.info("[연차배치] - 월차 1일 추가 - memId={}, year={}, 누적={}, 잔여={}",
+                    memId, hireYear, leave.getTotalDays(), leave.getRemainDays());
+        }
+    }
+
+    private void giveRegularAnnualLeave(String memId, LocalDate hireDate, LocalDate today) {
+        int year = today.getYear();
+        long years = ChronoUnit.YEARS.between(hireDate, today);
+        int totalAnnual = Math.min(15 + (int) ((years - 1) / 2), 25);
+
+        AnnualLeave leave = annualLeaveMapper.selectAnnualLeave(memId, year);
+
+        if (leave == null) {
+            leave = new AnnualLeave(memId, year, (double) totalAnnual, 0.0, (double) totalAnnual);
+            annualLeaveMapper.insertAnnualLeave(leave);
+            log.info("[연차배치] - memId={}, year={}, 지급={}", memId, year, totalAnnual);
+        } else {
+            log.warn("정기 연차 지급일인데 이미 row 존재 - memId={}, year={}", memId, year);
+            leave.updateRegularAnnualByBatch(leave.getTotalDays(), leave.getRemainDays());
+            annualLeaveMapper.updateAnnualLeave(leave);
+        }
+
+    }
+
+    private boolean isRegularAnnualGiveDay(LocalDate hireDate, LocalDate today, long years) {
+
+        LocalDate anniversary = hireDate.plusYears(years);
+        System.out.println("anniversary = " + anniversary);
+        System.out.println("today = " + today);
+        System.out.println("===============================================");
+        // 윤년 2월29일에 입사한 직원은 28일기준으로 연차 계산.
+        if (hireDate.getMonth() == Month.FEBRUARY && hireDate.getDayOfMonth() == 29) {
+            return today.getMonth() == Month.FEBRUARY && today.getDayOfMonth() == 28;
+        }
+
+        return today.equals(anniversary);
+    }
+
+    private boolean isMonthlyGivenDay(LocalDate hireDate, LocalDate today) {
+        // 윤년 2월29일에 입사한 직원은 28일기준으로 연차 계산.
+        if (hireDate.getMonth() == Month.FEBRUARY && hireDate.getDayOfMonth() == 29) {
+            return today.getMonth() == Month.FEBRUARY && today.getDayOfMonth() == 28;
+        }
+        return today.getDayOfMonth() == hireDate.getDayOfMonth()
+                && ChronoUnit.MONTHS.between(hireDate, today) > 0
+                && ChronoUnit.YEARS.between(hireDate, today) < 1;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

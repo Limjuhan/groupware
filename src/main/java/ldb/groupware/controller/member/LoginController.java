@@ -71,7 +71,7 @@ public class LoginController {
     @GetMapping("findPass")
     public String findPass(Model model) {
         model.addAttribute("pwCodeDto", new PwCodeDto());
-        model.addAttribute("CodeDto", new CodeDto());
+        model.addAttribute("codeDto", new CodeDto());
         model.addAttribute("resetPwDto", new ResetPwDto());
         return "login/findPass";
     }

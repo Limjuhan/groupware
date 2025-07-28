@@ -4,19 +4,21 @@
 
 <mapper namespace="ldb.groupware.mapper.mybatis.annual.AnnualLeaveMapper">
 
-    <select id="selectByMemIdAndYear" resultType="AnnualLeave">
-        SELECT * FROM annual_leave
-        WHERE mem_id = #{memId} AND year = #{year}
-    </select>
-
-    <select id="existsByMemIdAndYear" resultType="boolean">
-        SELECT COUNT(*) > 0 FROM annual_leave
-        WHERE mem_id = #{memId} AND year = #{year}
-    </select>
-
     <insert id="insertAnnualLeave">
-        INSERT INTO annual_leave (mem_id, year, total_days, use_days, remain_days, created_at, created_by)
-        VALUES (#{memId}, #{year}, #{totalDays}, #{useDays}, #{remainDays}, #{createdAt}, #{createdBy})
+        INSERT INTO annual_leave (mem_id,
+                                  year,
+                                  total_days,
+                                  use_days,
+                                  remain_days,
+                                  created_at,
+                                  created_by)
+        VALUES (#{memId},
+                #{year},
+                #{totalDays},
+                #{useDays},
+                #{remainDays},
+                #{createdAt},
+                #{createdBy})
     </insert>
 
     <update id="updateAnnualLeave">
@@ -25,7 +27,28 @@
             remain_days = #{remainDays},
             updated_at = #{updatedAt},
             updated_by = #{updatedBy}
-        WHERE mem_id = #{memId} AND year = #{year}
+        WHERE mem_id = #{memId}
+          AND year = #{year}
     </update>
+
+    <select id="selectAnnualLeave" resultType="AnnualLeave">
+        SELECT
+            an_id,
+            mem_id,
+            year,
+            total_days,
+            use_days,
+            remain_days,
+            created_at,
+            created_by,
+            updated_at,
+            updated_by
+        FROM
+            annual_leave
+        WHERE
+            mem_id = #{memId}
+          AND year = #{hireYear}
+    </select>
+
 
 </mapper>

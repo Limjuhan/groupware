@@ -2,14 +2,26 @@ package ldb.groupware.dto.calendar;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 public class ScheduleListDto {
-    private Long scheduleId;
+    private Integer scheduleId;
     private String scheduleTitle;
-    private String createdByName;
     private String scheduleContent;
-    private Date startAt;
-    private Date endAt;
+    private LocalDateTime startAt;
+    private LocalDateTime endAt;
+
+    public String getStartAtStr() {
+        return formatDateTime(startAt);
+    }
+
+    public String getEndAtStr() {
+        return formatDateTime(endAt);
+    }
+
+    private String formatDateTime(LocalDateTime dateTime) {
+        return dateTime != null ? dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : "";
+    }
 }

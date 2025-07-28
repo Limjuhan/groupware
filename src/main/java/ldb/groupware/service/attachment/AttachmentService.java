@@ -1,11 +1,12 @@
 package ldb.groupware.service.attachment;
 
-import io.micrometer.common.util.StringUtils;
+
 import ldb.groupware.domain.Attachment;
 import ldb.groupware.mapper.mybatis.attachment.AttachmentMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
