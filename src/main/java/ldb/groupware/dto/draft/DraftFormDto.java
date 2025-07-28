@@ -1,12 +1,13 @@
 package ldb.groupware.dto.draft;
 
-import io.micrometer.common.util.StringUtils;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import ldb.groupware.domain.FormAnnualLeave;
 import ldb.groupware.domain.FormExpense;
 import ldb.groupware.domain.FormProject;
 import ldb.groupware.domain.FormResign;
+import org.apache.commons.lang3.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -105,6 +106,21 @@ public class DraftFormDto {
         return date != null ? date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
     }
 
+    public String getFormCodeStr() {
+        switch (formCode) {
+            case ApprovalConst.FORM_ANNUAL:
+                return "휴가계획서";
+            case ApprovalConst.FORM_PROJECT:
+                return "프로젝트 제안서";
+            case ApprovalConst.FORM_EXPENSE:
+                return "지출결의서";
+            case ApprovalConst.FORM_RESIGN:
+                return "사직서";
+            default:
+                return "알수없는 양식";
+        }
+    }
+
     public double getTotalDays() {
         if (leaveStart == null || leaveEnd == null) {
             throw new IllegalArgumentException("휴가 시작일or종료일이 존재하지않습니다.");
@@ -123,6 +139,7 @@ public class DraftFormDto {
         return Collections.emptyList();
     }
 
+//    양식별 데이터 세팅
     public void setAnnualData(FormAnnualLeave formAnnual) {
         leaveCode = formAnnual.getLeaveCode();
         leaveStart = formAnnual.getStartDate();
@@ -144,6 +161,7 @@ public class DraftFormDto {
     public void setresignData(FormResign formResign) {
         resignDate = formResign.getResignDate();
     }
+
 }
 
 
