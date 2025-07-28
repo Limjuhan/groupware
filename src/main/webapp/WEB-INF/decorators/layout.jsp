@@ -137,7 +137,7 @@
                     </a>
                     <div class="collapse ps-3" id="facilityMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/facility/getroomList">차량예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/getVehicleList">차량예약</a></li>
                             <li class="nav-item"><a class="nav-link" href="/facility/getMeetingRoomList"><i class="fa-solid fa-door-open"></i> 회의실예약</a></li>
                             <li class="nav-item"><a class="nav-link" href="/facility/getItemList"><i class="fa-solid fa-box"></i> 비품예약</a></li>
                             <li class="nav-item"><a class="nav-link" href="/facility/getReservationList"><i class="fa-solid fa-list"></i> 내 예약내역</a></li>

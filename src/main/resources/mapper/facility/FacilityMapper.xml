@@ -2,11 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ldb.groupware.mapper.mybatis.facility.FacilityMapper">
 
-    <select id="getList" resultType="FacilityListDto" parameterType="String">
-        SELECT fi.fac_id , fi.fac_name , fi.fac_type,  fi.fac_uid , fi.capacity , ifnull(fr.rent_yn,'Y') as rent_yn , fi.created_at , fi.created_by
-        FROM facility_info fi left JOIN facility_rent fr ON (fi.fac_id = fr.fac_id)
-        WHERE fi.fac_type = #{val} order by fi.fac_id asc
+    <select id="countByType" parameterType="String" resultType="int">
+        select count(*) from facility_info where fac_type = #{val}
     </select>
+
+    <select id="getList" resultType="FacilityListDto" >
+        SELECT
+        fi.fac_id, fi.fac_name, fi.fac_type, fi.fac_uid, fi.capacity,
+        IFNULL(fr.rent_yn, 'Y') AS rent_yn,
+        fi.created_at, fi.created_by
+        FROM facility_info fi
+        LEFT JOIN facility_rent fr ON fi.fac_id = fr.fac_id
+        <where>
+            <if test="pDto.keyword != null and pDto.keyword != ''">
+                AND fi.fac_name LIKE CONCAT('%', #{pDto.keyword}, '%')
+            </if>
+            <choose>
+                <when test='"Y".equals(sDto.rentYn)'>
+                    AND (fr.rent_yn = 'Y' OR fr.fac_id IS NULL)
+                </when>
+                <when test='"N".equals(sDto.rentYn)'>
+                    AND fr.rent_yn = 'N'
+                </when>
+            </choose>
+            AND fi.fac_type = #{sDto.facType}
+        </where>
+        LIMIT #{pDto.startNum}, #{pDto.itemsPerPage}
+    </select>
+
 
     <select id="findById" parameterType="String" resultType="FacilityRentDto" >
         select * from facility_info where fac_id = #{val}
@@ -19,7 +42,7 @@
            )
             values(
                  #{facId}, #{facType}, #{renterId}, #{rentalPurpose},
-                 #{startLocalDateTime}, #{endLocalDateTime}, #{createdAt}, #{createdBy}
+                 #{startLocalDateTime}, #{endLocalDateTime}, now(), #{renterId}
             )
     </insert>
 

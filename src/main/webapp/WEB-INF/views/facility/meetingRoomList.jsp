@@ -21,6 +21,7 @@
       <tr>
         <th>공용설비ID</th>
         <th>이름</th>
+        <th>UID</th>
         <th>수용인원</th>
         <th>반납여부</th>
         <th>예약</th>
@@ -37,12 +38,28 @@
     </c:forEach>
     </tbody>
   </table>
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" href="?page=${pageDto.page - 1}">이전</a>
+      </li>
+      <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
+        <li class="page-item ">
+          <a class="page-link" href="?page=${p}">${p}</a>
+        </li>
+      </c:forEach>
+      <li class="page-item">
+        <a class="page-link" href="?page=${pageDto.page+1}">다음</a>
+      </li>
+    </ul>
+  </nav>
 </div>
+<!--모달 -->
 <div class="modal fade" id="reserveModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">차량 예약</h5>
+        <h5 class="modal-title">회의실 예약</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
@@ -120,7 +137,7 @@
 
 <script>
   function openModal(id, model , type) {
-    document.getElementById('reserveInfo').innerText = '차량번호: ' + id + ' / 차량명: ' + model;
+    document.getElementById('reserveInfo').innerText = '공용설비ID: ' + id + ' / 회의실명: ' + model;
     const modal = new bootstrap.Modal(document.getElementById('reserveModal'));
     document.querySelector("#facId").value = id; //form에 fac_id값전송
     modal.show();

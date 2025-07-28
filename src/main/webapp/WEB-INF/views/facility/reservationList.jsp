@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -17,26 +18,23 @@
   <h2 class="mb-4">📋 내 예약내역</h2>
 
   <!-- 필터 & 검색 -->
-  <form class="row g-2 mb-3">
+  <form class="row g-2 mb-3" method="get" action="getReservationList">
     <div class="col-auto">
-      <select class="form-select">
-        <option selected>2025년</option>
-        <option>2024년</option>
-        <option>2023년</option>
+      <input type="month" class="form-control" name="yearMonth"  />
+    </div>
+    <div class="col-auto">
+      <select class="form-select" name="facType">
+        <option value="">전체유형</option>
+        <option value="R_01" >차량</option>
+        <option value="R_02" >회의실</option>
+        <option value="R_03">비품</option>
       </select>
     </div>
     <div class="col-auto">
-      <select class="form-select">
-        <option selected>7월</option>
-        <option>6월</option>
-        <option>5월</option>
-      </select>
+      <input type="text" class="form-control" name="keyword" placeholder="이름 또는 차종/회의실명 검색">
     </div>
     <div class="col-auto">
-      <input type="text" class="form-control" placeholder="이름 또는 차종/회의실명 검색">
-    </div>
-    <div class="col-auto">
-      <button class="btn btn-primary" type="button">검색</button>
+      <button class="btn btn-primary" type="submit">검색</button>
     </div>
   </form>
 
@@ -48,36 +46,20 @@
         <th>유형</th>
         <th>설비이름</th>
         <th>예약일</th>
+        <th>예약기간</th>
         <th>취소</th>
       </tr>
     </thead>
     <tbody>
+    <c:forEach items="${facility}" var="f">
       <tr>
-        <td>K0002</td>
-        <td>차량</td>
-        <td>911 / 34나5678</td>
-        <td>2025-07-15</td>
-        <td><button class="btn btn-sm btn-outline-danger">취소</button></td>
+        <td>${f.facId}</td><td>${f.commName}</td><td>${f.facName}/${f.facUid}</td><td>${f.createdDate}</td><td>${f.startAt}~${f.endAt}</td>
+          <td><button class="btn btn-outline-primary btn-sm" onclick="delReserve('${f.facId}')">취소</button></td>
       </tr>
-      <tr>
-        <td>R0002</td>
-        <td>회의실</td>
-        <td>대회의실</td>
-        <td>2025-07-20</td>
-        <td><button class="btn btn-sm btn-outline-danger">취소</button></td>
-      </tr>
-      <tr>
-        <td>K0005</td>
-        <td>차량</td>
-        <td>macan / 90마1111</td>
-        <td>2025-07-25</td>
-        <td><button class="btn btn-sm btn-outline-danger">취소</button></td>
-      </tr>
+    </c:forEach>
     </tbody>
   </table>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

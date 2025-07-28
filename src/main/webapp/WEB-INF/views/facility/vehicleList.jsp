@@ -40,6 +40,21 @@
       </c:forEach>
     </tbody>
   </table>
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" href="?page=${pageDto.page - 1}">이전</a>
+      </li>
+      <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
+        <li class="page-item ">
+          <a class="page-link" href="?page=${p}">${p}</a>
+        </li>
+      </c:forEach>
+      <li class="page-item">
+        <a class="page-link" href="?page=${pageDto.page+1}">다음</a>
+      </li>
+    </ul>
+  </nav>
 </div>
 
 <div class="modal fade" id="reserveModal" tabindex="-1" aria-hidden="true">
