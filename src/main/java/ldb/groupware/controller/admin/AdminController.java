@@ -62,7 +62,7 @@ public class AdminController {
 
     @GetMapping("deptAuth")
     public String deptAuth() {
-        return "admin/deptAuth";
+        return "deptAuthList";
     }
 
     @GetMapping("commTypeManage")
@@ -109,5 +109,11 @@ public class AdminController {
             model.addAttribute("url", "/admin/memberForm");
             return "alert";
         }
+    }
+
+    @GetMapping("getDeptAuthList")
+    public String getDeptAuthList(Model model) {
+        model.addAttribute("deptList", memberService.getDeptList());
+        return "admin/deptAuthList";
     }
 }

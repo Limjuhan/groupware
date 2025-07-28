@@ -1,97 +1,113 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>사원 관리</title>
+    <title>사원 관리 - LDBSOFT</title>
     <style>
         body {
-            background-color: transparent;
-        }
-
-        .container,
-        .form-control,
-        .form-select,
-        .table-bordered,
-        .table-light,
-        .table-light th,
-        .table-bordered tbody td {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .form-control,
-        .form-select {
-            background-color: rgba(255, 255, 255, 0.1) !important;
-            border-color: rgba(255, 255, 255, 0.3) !important;
-            color: #fff !important;
-        }
-
-        .form-control::placeholder {
-            color: #ccc;
-        }
-
-        .table td,
-        .table th {
-            text-align: center;
-            vertical-align: middle;
-            color: #fff;
-        }
-
-        .table-light th {
-            color: #fff !important;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-        }
-
-        .form-select option {
-            background-color: #343a40 !important;
-            color: #fff !important;
-        }
-
-        .btn-outline-light {
-            color: #fff;
-            border-color: #fff;
-        }
-
-        .btn-outline-light:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-success {
-            background-color: #198754;
-            border-color: #198754;
-            color: #fff;
-        }
-
-        .btn-success:hover {
-            background-color: #157347;
-            border-color: #146c43;
-        }
-
-        .pagination-nav {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .pagination-nav .page-link {
+            background-color: #1e1e1e;
             color: white;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            margin: 0 2px;
-            padding: 6px 12px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
-        .pagination-nav .page-item.active .page-link {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
+        .container.bg-glass {
+            background: rgba(255, 255, 255, 0.05) !important;
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 20px;
+        }
+
+        .table.bg-glass th,
+        .table.bg-glass td {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .form-label {
             font-weight: bold;
         }
 
-        .pagination-nav .page-item.disabled .page-link {
+        .select-wrapper {
+            position: relative;
+        }
+
+        .form-select.bg-glass.custom-select-arrow {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(1px);
+            padding-right: 2.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .select-wrapper::after {
+            content: "▼";
+            position: absolute;
+            top: 65%;
+            right: 1.0rem;
+            transform: translateY(-40%);
             pointer-events: none;
-            opacity: 0.5;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .form-select.bg-glass option {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .form-control.bg-glass {
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem;
+        }
+
+        .form-control.bg-glass:focus,
+        .form-select.bg-glass:focus {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: white;
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: none;
+        }
+
+        .btn.bg-glass {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem;
+        }
+
+        .btn.bg-glass:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .page-link.bg-glass {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            border: none;
+            border-radius: 0.3rem;
+        }
+
+        .page-link.bg-glass:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .pagination .active .page-link {
+            background-color: #0d6efd !important;
+            border-color: #0d6efd !important;
+        }
+
+        h4 {
+            /* text-shadow 제거 */
         }
 
         .modal-content {
@@ -132,6 +148,8 @@
             padding: 2px 4px;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function openEmployeeDetail(memId) {
             $.ajax({
@@ -143,7 +161,6 @@
                     if (response.success) {
                         const user = response.data;
                         const annualHistoryList = response.data.annualHistoryList;
-                        // 사용자 정보 채우기
                         $('#detailMemPicture').attr('src', user.memPicture || '/img/profile_default.png');
                         $('#detailName').val(user.memName);
                         $('#detailGender').val(user.memGender);
@@ -156,10 +173,8 @@
                         $('#detailEmail').val(user.memEmail);
                         $('#detailPrivateEmail').val(user.memPrivateEmail);
                         $('#detailAddress').val(user.memAddress);
-                        // 연차 정보 채우기
                         const $annualInfo = $('#annualInfo');
                         $annualInfo.empty();
-
                         if (user.year != null && user.totalDays != null) {
                             $annualInfo.html(
                                 '<strong>연도:</strong> ' + user.year + '년<br>' +
@@ -170,15 +185,11 @@
                         } else {
                             $annualInfo.html('연차 정보가 없습니다.');
                         }
-
-
-                        // 연차 이력 채우기
                         const $annualHistoryBody = $('#annualHistoryBody');
                         $annualHistoryBody.empty();
                         if (annualHistoryList && annualHistoryList.length > 0) {
                             $.each(annualHistoryList, function(index, his) {
-                                const row =
-                                    '<tr>' +
+                                const row = '<tr>' +
                                     '<td>' + his.startDate + ' ~ ' + his.endDate + '</td>' +
                                     '<td>' + (his.approvedByName || his.approvedBy) + '</td>' +
                                     '<td>' + (his.leaveName || his.leaveCode) + '</td>' +
@@ -188,7 +199,6 @@
                         } else {
                             $annualHistoryBody.append('<tr><td colspan="3" class="text-center">연차 사용 이력이 없습니다.</td></tr>');
                         }
-
                         new bootstrap.Modal(document.getElementById('infoModal')).show();
                     } else {
                         alert("정보를 불러오는 데 실패했습니다: " + response.message);
@@ -264,7 +274,7 @@
                                 '<td><span class="name-link" onclick="openEmployeeDetail(\'' + mem.memId + '\')">' + mem.memName + '</span></td>' +
                                 '<td>' + mem.deptName + '</td>' +
                                 '<td>' + mem.rankName + '</td>' +
-                                '<td><button type="button" class="btn btn-sm btn-outline-primary" onclick="openEditModal(\'' +
+                                '<td><button type="button" class="btn btn-sm btn-warning bg-glass me-1" onclick="openEditModal(\'' +
                                 mem.memId + '\', \'' + mem.memName + '\', \'' + (mem.deptId || '') + '\', \'' + (mem.rankId || '') +
                                 '\')">설정</button></td>' +
                                 '</tr>';
@@ -275,17 +285,17 @@
                     }
                     const $paging = $('#paginationArea');
                     $paging.empty();
-                    let html = '<nav><ul class="pagination justify-content-center">';
+                    let html = '<nav><ul class="pagination pagination-sm">';
                     html += '<li class="page-item' + (pagination.page === 1 ? ' disabled' : '') + '">';
-                    html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
+                    html += '<a class="page-link bg-glass" href="#" onclick="event.preventDefault();' +
                         (pagination.page > 1 ? 'searchMembers(' + (pagination.page - 1) + ');' : '') +
                         '">이전</a></li>';
                     for (let i = pagination.startPage; i <= pagination.endPage; i++) {
                         html += '<li class="page-item' + (i === pagination.page ? ' active' : '') + '">';
-                        html += '<a class="page-link" href="#" onclick="event.preventDefault();searchMembers(' + i + ');">' + i + '</a></li>';
+                        html += '<a class="page-link bg-glass" href="#" onclick="event.preventDefault();searchMembers(' + i + ');">' + i + '</a></li>';
                     }
                     html += '<li class="page-item' + (pagination.page === pagination.totalPages ? ' disabled' : '') + '">';
-                    html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
+                    html += '<a class="page-link bg-glass" href="#" onclick="event.preventDefault();' +
                         (pagination.page < pagination.totalPages ? 'searchMembers(' + (pagination.page + 1) + ');' : '') +
                         '">다음</a></li>';
                     html += '</ul></nav>';
@@ -304,21 +314,25 @@
     </script>
 </head>
 <body>
-<div class="container shadow-sm rounded">
-    <h4 class="mb-4 fw-bold">👤 사원 관리</h4>
-    <form class="row g-3 mb-4" onsubmit="event.preventDefault(); searchMembers();">
-        <div class="col-md-3">
-            <label class="form-label">부서</label>
-            <select id="deptFilter" class="form-select">
+<div class="container bg-glass p-4 rounded mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4>👤 사원 관리</h4>
+        <a href="/admin/getMemberForm" class="btn btn-primary bg-glass">+ 등록</a>
+    </div>
+
+    <div class="row mb-3 align-items-end">
+        <div class="col-md-3 select-wrapper">
+            <label for="deptFilter" class="form-label">부서</label>
+            <select id="deptFilter" class="form-select bg-glass custom-select-arrow">
                 <option value="">전체</option>
                 <c:forEach var="dept" items="${deptList}">
                     <option value="${dept.deptId}">${dept.deptName}</option>
                 </c:forEach>
             </select>
         </div>
-        <div class="col-md-3">
-            <label class="form-label">직급</label>
-            <select id="rankFilter" class="form-select">
+        <div class="col-md-3 select-wrapper">
+            <label for="rankFilter" class="form-label">직급</label>
+            <select id="rankFilter" class="form-select bg-glass custom-select-arrow">
                 <option value="">전체</option>
                 <c:forEach var="rank" items="${rankList}">
                     <option value="${rank.rankId}">${rank.rankName}</option>
@@ -326,18 +340,16 @@
             </select>
         </div>
         <div class="col-md-4">
-            <label class="form-label">이름</label>
-            <input type="text" id="nameFilter" class="form-control" placeholder="이름 입력 (예: 동곤)">
+            <label for="nameFilter" class="form-label">이름</label>
+            <input type="text" id="nameFilter" class="form-control bg-glass" placeholder="검색어 입력">
         </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button type="submit" class="btn btn-outline-light w-100">검색</button>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100 bg-glass" onclick="searchMembers(1)">검색</button>
         </div>
-    </form>
-    <div class="text-end mb-3">
-        <a href="/admin/getMemberForm" class="btn btn-success btn-sm">+ 등록</a>
     </div>
-    <table class="table table-bordered mt-3">
-        <thead class="table-light">
+
+    <table class="table table-hover table-bordered text-center align-middle bg-glass">
+        <thead class="table-light text-dark">
         <tr>
             <th>사원번호</th>
             <th>이름</th>
@@ -348,8 +360,10 @@
         </thead>
         <tbody id="memberTableBody"></tbody>
     </table>
-    <div id="paginationArea" class="pagination-nav"></div>
+
+    <div id="paginationArea" class="d-flex justify-content-center mt-3"></div>
 </div>
+
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -391,6 +405,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

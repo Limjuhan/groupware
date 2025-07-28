@@ -10,14 +10,16 @@
             background-color: #f4f6f9;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin-top: 40px;
         }
         #calendar {
             background-color: #fff;
-            padding: 20px;
+            padding: 25px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            min-height: 700px;
+            min-width: 100%;
         }
         .fc-daygrid-event .fc-event-time {
             display: inline;
@@ -26,16 +28,26 @@
             display: block;
             margin-top: 2px;
         }
+        h2 {
+            color: #ffffff;
+        }
+        .fc-daygrid-day-number,
+        .fc-daygrid-day-top {
+            color: #333;
+        }
+        .fc-toolbar-title {
+            color: #000 !important; /* 시간표시 위 태그타이클 개발보안 */
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 class="mb-4">📅 캘린더 조회</h2>
+    <h2 class="mb-4">🗓️ 캘린더</h2>
     <div id="calendar"></div>
 </div>
 
-<!-- 일정 모달 -->
+<!-- 일정 모델 -->
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -106,7 +118,6 @@
             eventContent: function (arg) {
                 const inner = document.createElement('div');
 
-                // 시간 줄 + 줄바꿈 + 제목 줄
                 const timeText = document.createElement('span');
                 timeText.className = 'fc-event-time';
                 timeText.innerText = arg.timeText;

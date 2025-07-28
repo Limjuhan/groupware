@@ -5,21 +5,46 @@
     <!--일정조회 -->
     <select id="selectScheduleList" resultType="ScheduleListDto">
         SELECT schedule_id,
-               schedule_title,
-               schedule_content,
-               start_at,
-               end_at
+        schedule_title,
+        schedule_content,
+        start_at,
+        end_at
         FROM company_schedule
+        <where>
+            <if test="keyword != null and keyword != ''">
+                <choose>
+                    <when test="searchType == 'title'">
+                        AND schedule_title LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="searchType == 'startAt'">
+                        AND DATE_FORMAT(start_at, '%Y-%m-%d') = #{keyword}
+                    </when>
+                </choose>
+            </if>
+        </where>
         ORDER BY start_at DESC
-            LIMIT #{startNum},
-                 #{itemsPerPage}
+        LIMIT #{startNum}, #{itemsPerPage}
     </select>
+
 
     <!--페이지처리-->
     <select id="countScheduleList" resultType="int">
         SELECT COUNT(*)
         FROM company_schedule
+        <where>
+            <if test="keyword != null and keyword != ''">
+                <choose>
+                    <when test="searchType == 'title'">
+                        AND schedule_title LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="searchType == 'startAt'">
+                        AND DATE_FORMAT(start_at, '%Y-%m-%d') = #{keyword}
+                    </when>
+                </choose>
+            </if>
+        </where>
     </select>
+
 
     <!-- 일정등록-->
     <insert id="insertCalendar" parameterType="map">

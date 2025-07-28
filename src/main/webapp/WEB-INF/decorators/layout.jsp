@@ -166,7 +166,7 @@
                     <div class="collapse ps-3" id="adminMenu">
                         <ul class="nav flex-column">
                             <li class="nav-item"><a class="nav-link" href="/admin/getMemberList"><i class="fa-solid fa-users"></i> 사원관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/deptAuth"><i class="fa-solid fa-shield-alt"></i> 부서권한관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/getDeptAuthList"><i class="fa-solid fa-shield-alt"></i> 부서권한관리</a></li>
                             <li class="nav-item"><a class="nav-link" href="/admin/dashBoard"><i class="fa-solid fa-chart-pie"></i> 연차사용률</a></li>
                         </ul>
                     </div>

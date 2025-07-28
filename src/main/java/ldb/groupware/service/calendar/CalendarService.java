@@ -29,10 +29,14 @@ public class CalendarService {
         return calendarMapper.selectScheduleList(pageDto);
     }
 
-    // 페이지 처리를 위한 갯수 
-    public int getTotalCount() {
-        return calendarMapper.countScheduleList();
+    // 페이지 처리를 위한 갯수
+    public int getTotalCount(String searchType, String keyword) {
+        PaginationDto p = new PaginationDto();
+        p.setSearchType(searchType);
+        p.setKeyword(keyword);
+        return calendarMapper.countScheduleList(p);
     }
+
 
     // 일정등록
     public void insertCalendar(ScheduleFormDto dto) {

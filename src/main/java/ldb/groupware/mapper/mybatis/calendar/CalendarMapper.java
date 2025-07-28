@@ -14,7 +14,7 @@ import java.util.Map;
 public interface CalendarMapper {
     List<ScheduleListDto> selectScheduleList(PaginationDto pageDto);
 
-    int countScheduleList();
+    int countScheduleList(PaginationDto pDto);
 
     void insertCalendar(Map<String, Object> map);
 
