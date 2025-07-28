@@ -1,17 +1,20 @@
 package ldb.groupware.controller.draft;
 
 import jakarta.validation.Valid;
+import ldb.groupware.domain.Attachment;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.draft.DraftDeleteDto;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.draft.DraftService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/draft")
@@ -33,9 +36,7 @@ public class DraftApiController {
 
         // 로그인 사용자 ID (임시 하드코딩)
         String memId = "user008";
-
         Map<String, Object> result = draftService.searchMyDraftList(memId, type, keyword, page);
-        result.forEach((k, v) -> System.out.println("[전자결재리스트조회] " + k + " : " + v));
 
         return ApiResponseDto.ok(result);
     }
@@ -69,19 +70,17 @@ public class DraftApiController {
     public ResponseEntity<ApiResponseDto<Void>> deleteMyDraft(@RequestBody @Valid DraftDeleteDto dto,
                                                               BindingResult br) {
 
-        if (br.hasErrors() || dto.getStatus() != 0) {
+        if (br.hasErrors() || dto.getStatus() != 0 || dto.getDocId() == null) {
             return ApiResponseDto.error("입력값이 유효하지 않습니다.");
         }
 
         try {
             draftService.deleteMyDraft(dto);
-
-//            attachmentService.deleteAttachment(List.of(savedName), attachType);
         } catch (RuntimeException e) {
             return ApiResponseDto.error("삭제처리중 오류발생");
         }
 
-        return null;
+        return ApiResponseDto.successMessage("전자결재 삭제 처리 완료.");
     }
 
 }

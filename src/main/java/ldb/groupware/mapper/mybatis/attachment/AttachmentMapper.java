@@ -15,4 +15,6 @@ public interface AttachmentMapper {
 
     List<Attachment> getAttachments(@Param("businessId") String businessId,
                                 @Param("attachType") String attachType);
+
+
 }

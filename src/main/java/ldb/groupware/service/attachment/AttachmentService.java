@@ -1,6 +1,7 @@
 package ldb.groupware.service.attachment;
 
 
+import jakarta.validation.constraints.NotNull;
 import ldb.groupware.domain.Attachment;
 import ldb.groupware.mapper.mybatis.attachment.AttachmentMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -113,4 +114,5 @@ public class AttachmentService {
                         .allMatch(a -> a.getSavedName() != null && a.getFilePath() != null))
                 .map(Collections::unmodifiableList); // 반환되는 리스트가 외부에서 수정되지 않도록 불변 리스트로 래핑
     }
+
 }

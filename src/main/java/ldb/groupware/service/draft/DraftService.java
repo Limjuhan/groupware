@@ -1,9 +1,6 @@
 package ldb.groupware.service.draft;
 
-import ldb.groupware.domain.FormAnnualLeave;
-import ldb.groupware.domain.FormExpense;
-import ldb.groupware.domain.FormProject;
-import ldb.groupware.domain.FormResign;
+import ldb.groupware.domain.*;
 import ldb.groupware.dto.draft.*;
 import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.mapper.mapstruct.ConvertDtoMapper;
@@ -17,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -66,20 +64,28 @@ public class DraftService {
 
     /**
      * 최초 상신시 : attachment, approval_document, approval_line
-     *              form_annual_leave, form_expense, form_resign, annual_leave_history
+     * form_annual_leave, form_expense, form_resign, annual_leave_history
      *
      * @param dto
      * @param attachments
      * @param action
      * @param memId
-     *
      */
     @Transactional
-    public void saveDraft(DraftFormDto dto, List<MultipartFile> attachments, String action, String memId) throws IllegalArgumentException {
+    public void saveDraft(DraftFormDto dto,
+                          List<MultipartFile> attachments,
+                          String action,
+                          String memId,
+                          String savedFormCode) throws IllegalArgumentException {
+
+
         //글등록방식(임시저장or제출) 확인
         int saveType = getStatus(action);
 
         if (dto.getStatus() != null && dto.getStatus() == ApprovalConst.STATUS_TEMP) { // 임시저장 -> 임시저장 or 제출
+            if (savedFormCode != null && !dto.getFormCode().equals(savedFormCode)) {
+                throw new IllegalArgumentException("임시저장한글 제출(임시저장)시 같은양식만 가능합니다.");
+            }
             updateApprovalDraft(dto, memId, saveType);
         } else { // 새글작성->임시저장 or 제출
             insertNewApprovalDraft(dto, memId, saveType);
@@ -104,7 +110,7 @@ public class DraftService {
         }
     }
 
-    private void insertFormDetail(DraftFormDto dto, String memId) {
+    private void insertFormDetail(DraftFormDto dto, String memId, int saveType) {
         switch (dto.getFormCode()) {
             case ApprovalConst.FORM_ANNUAL -> {
                 validateAnnualLeave(dto, memId);
@@ -123,7 +129,7 @@ public class DraftService {
 
     private void insertNewApprovalDraft(DraftFormDto dto, String memId, int saveType) {
         draftMapper.insertApprovalDocument(dto, saveType, memId);
-        insertFormDetail(dto, memId);
+        insertFormDetail(dto, memId, saveType);
     }
 
     private int getStatus(String action) {
@@ -220,6 +226,7 @@ public class DraftService {
 
         return dto;
     }
+
     public DraftFormDto getMyDraftDetail(DraftFormDto dto) {
         dto = draftMapper.getMyDraftDetail(dto.getDocId());
         getDraftForm(dto);
@@ -229,10 +236,24 @@ public class DraftService {
 
     @Transactional
     public void deleteMyDraft(DraftDeleteDto dto) {
+        
         if (draftMapper.deleteApprovalDocument(dto) == 0 || deleteDraftForm(dto) == 0) {
             log.warn("기안문서 삭제 실패 - 존재하지 않거나 이미 삭제됨: {}", dto.getDocId());
             throw new IllegalStateException("삭제할 문서가 없거나 실패했습니다.");
         }
+
+        // 첨부파일 삭제
+        Optional<List<Attachment>> attachList = attachmentService.getAttachments(dto.getDocId().toString(), dto.getAttachType());
+
+        attachList.ifPresent(attachs -> {
+            List<String> attachSavedNames = attachs.stream()
+                    .map(Attachment::getSavedName)
+                    .collect(Collectors.toList());
+            System.out.println("삭제시 첨부파일내역확인: " + attachSavedNames.toString());
+
+            attachmentService.deleteAttachment(attachSavedNames, dto.getAttachType());
+        });
+
     }
 
 

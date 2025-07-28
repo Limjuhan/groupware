@@ -12,8 +12,12 @@ import lombok.ToString;
 public class DraftDeleteDto {
     @NotNull
     private Integer docId;
+
     @NotBlank
     private String formCode;
+
     @NotNull
     private Integer status;
+
+    private String attachType = "D";
 }

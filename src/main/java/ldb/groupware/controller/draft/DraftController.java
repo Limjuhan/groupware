@@ -84,6 +84,7 @@ public class DraftController {
     }
 
     /**
+     * TODO: 알람테이블 저장 처리 아직 안함.
      * 저장프로세스
      * 1. 임시저장글 -> 임시저장 or 제출
      * 2. 새글 -> 임시저장 or 제출
@@ -109,12 +110,13 @@ public class DraftController {
             BindingResult bindingResult,
             @RequestParam(value = "attachments", required = false) List<MultipartFile> attachments,
             @RequestParam(value = "action", required = false) String action,
-            @SessionAttribute(name = "memId", required = false) String memId,
+            @RequestParam(value = "savedFormCode", required = false) String savedFormCode,
             Model model) {
 
+        System.out.println("임시저장시 데이터 확인" + action);
         validateAction(action);
         // 임시 하드코딩
-        memId = "user008";
+        String memId = "user008";
         // 1차,2차,참조자 사원리스트
         List<DraftForMemberDto> memberList = draftService.getMemberList();
         // 잔여 연차조회
@@ -130,7 +132,7 @@ public class DraftController {
         }
 
         try {
-            draftService.saveDraft(dto, attachments, action, memId);
+            draftService.saveDraft(dto, attachments, action, memId, savedFormCode);
         } catch (Exception e) {
             model.addAttribute("globalError", e.getMessage());
             model.addAttribute("draftMembers", memberList);
@@ -178,11 +180,6 @@ public class DraftController {
 
     /**
      *
-     * 연차상세정보 불러오기
-     * 조회목록 : 문서번호 ,양식 , 제목, 기안자 , 상태 ,
-     * 1차결재자 , 2차결재자 , 문서종료일 , 첨부파일 , 본문내용,양식정보
-     * 첨부파일리스트 가져오기
-     *
      * @param memId
      * @param model
      * @return draft/draftDetail
@@ -192,19 +189,18 @@ public class DraftController {
                                    @RequestParam("memId") String memId,
                                    Model model) {
 
-        System.err.println("dto확인: " + dto.toString());
         try {
             if (dto.getDocId() == null) {
                 throw new IllegalArgumentException("문서가 존재하지 않습니다.");
             }
 
             // 문서 상세 정보 조회
-            DraftFormDto draftInfo =  draftService.getMyDraftDetail(dto);
+            DraftFormDto draftInfo = draftService.getMyDraftDetail(dto);
             // 첨부파일조회
             Optional<List<Attachment>> optionalAttachmentList =
                     attachmentService.getAttachments(dto.getDocId().toString(), dto.getAttachType());
 
-            System.err.println("페이지 보낼 dto정보: " + draftInfo);
+
             model.addAttribute("draftDetail", draftInfo);
             optionalAttachmentList.ifPresent(attachments -> {
                 model.addAttribute("attachments", attachments);
