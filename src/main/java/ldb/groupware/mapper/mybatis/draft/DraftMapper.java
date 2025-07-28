@@ -4,6 +4,7 @@ import ldb.groupware.domain.FormAnnualLeave;
 import ldb.groupware.domain.FormExpense;
 import ldb.groupware.domain.FormProject;
 import ldb.groupware.domain.FormResign;
+import ldb.groupware.dto.draft.DraftDeleteDto;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.dto.draft.DraftListDto;
@@ -66,4 +67,14 @@ public interface DraftMapper {
     int getMyDraftCount(Map<String, Object> countParam);
 
     DraftFormDto getMyDraftDetail(Integer docId);
+
+    int deleteApprovalDocument(DraftDeleteDto dto);
+
+    int deleteFormAnnualLeave(Integer docId);
+
+    int deleteFormProject(Integer docId);
+
+    int deleteFormExpense(Integer docId);
+
+    int deleteFormResign(Integer docId);
 }

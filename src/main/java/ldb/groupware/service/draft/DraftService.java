@@ -16,10 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -230,31 +227,33 @@ public class DraftService {
         return dto;
     }
 
-//    public void deleteMyDraft(DraftDeleteDto dto) {
-//        draftMapper.deleteApprovalDocument(dto);
-//        deleteDraftForm(dto);
-//    }
-//
-//    private void deleteDraftForm(DraftDeleteDto dto) {
-//        switch (dto.getFormCode()) {
-//            case ApprovalConst.FORM_ANNUAL -> {
-//                var annual = draftMapper.getFormAnnualLeave(dto.getDocId());
-//                if (annual != null) dto.setAnnualData(annual);
-//            }
-//            case ApprovalConst.FORM_PROJECT -> {
-//                var project = draftMapper.getFormProject(dto.getDocId());
-//                if (project != null) dto.setProjectData(project);
-//            }
-//            case ApprovalConst.FORM_EXPENSE -> {
-//                var expense = draftMapper.getFormExpense(dto.getDocId());
-//                if (expense != null) dto.setExpenseData(expense);
-//            }
-//            case ApprovalConst.FORM_RESIGN -> {
-//                var resign = draftMapper.getFormResign(dto.getDocId());
-//                if (resign != null) dto.setresignData(resign);
-//            }
-//            default -> throw new IllegalArgumentException(
-//                    messageSource.getMessage("error.formtype.missing", null, Locale.KOREA));
-//        }
-//    }
+    @Transactional
+    public void deleteMyDraft(DraftDeleteDto dto) {
+        if (draftMapper.deleteApprovalDocument(dto) == 0 || deleteDraftForm(dto) == 0) {
+            log.warn("기안문서 삭제 실패 - 존재하지 않거나 이미 삭제됨: {}", dto.getDocId());
+            throw new IllegalStateException("삭제할 문서가 없거나 실패했습니다.");
+        }
+    }
+
+
+    private int deleteDraftForm(DraftDeleteDto dto) {
+        int result = 0;
+        switch (dto.getFormCode()) {
+            case ApprovalConst.FORM_ANNUAL -> {
+                result = draftMapper.deleteFormAnnualLeave(dto.getDocId());
+            }
+            case ApprovalConst.FORM_PROJECT -> {
+                result = draftMapper.deleteFormProject(dto.getDocId());
+            }
+            case ApprovalConst.FORM_EXPENSE -> {
+                result = draftMapper.deleteFormExpense(dto.getDocId());
+            }
+            case ApprovalConst.FORM_RESIGN -> {
+                result = draftMapper.deleteFormResign(dto.getDocId());
+            }
+            default -> throw new IllegalArgumentException(
+                    messageSource.getMessage("error.formtype.missing", null, Locale.KOREA));
+        }
+        return result;
+    }
 }

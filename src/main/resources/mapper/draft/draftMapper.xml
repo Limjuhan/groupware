@@ -220,6 +220,35 @@
             (#{docId}, #{formCode}, #{resignDate})
     </insert>
 
+    <delete id="deleteApprovalDocument">
+        DELETE FROM approval_document
+        WHERE doc_id = #{docId}
+        AND form_code = #{formCode}
+        AND status = #{status}
+    </delete>
 
+    <!-- 휴가신청서 삭제 -->
+    <delete id="deleteFormAnnualLeave">
+        DELETE FROM form_annual_leave
+        WHERE doc_id = #{docId}
+    </delete>
+
+    <!-- 프로젝트 제안서 삭제 -->
+    <delete id="deleteFormProject">
+        DELETE FROM form_project
+        WHERE doc_id = #{docId}
+    </delete>
+
+    <!-- 지출결의서 삭제 -->
+    <delete id="deleteFormExpense">
+        DELETE FROM form_expense
+        WHERE doc_id = #{docId}
+    </delete>
+
+    <!-- 사직서 삭제 -->
+    <delete id="deleteFormResign">
+        DELETE FROM form_resign
+        WHERE doc_id = #{docId}
+    </delete>
 
 </mapper>

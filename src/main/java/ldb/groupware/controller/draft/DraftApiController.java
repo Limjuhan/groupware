@@ -1,11 +1,13 @@
 package ldb.groupware.controller.draft;
 
+import jakarta.validation.Valid;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.draft.DraftDeleteDto;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.draft.DraftService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,18 +60,23 @@ public class DraftApiController {
      *  approval_document
      *  form_양식
      *
+     *  첨부파일 존재확인. 존재시 삭제
+     *
      * @param dto
      * @return
      */
     @PostMapping("deleteMyDraft")
-    public ResponseEntity<ApiResponseDto<Void>> deleteMyDraft(@RequestBody DraftDeleteDto dto) {
+    public ResponseEntity<ApiResponseDto<Void>> deleteMyDraft(@RequestBody @Valid DraftDeleteDto dto,
+                                                              BindingResult br) {
 
-        if (dto.getDocId() == null || StringUtils.isBlank(dto.getFormCode())) {
-            throw new IllegalArgumentException("삭제할 문서정보가 올바르지 않습니다.");
+        if (br.hasErrors() || dto.getStatus() != 0) {
+            return ApiResponseDto.error("입력값이 유효하지 않습니다.");
         }
 
         try {
-//            draftService.deleteMyDraft(dto);
+            draftService.deleteMyDraft(dto);
+
+//            attachmentService.deleteAttachment(List.of(savedName), attachType);
         } catch (RuntimeException e) {
             return ApiResponseDto.error("삭제처리중 오류발생");
         }
