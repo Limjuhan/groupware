@@ -4,10 +4,7 @@ import ldb.groupware.domain.FormAnnualLeave;
 import ldb.groupware.domain.FormExpense;
 import ldb.groupware.domain.FormProject;
 import ldb.groupware.domain.FormResign;
-import ldb.groupware.dto.draft.ApprovalConst;
-import ldb.groupware.dto.draft.DraftForMemberDto;
-import ldb.groupware.dto.draft.DraftFormDto;
-import ldb.groupware.dto.draft.DraftListDto;
+import ldb.groupware.dto.draft.*;
 import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.mapper.mapstruct.ConvertDtoMapper;
 import ldb.groupware.mapper.mybatis.draft.DraftMapper;
@@ -17,6 +14,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -226,10 +224,37 @@ public class DraftService {
         return dto;
     }
     public DraftFormDto getMyDraftDetail(DraftFormDto dto) {
-
         dto = draftMapper.getMyDraftDetail(dto.getDocId());
         getDraftForm(dto);
 
         return dto;
     }
+
+//    public void deleteMyDraft(DraftDeleteDto dto) {
+//        draftMapper.deleteApprovalDocument(dto);
+//        deleteDraftForm(dto);
+//    }
+//
+//    private void deleteDraftForm(DraftDeleteDto dto) {
+//        switch (dto.getFormCode()) {
+//            case ApprovalConst.FORM_ANNUAL -> {
+//                var annual = draftMapper.getFormAnnualLeave(dto.getDocId());
+//                if (annual != null) dto.setAnnualData(annual);
+//            }
+//            case ApprovalConst.FORM_PROJECT -> {
+//                var project = draftMapper.getFormProject(dto.getDocId());
+//                if (project != null) dto.setProjectData(project);
+//            }
+//            case ApprovalConst.FORM_EXPENSE -> {
+//                var expense = draftMapper.getFormExpense(dto.getDocId());
+//                if (expense != null) dto.setExpenseData(expense);
+//            }
+//            case ApprovalConst.FORM_RESIGN -> {
+//                var resign = draftMapper.getFormResign(dto.getDocId());
+//                if (resign != null) dto.setresignData(resign);
+//            }
+//            default -> throw new IllegalArgumentException(
+//                    messageSource.getMessage("error.formtype.missing", null, Locale.KOREA));
+//        }
+//    }
 }

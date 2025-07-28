@@ -8,8 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PaginationDto {
-	
-	private String professorId;
+
 	private int page;			// 클라이언트로부터 요청받은 페이지번호
 	private int startPage;          // 클라이언트에 표시할 시작 페이지 번호
 	private int endPage;			// 클라이언트에 표시할 마지막 페이지 번호

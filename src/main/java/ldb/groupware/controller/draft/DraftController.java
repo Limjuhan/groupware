@@ -1,6 +1,6 @@
 package ldb.groupware.controller.draft;
 
-import io.micrometer.common.util.StringUtils;
+
 import jakarta.validation.Valid;
 import ldb.groupware.domain.Attachment;
 import ldb.groupware.dto.draft.DraftForMemberDto;
@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -83,6 +84,17 @@ public class DraftController {
     }
 
     /**
+     * 저장프로세스
+     * 1. 임시저장글 -> 임시저장 or 제출
+     * 2. 새글 -> 임시저장 or 제출
+     *
+     * 제출,임시저장 공통
+     * -> approval_document : 저장or업데이트
+     * -> form_양식정보 : 각양식에맞는 양식테이블 저장or업데이트
+     *
+     * 제출(action="save")일때만
+     * -> approval_line(결재라인)정보 저장.
+     *
      * @param dto
      * @param bindingResult
      * @param attachments
@@ -165,7 +177,7 @@ public class DraftController {
     }
 
     /**
-     * TODO:상세보기페이지 양식별로 조회 안되고있음 
+     *
      * 연차상세정보 불러오기
      * 조회목록 : 문서번호 ,양식 , 제목, 기안자 , 상태 ,
      * 1차결재자 , 2차결재자 , 문서종료일 , 첨부파일 , 본문내용,양식정보
