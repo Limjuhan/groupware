@@ -18,7 +18,9 @@
     </insert>
 
     <select id="findById" parameterType="int" resultType="FaqFormDto">
-        select * from faq where faq_id=#{val}
+        select f.faq_id , f.faq_title,f.faq_content,f.dept_id,d.dept_name
+        from faq f join dept d on(f.dept_id = d.dept_id)
+        where faq_id=#{val}
     </select>
 
     <select id="deptAll" resultType="DeptDto">

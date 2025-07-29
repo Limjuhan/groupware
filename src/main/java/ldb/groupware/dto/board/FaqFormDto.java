@@ -16,7 +16,8 @@ public class FaqFormDto {
     private String faqTitle;
     @NotEmpty(message = "내용을 입력하세요")
     private String faqContent;
-    @NotEmpty(message = "부서선택해")
+    @NotEmpty(message = "부서를 선택하세요")
     private String deptId;
+    private String deptName;
     private int page;
 }

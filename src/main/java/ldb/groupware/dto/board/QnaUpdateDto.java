@@ -13,7 +13,7 @@ import java.util.List;
 @ToString
 public class QnaUpdateDto {
     private Integer qnaId;
-    @NotEmpty(message = "제목은 입력해야죠")
+    @NotEmpty(message = "제목은 필수 입력")
     private String qnaTitle;
 
     private String qnaContent;

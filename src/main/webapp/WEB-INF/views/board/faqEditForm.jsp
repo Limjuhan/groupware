@@ -56,7 +56,7 @@
         <div class="mb-4">
             <label for="deptId" class="form-label">작성 부서</label>
             <select class="form-select" id="deptId" name="deptId" >
-                <option value="">-- 부서 선택 --</option>
+                <option value="${faq.deptId}">${faq.deptName}</option>
                 <c:forEach items="${dept}" var="d">
                     <option value="${d.deptId}">${d.deptName}</option>
                 </c:forEach>

@@ -28,4 +28,6 @@ public interface FacilityMapper {
                                               @Param("loginId") String loginId);
 
     int reserveCancel(@Param("loginId")String loginId,@Param("facId") String facId);
+
+    int returnFacility(@Param("loginId")String loginId,@Param("facId") String facId);
 }

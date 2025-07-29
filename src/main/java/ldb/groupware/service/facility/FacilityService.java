@@ -93,4 +93,15 @@ public class FacilityService {
             return false;
         }
     }
+
+    //반납
+    public boolean returnFacility(String facId, HttpServletRequest request) {
+        String loginId = (String) request.getSession().getAttribute("loginId");
+        if(facilityMapper.returnFacility(loginId,facId)>0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

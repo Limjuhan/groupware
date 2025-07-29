@@ -79,4 +79,8 @@
         update   facility_rent set cancel_status='Y', rent_yn='Y' where renter_id = #{loginId} and fac_id = #{facId}
     </update>
 
+    <update id="returnFacility">
+        update   facility_rent set  rent_yn='Y' where renter_id = #{loginId} and fac_id = #{facId}
+    </update>
+
 </mapper>

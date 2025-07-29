@@ -125,6 +125,12 @@
       location.href = "cancelReservation?facId=" + facId;
     }
   }
+
+  function returnFacility(facId){
+    if(confirm("반납처리를 하겠습니까?")){
+      location.href = "returnFacility?facId="+facId;
+    }
+  }
 </script>
 
 </body>

@@ -95,6 +95,18 @@ public class FacilityController {
         return "facility/meetingRoomManage";
     }
 
+    @GetMapping("returnFacility")
+    public String returnFacility(Model model,@RequestParam("facId") String facId , HttpServletRequest request){
+        if(service.returnFacility(facId,request)){
+            model.addAttribute("msg","반납 성공");
+        }
+        else{
+            model.addAttribute("msg","반납실패");
+        }
+        model.addAttribute("url", "getReservationList");
+        return "alert";
+    }
+
 
 
 
