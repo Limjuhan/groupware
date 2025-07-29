@@ -6,6 +6,8 @@
   <meta charset="UTF-8" />
   <title>예약내역 - LDBSOFT 그룹웨어</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
   <style>
     body { background-color: #f4f6f9; }
     .container { max-width: 1100px; margin-top: 40px; }
@@ -49,9 +51,11 @@
     <tr>
       <th>공용설비ID</th>
       <th>유형</th>
-      <th>설비이름</th>
+      <th>이름</th>
+      <th>식별번호</th>
       <th>예약일</th>
       <th>예약기간</th>
+      <th>반납</th>
       <th>상태/취소</th>
     </tr>
     </thead>
@@ -60,16 +64,34 @@
       <tr>
         <td>${f.facId}</td>
         <td>${f.commName}</td>
-        <td>${f.facName}/${f.facUid}</td>
+        <td>${f.facName}</td>
+        <td>${f.facUid}</td>
         <td>${f.createdAt}</td>
         <td>${f.startAt} ~ ${f.endAt}</td>
         <td>
+          <c:if test="${f.rentYn=='N' and f.cancelStatus=='N'}">
+          <button type="button"
+                     class="btn btn-sm btn-outline-success d-flex align-items-center"
+                     onclick="returnFacility('${f.facId}')">
+          <i class="bi bi-arrow-counterclockwise me-1"></i> 반납
+        </button>
+          </c:if>
+        </td>
+        <td>
           <c:choose>
-            <c:when test="${f.cancelStatus == 'Y'}">
+            <c:when test="${f.cancelStatus == 'Y' and  f.rentYn == 'Y'}">
               <span class="text-danger fw-bold">[취소됨]</span>
             </c:when>
+            <c:when test="${f.rentYn == 'Y'}">
+              <span class="text-success fw-bold">[반납완료]</span>
+            </c:when>
             <c:otherwise>
-              <button class="btn btn-outline-primary btn-sm" onclick="delReserve('${f.facId}')">취소</button>
+              <button type="button"
+                      class="btn btn-outline-danger btn-sm d-flex align-items-center"
+                      onclick="delReserve('${f.facId}')">
+                <i class="bi bi-x-circle me-1"></i> 취소
+              </button>
+
             </c:otherwise>
           </c:choose>
         </td>

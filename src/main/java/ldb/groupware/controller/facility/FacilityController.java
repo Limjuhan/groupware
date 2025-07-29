@@ -1,6 +1,7 @@
 package ldb.groupware.controller.facility;
 
 import jakarta.servlet.http.HttpServletRequest;
+import ldb.groupware.dto.facility.CommTypeDto;
 import ldb.groupware.dto.facility.FacilityListDto;
 import ldb.groupware.dto.facility.FacilityRentDto;
 import ldb.groupware.dto.facility.SearchDto;
@@ -30,6 +31,7 @@ public class FacilityController {
 
     @GetMapping("getVehicleList")
     public String getVehicleList(Model model,PaginationDto pageDto, SearchDto searchDto){
+        searchDto.setFacType(CommTypeDto.VEHICLE_TYPE);
         Map<String, Object> map = service.getFacilityList(pageDto,searchDto);
         model.addAttribute("facility", map.get("list"));
         model.addAttribute("pageDto",map.get("pageDto"));
@@ -51,6 +53,7 @@ public class FacilityController {
 
     @GetMapping("getMeetingRoomList")
     public String getMeetingRoomList(Model model, PaginationDto dto, SearchDto dto2){
+        dto2.setFacType(CommTypeDto.ROOM_TYPE);
         Map<String, Object> map = service.getFacilityList(dto,dto2);
         model.addAttribute("facility", map.get("list"));
         model.addAttribute("pageDto",map.get("pageDto"));
@@ -59,7 +62,7 @@ public class FacilityController {
 
     @GetMapping("getItemList")
     public String getItemList(Model model , PaginationDto dto, SearchDto dto2){
-
+        dto2.setFacType(CommTypeDto.ITEM_TYPE);
         Map<String, Object> map = service.getFacilityList(dto,dto2);
         model.addAttribute("facility", map.get("list"));
         model.addAttribute("pageDto",map.get("pageDto"));
@@ -85,6 +88,11 @@ public class FacilityController {
         }
         model.addAttribute("url", "getReservationList");
         return "alert";
+    }
+
+    @GetMapping("getMeetingRoomManage")
+    public String getMeetingRoomManage(Model model,HttpServletRequest request){
+        return "facility/meetingRoomManage";
     }
 
 

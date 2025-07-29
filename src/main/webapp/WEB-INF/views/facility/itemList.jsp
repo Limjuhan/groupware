@@ -67,7 +67,7 @@
       <tr>
         <th>공용설비ID</th>
         <th>이름</th>
-        <th>UID</th>
+        <th>식별번호</th>
         <th>수용인원</th>
         <th>반납여부</th>
         <th>예약</th>

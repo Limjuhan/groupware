@@ -17,6 +17,7 @@ public class MyFacilityReserveDto {
     private String facUid;
     private String commName;
     private String renterId;
+    private String rentYn;
     private String cancelStatus;
 
     private LocalDateTime startAt;

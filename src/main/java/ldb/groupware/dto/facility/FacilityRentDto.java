@@ -16,6 +16,7 @@ public class FacilityRentDto {
     private String facName;
     private String renterId;
     private String rentalPurpose;
+    private String cancelStatus;
 
     private Date startAt;
     private Date endAt;

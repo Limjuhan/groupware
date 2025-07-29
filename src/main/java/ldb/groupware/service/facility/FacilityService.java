@@ -26,11 +26,11 @@ public class FacilityService {
 
     //모든 공용설비예약리스틀 페이징처리해 뽑기위함
     public Map<String,Object>  getFacilityList(PaginationDto dto, SearchDto dto2) {
+        System.out.println("dto2 :: "+dto2);
         Map<String,Object> map = new HashMap<>();
             if(dto.getPage()==0){ //페이지를 따로지정하지않았다면 기본페이지인 1
                 dto.setPage(1);
             }
-            dto2.setFacType("R_02");
             int totalRow = facilityMapper.countByType(dto2.getFacType());
             dto.setTotalRows(totalRow);
             dto.calculatePagination();
@@ -49,6 +49,7 @@ public class FacilityService {
         fDto.setRentalPurpose(dto.getRentalPurpose());
         fDto.setStartAt(dto.getStartAt());
         fDto.setEndAt(dto.getEndAt());
+        fDto.setCancelStatus("N");
         if(facilityMapper.insertFacility(fDto)>0){
             return true;
         }
@@ -74,7 +75,7 @@ public class FacilityService {
         map.put("pageDto",dto);
 
         //내예약리스트
-        sDto.setRentYn("N"); //반납한게  뜨면 안되겠죠
+        //sDto.setRentYn("N"); //반납한게  뜨면 안되겠죠
         List<MyFacilityReserveDto> facility =  facilityMapper.myReservedList(dto,sDto,loginId);
         map.put("facility", facility);
         System.out.println("pageDto : "+dto);
