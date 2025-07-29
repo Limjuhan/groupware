@@ -138,16 +138,16 @@ public class DraftController {
         Integer remainAnnual = draftService.getRemainAnnual(memId);
         // 제출시에만 입력값 검증
         if ("save".equals(action)) {
+            // 결재자 중복체크
+            validateApproval(dto);
+            // 추가 유효성 검증 (양식별 필드)
+            validFormType(dto, bindingResult);
 
             if (bindingResult.hasErrors()) {
                 model.addAttribute("draftMembers", draftService.getMemberList());
                 model.addAttribute("remainAnnual", remainAnnual);
                 return "draft/draftForm";
             }
-            // 결재자 중복체크
-            validateApproval(dto);
-            // 추가 유효성 검증 (양식별 필드)
-            validFormType(dto, bindingResult);
         }
 
         try {
