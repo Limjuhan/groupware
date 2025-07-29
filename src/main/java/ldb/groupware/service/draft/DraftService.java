@@ -1,11 +1,14 @@
 package ldb.groupware.service.draft;
 
 import ldb.groupware.domain.*;
+import ldb.groupware.dto.common.CommonConst;
+import ldb.groupware.dto.common.CommonTypeDto;
 import ldb.groupware.dto.draft.*;
 import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.mapper.mapstruct.ConvertDtoMapper;
 import ldb.groupware.mapper.mybatis.draft.DraftMapper;
 import ldb.groupware.service.attachment.AttachmentService;
+import ldb.groupware.service.common.CommonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -22,14 +25,14 @@ public class DraftService {
 
     private final DraftMapper draftMapper;
     private final AttachmentService attachmentService;
-    private final ConvertDtoMapper convertDtoMapper;
     private final MessageSource messageSource;
+    private final CommonService commonService;
 
-    public DraftService(DraftMapper draftMapper, AttachmentService attachmentService, ConvertDtoMapper convertDtoMapper, MessageSource messageSource) {
+    public DraftService(DraftMapper draftMapper, AttachmentService attachmentService, MessageSource messageSource, CommonService commonService) {
         this.draftMapper = draftMapper;
         this.attachmentService = attachmentService;
-        this.convertDtoMapper = convertDtoMapper;
         this.messageSource = messageSource;
+        this.commonService = commonService;
     }
 
     public Map<String, Object> searchMyDraftList(String memId, String type, String keyword, int page) {

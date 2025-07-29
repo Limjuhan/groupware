@@ -8,7 +8,7 @@
 
     <select id="getList" resultType="FacilityListDto" >
         SELECT
-        fi.fac_id, fi.fac_name, fi.fac_type, fi.fac_uid, fi.capacity,
+        distinct fi.fac_id, fi.fac_name, fi.fac_type, fi.fac_uid, fi.capacity,
         IFNULL(fr.rent_yn, 'Y') AS rent_yn,
         fi.created_at, fi.created_by
         FROM facility_info fi
@@ -38,12 +38,45 @@
     <insert id="insertFacility" parameterType="FacilityRentDto">
         INSERT INTO facility_rent (
             fac_id, fac_type, renter_id, rental_purpose,
-            start_at, end_at, created_at, created_by
+            start_at, end_at, created_at, created_by , cancel_status
            )
             values(
                  #{facId}, #{facType}, #{renterId}, #{rentalPurpose},
-                 #{startLocalDateTime}, #{endLocalDateTime}, now(), #{renterId}
+                 #{startLocalDateTime}, #{endLocalDateTime}, now(), #{renterId},#{cancleStatus}
             )
     </insert>
+    <select id="myReserveCount" parameterType="String" resultType="int">
+        select count(*) from facility_rent where renter_id = #{val} and rent_yn = 'N'
+    </select>
+
+    <select id="myReservedList" resultType="MyFacilityReserveDto">
+        SELECT
+        fi.fac_id,  c.comm_name, fi.fac_name,fi.fac_uid,fi.fac_type,
+        fr.created_at, fr.start_at , fr.end_at , fr.renter_id ,fr.cancel_status , fr.rent_yn
+        FROM facility_info fi
+        INNER JOIN facility_rent fr ON fi.fac_id = fr.fac_id
+        join common_type c on fr.fac_type = c.comm_code
+        <where>
+             fr.renter_id = #{loginId}
+            <if test="pDto.keyword != null and pDto.keyword != ''">
+                AND fi.fac_name LIKE CONCAT('%', #{pDto.keyword}, '%')
+            </if>
+                <if test="sDto.facType!=null and sDto.facType != '' ">
+                    AND fr.fac_type = #{sDto.facType}
+                </if>
+                <if test="sDto.yearMonth!=null and sDto.yearMonth != ''">
+                    AND DATE_FORMAT(fr.created_at, '%Y-%m') = #{sDto.yearMonth}
+                </if>
+            <if test="!sDto.includeCancel">
+                AND fr.cancel_status = 'N'
+            </if>
+
+        </where>
+        LIMIT #{pDto.startNum}, #{pDto.itemsPerPage}
+    </select>
+
+    <update id="reserveCancel">
+        update   facility_rent set cancel_status='Y', rent_yn='Y' where renter_id = #{loginId} and fac_id = #{facId}
+    </update>
 
 </mapper>

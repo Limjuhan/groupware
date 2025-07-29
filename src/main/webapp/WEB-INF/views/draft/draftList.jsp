@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -69,22 +71,40 @@
     </div>
 
     <!-- 검색 영역 -->
-    <div class="row mb-3 align-items-end">
+    <div class="row mb-3 align-items-end g-2">
+        <!-- 결재 상태 -->
         <div class="col-md-3 select-wrapper">
-            <label for="searchType" class="form-label">검색 기준</label>
+            <label for="searchStatus" class="form-label small mb-1">결재 상태</label>
+            <select id="searchStatus" class="form-select bg-glass custom-select-arrow">
+                <option value="">전체</option>
+                <c:forEach var="status" items="${approvalStatusList}">
+                    <option value="${status.commCode}">${status.commName}</option>
+                </c:forEach>
+            </select>
+        </div>
+
+        <!-- 검색 기준 -->
+        <div class="col-md-3 select-wrapper">
+            <label for="searchType" class="form-label small mb-1">검색 기준</label>
             <select id="searchType" class="form-select bg-glass custom-select-arrow">
                 <option value="title">제목</option>
                 <option value="writer">기안자</option>
             </select>
         </div>
-        <div class="col-md-6">
-            <label for="searchKeyword" class="form-label">검색어 입력</label>
+
+        <!-- 검색어 입력 -->
+        <div class="col-md-4">
+            <label for="searchKeyword" class="form-label small mb-1">검색어 입력</label>
             <input type="text" id="searchKeyword" class="form-control bg-glass" placeholder="검색어 입력">
         </div>
-        <div class="col-md-3">
+
+        <!-- 검색 버튼 -->
+        <div class="col-md-2">
+            <label class="form-label small mb-1">&nbsp;</label>
             <button type="button" class="btn btn-primary w-100 bg-glass" onclick="searchMyDraftList()">검색</button>
         </div>
     </div>
+
 
     <!-- 결재문서 리스트 -->
     <h5 class="mb-3">내 결재문서 목록</h5>
@@ -160,8 +180,10 @@
                     data.forEach(function (draft) {
                         var statusBadge = getStatusBadge(draft.status);
 
+                        // null값 세팅
                         if (!draft.approver1Name) draft.approver1Name = '-';
                         if (!draft.approver2Name) draft.approver2Name = '-';
+                        if (!draft.docEndDate) draft.docEndDate = '-';
 
                         var isTemp =
                             draft.status == 0 ? "<td><a href='#' onclick=\"deleteMyDraft('" + draft.docId + "','" + draft.formCode + "','" + draft.status + "')\" " +

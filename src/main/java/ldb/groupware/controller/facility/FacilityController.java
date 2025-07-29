@@ -1,6 +1,7 @@
 package ldb.groupware.controller.facility;
 
 import jakarta.servlet.http.HttpServletRequest;
+import ldb.groupware.dto.facility.CommTypeDto;
 import ldb.groupware.dto.facility.FacilityListDto;
 import ldb.groupware.dto.facility.FacilityRentDto;
 import ldb.groupware.dto.facility.SearchDto;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Map;
 
+
 @RequestMapping("facility/")
 @Controller
 public class FacilityController {
@@ -29,6 +31,7 @@ public class FacilityController {
 
     @GetMapping("getVehicleList")
     public String getVehicleList(Model model,PaginationDto pageDto, SearchDto searchDto){
+        searchDto.setFacType(CommTypeDto.VEHICLE_TYPE);
         Map<String, Object> map = service.getFacilityList(pageDto,searchDto);
         model.addAttribute("facility", map.get("list"));
         model.addAttribute("pageDto",map.get("pageDto"));
@@ -50,6 +53,7 @@ public class FacilityController {
 
     @GetMapping("getMeetingRoomList")
     public String getMeetingRoomList(Model model, PaginationDto dto, SearchDto dto2){
+        dto2.setFacType(CommTypeDto.ROOM_TYPE);
         Map<String, Object> map = service.getFacilityList(dto,dto2);
         model.addAttribute("facility", map.get("list"));
         model.addAttribute("pageDto",map.get("pageDto"));
@@ -58,7 +62,7 @@ public class FacilityController {
 
     @GetMapping("getItemList")
     public String getItemList(Model model , PaginationDto dto, SearchDto dto2){
-
+        dto2.setFacType(CommTypeDto.ITEM_TYPE);
         Map<String, Object> map = service.getFacilityList(dto,dto2);
         model.addAttribute("facility", map.get("list"));
         model.addAttribute("pageDto",map.get("pageDto"));
@@ -68,9 +72,29 @@ public class FacilityController {
     @GetMapping("getReservationList")
     public String getReservationList(Model model,PaginationDto dto , SearchDto sDto,HttpServletRequest request){
         System.out.println("sdto :: "+sDto);
-        Map<String,Object> map = service.getReserveList(dto,request);
+        Map<String,Object> map = service.getReserveList(dto,sDto,request);
+        model.addAttribute("pageDto",map.get("pageDto"));
+        model.addAttribute("facility",map.get("facility"));
         return "facility/reservationList";
     }
+
+    @GetMapping("cancelReservation")
+    public String cancelReservation(Model model, @RequestParam("facId") String facId , HttpServletRequest request){
+        if(service.reserveCancel(facId,request)){
+            model.addAttribute("msg","삭제성공");
+        }
+        else{
+            model.addAttribute("msg","삭제실패");
+        }
+        model.addAttribute("url", "getReservationList");
+        return "alert";
+    }
+
+    @GetMapping("getMeetingRoomManage")
+    public String getMeetingRoomManage(Model model,HttpServletRequest request){
+        return "facility/meetingRoomManage";
+    }
+
 
 
 

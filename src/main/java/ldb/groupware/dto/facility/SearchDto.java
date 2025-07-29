@@ -15,6 +15,7 @@ public class SearchDto {
     private String rentYn;
     private String facType;
     private String yearMonth;
+    private boolean includeCancel; // 취소여부판단 (true:취소포함 )
 
     public String getRentYn() {
         if(StringUtils.isBlank(this.rentYn)){
