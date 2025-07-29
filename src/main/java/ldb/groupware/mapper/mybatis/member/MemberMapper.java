@@ -27,7 +27,7 @@ public interface MemberMapper {
 
     String nextMemId(@Param("year") String year);
 
-    int insertMember(Map<String, Object> map);
+    int insertMember(MemberFormDto dto);
 
     int updateMemberByMng(UpdateMemberDto dto);
 

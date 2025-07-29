@@ -1,5 +1,6 @@
 package ldb.groupware.controller.admin;
 
+import jakarta.servlet.http.HttpSession;
 import ldb.groupware.dto.admin.MenuDto;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.member.MemberInfoDto;
@@ -35,8 +36,10 @@ public class AdminApiController {
 
     // 사원 설정(모달 - 직급,부서 설정)
     @PostMapping("updateMemberByMng")
-    public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(@RequestBody UpdateMemberDto dto) {
-        return memberService.updateMemberByMng(dto);
+    public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(@RequestBody UpdateMemberDto dto,
+                                                                             HttpSession session) {
+        String loginId = (String) session.getAttribute("loginId");
+        return memberService.updateMemberByMng(dto,loginId);
     }
 
     // 사원목록 (모달 - 사원정보)
@@ -66,7 +69,7 @@ public class AdminApiController {
     public ResponseEntity<ApiResponseDto<Void>> updateAuth(
             @RequestParam String deptId,
             @RequestBody List<String> menuList) {
-        adminService.updateAuth(deptId,menuList);
+        adminService.updateAuth(deptId, menuList);
         return ApiResponseDto.successMessage("부서별 권한 설정 완료되었습니다.");
     }
 

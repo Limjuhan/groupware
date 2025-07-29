@@ -11,6 +11,9 @@ import java.time.LocalDate;
 @Data
 public class MemberFormDto {
 
+    private String memId;
+    private String memPass;
+
     @NotBlank(message = "이름은 필수입니다.")
     private String memName;
 
@@ -35,6 +38,8 @@ public class MemberFormDto {
     @NotNull(message = "입사일은 필수입니다.")
     private LocalDate memHiredate;
 
+    private  String memEmail;
+
     @NotEmpty(message = "이메일을 입력하세요")
     private String memPrivateEmail;
 
@@ -45,4 +50,6 @@ public class MemberFormDto {
     private String rankId;
 
     private MultipartFile photo;
+
+    private String createdBy;
 }

@@ -21,6 +21,8 @@ public class ScheduleFormDto {
     @NotNull(message = "종료일 입력은 필수입니다.")
     private LocalDateTime endAt;
 
+    private String createdBy;
+
     public boolean isEndAfterStart() {
         if (startAt == null || endAt == null) return true;
         return !endAt.isBefore(startAt);

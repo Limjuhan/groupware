@@ -38,10 +38,11 @@ public class AdminService {
     }
 
     // 메뉴 등록
-    public boolean insertMenu(MenuFormDto dto) {
+    public boolean insertMenu(MenuFormDto dto, String loginId) {
         String next = adminMapper.nextMenuCode();
         String MenuCode = "A_" + next;
         dto.setMenuCode(MenuCode);
+
         adminMapper.insertMenu(dto);
         return true;
     }

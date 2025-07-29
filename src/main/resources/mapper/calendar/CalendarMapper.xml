@@ -47,7 +47,7 @@
 
 
     <!-- 일정등록-->
-    <insert id="insertCalendar" parameterType="map">
+    <insert id="insertCalendar" parameterType="ScheduleFormDto">
         INSERT INTO company_schedule (schedule_title,
                                       schedule_content,
                                       start_at,
@@ -89,7 +89,7 @@
             start_at = #{startAt},
             end_at = #{endAt},
             updated_by = #{updatedBy},
-            updated_at = #{updatedAt}
+            updated_at =  NOW()
         WHERE schedule_id = #{scheduleId}
     </update>
 

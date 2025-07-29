@@ -106,10 +106,6 @@
             border-color: #0d6efd !important;
         }
 
-        h4 {
-            /* text-shadow 제거 */
-        }
-
         .modal-content {
             background-color: rgba(52, 58, 64, 0.9) !important;
             color: #fff !important;
@@ -155,9 +151,9 @@
             $.ajax({
                 url: '/admin/getMemberInfo',
                 method: 'GET',
-                data: { memId: memId },
+                data: {memId: memId},
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         const user = response.data;
                         const annualHistoryList = response.data.annualHistoryList;
@@ -188,7 +184,7 @@
                         const $annualHistoryBody = $('#annualHistoryBody');
                         $annualHistoryBody.empty();
                         if (annualHistoryList && annualHistoryList.length > 0) {
-                            $.each(annualHistoryList, function(index, his) {
+                            $.each(annualHistoryList, function (index, his) {
                                 const row = '<tr>' +
                                     '<td>' + his.startDate + ' ~ ' + his.endDate + '</td>' +
                                     '<td>' + (his.approvedByName || his.approvedBy) + '</td>' +
@@ -204,7 +200,7 @@
                         alert("정보를 불러오는 데 실패했습니다: " + response.message);
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("AJAX Error: ", status, error);
                     alert("정보를 불러오는 데 실패했습니다.");
                 }
@@ -233,7 +229,7 @@
                     deptId: deptId,
                     rankId: rankId
                 }),
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
                         searchMembers();
@@ -241,7 +237,7 @@
                         alert("수정 실패: " + response.message);
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     console.error("AJAX Error: ", xhr.status, xhr.responseText);
                     alert("수정 실패: " + xhr.responseText);
                 }
@@ -262,13 +258,13 @@
                     page: page
                 },
                 dataType: 'json',
-                success: function(data) {
+                success: function (data) {
                     const $tbody = $('#memberTableBody');
                     $tbody.empty();
                     const list = data.list;
                     const pagination = data.pagination;
                     if (list && list.length > 0) {
-                        $.each(list, function(index, mem) {
+                        $.each(list, function (index, mem) {
                             const row = '<tr>' +
                                 '<td>' + mem.memId + '</td>' +
                                 '<td><span class="name-link" onclick="openEmployeeDetail(\'' + mem.memId + '\')">' + mem.memName + '</span></td>' +
@@ -301,14 +297,14 @@
                     html += '</ul></nav>';
                     $paging.append(html);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("AJAX Error: ", status, error);
                     alert('데이터를 불러오는 중 오류가 발생했습니다.');
                 }
             });
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             searchMembers();
         });
         $(function () {
@@ -477,7 +473,8 @@
                     </div>
                 </div>
                 <h5 class="mt-4">연차 정보</h5>
-                <div id="annualInfo" class="border p-3 rounded mb-3" style="background-color: rgba(255, 255, 255, 0.1); color: #fff;">
+                <div id="annualInfo" class="border p-3 rounded mb-3"
+                     style="background-color: rgba(255, 255, 255, 0.1); color: #fff;">
                 </div>
                 <table class="table table-bordered text-white">
                     <thead class="table-light text-dark">

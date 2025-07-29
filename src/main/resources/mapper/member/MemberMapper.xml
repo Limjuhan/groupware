@@ -2,16 +2,17 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="ldb.groupware.mapper.mybatis.member.MemberMapper">
 
-    <!-- 비밀번호 조회-->
+    <!-- 비밀번호 조회 -->
     <select id="checkPw" parameterType="string" resultType="string">
         SELECT mem_pass
         FROM member
         WHERE mem_id = #{memId}
     </select>
 
-    <!-- 상태 조회-->
+    <!-- 상태 조회 -->
     <select id="getMemStatus" parameterType="string" resultType="string">
         SELECT mem_status
         FROM member
@@ -46,10 +47,11 @@
                  LEFT JOIN attachment a ON a.business_id = m.mem_id AND a.attach_type = 'P'
                  LEFT JOIN annual_leave al ON al.mem_id = m.mem_id
         WHERE m.mem_id = #{memId}
-        ORDER BY al.year DESC LIMIT 1
+        ORDER BY al.year DESC
+            LIMIT 1
     </select>
 
-    <!--연차 사용내역 조회-->
+    <!-- 연차 사용내역 조회 -->
     <select id="selectAnnualLeaveHistory" resultType="MemberAnnualLeaveHistoryDto">
         SELECT a.mem_id,
                a.leave_code,
@@ -63,7 +65,6 @@
                  LEFT JOIN member m ON a.approved_by = m.mem_id
         WHERE a.mem_id = #{memId}
         ORDER BY a.start_date DESC
-
     </select>
 
     <!-- 개인정보 수정 -->
@@ -73,11 +74,11 @@
             mem_private_email = #{privateEmail},
             mem_address       = #{memAddress},
             updated_by        = #{updatedBy},
-            updated_at        = #{updatedAt}
+            updated_at        = NOW()
         WHERE mem_id = #{memId}
     </update>
 
-    <!-- 페이징 조회 관련 -->
+    <!-- 페이징 조회 - 총 건수 -->
     <select id="countMembers" parameterType="MemberSearchDto" resultType="int">
         SELECT COUNT(*)
         FROM member m
@@ -95,7 +96,7 @@
         </if>
     </select>
 
-    <!--MemberSearchDto에 따른 직원 목록 조회-->
+    <!-- 페이징 조회 - 목록 -->
     <select id="getPagedMembers" parameterType="MemberSearchDto" resultType="MemberListDto">
         SELECT m.mem_id, m.mem_name, m.dept_id, m.rank_id, d.dept_name, r.rank_name
         FROM member m
@@ -131,7 +132,7 @@
         ORDER BY rank_id
     </select>
 
-    <!-- 사원번호 자동생성용 -->
+    <!-- 사원번호 자동생성 -->
     <select id="nextMemId" resultType="string">
         SELECT LPAD(IFNULL(MAX(CAST(SUBSTRING(mem_id, 9, 4) AS UNSIGNED)), 0) + 1, 4, '0')
         FROM member
@@ -139,19 +140,16 @@
     </select>
 
     <!-- 사원 등록 -->
-    <insert id="insertMember" parameterType="map">
-        INSERT INTO member (mem_id, mem_pass, mem_email, mem_private_email,
-                            mem_name, mem_gender, mem_phone,
-                            jumin_front, jumin_back, mem_address,
-                            mem_status, mem_hiredate,
-                            dept_id, rank_id,
-                            created_by, created_at)
-        VALUES (#{memId}, #{memPass}, #{memEmail}, #{memPrivateEmail},
-                #{memName}, #{memGender}, #{memPhone},
-                #{juminFront}, #{juminBack}, #{memAddress},
-                #{memStatus}, #{memHiredate},
-                #{deptId}, #{rankId},
-                #{createdBy}, #{createdAt})
+    <insert id="insertMember" parameterType="MemberFormDto">
+        INSERT INTO member (
+            mem_id, mem_pass, mem_email, mem_private_email, mem_name,
+            mem_gender, mem_phone, jumin_front, jumin_back,
+            mem_address, mem_status, mem_hiredate, dept_id, rank_id, created_by, created_at
+        ) VALUES (
+                     #{memId}, #{memPass}, #{memEmail}, #{memPrivateEmail}, #{memName},
+                     #{memGender}, #{memPhone}, #{juminFront}, #{juminBack},
+                     #{memAddress}, #{memStatus}, #{memHiredate}, #{deptId}, #{rankId}, #{createdBy}, NOW()
+                 )
     </insert>
 
     <!-- 부서/직급 변경 -->
@@ -160,7 +158,7 @@
         SET dept_id    = #{deptId},
             rank_id    = #{rankId},
             updated_by = #{updatedBy},
-            updated_at = #{updatedAt}
+            updated_at = NOW()
         WHERE mem_id = #{memId}
     </update>
 
@@ -171,32 +169,35 @@
         WHERE mem_id = #{memId}
     </update>
 
-    <!-- id로 name뽑기 (동곤)-->
+    <!-- ID로 이름 조회 -->
     <select id="findNameById" parameterType="String" resultType="String">
-        select mem_name
-        from member
-        where mem_id = #{val}
+        SELECT mem_name
+        FROM member
+        WHERE mem_id = #{val}
     </select>
 
-    <!-- 이메일 정보 조회-->
+    <!-- 이메일 조회 -->
     <select id="selectEmail" resultType="string" parameterType="string">
         SELECT mem_private_email
-        from member
-        where mem_id = #{memId}
+        FROM member
+        WHERE mem_id = #{memId}
     </select>
 
-    <!--비밀번호 찾기-->
+    <!-- 비밀번호 찾기 - 유효 회원 확인 -->
     <select id="isValidMember" parameterType="PwCodeDto" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM member
         WHERE mem_id = #{memId}
           AND mem_name = #{memName}
           AND mem_private_email = #{memPrivateEmail}
+          AND mem_status = 'Active'
     </select>
 
-    <!-- 재직중인 사원전체 조회   -->
+    <!-- 재직중인 사원 전체 조회 -->
     <select id="findAllActiveMembers" resultType="Member">
         SELECT *
-        from member
+        FROM member
+        WHERE mem_status = 'Active'
     </select>
+
 </mapper>

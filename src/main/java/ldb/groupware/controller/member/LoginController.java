@@ -49,7 +49,7 @@ public class LoginController {
             return "alert";
         }
 
-        if ("retired".equals(loginId)) {
+        if ("Resigned".equals(loginId)) {
             model.addAttribute("msg", "퇴직자 계정으로는 로그인할 수 없습니다.");
             model.addAttribute("url", "/login/doLogin");
             return "alert";
