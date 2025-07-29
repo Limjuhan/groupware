@@ -112,7 +112,7 @@
         <if test="name != null and name != ''">
             AND m.mem_name LIKE CONCAT('%', #{name}, '%')
         </if>
-        ORDER BY m.mem_id DESC
+        ORDER BY d.dept_id DESC, r.rank_id ASC
         LIMIT #{startNum}, #{itemsPerPage}
     </select>
 

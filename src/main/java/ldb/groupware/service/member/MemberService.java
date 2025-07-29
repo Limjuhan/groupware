@@ -104,6 +104,12 @@ public class MemberService {
         if (file != null && !file.isEmpty()) {
             attachmentService.saveAttachments(memId, "P", List.of(file));
         }
+
+        try{
+            mailUtil.send(dto.getMemPrivateEmail(),"[LDBSOFT] 사원등록 안내","아이디 : " + memId + "<br>비밀번호 : 1234" );
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return true;
     }
 

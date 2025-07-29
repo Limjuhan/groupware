@@ -311,6 +311,15 @@
         $(document).ready(function() {
             searchMembers();
         });
+        $(function () {
+            searchMembers();
+
+            $('#nameFilter').keypress(function (e) {
+                if (e.which === 13) {
+                    searchMembers(1);
+                }
+            });
+        });
     </script>
 </head>
 <body>

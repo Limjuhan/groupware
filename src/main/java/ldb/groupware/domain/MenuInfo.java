@@ -1,13 +1,15 @@
 package ldb.groupware.domain;
 
 import lombok.Data;
+
 import java.time.LocalDate;
 
 @Data
-public class MenuAuthority {
-
-    private String deptId;
+public class MenuInfo {
     private String menuCode;
+    private String menuName;
+    private String description;
+    private String useYn;
     private LocalDate createdDate;
     private String createdBy;
     private String updatedBy;

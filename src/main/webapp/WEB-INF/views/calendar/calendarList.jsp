@@ -225,6 +225,17 @@
         $paging.append(html);
     }
 
+    function deleteSchedule(scheduleId) {
+        if (!confirm("정말 삭제하시겠습니까?")) return;
+
+        $.post("/calendar/deleteCalendarByMng", {scheduleId}, function (result) {
+            alert("삭제 완료 되었습니다.");
+            fetchScheduleList();
+        }).fail(function () {
+            alert("삭제 중 오류 발생");
+        });
+    }
+
     $(function () {
         fetchScheduleList();
 

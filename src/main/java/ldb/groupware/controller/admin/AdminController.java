@@ -102,11 +102,11 @@ public class AdminController {
 
         boolean success = memberService.insertMember(dto, file);
         if (success) {
-            model.addAttribute("url", "/admin/memberList");
+            model.addAttribute("url", "/admin/getMemberList");
             return "alert";
         } else {
             model.addAttribute("msg", "사원 등록 실패");
-            model.addAttribute("url", "/admin/memberForm");
+            model.addAttribute("url", "/admin/getMemberForm");
             return "alert";
         }
     }
