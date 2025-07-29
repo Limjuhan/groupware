@@ -69,7 +69,6 @@
             color: white !important;
         }
         .form-select,
-        .form-select,
         .select2-container--default .select2-selection--single,
         .select2-container {
             width: 100% !important;
@@ -82,6 +81,18 @@
         .note-editable {
             background-color: #2c2c2c;
             color: white;
+        }
+        .referrer-item {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        .referrer-item .btn-remove {
+            margin-left: 8px;
+            color: #ff6b6b;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -144,7 +155,7 @@
             </select>
         </div>
         <div class="mb-3 dependent-fields d-none">
-            <input type="text" id="referrerDisplay" class="form-control bg-glass" placeholder="선택된 참조자"/>
+            <div id="referrerDisplay" class="bg-glass p-2"></div>
             <input type="hidden" name="referrers" id="referrersHidden" value="${draftFormDto.referrers}" />
         </div>
 
@@ -241,7 +252,6 @@
             <form:input path="title" cssClass="form-control bg-glass" />
             <form:errors path="title" cssClass="text-danger" />
         </div>
-        <!-- 📌 Summernote 적용 -->
         <div class="mb-3 form-template d-none">
             <label class="form-label">내용 *</label>
             <textarea id="summerContent" name="content">${draftFormDto.content}</textarea>
@@ -251,7 +261,6 @@
             <label class="form-label">첨부파일</label>
             <input type="file" class="form-control bg-glass" name="attachments" multiple>
         </div>
-        <!-- 첨부파일 존재시 -->
         <c:if test="${not empty attachments}">
             <div class="mt-2">
                 <label class="form-label">등록된 첨부파일</label>
@@ -278,7 +287,6 @@
     </form:form>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -290,19 +298,80 @@
 
         $('.employee-select').select2({ placeholder: '직원 검색...', allowClear: true });
 
-        // 참조자(다중) 처리
+        // 1차 결재자 변경 시
+        $("select[name='approver1']").on("change", function () {
+            const approver1 = $(this).val();
+            const approver2 = $("select[name='approver2']").val();
+            const referrers = $("#referrersHidden").val()?.split(",") || [];
+
+            if (approver1 && approver1 === approver2) {
+                alert("1차 결재자와 2차 결재자가 같을 수 없습니다.");
+                $(this).val("").trigger("change");
+                return;
+            }
+            if (approver1 && referrers.includes(approver1)) {
+                alert("1차 결재자가 참조자에 포함될 수 없습니다.");
+                $(this).val("").trigger("change");
+                return;
+            }
+        });
+
+        // 2차 결재자 변경 시
+        $("select[name='approver2']").on("change", function () {
+            const approver2 = $(this).val();
+            const approver1 = $("select[name='approver1']").val();
+            const referrers = $("#referrersHidden").val()?.split(",") || [];
+
+            if (approver2 && approver2 === approver1) {
+                alert("2차 결재자와 1차 결재자가 같을 수 없습니다.");
+                $(this).val("").trigger("change");
+                return;
+            }
+            if (approver2 && referrers.includes(approver2)) {
+                alert("2차 결재자가 참조자에 포함될 수 없습니다.");
+                $(this).val("").trigger("change");
+                return;
+            }
+        });
+
+        // 초기 참조자 표시
+        updateReferrerDisplay();
+
+        // 참조자 추가 처리
         $('#referrerSelect').on('change', function () {
             const raw = $(this).val();
             if (!raw) return;
             const emp = JSON.parse(raw);
-            const formatted = "[" + emp.dept + ", " + emp.role + "]" + emp.name + "<" + emp.email + ">";
-            const display = $('#referrerDisplay');
+            const approver1 = $("select[name='approver1']").val();
+            const approver2 = $("select[name='approver2']").val();
             const hidden = $('#referrersHidden');
+            const referrers = hidden.val()?.split(",").filter(id => id) || [];
 
-            if (!hidden.val().includes(emp.id)) {
-                display.val(display.val() ? display.val() + ', ' + formatted : formatted);
-                hidden.val(hidden.val() ? hidden.val() + ',' + emp.id : emp.id);
+            // 결재자 중복체크
+            if (emp.id === approver1 || emp.id === approver2) {
+                alert("참조자는 1차/2차 결재자와 중복될 수 없습니다.");
+                $(this).val("").trigger("change");
+                return;
             }
+
+            if (!referrers.includes(emp.id)) {
+                referrers.push(emp.id);
+                hidden.val(referrers.join(","));
+                updateReferrerDisplay();
+            }
+            $(this).val("").trigger("change"); // 선택 후 초기화
+        });
+
+        // 참조자 삭제 처리
+        $(document).on('click', '.btn-remove', function () {
+            var memId = $(this).data('id');
+            var hidden = $('#referrersHidden');
+            var referrers = hidden.val() ? hidden.val().split(",") : [];
+            referrers = referrers.filter(function (id) {
+                return id !== memId;
+            });
+            hidden.val(referrers.join(","));
+            updateReferrerDisplay();
         });
 
         // 최초 진입, validation 실패 시에도 기존 선택값에 따라 표시
@@ -326,6 +395,39 @@
             ]
         });
     });
+
+    // 참조자 표시 업데이트
+    function updateReferrerDisplay() {
+        var hidden = $('#referrersHidden').val();
+        var display = $('#referrerDisplay');
+        var referrers = [];
+
+        // 숨겨진 입력 값이 있으면 배열로 나누기
+        if (hidden) {
+            referrers = hidden.split(",");
+        }
+
+        // 표시 영역 비우기
+        display.empty();
+
+        // select 옵션 순회
+        $('#referrerSelect option').each(function() {
+            var option = $(this);
+            var emp = {};
+            if (option.val()) {
+                emp = JSON.parse(option.val());
+            }
+
+            // 참조자 목록에 ID가 있으면 표시
+            if (emp.id && referrers.indexOf(emp.id) > -1) {
+                var formatted = "[" + emp.dept + ", " + emp.role + "]" + emp.name + "<" + emp.email + ">";
+                var span = $('<span class="referrer-item"></span>').text(formatted);
+                var removeIcon = $('<i class="bi bi-x btn-remove"></i>').data('id', emp.id);
+                span.append(removeIcon);
+                display.append(span);
+            }
+        });
+    }
 
     // 양식 선택 시 양식 영역 표시 + 기존 선택 유지
     function showFormTemplate(selected) {
@@ -365,7 +467,6 @@
             }
         });
     }
-
 </script>
 </body>
 </html>

@@ -128,8 +128,8 @@ public class DraftController {
             @RequestParam(value = "savedFormCode", required = false) String savedFormCode,
             Model model) {
 
-        System.out.println("임시저장시 데이터 확인" + action);
         validateAction(action);
+
         // 임시 하드코딩
         String memId = "user008";
         // 1차,2차,참조자 사원리스트
@@ -157,6 +157,7 @@ public class DraftController {
 
         return "redirect:/draft/getMyDraftList";
     }
+
 
     private void validateAction(String action) {
         if (!"save".equals(action) && !"temporary".equals(action)) {
