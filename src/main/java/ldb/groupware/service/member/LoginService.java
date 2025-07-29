@@ -29,9 +29,9 @@ public class LoginService {
 
         String memStatus = memberMapper.getMemStatus(id);
         System.out.println("상태: " + memStatus);
-        if (!"재직".equals(memStatus)) {
-            System.out.println("퇴직자 처리: retired 반환");
-            return "retired";
+        if (!"Active".equals(memStatus)) {
+            System.out.println("퇴직자 처리: Resigned 반환");
+            return "Resigned";
         }
 
         if (pass != null) {

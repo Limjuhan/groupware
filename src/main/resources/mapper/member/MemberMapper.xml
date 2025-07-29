@@ -190,19 +190,14 @@
         WHERE mem_id = #{memId}
           AND mem_name = #{memName}
           AND mem_private_email = #{memPrivateEmail}
-          AND mem_status = '재직'
+          AND mem_status = 'Active'
     </select>
 
     <!-- 재직중인 사원 전체 조회 -->
     <select id="findAllActiveMembers" resultType="Member">
-        SELECT mem_id,
-               mem_name,
-               dept_id,
-               rank_id,
-               mem_email,
-               mem_phone
+        SELECT *
         FROM member
-        WHERE mem_status = '재직'
+        WHERE mem_status = 'Active'
     </select>
 
 </mapper>
