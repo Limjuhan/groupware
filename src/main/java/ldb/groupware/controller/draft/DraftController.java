@@ -138,12 +138,16 @@ public class DraftController {
         Integer remainAnnual = draftService.getRemainAnnual(memId);
         // 제출시에만 입력값 검증
         if ("save".equals(action)) {
-            validFormType(dto, bindingResult);// 추가 유효성 검증 (양식별 필드)
+
             if (bindingResult.hasErrors()) {
                 model.addAttribute("draftMembers", draftService.getMemberList());
                 model.addAttribute("remainAnnual", remainAnnual);
                 return "draft/draftForm";
             }
+            // 결재자 중복체크
+            validateApproval(dto);
+            // 추가 유효성 검증 (양식별 필드)
+            validFormType(dto, bindingResult);
         }
 
         try {
@@ -158,6 +162,38 @@ public class DraftController {
         return "redirect:/draft/getMyDraftList";
     }
 
+    private void validateApproval(DraftFormDto dto) {
+        String approver1 = dto.getApprover1();
+        String approver2 = dto.getApprover2();
+        List<String> referrers = dto.getReferrerList();
+
+        // 1. 필수값 체크
+        if (StringUtils.isBlank(approver1)) {
+            throw new IllegalStateException("1차 결재자를 선택하세요.");
+        }
+        if (StringUtils.isBlank(approver2)) {
+            throw new IllegalStateException("2차 결재자를 선택하세요.");
+        }
+
+        // 2. 1차/2차 결재자 중복 방지
+        if (approver1.equals(approver2)) {
+            throw new IllegalStateException("1차 결재자와 2차 결재자가 같을 수 없습니다.");
+        }
+
+        // 3. 참조자 목록이 비어있지 않을 때만 체크
+        if (referrers != null && !referrers.isEmpty()) {
+            for (String ref : referrers) {
+                if (approver1.equals(ref)) {
+                    throw new IllegalStateException("참조자 목록에 1차 결재자가 포함될 수 없습니다.");
+                }
+                if (approver2.equals(ref)) {
+                    throw new IllegalStateException("참조자 목록에 2차 결재자가 포함될 수 없습니다.");
+                }
+            }
+        }
+    }
+
+
 
     private void validateAction(String action) {
         if (!"save".equals(action) && !"temporary".equals(action)) {
@@ -170,22 +206,26 @@ public class DraftController {
     private void validFormType(DraftFormDto dto, BindingResult bindingResult) {
 
         switch (dto.getFormCode()) {
-            case "app_01" -> {
+            case "app_01" -> { // 휴가계획서
                 if (dto.getLeaveStart() == null || dto.getLeaveEnd() == null || StringUtils.isBlank(dto.getLeaveCode())) {
                     bindingResult.reject("leave.required", "휴가 유형 및 기간은 필수입니다.");
+                } else if (dto.getLeaveEnd().isBefore(dto.getLeaveStart())) {
+                    bindingResult.reject("leave.date.invalid", "휴가 종료일은 시작일 이후여야 합니다.");
                 }
             }
-            case "app_02" -> {
+            case "app_02" -> { // 프로젝트 제안서
                 if (StringUtils.isBlank(dto.getProjectName()) || dto.getProjectStart() == null || dto.getProjectEnd() == null) {
-                    bindingResult.reject("project.required", "프로젝트 이름or기간입력은 필수입니다.");
+                    bindingResult.reject("project.required", "프로젝트 이름과 기간 입력은 필수입니다.");
+                } else if (dto.getProjectEnd().isBefore(dto.getProjectStart())) {
+                    bindingResult.reject("project.date.invalid", "프로젝트 종료일은 시작일 이후여야 합니다.");
                 }
             }
-            case "app_03" -> {
+            case "app_03" -> { // 지출결의서
                 if (dto.getExAmount() == null || StringUtils.isBlank(dto.getExName())) {
                     bindingResult.reject("expense.required", "지출 항목 및 금액은 필수입니다.");
                 }
             }
-            case "app_04" -> {
+            case "app_04" -> { // 사직서
                 if (dto.getResignDate() == null) {
                     bindingResult.reject("resign.required", "사직일 선택은 필수입니다.");
                 }
@@ -193,6 +233,7 @@ public class DraftController {
             default -> bindingResult.reject("error.formtype.missing");
         }
     }
+
 
     /**
      * 내전자결재 상세페이지
