@@ -150,7 +150,7 @@
                         const row = "<tr>" +
                             "<td>" + item.docId + "</td>" +
                             "<td>" + formCodeStr + "</td>" +
-                            "<td><a href='receivedDraftDetail?id=" + item.docId + "' class='link-white'>" + item.docTitle + "</a></td>" +
+                            "<td><a href='receivedDraftDetail?docId=" + item.docId + "&formCode=" + item.formCode + "' class='link-white'>" + item.docTitle + "</a></td>" +
                             "<td>" + docEndDate + "</td>" +
                             "<td>" + item.writer + "</td>" +
                             "<td>" + approver1Name + "</td>" +

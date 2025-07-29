@@ -1,9 +1,14 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>받은 전자결재 상세보기 - LDBSOFT</title>
+
     <style>
         body {
             color: white;
@@ -19,7 +24,8 @@
             font-weight: bold;
         }
 
-        .table.bg-glass td, .table.bg-glass th {
+        .table.bg-glass td,
+        .table.bg-glass th {
             background: rgba(255, 255, 255, 0.05) !important;
             backdrop-filter: blur(1px);
             -webkit-backdrop-filter: blur(1px);
@@ -27,100 +33,138 @@
             color: white;
         }
 
-        a.link-white {
-            color: #cfe2ff;
-            text-decoration: underline;
-        }
-
-        a.link-white:hover {
-            color: #ffffff;
+        .text-shadow {
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
         }
     </style>
 </head>
 <body>
 
 <div class="container bg-glass p-4 shadow rounded">
-    <div class="d-flex justify-content-between">
-        <h2>전자결재 상세보기</h2>
-        <a href="receivedDraftList" class="btn btn-sm btn-secondary bg-glass">← 목록으로</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-shadow">받은 전자결재 상세보기</h2>
     </div>
 
-    <!-- 문서 요약 -->
+    <!-- 문서 기본 정보 -->
     <table class="table table-bordered mt-4 bg-glass">
         <tbody>
         <tr>
             <th style="width: 15%;">문서번호</th>
-            <td>A00001</td>
+            <td>${draftDetail.docId}</td>
             <th style="width: 15%;">양식</th>
-            <td>휴가신청서</td>
+            <td>${draftDetail.formCodeStr}</td>
         </tr>
         <tr>
             <th>제목</th>
-            <td colspan="3">연차 신청 (5/1~5/3)</td>
+            <td colspan="3">${draftDetail.title}</td>
         </tr>
         <tr>
             <th>기안자</th>
-            <td>동곤</td>
+            <td>${draftDetail.memName}</td>
             <th>상태</th>
-            <td><span class="badge bg-warning text-dark">1차결재 대기</span></td>
+            <td><span id="status-badge"></span></td>
         </tr>
         <tr>
             <th>1차 결재자</th>
-            <td>
-                김이사
-                <span class="badge bg-warning text-dark ms-2">대기</span>
-            </td>
+            <td>${draftDetail.approver1Name}</td>
             <th>2차 결재자</th>
-            <td>
-                박부장
-                <span class="badge bg-secondary ms-2">미진행</span>
-            </td>
+            <td>${draftDetail.approver2Name}</td>
         </tr>
         <tr>
-            <th>마감기한</th>
-            <td colspan="3">2025-05-01</td>
+            <th>문서종료일</th>
+            <td colspan="3">${draftDetail.docEndDate}</td>
         </tr>
         </tbody>
     </table>
 
+    <!-- 양식별 상세 -->
+    <c:choose>
+        <c:when test="${draftDetail.formCode == 'app_01'}">
+            <div class="section-title">휴가신청서</div>
+            <div class="card bg-glass text-white mb-4">
+                <div class="card-body">
+                    <p><strong>휴가 유형:</strong> ${draftDetail.leaveCode}</p>
+                    <p><strong>휴가 기간:</strong> ${draftDetail.leaveStartStr} ~ ${draftDetail.leaveEndStr}</p>
+                    <p><strong>총 일수:</strong> ${draftDetail.totalDays}일</p>
+                    <p><strong>잔여 연차:</strong> ${draftDetail.remainDays}일</p>
+                </div>
+            </div>
+        </c:when>
+
+        <c:when test="${draftDetail.formCode == 'app_02'}">
+            <div class="section-title">프로젝트 제안서</div>
+            <div class="card bg-glass text-white mb-4">
+                <div class="card-body">
+                    <p><strong>프로젝트명:</strong> ${draftDetail.projectName}</p>
+                    <p><strong>기간:</strong> ${draftDetail.projectStartStr} ~ ${draftDetail.projectEndStr}</p>
+                </div>
+            </div>
+        </c:when>
+
+        <c:when test="${draftDetail.formCode == 'app_03'}">
+            <div class="section-title">지출결의서</div>
+            <div class="card bg-glass text-white mb-4">
+                <div class="card-body">
+                    <p><strong>지출 내역:</strong> ${draftDetail.exName}</p>
+                    <p><strong>지출 금액:</strong>
+                        <fmt:formatNumber value="${draftDetail.exAmount}" type="currency" currencySymbol="₩"/>
+                    </p>
+                    <p><strong>사용일자:</strong> ${draftDetail.useDateStr}</p>
+                </div>
+            </div>
+        </c:when>
+
+        <c:when test="${draftDetail.formCode == 'app_04'}">
+            <div class="section-title">사직서</div>
+            <div class="card bg-glass text-white mb-4">
+                <div class="card-body">
+                    <p><strong>사직일자:</strong> ${draftDetail.resignDateStr}</p>
+                </div>
+            </div>
+        </c:when>
+
+        <c:otherwise>
+            <div class="section-title">기타 양식</div>
+            <div class="card bg-glass text-white mb-4">
+                <div class="card-body">
+                    <p>해당 양식에 대한 상세 정보가 없습니다.</p>
+                </div>
+            </div>
+        </c:otherwise>
+    </c:choose>
+
+    <!-- 본문 내용 -->
+    <div class="section-title text-shadow">본문 내용</div>
+    <div class="border p-3 bg-glass">
+        ${draftDetail.content}
+    </div>
+
     <!-- 첨부파일 -->
     <div class="mb-3">
         <strong>첨부파일:</strong>
-        <a href="download.jsp?file=휴가신청서.pdf" class="link-white ms-2">휴가신청서.pdf</a>
+        <c:if test="${attachments != null }">
+            <c:forEach items="${attachments}" var="a">
+                <c:if test="${a.filePath != null}">
+                    <div class="file-section mt-2">
+                        <a href="${a.filePath}${a.savedName}" download="${a.originalName}"
+                           class="link-light ms-2 text-decoration-underline">
+                                ${a.originalName}
+                        </a>
+                    </div>
+                </c:if>
+            </c:forEach>
+        </c:if>
     </div>
 
-    <!-- 본문 내용 -->
-    <div class="section-title">본문 내용</div>
-    <div class="border p-3 bg-glass">
-        5월 1일부터 5월 3일까지 개인 연차를 사용하고자 합니다.<br>
-        휴가 기간 동안 업무 인계는 완료하였습니다.
-    </div>
-
-    <!-- 양식 항목 표시 -->
-    <div class="section-title">양식 정보</div>
-    <table class="table table-bordered bg-glass">
-        <tr>
-            <th>휴가 유형</th>
-            <td>연차</td>
-        </tr>
-        <tr>
-            <th>휴가 기간</th>
-            <td>2025-05-01 ~ 2025-05-03</td>
-        </tr>
-        <tr>
-            <th>잔여 연차</th>
-            <td>9일</td>
-        </tr>
-    </table>
-
+    <!-- 결재 처리 -->
     <div class="section-title">결재 처리</div>
-
-    <form action="approvalAction.jsp" method="post">
-        <input type="hidden" name="docId" value="A00001"/>
+    <form action="processApproval" method="post">
+        <input type="hidden" name="docId" value="${draftDetail.docId}"/>
 
         <div class="mb-3">
             <label class="form-label">결재 의견 (선택)</label>
-            <textarea class="form-control bg-glass" name="comment" rows="3" placeholder="결재 의견을 입력하세요 (선택 사항)"></textarea>
+            <textarea class="form-control bg-glass" name="comment" rows="3"
+                      placeholder="결재 의견을 입력하세요 (선택 사항)"></textarea>
         </div>
 
         <div class="d-flex justify-content-start gap-2">
@@ -128,7 +172,40 @@
             <button type="submit" name="action" value="reject" class="btn btn-danger bg-glass">반려</button>
         </div>
     </form>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <a href="receivedDraftList" class="btn btn-secondary">← 목록으로</a>
+        <button onclick="window.print()" class="btn btn-outline-light bg-glass">인쇄</button>
+    </div>
 </div>
 
+<script>
+    $(document).ready(function () {
+        var status = "${draftDetail.status}";
+        var badgeHtml = getStatusBadge(status);
+        $("#status-badge").html(badgeHtml);
+    });
+
+    function getStatusBadge(status) {
+        switch (status) {
+            case "0":
+                return "<span class='badge bg-secondary'>임시저장</span>";
+            case "1":
+                return "<span class='badge bg-warning text-dark'>1차결재 대기</span>";
+            case "2":
+                return "<span class='badge bg-warning text-dark'>1차결재 승인</span>";
+            case "3":
+                return "<span class='badge bg-danger'>1차결재 반려</span>";
+            case "4":
+                return "<span class='badge bg-info text-dark'>2차결재 대기</span>";
+            case "5":
+                return "<span class='badge bg-success'>2차결재 승인</span>";
+            case "6":
+                return "<span class='badge bg-danger'>2차결재 반려</span>";
+            default:
+                return "<span class='badge bg-dark'>알 수 없음</span>";
+        }
+    }
+</script>
 </body>
 </html>
