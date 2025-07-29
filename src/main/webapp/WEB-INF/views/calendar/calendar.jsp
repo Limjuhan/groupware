@@ -43,7 +43,7 @@
 <body>
 
 <div class="container">
-    <h2 class="mb-4">🗓️ 캘린더</h2>
+    <h2 class="mb-4">캘린더</h2>
     <div id="calendar"></div>
 </div>
 

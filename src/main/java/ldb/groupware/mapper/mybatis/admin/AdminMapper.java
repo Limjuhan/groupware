@@ -1,6 +1,7 @@
 package ldb.groupware.mapper.mybatis.admin;
 
 import ldb.groupware.dto.admin.MenuDto;
+import ldb.groupware.dto.admin.MenuFormDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,4 +17,8 @@ public interface AdminMapper {
     void deleteAuth(@Param("deptId") String deptId);
 
     void insertAuth(@Param("deptId") String deptId, @Param("menu") String menu);
+
+    String nextMenuCode();
+
+    void insertMenu(MenuFormDto dto);
 }

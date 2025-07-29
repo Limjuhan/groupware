@@ -1,7 +1,9 @@
 package ldb.groupware.controller.admin;
 
 import jakarta.validation.Valid;
+import ldb.groupware.dto.admin.MenuFormDto;
 import ldb.groupware.dto.member.MemberFormDto;
+import ldb.groupware.service.admin.AdminService;
 import ldb.groupware.service.member.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -15,9 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/admin")
 public class AdminController {
     private final MemberService memberService;
+    private final AdminService adminService;
 
-    public AdminController(MemberService memberService) {
+    public AdminController(MemberService memberService, AdminService adminService) {
         this.memberService = memberService;
+        this.adminService = adminService;
     }
 
     @GetMapping("dashBoard")
@@ -55,15 +59,6 @@ public class AdminController {
         return "admin/roomRegisterForm";
     }
 
-    @GetMapping("calendarWrite")
-    public String calendarWrite() {
-        return "admin/calendarWrite";
-    }
-
-    @GetMapping("deptAuth")
-    public String deptAuth() {
-        return "deptAuthList";
-    }
 
     @GetMapping("commTypeManage")
     public String CommTypeManage() {
@@ -86,7 +81,7 @@ public class AdminController {
         model.addAttribute("memberFormDto", new MemberFormDto());
         return "admin/memberForm";
     }
-    
+
     // 사원 등록
     @PostMapping("insertMemberByMng")
     public String insertMemberByMng(@Valid @ModelAttribute("memberFormDto") MemberFormDto dto,
@@ -102,18 +97,44 @@ public class AdminController {
 
         boolean success = memberService.insertMember(dto, file);
         if (success) {
-            model.addAttribute("url", "/admin/getMemberList");
-            return "alert";
+            return "redirect:/admin/getMemberList";
         } else {
-            model.addAttribute("msg", "사원 등록 실패");
+            model.addAttribute("msg", "사원 등록 실패 하였습니다.");
             model.addAttribute("url", "/admin/getMemberForm");
             return "alert";
         }
     }
 
+    // 부서별 권한설정
     @GetMapping("getDeptAuthList")
     public String getDeptAuthList(Model model) {
         model.addAttribute("deptList", memberService.getDeptList());
         return "admin/deptAuthList";
+    }
+
+    // 메뉴 등록 페이지
+    @GetMapping("getMenuForm")
+    public String getMenuForm(Model model) {
+        model.addAttribute("dto", new MenuFormDto());
+        return "admin/menuForm";
+    }
+    // 메뉴 등록
+    @PostMapping("insertMenu")
+    public String insertmenu(@Valid @ModelAttribute("dto") MenuFormDto dto,
+                             BindingResult bresult,
+                             Model model) {
+        if(bresult.hasErrors()) {
+            return "admin/menuForm";
+        }
+
+        boolean success = adminService.insertMenu(dto);
+
+        if (success) {
+           return "redirect:/admin/getDeptAuthList";
+        }else{
+            model.addAttribute("msg","메뉴 등록 실패 하였습니다.");
+            model.addAttribute("url", "/admin/getMenuForm");
+            return "alert";
+        }
     }
 }

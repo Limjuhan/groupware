@@ -2,25 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ldb.groupware.mapper.mybatis.admin.AdminMapper">
 
+    <!--전체 메뉴 조회-->
     <select id="selectMunuList" resultType="MenuDto">
-        SELECT menu_code, menu_name, description,use_yn
+        SELECT menu_code, menu_name, description, use_yn
         FROM menu_info
         WHERE use_yn = 'Y'
     </select>
 
+    <!--부서별 메뉴 조회-->
     <select id="selectMenuAuthority" resultType="String">
         SELECT menu_code
         FROM menu_authority
         WHERE dept_id = #{deptId}
     </select>
 
-    <delete id="deleteAuth" >
-        DELETE FROM menu_authority
+    <!--부서별 메뉴 권한 삭제-->
+    <delete id="deleteAuth">
+        DELETE
+        FROM menu_authority
         WHERE dept_id = #{deptId}
     </delete>
 
+    <!--부서별 메뉴 권한 등록-->
     <insert id="insertAuth">
-        INSERT INTO menu_authority (dept_id,menu_code,created_date,created_by)
-        values (#{deptId},#{menu},now(),'admin')
+        INSERT INTO menu_authority (dept_id, menu_code, created_date, created_by)
+        values (#{deptId}, #{menu}, now(), 'admin')
+    </insert>
+
+    <!--메뉴 ID 뒷 숫자 조회 -->
+    <select id="nextMenuCode" resultType="String">
+        SELECT LPAD(COALESCE(MAX(SUBSTRING(menu_code, 3)), 0) + 1, 4, '0')
+        FROM menu_info
+    </select>
+
+    <!--메뉴 등록-->
+    <insert id="insertMenu" parameterType="MenuFormDto">
+        INSERT INTO menu_info (menu_code, menu_name, description, use_yn, created_date, created_by)
+        VALUES (#{menuCode}, #{menuName}, #{description}, #{useYn}, now(), 'admin')
     </insert>
 </mapper>

@@ -5,114 +5,112 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>일정 등록</title>
-  <style>
-    body {
-      background-color: #1e1e1e;
-      color: white;
-    }
+    <meta charset="UTF-8">
+    <title>일정 등록</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: white;
+        }
 
-    .bg-glass {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(3px);
-      -webkit-backdrop-filter: blur(3px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
+        .bg-glass {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
 
-    label {
-      font-weight: 500;
-    }
+        label {
+            font-weight: 500;
+        }
 
-    .form-control {
-      background-color: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: white;
-    }
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
 
-    .form-control:focus {
-      background-color: rgba(255, 255, 255, 0.2);
-      color: white;
-      border-color: #66afe9;
-      outline: none;
-      box-shadow: none;
-    }
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-color: #66afe9;
+            outline: none;
+            box-shadow: none;
+        }
 
-    .btn-primary {
-      background-color: #0d6efd;
-      border: none;
-    }
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+        }
 
-    .btn-secondary {
-      background-color: #6c757d;
-      border: none;
-    }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
 
-    .btn-outline-primary {
-      color: #0d6efd;
-      border: 1px solid #0d6efd;
-      background-color: transparent;
-    }
+        .btn-outline-primary {
+            color: #0d6efd;
+            border: 1px solid #0d6efd;
+            background-color: transparent;
+        }
 
-    .btn-outline-primary:hover {
-      background-color: #0d6efd;
-      color: white;
-    }
+        .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
 
-    .text-danger {
-      font-size: 0.875em;
-    }
+        .text-danger {
+            font-size: 0.875em;
+        }
 
-    h3 {
-      font-weight: bold;
-      text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
-    }
-  </style>
+        h3 {
+            font-weight: bold;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+    </style>
 </head>
 <body>
 
 <div class="container mt-5" style="max-width: 600px;">
-  <div class="bg-glass">
-    <h3 class="mb-4">📅 일정 등록</h3>
+    <div class="bg-glass">
+        <h3 class="mb-4">일정 등록</h3>
 
-    <form:form method="post" modelAttribute="dto" action="insertCalendarByMng">
-      <div class="mb-3">
-        <label for="scheduleTitle" class="form-label">제목</label>
-        <form:input path="scheduleTitle" cssClass="form-control" id="scheduleTitle"/>
-        <form:errors path="scheduleTitle" cssClass="text-danger"/>
-      </div>
+        <form:form method="post" modelAttribute="dto" action="insertCalendarByMng">
+            <div class="mb-3">
+                <label for="scheduleTitle" class="form-label">제목</label>
+                <form:input path="scheduleTitle" cssClass="form-control" id="scheduleTitle"/>
+                <form:errors path="scheduleTitle" cssClass="text-danger"/>
+            </div>
 
-      <div class="mb-3">
-        <label for="scheduleContent" class="form-label">내용</label>
-        <form:textarea path="scheduleContent" cssClass="form-control" rows="3" id="scheduleContent"/>
-        <form:errors path="scheduleContent" cssClass="text-danger"/>
-      </div>
+            <div class="mb-3">
+                <label for="scheduleContent" class="form-label">내용</label>
+                <form:textarea path="scheduleContent" cssClass="form-control" rows="3" id="scheduleContent"/>
+                <form:errors path="scheduleContent" cssClass="text-danger"/>
+            </div>
 
-      <div class="mb-3">
-        <label for="startAt" class="form-label">시작일시</label>
-        <form:input path="startAt" cssClass="form-control" id="startAt" type="datetime-local"/>
-        <form:errors path="startAt" cssClass="text-danger"/>
-      </div>
+            <div class="mb-3">
+                <label for="startAt" class="form-label">시작일시</label>
+                <form:input path="startAt" cssClass="form-control" id="startAt" type="datetime-local"/>
+                <form:errors path="startAt" cssClass="text-danger"/>
+            </div>
 
-      <div class="mb-3">
-        <label for="endAt" class="form-label">종료일시</label>
-        <form:input path="endAt" cssClass="form-control" id="endAt" type="datetime-local"/>
-        <form:errors path="endAt" cssClass="text-danger"/>
-        <c:if test="${not empty dateError}">
-          <div class="text-danger">${dateError}</div>
-        </c:if>
-      </div>
+            <div class="mb-3">
+                <label for="endAt" class="form-label">종료일시</label>
+                <form:input path="endAt" cssClass="form-control" id="endAt" type="datetime-local"/>
+                <form:errors path="endAt" cssClass="text-danger"/>
+                <c:if test="${not empty dateError}">
+                    <div class="text-danger">${dateError}</div>
+                </c:if>
+            </div>
 
-      <div class="text-end">
-        <a href="/calendar/getCalendarList" class="btn btn-secondary">목록</a>
-        <button type="submit" class="btn btn-primary">등록</button>
-        <button type="reset" class="btn btn-secondary">초기화</button>
-      </div>
-    </form:form>
-  </div>
+            <div class="text-end">
+                <a href="/calendar/getCalendarList" class="btn btn-secondary">목록</a>
+                <button type="submit" class="btn btn-primary">등록</button>
+                <button type="reset" class="btn btn-secondary">초기화</button>
+            </div>
+        </form:form>
+    </div>
 </div>
 
 </body>

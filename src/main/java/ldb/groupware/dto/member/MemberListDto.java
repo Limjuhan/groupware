@@ -1,12 +1,8 @@
 package ldb.groupware.dto.member;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class MemberListDto {
     private String memId;
     private String memName;

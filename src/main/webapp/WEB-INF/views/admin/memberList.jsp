@@ -325,8 +325,8 @@
 <body>
 <div class="container bg-glass p-4 rounded mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4>👤 사원 관리</h4>
-        <a href="/admin/getMemberForm" class="btn btn-primary bg-glass">+ 등록</a>
+        <h4>사원 관리</h4>
+        <a href="/admin/getMemberForm" class="btn btn-primary bg-glass">등록</a>
     </div>
 
     <div class="row mb-3 align-items-end">

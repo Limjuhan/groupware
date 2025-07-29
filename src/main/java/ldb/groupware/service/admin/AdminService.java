@@ -1,6 +1,7 @@
 package ldb.groupware.service.admin;
 
 import ldb.groupware.dto.admin.MenuDto;
+import ldb.groupware.dto.admin.MenuFormDto;
 import ldb.groupware.mapper.mybatis.admin.AdminMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,14 @@ public class AdminService {
                 adminMapper.insertAuth(deptId, menu);
             }
         }
+    }
+
+    // 메뉴 등록
+    public boolean insertMenu(MenuFormDto dto) {
+        String next = adminMapper.nextMenuCode();
+        String MenuCode = "A_" + next;
+        dto.setMenuCode(MenuCode);
+        adminMapper.insertMenu(dto);
+        return true;
     }
 }

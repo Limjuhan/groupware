@@ -23,7 +23,7 @@
         SELECT m.mem_id,
                m.mem_name,
                m.mem_email,
-               m.mem_private_email  AS privateEmail,
+               m.mem_private_email                    AS privateEmail,
                m.mem_phone,
                m.mem_gender,
                m.mem_status,
@@ -34,7 +34,7 @@
                d.dept_name,
                r.rank_name,
                CONCAT(a.file_path, '/', a.saved_name) AS memPicture,
-               a.saved_name AS memPictureSavedName,
+               a.saved_name                           AS memPictureSavedName,
                al.an_id,
                al.year,
                al.total_days,
@@ -51,17 +51,16 @@
 
     <!--연차 사용내역 조회-->
     <select id="selectAnnualLeaveHistory" resultType="MemberAnnualLeaveHistoryDto">
-        SELECT
-            a.mem_id,
-            a.leave_code,
-            lt.leave_name ,
-            a.start_date,
-            a.end_date,
-            a.approved_by,
-            m.mem_name AS approvedByName
+        SELECT a.mem_id,
+               a.leave_code,
+               lt.leave_name,
+               a.start_date,
+               a.end_date,
+               a.approved_by,
+               m.mem_name AS approvedByName
         FROM annual_leave_history a
-        LEFT JOIN leave_type lt ON a.leave_code = lt.leave_code
-        LEFT JOIN member m ON a.approved_by = m.mem_id
+                 LEFT JOIN leave_type lt ON a.leave_code = lt.leave_code
+                 LEFT JOIN member m ON a.approved_by = m.mem_id
         WHERE a.mem_id = #{memId}
         ORDER BY a.start_date DESC
 
@@ -73,8 +72,8 @@
         SET mem_phone         = #{memPhone},
             mem_private_email = #{privateEmail},
             mem_address       = #{memAddress},
-            updated_by = #{updatedBy},
-            updated_at = #{updatedAt}
+            updated_by        = #{updatedBy},
+            updated_at        = #{updatedAt}
         WHERE mem_id = #{memId}
     </update>
 
@@ -158,8 +157,8 @@
     <!-- 부서/직급 변경 -->
     <update id="updateMemberByMng" parameterType="UpdateMemberDto">
         UPDATE member
-        SET dept_id = #{deptId},
-            rank_id = #{rankId},
+        SET dept_id    = #{deptId},
+            rank_id    = #{rankId},
             updated_by = #{updatedBy},
             updated_at = #{updatedAt}
         WHERE mem_id = #{memId}
@@ -174,7 +173,9 @@
 
     <!-- id로 name뽑기 (동곤)-->
     <select id="findNameById" parameterType="String" resultType="String">
-        select mem_name from member where mem_id = #{val}
+        select mem_name
+        from member
+        where mem_id = #{val}
     </select>
 
     <!-- 이메일 정보 조회-->

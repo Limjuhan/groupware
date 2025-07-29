@@ -10,7 +10,7 @@
 <body class="bg-light d-flex justify-content-center align-items-center" style="height: 100vh;">
 
 <div class="card p-4 shadow" style="max-width: 400px; width: 100%;">
-  <h4 class="text-center mb-4">🔐 비밀번호 찾기</h4>
+  <h4 class="text-center mb-4">비밀번호 찾기</h4>
   <form id="authForm">
     <div class="mb-3">
       <label class="form-label">이름</label>
