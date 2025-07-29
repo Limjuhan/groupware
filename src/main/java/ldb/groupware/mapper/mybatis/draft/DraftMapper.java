@@ -4,11 +4,7 @@ import ldb.groupware.domain.FormAnnualLeave;
 import ldb.groupware.domain.FormExpense;
 import ldb.groupware.domain.FormProject;
 import ldb.groupware.domain.FormResign;
-import ldb.groupware.dto.draft.DraftDeleteDto;
-import ldb.groupware.dto.draft.DraftForMemberDto;
-import ldb.groupware.dto.draft.DraftFormDto;
-import ldb.groupware.dto.draft.DraftListDto;
-import ldb.groupware.dto.page.PaginationDto;
+import ldb.groupware.dto.draft.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,7 +14,7 @@ import java.util.Map;
 @Mapper
 public interface DraftMapper {
 
-    List<DraftListDto> getMyDraftList(@Param("dto") PaginationDto dto,
+    List<DraftListDto> getMyDraftList(@Param("dto") MyDraftSearchDto dto,
                                       @Param("memId") String memId);
 
     List<DraftForMemberDto> getMemberList();
@@ -46,7 +42,7 @@ public interface DraftMapper {
 
     DraftFormDto getApprovalDocumentByDocId(Integer docId);
 
-    void updateApprovalDocument(DraftFormDto dto,
+    void updateApprovalDocument(@Param("dto") DraftFormDto dto,
                                 @Param("status") int status,
                                 @Param("memId") String memId);
 
@@ -77,4 +73,10 @@ public interface DraftMapper {
     int deleteFormExpense(Integer docId);
 
     int deleteFormResign(Integer docId);
+
+    int getReceivedDraftCount(@Param("dto") MyDraftSearchDto dto,
+                              @Param("memId") String memId);
+
+    List<DraftListDto> getReceivedDraftList(@Param("dto") MyDraftSearchDto dto,
+                                            @Param("memId") String memId);
 }

@@ -42,14 +42,9 @@ public class DraftController {
 
     @GetMapping("getMyDraftList")
     public String getMyDraftList(Model model) {
-
-        // 결재대기상태 공통코드 조회
-        System.out.println("CommonConst.APPROVAL_STATUS.getValue(): " + CommonConst.APPROVAL_STATUS.getValue());
-        List<CommonTypeDto> approvalStatusList = commonService.getCommonTypesByGroup(CommonConst.APPROVAL_STATUS.getValue());
-        System.out.println("approvalStatusList" + approvalStatusList.toString());
+        List<CommonTypeDto> approvalStatusList = getApprovalStatusList();
 
         model.addAttribute("approvalStatusList", approvalStatusList);
-
         return "draft/draftList";
     }
 
@@ -232,7 +227,15 @@ public class DraftController {
     }
 
     @GetMapping("receivedDraftList")
-    public String receivedDraftList() {
+    public String receivedDraftList(Model model) {
+        List<CommonTypeDto> approvalStatusList = getApprovalStatusList();
+
+        model.addAttribute("approvalStatusList", approvalStatusList);
         return "draft/receivedDraftList";
+    }
+
+    // 결재대기상태 공통코드 조회
+    private List<CommonTypeDto> getApprovalStatusList() {
+        return commonService.getCommonTypesByGroup(CommonConst.APPROVAL_STATUS.getValue());
     }
 }

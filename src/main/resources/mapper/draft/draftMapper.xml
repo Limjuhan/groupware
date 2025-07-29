@@ -24,13 +24,17 @@
         WHERE a.mem_id = #{memId}
         AND a.del_yn = 'N'
 
+        <if test="dto.searchStatus != null and dto.searchStatus != ''">
+            AND a.status = #{dto.searchStatus}
+        </if>
+
         <if test="dto.searchType != null and dto.keyword != null and dto.keyword != ''">
             <choose>
-                <when test="dto.searchType == 'title'">
+                <when test="'title'.equals(dto.searchType)">
                     AND a.doc_title LIKE CONCAT('%', #{dto.keyword}, '%')
                 </when>
-                <when test="dto.searchType == 'writer'">
-                    AND a.mem_id LIKE CONCAT('%', #{dto.keyword}, '%')
+                <when test="'content'.equals(dto.searchType)">
+                    AND a.doc_content LIKE CONCAT('%', #{dto.keyword}, '%')
                 </when>
             </choose>
         </if>
@@ -39,24 +43,53 @@
         LIMIT #{dto.startNum}, #{dto.itemsPerPage}
     </select>
 
-
     <select id="getMyDraftCount" resultType="int" parameterType="map">
         SELECT COUNT(*)
         FROM approval_document d
         WHERE d.mem_id = #{memId}
         AND d.del_yn = 'N'
-        <if test="type != null and keyword != null and keyword != ''">
+
+        <if test="searchStatus != null and searchStatus != ''">
+            AND a.status = #{searchStatus}
+        </if>
+
+        <if test="searchType != null and keyword != null and keyword != ''">
             <choose>
-                <when test="type == 'title'">
+                <when test="searchType == 'title'">
                     AND d.doc_title LIKE CONCAT('%', #{keyword}, '%')
                 </when>
-                <when test="type == 'writer'">
-                    AND d.mem_id LIKE CONCAT('%', #{keyword}, '%')
+                <when test="searchType == 'content'">
+                    AND d.doc_content LIKE CONCAT('%', #{keyword}, '%')
                 </when>
             </choose>
         </if>
     </select>
 
+    <select id="getReceivedDraftCount" resultType="int">
+        SELECT COUNT(*)
+        FROM approval_document a
+        WHERE a.doc_id IN (
+        SELECT DISTINCT l.doc_id
+        FROM approval_line l
+        WHERE l.mem_id = #{memId}
+        )
+        AND a.del_yn = 'N'
+
+        <if test="dto.searchStatus != null and dto.searchStatus != ''">
+            AND a.status = #{dto.searchStatus}
+        </if>
+
+        <if test="dto.searchType != null and dto.keyword != null and dto.keyword != ''">
+            <choose>
+                <when test="'title'.equals(dto.searchType)">
+                    AND a.doc_title LIKE CONCAT('%', #{dto.keyword}, '%')
+                </when>
+                <when test="'content'.equals(dto.searchType)">
+                    AND a.doc_content LIKE CONCAT('%', #{dto.keyword}, '%')
+                </when>
+            </choose>
+        </if>
+    </select>
 
     <select id="getMemberList" resultType="DraftForMemberDto">
         SELECT m.mem_id as mem_id,
@@ -260,5 +293,58 @@
         DELETE FROM form_resign
         WHERE doc_id = #{docId}
     </delete>
+
+    <select id="getReceivedDraftList" resultType="DraftListDto">
+        SELECT
+        a.doc_id AS docId,
+        m.mem_name AS writer,
+        a.form_code AS formCode,
+        a.doc_title AS docTitle,
+        a.doc_endDate AS docEndDate,
+        a.status AS status,
+        approver1.mem_name AS approver1Name,
+        approver2.mem_name AS approver2Name
+        FROM approval_document a
+        LEFT JOIN member m
+        ON a.mem_id = m.mem_id
+        LEFT JOIN approval_line l1
+        ON l1.doc_id = a.doc_id
+        AND l1.step_order = 1
+        AND l1.ref_yn = 'N'
+        LEFT JOIN member approver1
+        ON l1.mem_id = approver1.mem_id
+        LEFT JOIN approval_line l2
+        ON l2.doc_id = a.doc_id
+        AND l2.step_order = 2
+        AND l2.ref_yn = 'N'
+        LEFT JOIN member approver2
+        ON l2.mem_id = approver2.mem_id
+        WHERE a.del_yn = 'N'
+        AND a.doc_id IN (
+        SELECT doc_id
+        FROM approval_line
+        WHERE mem_id = #{memId}
+        )
+
+        <if test="dto.searchStatus != null and dto.searchStatus != ''">
+            AND a.status = #{dto.searchStatus}
+        </if>
+
+        <if test="dto.searchType != null and dto.keyword != null and dto.keyword != ''">
+            <choose>
+                <when test="'title'.equals(dto.searchType)">
+                    AND a.doc_title LIKE CONCAT('%', #{dto.keyword}, '%')
+                </when>
+                <when test="'content'.equals(dto.searchType)">
+                    AND a.doc_content LIKE CONCAT('%', #{dto.keyword}, '%')
+                </when>
+            </choose>
+        </if>
+
+        ORDER BY a.doc_id DESC
+        LIMIT #{dto.startNum}, #{dto.itemsPerPage}
+    </select>
+
+
 
 </mapper>
