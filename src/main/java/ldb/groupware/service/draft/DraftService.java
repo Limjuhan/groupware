@@ -35,24 +35,24 @@ public class DraftService {
         this.commonService = commonService;
     }
 
-    public Map<String, Object> searchMyDraftList(String memId, String type, String keyword, int page) {
+    public Map<String, Object> searchMyDraftList(String memId, MyDraftSearchDto dto, int page) {
 
         Map<String, Object> countParam = new HashMap<>();
         countParam.put("memId", memId);
-        countParam.put("keyword", keyword);
-        countParam.put("type", type);
+        countParam.put("keyword", dto.getKeyword());
+        countParam.put("searchType", dto.getSearchType());
+        countParam.put("searchStatus", dto.getSearchStatus());
 
         int totalRows = draftMapper.getMyDraftCount(countParam);
 
-        PaginationDto pageDto = new PaginationDto();
-        pageDto.setPageData(page, keyword, type, totalRows);
-        pageDto.calculatePagination();
+        dto.setPageData(page,totalRows);
+        dto.calculatePagination();
 
-        List<DraftListDto> list = draftMapper.getMyDraftList(pageDto, memId);
+        List<DraftListDto> list = draftMapper.getMyDraftList(dto, memId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", list);
-        result.put("page", pageDto);
+        result.put("page", dto);
 
         return result;
     }
@@ -280,4 +280,21 @@ public class DraftService {
         }
         return result;
     }
+
+    public Map<String, Object> searchReceivedDraftList(String memId, MyDraftSearchDto dto, int page) {
+
+        int totalRows = draftMapper.getReceivedDraftCount(dto, memId);
+
+        dto.setPageData(page,totalRows);
+        dto.calculatePagination();
+
+        List<DraftListDto> draftList = draftMapper.getReceivedDraftList(dto, memId);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("page", dto);
+        result.put("data", draftList);
+
+        return result;
+    }
+
 }

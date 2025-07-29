@@ -115,8 +115,8 @@
 
 <div class="container bg-glass p-4 shadow rounded mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>📋 일정 목록</h3>
-        <a href="getCalendarForm" class="btn btn-primary bg-glass">+ 일정 등록</a>
+        <h3>일정 관리</h3>
+        <a href="getCalendarForm" class="btn btn-primary bg-glass">일정 등록</a>
     </div>
 
     <div class="row mb-3 align-items-end">

@@ -1,6 +1,5 @@
 package ldb.groupware.service.common;
 
-import ldb.groupware.dto.common.CommonConst;
 import ldb.groupware.dto.common.CommonTypeDto;
 import ldb.groupware.mapper.mybatis.common.CommonMapper;
 import lombok.extern.slf4j.Slf4j;

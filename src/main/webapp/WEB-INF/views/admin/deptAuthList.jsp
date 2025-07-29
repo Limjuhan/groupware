@@ -103,8 +103,8 @@
 
 <div class="form-wrapper shadow">
     <div class="d-flex justify-content-between align-items-center">
-        <div class="form-title">🔐 부서별 메뉴 권한 설정</div>
-        <a href="/admin/getMemberForm" class="btn btn-primary bg-glass">+ 등록</a>
+        <div class="form-title">부서별 메뉴 권한 설정</div>
+        <a href="/admin/getMenuForm" class="btn btn-primary bg-glass">등록</a>
     </div>
 
     <div class="mb-4">
@@ -142,7 +142,7 @@
 
         <!-- 저장 버튼 -->
         <div class="text-end mt-4">
-            <button type="button" class="btn btn-primary px-4" onclick="savePermissions()">💾 저장</button>
+            <button type="button" class="btn btn-primary px-4" onclick="savePermissions()">저장</button>
         </div>
     </div>
 </div>

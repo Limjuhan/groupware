@@ -16,8 +16,6 @@
 
         .bg-glass {
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             padding: 30px;
@@ -66,7 +64,7 @@
 
 <div class="container mt-5" style="max-width: 600px;">
     <div class="bg-glass">
-        <h3 class="mb-4">✏️ 일정 수정</h3>
+        <h3 class="mb-4">일정 수정</h3>
 
         <form:form method="post" modelAttribute="dto" action="updateCalendarByMng">
             <!-- scheduleId hidden -->

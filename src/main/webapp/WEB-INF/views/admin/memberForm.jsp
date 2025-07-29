@@ -111,7 +111,7 @@
 </head>
 <body>
 <div class="form-section bg-glass">
-    <h3 class="mb-4 fw-bold">👤 사원등록</h3>
+    <h3 class="mb-4 fw-bold">사원등록</h3>
     <form:form modelAttribute="memberFormDto" method="post" action="insertMemberByMng" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-3 text-center">

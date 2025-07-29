@@ -88,7 +88,7 @@
             <label for="searchType" class="form-label small mb-1">검색 기준</label>
             <select id="searchType" class="form-select bg-glass custom-select-arrow">
                 <option value="title">제목</option>
-                <option value="writer">기안자</option>
+                <option value="content">내용</option>
             </select>
         </div>
 
@@ -141,19 +141,18 @@
 
     function searchMyDraftList(page = 1) {
         var keyword = $("#searchKeyword").val().trim();
-        var type = $("#searchType").val();
-
-        console.log(type);
-        console.log(keyword);
+        var searchType = $("#searchType").val();
+        var searchStatus = $("#searchStatus").val();
 
         var requestData = {
-            type: '',
+            searchType: '',
             keyword: '',
-            page: page
+            page: page,
+            searchStatus : searchStatus,
         };
 
-        if (keyword !== "" && type !== "") {
-            requestData.type = type;
+        if (keyword !== "" && searchType !== "") {
+            requestData.searchType = searchType;
             requestData.keyword = keyword;
         }
 
@@ -328,7 +327,6 @@
 
         $("#searchKeyword").on("keydown", function(e) {
             if (e.key === "Enter" ||  e.keyCode === 13) {
-                // e.preventDefault();
                 searchMyDraftList();
             }
         });

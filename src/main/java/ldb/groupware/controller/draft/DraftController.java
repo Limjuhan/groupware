@@ -31,7 +31,7 @@ public class DraftController {
     private final DraftService draftService;
     private final MessageSource messageSource;
     private final AttachmentService attachmentService;
-    private final CommonService  commonService;
+    private final CommonService commonService;
 
     public DraftController(DraftService draftService, MessageSource messageSource, AttachmentService attachmentService, CommonService commonService) {
         this.draftService = draftService;
@@ -42,14 +42,9 @@ public class DraftController {
 
     @GetMapping("getMyDraftList")
     public String getMyDraftList(Model model) {
-
-        // 결재대기상태 공통코드 조회
-        System.out.println("CommonConst.APPROVAL_STATUS.getValue(): " + CommonConst.APPROVAL_STATUS.getValue());
-        List<CommonTypeDto> approvalStatusList = commonService.getCommonTypesByGroup(CommonConst.APPROVAL_STATUS.getValue());
-        System.out.println("approvalStatusList" + approvalStatusList.toString());
+        List<CommonTypeDto> approvalStatusList = getApprovalStatusList();
 
         model.addAttribute("approvalStatusList", approvalStatusList);
-
         return "draft/draftList";
     }
 
@@ -97,20 +92,22 @@ public class DraftController {
     }
 
     /**
-     * TODO: 알람테이블 저장 처리 아직 안함.
+     *TODO: 1. 알람테이블 저장 처리 아직 안함.
+     *      2. 1차,2차,참조자 중복없도록 방어로직 필요
+     *
      * 저장프로세스
      * 1. 임시저장글 -> 임시저장 or 제출
      *  -. 임시저장한글 다시 처리시 기존저장했던글 양식과 불일치시 저장불가.
-     *
+     * <p>
      * 2. 새글 -> 임시저장 or 제출
-     *
+     * <p>
      * 제출,임시저장 공통
      * -> approval_document : 저장or업데이트
      * -> form_양식정보 : 각양식에맞는 양식테이블 저장or업데이트
-     *
+     * <p>
      * 제출(action="save")일때만
      * -> approval_line(결재라인)정보 저장.
-     *
+     * <p>
      * 기본적으로 임시저장은 입력값 유효성검사 제외.
      * 단, 휴가계획서는 임시저장할때도 휴가시작,끝나는날 필수입력받음.
      *
@@ -197,15 +194,18 @@ public class DraftController {
     }
 
     /**
+     * 내전자결재 상세페이지
      *
-     * @param memId
+     * 참조자 : 승인,반려버튼 안보이고 클릭시 클릭한유저에대한 검증 필요
+     * 1차결재자 : 1차결재대기상태일때만 승인or반려버튼 조회가능.클릭시 클릭한유저에대한 검증 필요
+     * 2차결재자: 1차결재승인일때만 승인or반려버튼 조회가능.클릭시 클릭한유저에대한 검증 필요
+     *
+     *
      * @param model
      * @return draft/draftDetail
      */
     @GetMapping("/getMyDraftDetail")
-    public String getMyDraftDetail(DraftFormDto dto,
-                                   @RequestParam("memId") String memId,
-                                   Model model) {
+    public String getMyDraftDetail(DraftFormDto dto, Model model) {
 
         try {
             if (dto.getDocId() == null) {
@@ -228,11 +228,46 @@ public class DraftController {
         } finally {
             return "draft/draftDetail";
         }
-
     }
 
     @GetMapping("receivedDraftList")
-    public String receivedDraftList() {
+    public String receivedDraftList(Model model) {
+        List<CommonTypeDto> approvalStatusList = getApprovalStatusList();
+
+        model.addAttribute("approvalStatusList", approvalStatusList);
         return "draft/receivedDraftList";
+    }
+
+    @GetMapping("receivedDraftDetail")
+    public String getReceivedDraftDetail(DraftFormDto dto,
+                                         Model model) {
+
+        System.out.println("dto정보 확인: " + dto);
+        try {
+            if (dto.getDocId() == null) {
+                throw new IllegalArgumentException("문서가 존재하지 않습니다.");
+            }
+
+            // 문서 상세 정보 조회
+            DraftFormDto draftInfo = draftService.getMyDraftDetail(dto);
+            // 첨부파일조회
+            Optional<List<Attachment>> optionalAttachmentList =
+                    attachmentService.getAttachments(dto.getDocId().toString(), dto.getAttachType());
+
+            model.addAttribute("draftDetail", draftInfo);
+            optionalAttachmentList.ifPresent(attachments -> {
+                model.addAttribute("attachments", attachments);
+            });
+        } catch (RuntimeException e) {
+            model.addAttribute("globalError", e.getMessage());
+        } finally {
+            return "draft/receivedDraftDetail";
+        }
+
+    }
+
+    // 결재대기상태 공통코드 조회
+    private List<CommonTypeDto> getApprovalStatusList() {
+        return commonService.getCommonTypesByGroup(CommonConst.APPROVAL_STATUS.getValue());
     }
 }

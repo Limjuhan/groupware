@@ -1,11 +1,9 @@
 package ldb.groupware.dto.member;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class LoginDto {
 
     @NotBlank(message = "아이디를 입력해주세요.")

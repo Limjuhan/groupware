@@ -105,9 +105,9 @@ public class MemberService {
             attachmentService.saveAttachments(memId, "P", List.of(file));
         }
 
-        try{
-            mailUtil.send(dto.getMemPrivateEmail(),"[LDBSOFT] 사원등록 안내","아이디 : " + memId + "<br>비밀번호 : 1234" );
-        }catch (Exception e){
+        try {
+            mailUtil.send(dto.getMemPrivateEmail(), "[LDBSOFT] 사원등록 안내", "아이디 : " + memId + "<br>비밀번호 : 1234");
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
@@ -124,7 +124,8 @@ public class MemberService {
         return ApiResponseDto.ok(dto, "사원 정보 수정 완료");
     }
 
-    public boolean updateInfo(MemberUpdateDto dto,String memId) {
+    // 사원정보 수정
+    public boolean updateInfo(MemberUpdateDto dto, String memId) {
         if (dto.getDeletePhoto() != null && !dto.getDeletePhoto().isEmpty()) {
             attachmentService.deleteAttachment(List.of(dto.getDeletePhoto()), "P");
         }
@@ -175,9 +176,8 @@ public class MemberService {
         return dto;
     }
 
-
     //id로 이름꺼내오기(동곤)
-    public String findNameById(String id){
+    public String findNameById(String id) {
         return memberMapper.findNameById(id);
     }
 
@@ -187,7 +187,7 @@ public class MemberService {
             return ApiResponseDto.fail("사원정보를 확인해주세요.");
         }
         String code = String.valueOf((int) (Math.random() * 900000 + 100000));
-        System.out.println("code::::::::::"+code);
+        System.out.println("code::::::::::" + code);
         authCode.put(dto.getMemId(), code);
 
         try {

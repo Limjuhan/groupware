@@ -2,15 +2,13 @@ package ldb.groupware.dto.member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 public class MemberUpdateDto {
     private String memId;
     private String memName;
