@@ -63,15 +63,15 @@ public class QnaService {
         HashMap<String, Object> map = new HashMap<>();
         QnaDetailDto qnaDto = mapper.findQnaById(id);
 
-
         //mem_id가 business에존재해서 varchar타입임
         String businessId = String.valueOf(id);
         Optional<List<Attachment>> attach = attachmentService.getAttachments(businessId, "Q");
+        attach.ifPresent(list -> map.put("attachments", list));
+
         mapper.addViewCount(id);
         qnaDto.formatDates();
         System.out.println("qnaDto :::: "+qnaDto);
         map.put("qna", qnaDto);
-        map.put("attachments", attach);
         return map;
     }
 
