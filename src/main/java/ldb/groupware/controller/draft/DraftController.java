@@ -3,18 +3,21 @@ package ldb.groupware.controller.draft;
 
 import jakarta.validation.Valid;
 import ldb.groupware.domain.Attachment;
+import ldb.groupware.dto.common.CommonConst;
+import ldb.groupware.dto.common.CommonTypeDto;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.service.attachment.AttachmentService;
+import ldb.groupware.service.common.CommonService;
 import ldb.groupware.service.draft.DraftService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -28,15 +31,25 @@ public class DraftController {
     private final DraftService draftService;
     private final MessageSource messageSource;
     private final AttachmentService attachmentService;
+    private final CommonService  commonService;
 
-    public DraftController(DraftService draftService, MessageSource messageSource, AttachmentService attachmentService) {
+    public DraftController(DraftService draftService, MessageSource messageSource, AttachmentService attachmentService, CommonService commonService) {
         this.draftService = draftService;
         this.messageSource = messageSource;
         this.attachmentService = attachmentService;
+        this.commonService = commonService;
     }
 
     @GetMapping("getMyDraftList")
-    public String getMyDraftList() {
+    public String getMyDraftList(Model model) {
+
+        // 결재대기상태 공통코드 조회
+        System.out.println("CommonConst.APPROVAL_STATUS.getValue(): " + CommonConst.APPROVAL_STATUS.getValue());
+        List<CommonTypeDto> approvalStatusList = commonService.getCommonTypesByGroup(CommonConst.APPROVAL_STATUS.getValue());
+        System.out.println("approvalStatusList" + approvalStatusList.toString());
+
+        model.addAttribute("approvalStatusList", approvalStatusList);
+
         return "draft/draftList";
     }
 
