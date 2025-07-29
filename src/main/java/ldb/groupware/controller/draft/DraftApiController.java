@@ -1,21 +1,17 @@
 package ldb.groupware.controller.draft;
 
 import jakarta.validation.Valid;
-import ldb.groupware.domain.Attachment;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.draft.DraftDeleteDto;
 import ldb.groupware.dto.draft.MyDraftSearchDto;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.draft.DraftService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/draft")
