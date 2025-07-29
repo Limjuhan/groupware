@@ -1,5 +1,6 @@
 package ldb.groupware.service.calendar;
 
+import jakarta.servlet.http.HttpSession;
 import ldb.groupware.dto.calendar.EventDto;
 import ldb.groupware.dto.calendar.ScheduleEditFormDto;
 import ldb.groupware.dto.calendar.ScheduleFormDto;
@@ -39,15 +40,9 @@ public class CalendarService {
 
 
     // 일정등록
-    public void insertCalendar(ScheduleFormDto dto) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("scheduleId", dto.getScheduleId());
-        map.put("scheduleTitle", dto.getScheduleTitle());
-        map.put("createdBy", "admin");
-        map.put("scheduleContent", dto.getScheduleContent());
-        map.put("startAt", dto.getStartAt());
-        map.put("endAt", dto.getEndAt());
-        calendarMapper.insertCalendar(map);
+    public void insertCalendar(ScheduleFormDto dto, String loginId) {
+        dto.setCreatedBy(loginId);
+        calendarMapper.insertCalendar(dto);
     }
 
     // 일정 삭제
@@ -65,9 +60,8 @@ public class CalendarService {
     }
 
     // 일정 수정
-    public boolean updateCalendar(ScheduleEditFormDto dto) {
-        dto.setUpdatedBy("admin");
-        dto.setUpdatedAt(LocalDateTime.now());
+    public boolean updateCalendar(ScheduleEditFormDto dto,String loginId) {
+        dto.setUpdatedBy(loginId);
         calendarMapper.updateCalendar(dto);
         return true;
     }

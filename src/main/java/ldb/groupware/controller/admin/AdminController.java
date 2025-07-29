@@ -1,5 +1,6 @@
 package ldb.groupware.controller.admin;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import ldb.groupware.dto.admin.MenuFormDto;
 import ldb.groupware.dto.member.MemberFormDto;
@@ -87,7 +88,8 @@ public class AdminController {
     public String insertMemberByMng(@Valid @ModelAttribute("memberFormDto") MemberFormDto dto,
                                     BindingResult bindingResult,
                                     Model model,
-                                    @RequestParam(value = "photo", required = false) MultipartFile file) {
+                                    @RequestParam(value = "photo", required = false) MultipartFile file,
+                                    HttpSession session) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("deptList", memberService.getDeptList());
@@ -95,7 +97,8 @@ public class AdminController {
             return "admin/memberForm";
         }
 
-        boolean success = memberService.insertMember(dto, file);
+        String loginId = (String) session.getAttribute("loginId");
+        boolean success = memberService.insertMember(dto, file,loginId);
         if (success) {
             return "redirect:/admin/getMemberList";
         } else {
@@ -122,12 +125,13 @@ public class AdminController {
     @PostMapping("insertMenu")
     public String insertmenu(@Valid @ModelAttribute("dto") MenuFormDto dto,
                              BindingResult bresult,
+                             HttpSession session,
                              Model model) {
         if(bresult.hasErrors()) {
             return "admin/menuForm";
         }
-
-        boolean success = adminService.insertMenu(dto);
+        String loginId = (String) session.getAttribute("loginId");
+        boolean success = adminService.insertMenu(dto,loginId);
 
         if (success) {
            return "redirect:/admin/getDeptAuthList";

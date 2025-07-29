@@ -21,7 +21,6 @@ public class ScheduleEditFormDto {
     @NotNull(message = "종료일 입력은 필수입니다.")
     private LocalDateTime endAt;
     private String updatedBy;
-    private LocalDateTime updatedAt;
 
     public boolean isEndAfterStart() {
         if (startAt == null || endAt == null) return true;

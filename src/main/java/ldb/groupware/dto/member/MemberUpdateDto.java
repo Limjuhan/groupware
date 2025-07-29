@@ -36,6 +36,5 @@ public class MemberUpdateDto {
     private MultipartFile photo;
     private String deletePhoto;
     private String updatedBy;
-    private LocalDateTime updatedAt;
 
 }

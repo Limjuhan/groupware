@@ -25,10 +25,11 @@ public class MemberService {
     private final MemberMapper memberMapper;
     private final AttachmentService attachmentService;
     private final CipherUtil cipherUtil;
+    private final MailUtil mailUtil;
 
     // 인증번호 저장을 위한 설정
     private final Map<String, String> authCode = new ConcurrentHashMap<>();
-    private final MailUtil mailUtil;
+
 
     public MemberService(MemberMapper memberMapper, AttachmentService attachmentService, CipherUtil cipherUtil, MailUtil mailUtil) {
         this.memberMapper = memberMapper;
@@ -68,7 +69,7 @@ public class MemberService {
     }
 
     // 사원등록
-    public boolean insertMember(MemberFormDto dto, MultipartFile file) {
+    public boolean insertMember(MemberFormDto dto, MultipartFile file,String loginId) {
         // 입사년도
         String year = String.valueOf(dto.getMemHiredate().getYear());
         // 4자리숫자 조회 + 1
@@ -82,24 +83,14 @@ public class MemberService {
         // 주민번호 뒷자리 암호화
         String juminBack = cipherUtil.encrypt(dto.getJuminBack(), memId);
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("memId", memId);
-        map.put("memPass", memPass);
-        map.put("memEmail", memEmail);
-        map.put("memPrivateEmail", dto.getMemPrivateEmail());
-        map.put("memName", dto.getMemName());
-        map.put("memGender", dto.getMemGender());
-        map.put("memPhone", dto.getMemPhone());
-        map.put("juminFront", dto.getJuminFront());
-        map.put("juminBack", juminBack);
-        map.put("memAddress", dto.getMemAddress());
-        map.put("memStatus", dto.getMemStatus());
-        map.put("memHiredate", dto.getMemHiredate());
-        map.put("deptId", dto.getDeptId());
-        map.put("rankId", dto.getRankId());
-        map.put("createdBy", "admin");
-        map.put("createdAt", LocalDateTime.now());
-        memberMapper.insertMember(map);
+        dto.setMemId(memId);
+        dto.setMemPass(memPass);
+        dto.setMemEmail(memEmail);
+        dto.setJuminBack(juminBack);
+        dto.setCreatedBy(loginId);
+
+        memberMapper.insertMember(dto);
+
 
         if (file != null && !file.isEmpty()) {
             attachmentService.saveAttachments(memId, "P", List.of(file));
@@ -114,9 +105,8 @@ public class MemberService {
     }
 
     // 사원 설정(부서,직급)
-    public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(UpdateMemberDto dto) {
-        dto.setUpdatedBy("admin");
-        dto.setUpdatedAt(LocalDateTime.now());
+    public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(UpdateMemberDto dto,String loginId) {
+        dto.setUpdatedBy(loginId);
         int updated = memberMapper.updateMemberByMng(dto);
         if (updated <= 0) {
             return ApiResponseDto.fail("사원 정보 수정 실패");
@@ -134,7 +124,6 @@ public class MemberService {
             attachmentService.saveAttachments(dto.getMemId(), "P", List.of(dto.getPhoto()));
         }
         dto.setUpdatedBy(memId);
-        dto.setUpdatedAt(LocalDateTime.now());
         memberMapper.updateInfo(dto);
         return true;
     }
@@ -142,7 +131,7 @@ public class MemberService {
     // 새로입력한 비밀번호 암호화
     public boolean checkPw(String memId, String rawPassword) {
         String pass = memberMapper.checkPw(memId);
-        if (pass == null) {
+        if (pass == null ||  rawPassword == null) {
             return false;
         }
         return BCrypt.checkpw(rawPassword, pass);
@@ -151,8 +140,7 @@ public class MemberService {
     // 비밀번호 변경
     public boolean changePw(String memId, String newPassword) {
         String hashPw = BCrypt.hashpw(newPassword, BCrypt.gensalt()); // 새로운 비밀번호 암호화
-        memberMapper.changePw(memId, hashPw);
-        return true;
+        return memberMapper.changePw(memId, hashPw) > 0;
     }
 
     // 개인정보 조회
@@ -213,7 +201,7 @@ public class MemberService {
         String ewc = BCrypt.hashpw(tempPw, BCrypt.gensalt());
         int reuslt = memberMapper.changePw(memId, ewc);
         if (reuslt <= 0) {
-            ApiResponseDto.fail("비밀번호 변경 실패했습니다");
+           return   ApiResponseDto.fail("비밀번호 변경 실패했습니다");
         }
         String email = memberMapper.selectEmail(memId);
 

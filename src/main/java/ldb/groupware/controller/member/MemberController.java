@@ -77,6 +77,7 @@ public class MemberController {
                                  HttpSession session,
                                  Model model) {
         String loginId = (String) session.getAttribute("loginId");
+
         if (loginId == null) return "redirect:/login/doLogin";
 
 
