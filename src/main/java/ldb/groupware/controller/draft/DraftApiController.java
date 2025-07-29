@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import ldb.groupware.domain.Attachment;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.draft.DraftDeleteDto;
+import ldb.groupware.dto.draft.MyDraftSearchDto;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.draft.DraftService;
 import org.apache.commons.lang3.StringUtils;
@@ -30,13 +31,33 @@ public class DraftApiController {
 
     @GetMapping("/searchMyDraftList")
     public ResponseEntity<ApiResponseDto<Map<String, Object>>> searchMyDraftList(
-            @RequestParam String type,
-            @RequestParam String keyword,
+            MyDraftSearchDto dto,
             @RequestParam(defaultValue = "1") int page) {
 
         // 로그인 사용자 ID (임시 하드코딩)
         String memId = "user008";
-        Map<String, Object> result = draftService.searchMyDraftList(memId, type, keyword, page);
+        Map<String, Object> result = draftService.searchMyDraftList(memId, dto, page);
+
+        return ApiResponseDto.ok(result);
+    }
+
+    /**
+     *  1. **mem_id**로 approval_line에서  1차or2차or참조자로 걸려있는 문서들(doc_id)조회
+     *  2. 가져온 **doc_id**로 approval_document에서 제목,양식코드, 내용, 작성자id, 결재상태, 문서종료일  수집(dto에 세팅)
+     *  3. approval_line에서 **doc_id**로 1차,2차결재자들의 mem_id 수집
+     *  최종: 문서번호(doc_id), 제목(doc_title) 문서양식(form_code), 문서종료일(end_date), 기안자(mem_id), 1차결재자(approval1), 2차결재자(approval2), 결재상태(status)
+     * @param dto
+     * @param page
+     * @return
+     */
+    @GetMapping("/searchReceivedDraftList")
+    public ResponseEntity<ApiResponseDto<Map<String, Object>>> searchReceivedDraftList(
+            MyDraftSearchDto dto,
+            @RequestParam(defaultValue = "1") int page) {
+
+        // 로그인 사용자 ID (임시 하드코딩)
+        String memId = "user008";
+        Map<String, Object> result = draftService.searchReceivedDraftList(memId, dto, page);
 
         return ApiResponseDto.ok(result);
     }
