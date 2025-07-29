@@ -62,6 +62,10 @@
             color: white;
             background-color: rgba(255, 255, 255, 0.05);
         }
+        .editable-field {
+            background-color: rgba(255, 255, 255, 0.25) !important;
+            border: 1px solid #66afe9 !important;
+        }
     </style>
     <script>
         function getPassEditForm() {
@@ -123,8 +127,8 @@
                         <input type="date" class="form-control bg-light" value="${user.birthDate}" readonly>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">전화번호*</label>
-                        <form:input path="memPhone" cssClass="form-control"/>
+                        <label class="form-label">전화번호</label>
+                        <form:input path="memPhone" cssClass="form-control editable-field"/>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">부서</label>
@@ -148,11 +152,11 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">2차 이메일</label>
-                        <form:input path="privateEmail" type="email" cssClass="form-control"/>
+                        <form:input path="privateEmail" type="email" cssClass="form-control editable-field"/>
                     </div>
                     <div class="col-md-12">
-                        <label class="form-label">주소*</label>
-                        <form:input path="memAddress" cssClass="form-control"/>
+                        <label class="form-label">주소</label>
+                        <form:input path="memAddress" cssClass="form-control editable-field"/>
                     </div>
                 </div>
             </div>
@@ -203,7 +207,7 @@
         <div class="text-end mt-4">
             <button type="button" class="btn btn-warning me-2" onclick="getPassEditForm()">비밀번호 변경</button>
             <button type="submit" class="btn btn-primary">저장</button>
-            <button type="reset" class="btn btn-outline-light">↺ 되돌리기</button>
+            <button type="reset" class="btn btn-outline-light">초기화</button>
         </div>
     </form:form>
 </div>

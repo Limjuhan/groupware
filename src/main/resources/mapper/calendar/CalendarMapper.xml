@@ -93,6 +93,7 @@
         WHERE schedule_id = #{scheduleId}
     </update>
 
+    <!--달력에 들어갈 일정 전체 조회-->
     <select id="selectAllScheduleList" parameterType="EventDto">
         SELECT schedule_id AS id,
                schedule_title AS title,

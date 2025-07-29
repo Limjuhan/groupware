@@ -51,6 +51,17 @@
       border: none;
     }
 
+    .btn-outline-primary {
+      color: #0d6efd;
+      border: 1px solid #0d6efd;
+      background-color: transparent;
+    }
+
+    .btn-outline-primary:hover {
+      background-color: #0d6efd;
+      color: white;
+    }
+
     .text-danger {
       font-size: 0.875em;
     }
@@ -96,8 +107,9 @@
       </div>
 
       <div class="text-end">
+        <a href="/calendar/getCalendarList" class="btn btn-secondary">목록</a>
         <button type="submit" class="btn btn-primary">등록</button>
-        <button type="reset" class="btn btn-secondary">취소</button>
+        <button type="reset" class="btn btn-secondary">초기화</button>
       </div>
     </form:form>
   </div>

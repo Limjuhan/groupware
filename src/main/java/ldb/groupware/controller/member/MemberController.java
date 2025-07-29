@@ -31,7 +31,11 @@ public class MemberController {
     @GetMapping("getMemberInfo")
     public String getMemberInfo(HttpSession session, Model model) {
         String loginId = (String) session.getAttribute("loginId");
-        if (loginId == null) return "redirect:/login/doLogin";
+        if (loginId == null) {
+            model.addAttribute("msg", "로그인이 필요합니다");
+            model.addAttribute("url", "/login/doLogin");
+            return "alert";
+        }
 
         MemberInfoDto dto = memberService.getMemberInfo(loginId);
         model.addAttribute("user", dto);
@@ -52,7 +56,7 @@ public class MemberController {
 
         String loginId = (String) session.getAttribute("loginId");
         dto.setMemId(loginId);
-        boolean success = memberService.updateInfo(dto,loginId);
+        boolean success = memberService.updateInfo(dto, loginId);
 
         model.addAttribute("msg", success ? "수정 성공" : "수정 실패");
         model.addAttribute("url", "/member/getMemberInfo");

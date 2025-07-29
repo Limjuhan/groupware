@@ -1,184 +1,239 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>부서별 메뉴 권한 설정</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <meta charset="UTF-8">
+    <title>부서별 메뉴 권한 설정 - LDBSOFT</title>
 
-  <style>
-    body {
-      background-color: #1e1e1e;
-      color: white;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    }
+    <!-- Bootstrap & Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-    .container.bg-glass {
-      background: rgba(255, 255, 255, 0.05) !important;
-      backdrop-filter: blur(1px);
-      -webkit-backdrop-filter: blur(1px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    .form-label {
-      font-weight: bold;
-    }
-
-    .select-wrapper {
-      position: relative;
-    }
-
-    .form-select.bg-glass.custom-select-arrow {
-      appearance: none;
-      background: rgba(255, 255, 255, 0.05) !important;
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(1px);
-      padding-right: 2.5rem;
-      border-radius: 0.5rem;
-    }
-
-    .select-wrapper::after {
-      content: "▼";
-      position: absolute;
-      top: 65%;
-      right: 1.0rem;
-      transform: translateY(-40%);
-      pointer-events: none;
-      color: white;
-      font-size: 1.2rem;
-    }
-
-    .form-select.bg-glass option {
-      background-color: #ffffff;
-      color: #000000;
-    }
-
-    .table.bg-glass th,
-    .table.bg-glass td {
-      background: rgba(255, 255, 255, 0.05) !important;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      color: white;
-      vertical-align: middle;
-      text-align: center;
-    }
-
-    .btn.bg-glass {
-      background: rgba(255, 255, 255, 0.1) !important;
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 0.5rem;
-    }
-
-    .btn.bg-glass:hover {
-      background: rgba(255, 255, 255, 0.2) !important;
-    }
-
-    h3 {
-      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
-    }
-  </style>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: white;
+        }
+        .form-wrapper {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 0.5rem;
+        }
+        .list-box {
+            min-height: 300px;
+            max-height: 350px;
+            overflow-y: auto;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+        }
+        .list-group-item {
+            background: transparent;
+            color: white;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.4rem 0.8rem;
+        }
+        .btn-move {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 0.85rem;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.6rem;
+        }
+        .btn-move:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        /* Select 스타일 */
+        .form-select, select {
+            background-color: rgba(255,255,255,0.05) !important;
+            color: white !important;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 0.5rem;
+        }
+        .form-select option {
+            background-color: #1e1e1e;
+            color: white;
+        }
+        /* Select2 스타일 */
+        .select2-container--default .select2-selection--single {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            padding-left: 0.75rem;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: white !important;
+        }
+        .select2-container--default .select2-results > .select2-results__options {
+            background-color: #1e1e1e !important;
+            color: white !important;
+        }
+        .select2-results__option--highlighted.select2-results__option--selectable {
+            background-color: #0d6efd !important;
+            color: white !important;
+        }
+        #deptSelect {
+            min-width: 300px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container bg-glass p-4 shadow rounded mt-5">
-  <h3 class="mb-4">🔐 부서별 메뉴 권한 설정</h3>
-
-  <div class="row mb-4">
-    <div class="col-md-12 select-wrapper">
-      <label for="deptSelect" class="form-label">부서 선택</label>
-      <select id="deptSelect" class="form-select bg-glass custom-select-arrow">
-        <option selected disabled>부서를 선택하세요</option>
-        <c:forEach var="dept" items="${deptList}">
-          <option value="${dept.deptId}">${dept.deptName}</option>
-        </c:forEach>
-      </select>
+<div class="form-wrapper shadow">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="form-title">🔐 부서별 메뉴 권한 설정</div>
+        <a href="/admin/getMemberForm" class="btn btn-primary bg-glass">+ 등록</a>
     </div>
-  </div>
 
-  <form id="authForm">
-    <table class="table table-bordered bg-glass">
-      <thead>
-      <tr>
-        <th>메뉴 코드</th>
-        <th>메뉴 명</th>
-        <th>권한 부여</th>
-      </tr>
-      </thead>
-      <tbody id="permissionTable">
-      <!-- JS에서 메뉴 동적 로딩 -->
-      </tbody>
-    </table>
-
-    <div class="text-end">
-      <button type="button" class="btn btn-primary bg-glass" onclick="savePermissions()">💾 저장</button>
+    <div class="mb-4">
+        <label for="deptSelect" class="form-label">부서 선택 <span class="text-danger">*</span></label>
+        <select id="deptSelect" class="form-select">
+            <option value="" selected>부서를 선택하세요</option>
+            <c:forEach var="dept" items="${deptList}">
+                <option value="${dept.deptId}">${dept.deptName}</option>
+            </c:forEach>
+        </select>
     </div>
-  </form>
+
+    <!-- 메뉴 영역 -->
+    <div id="menuSection" class="d-none">
+        <div class="row">
+            <!-- 전체 메뉴 목록 -->
+            <div class="col-md-5">
+                <h6>전체 메뉴</h6>
+                <ul id="allMenuList" class="list-group list-box"></ul>
+            </div>
+
+            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                <div>
+                    <button type="button" class="btn btn-move mb-2" onclick="moveSelected('all','auth')">➡</button><br>
+                    <button type="button" class="btn btn-move" onclick="moveSelected('auth','all')">⬅</button>
+                </div>
+            </div>
+
+            <!-- 부서 권한 목록 -->
+            <div class="col-md-5">
+                <h6>부서 권한</h6>
+                <ul id="authMenuList" class="list-group list-box"></ul>
+            </div>
+        </div>
+
+        <!-- 저장 버튼 -->
+        <div class="text-end mt-4">
+            <button type="button" class="btn btn-primary px-4" onclick="savePermissions()">💾 저장</button>
+        </div>
+    </div>
 </div>
 
 <script>
-  var allMenus = [];
+    var allMenus = [];
+    var deptMenus = [];
 
-  $(document).ready(function () {
-    // 전체 메뉴 목록 불러오기
-    $.get("/admin/menuList", function (res) {
-      allMenus = res;
+    $(document).ready(function() {
+        $('#deptSelect').select2({
+            placeholder: '부서를 선택하세요'
+        });
+
+        $.get("/admin/menuList", function(res) {
+            allMenus = res;
+            renderLists();
+        });
+
+        $("#deptSelect").on("change", function() {
+            var deptId = $(this).val();
+            if (deptId) {
+                $('#menuSection').removeClass('d-none');
+                $.get("/admin/menuAuthority", { deptId: deptId }, function(selectedCodes) {
+                    deptMenus = selectedCodes;
+                    renderLists();
+                });
+            } else {
+                $('#menuSection').addClass('d-none');
+                deptMenus = [];
+                renderLists();
+            }
+        });
     });
 
-    // 부서 선택 시 권한 불러오기
-    $('#deptSelect').on('change', function () {
-      var deptId = $(this).val();
+    function renderLists() {
+        var allMenuList = $("#allMenuList").empty();
+        var authMenuList = $("#authMenuList").empty();
 
-      $.get("/admin/menuAuthority", { deptId: deptId }, function (selectedCodes) {
-        renderMenuTable(selectedCodes);
-      });
-    });
-  });
+        allMenus.forEach(function(menu) {
+            if (!deptMenus.includes(menu.menuCode)) {
+                allMenuList.append(
+                    '<li class="list-group-item">' +
+                    '<span>' + menu.menuName + '</span>' +
+                    '<input type="checkbox" value="' + menu.menuCode + '">' +
+                    '</li>'
+                );
+            }
+        });
 
-  function renderMenuTable(selectedCodes) {
-    var tbody = document.getElementById("permissionTable");
-    tbody.innerHTML = "";
-
-    allMenus.forEach(function (menu) {
-      var isChecked = selectedCodes.includes(menu.menuCode) ? "checked" : "";
-      var row = ""
-              + "<tr>"
-              +     "<td>" + menu.menuCode + "</td>"
-              +     "<td>" + menu.menuName + "</td>"
-              +     "<td><input type='checkbox' name='menuCode' value='" + menu.menuCode + "' " + isChecked + "></td>"
-              + "</tr>";
-      tbody.insertAdjacentHTML("beforeend", row);
-    });
-  }
-
-  function savePermissions() {
-    var deptId = document.getElementById('deptSelect').value;
-    if (!deptId) {
-      alert("부서를 먼저 선택하세요.");
-      return;
+        allMenus.forEach(function(menu) {
+            if (deptMenus.includes(menu.menuCode)) {
+                authMenuList.append(
+                    '<li class="list-group-item">' +
+                    '<span>' + menu.menuName + '</span>' +
+                    '<input type="checkbox" value="' + menu.menuCode + '">' +
+                    '</li>'
+                );
+            }
+        });
     }
 
-    var selected = [];
-    var checkboxes = document.querySelectorAll('input[name="menuCode"]:checked');
-    checkboxes.forEach(function (input) {
-      selected.push(input.value);
-    });
+    function moveSelected(from, to) {
+        var fromList = from === 'all' ? "#allMenuList" : "#authMenuList";
+        var toList = to === 'all' ? "#allMenuList" : "#authMenuList";
 
-    fetch("/admin/menuAuthority?deptId=" + deptId, {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(selected)
-    }).then(function (res) {
-      return res.json();
-    }).then(function (res) {
-      alert(res.message);
-    });
-  }
+        $(fromList + " input:checked").each(function() {
+            var code = $(this).val();
+            if (to === 'auth') {
+                deptMenus.push(code);
+            } else {
+                deptMenus = deptMenus.filter(function(c) { return c !== code; });
+            }
+        });
+
+        renderLists();
+    }
+
+    function savePermissions() {
+        var deptId = $("#deptSelect").val();
+        if (!deptId) {
+            alert("부서를 먼저 선택하세요.");
+            return;
+        }
+
+        fetch("/admin/updateAuth?deptId=" + deptId, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(deptMenus)
+        }).then(res => res.json())
+            .then(res => alert(res.message));
+    }
 </script>
-
 </body>
 </html>
