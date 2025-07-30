@@ -44,4 +44,6 @@ public interface MemberMapper {
     String selectEmail(@Param("memId") String memId);
 
     List<Member> findAllActiveMembers();
+
+    List<MemberListDto> getMemberList();
 }

@@ -11,4 +11,6 @@ public class MemberListDto {
     private String rankId;
     private String rankName;
     private int memLevel;
+    private String memEmail;
+    private String memPhone;
 }

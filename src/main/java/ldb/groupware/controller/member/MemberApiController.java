@@ -3,12 +3,15 @@ package ldb.groupware.controller.member;
 import jakarta.validation.Valid;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.member.CodeDto;
+import ldb.groupware.dto.member.MemberListDto;
 import ldb.groupware.dto.member.PwCodeDto;
 import ldb.groupware.dto.member.ResetPwDto;
 import ldb.groupware.service.member.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/member")
@@ -55,4 +58,14 @@ public class MemberApiController {
         }
         return memberService.resetPw(resetPwDto);
     }
+
+    // 검색시 - 사원목록
+    @GetMapping("memberlist")
+    public ResponseEntity<ApiResponseDto<List<MemberListDto>>> getMemberList() {
+        List<MemberListDto> members = memberService.getMemberList();
+        return ApiResponseDto.ok(members);
+    }
+
+
+
 }

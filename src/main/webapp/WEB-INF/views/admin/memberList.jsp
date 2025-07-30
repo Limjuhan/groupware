@@ -6,146 +6,41 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>사원 관리 - LDBSOFT</title>
     <style>
-        body {
-            background-color: #1e1e1e;
-            color: white;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
-
-        .container.bg-glass {
-            background: rgba(255, 255, 255, 0.05) !important;
-            backdrop-filter: blur(1px);
-            -webkit-backdrop-filter: blur(1px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.5rem;
-            padding: 20px;
-        }
-
-        .table.bg-glass th,
-        .table.bg-glass td {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: white;
-        }
-
-        .form-label {
-            font-weight: bold;
-        }
-
-        .select-wrapper {
-            position: relative;
-        }
-
-        .form-select.bg-glass.custom-select-arrow {
-            appearance: none;
-            background: rgba(255, 255, 255, 0.05) !important;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(1px);
-            padding-right: 2.5rem;
-            border-radius: 0.5rem;
-        }
-
-        .select-wrapper::after {
-            content: "▼";
-            position: absolute;
-            top: 65%;
-            right: 1.0rem;
-            transform: translateY(-40%);
-            pointer-events: none;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .form-select.bg-glass option {
-            background-color: #ffffff;
-            color: #000000;
-        }
-
-        .form-control.bg-glass {
-            background: rgba(255, 255, 255, 0.05) !important;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 0.5rem;
-        }
-
-        .form-control.bg-glass:focus,
-        .form-select.bg-glass:focus {
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: white;
-            border-color: rgba(255, 255, 255, 0.5);
-            box-shadow: none;
-        }
-
-        .btn.bg-glass {
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 0.5rem;
-        }
-
-        .btn.bg-glass:hover {
-            background: rgba(255, 255, 255, 0.2) !important;
-        }
-
-        .page-link.bg-glass {
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: white !important;
-            border: none;
-            border-radius: 0.3rem;
-        }
-
-        .page-link.bg-glass:hover {
-            background: rgba(255, 255, 255, 0.2) !important;
-        }
-
-        .pagination .active .page-link {
-            background-color: #0d6efd !important;
-            border-color: #0d6efd !important;
-        }
-
-        .modal-content {
-            background-color: rgba(52, 58, 64, 0.9) !important;
-            color: #fff !important;
-            border: 1px solid rgba(255, 255, 255, 0.3) !important;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) !important;
-        }
-
-        .modal-header,
-        .modal-footer {
-            border-color: rgba(255, 255, 255, 0.2) !important;
-        }
-
-        .modal-title {
-            color: #fff !important;
-        }
-
-        .btn-close {
-            filter: invert(1) grayscale(100%) brightness(200%);
-        }
-
-        .modal-body .form-label {
-            color: #fff !important;
-        }
-
+        /* 클릭 가능한 이름 스타일 */
         .name-link {
             text-decoration: underline;
-            color: #e0e0e0;
+            color: #0d6efd;
             cursor: pointer;
-            transition: all 0.2s ease;
         }
 
         .name-link:hover {
-            color: #0d6efd;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            padding: 2px 4px;
+            color: #0a58ca;
+        }
+
+        /* 테이블 호버 효과 */
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* 페이지네이션 스타일 커스터마이징 */
+        .pagination .page-link {
+            border-radius: 0.375rem;
+            margin: 0 0.125rem;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background-color: #f8f9fa;
+            color: #6c757d;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function openEmployeeDetail(memId) {
             $.ajax({
@@ -270,7 +165,7 @@
                                 '<td><span class="name-link" onclick="openEmployeeDetail(\'' + mem.memId + '\')">' + mem.memName + '</span></td>' +
                                 '<td>' + mem.deptName + '</td>' +
                                 '<td>' + mem.rankName + '</td>' +
-                                '<td><button type="button" class="btn btn-sm btn-warning bg-glass me-1" onclick="openEditModal(\'' +
+                                '<td><button type="button" class="btn btn-sm btn-warning" onclick="openEditModal(\'' +
                                 mem.memId + '\', \'' + mem.memName + '\', \'' + (mem.deptId || '') + '\', \'' + (mem.rankId || '') +
                                 '\')">설정</button></td>' +
                                 '</tr>';
@@ -283,15 +178,15 @@
                     $paging.empty();
                     let html = '<nav><ul class="pagination pagination-sm">';
                     html += '<li class="page-item' + (pagination.page === 1 ? ' disabled' : '') + '">';
-                    html += '<a class="page-link bg-glass" href="#" onclick="event.preventDefault();' +
+                    html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
                         (pagination.page > 1 ? 'searchMembers(' + (pagination.page - 1) + ');' : '') +
                         '">이전</a></li>';
                     for (let i = pagination.startPage; i <= pagination.endPage; i++) {
                         html += '<li class="page-item' + (i === pagination.page ? ' active' : '') + '">';
-                        html += '<a class="page-link bg-glass" href="#" onclick="event.preventDefault();searchMembers(' + i + ');">' + i + '</a></li>';
+                        html += '<a class="page-link" href="#" onclick="event.preventDefault();searchMembers(' + i + ');">' + i + '</a></li>';
                     }
                     html += '<li class="page-item' + (pagination.page === pagination.totalPages ? ' disabled' : '') + '">';
-                    html += '<a class="page-link bg-glass" href="#" onclick="event.preventDefault();' +
+                    html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
                         (pagination.page < pagination.totalPages ? 'searchMembers(' + (pagination.page + 1) + ');' : '') +
                         '">다음</a></li>';
                     html += '</ul></nav>';
@@ -309,7 +204,6 @@
         });
         $(function () {
             searchMembers();
-
             $('#nameFilter').keypress(function (e) {
                 if (e.which === 13) {
                     searchMembers(1);
@@ -318,55 +212,59 @@
         });
     </script>
 </head>
-<body>
-<div class="container bg-glass p-4 rounded mt-5">
+<body class="bg-light">
+<div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4>사원 관리</h4>
-        <a href="/admin/getMemberForm" class="btn btn-primary bg-glass">등록</a>
+        <h4 class="mb-0">사원 관리</h4>
+        <a href="/admin/getMemberForm" class="btn btn-primary">등록</a>
     </div>
 
-    <div class="row mb-3 align-items-end">
-        <div class="col-md-3 select-wrapper">
-            <label for="deptFilter" class="form-label">부서</label>
-            <select id="deptFilter" class="form-select bg-glass custom-select-arrow">
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <label for="deptFilter" class="form-label fw-medium">부서</label>
+            <select id="deptFilter" class="form-select rounded">
                 <option value="">전체</option>
                 <c:forEach var="dept" items="${deptList}">
                     <option value="${dept.deptId}">${dept.deptName}</option>
                 </c:forEach>
             </select>
         </div>
-        <div class="col-md-3 select-wrapper">
-            <label for="rankFilter" class="form-label">직급</label>
-            <select id="rankFilter" class="form-select bg-glass custom-select-arrow">
+        <div class="col-md-3 mb-3">
+            <label for="rankFilter" class="form-label fw-medium">직급</label>
+            <select id="rankFilter" class="form-select rounded">
                 <option value="">전체</option>
                 <c:forEach var="rank" items="${rankList}">
                     <option value="${rank.rankId}">${rank.rankName}</option>
                 </c:forEach>
             </select>
         </div>
-        <div class="col-md-4">
-            <label for="nameFilter" class="form-label">이름</label>
-            <input type="text" id="nameFilter" class="form-control bg-glass" placeholder="검색어 입력">
+        <div class="col-md-4 mb-3">
+            <label for="nameFilter" class="form-label fw-medium">이름</label>
+            <input type="text" id="nameFilter" class="form-control rounded" placeholder="검색어 입력">
         </div>
-        <div class="col-md-2">
-            <button class="btn btn-primary w-100 bg-glass" onclick="searchMembers(1)">검색</button>
+        <div class="col-md-2 mb-3 d-flex align-items-end">
+            <button class="btn btn-primary w-100 rounded" onclick="searchMembers(1)">검색</button>
         </div>
     </div>
 
-    <table class="table table-hover table-bordered text-center align-middle bg-glass">
-        <thead class="table-light text-dark">
-        <tr>
-            <th>사원번호</th>
-            <th>이름</th>
-            <th>부서</th>
-            <th>직급</th>
-            <th>관리</th>
-        </tr>
-        </thead>
-        <tbody id="memberTableBody"></tbody>
-    </table>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-bordered text-center mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>사원번호</th>
+                    <th>이름</th>
+                    <th>부서</th>
+                    <th>직급</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody id="memberTableBody"></tbody>
+            </table>
+        </div>
+    </div>
 
-    <div id="paginationArea" class="d-flex justify-content-center mt-3"></div>
+    <div id="paginationArea" class="d-flex justify-content-center mt-4"></div>
 </div>
 
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -379,15 +277,15 @@
             <div class="modal-body">
                 <input type="hidden" id="editMemId">
                 <div class="mb-3">
-                    <label class="form-label">사원번호</label>
-                    <input type="text" id="editMemIdDisplay" class="form-control" readonly>
+                    <label class="form-label fw-medium">사원번호</label>
+                    <input type="text" id="editMemIdDisplay" class="form-control bg-light" readonly>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">사원 이름</label>
-                    <input type="text" id="editMemName" class="form-control" readonly>
+                    <label class="form-label fw-medium">사원 이름</label>
+                    <input type="text" id="editMemName" class="form-control bg-light" readonly>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">부서</label>
+                    <label class="form-label fw-medium">부서</label>
                     <select id="editDept" class="form-select">
                         <c:forEach var="dept" items="${deptList}">
                             <option value="${dept.deptId}">${dept.deptName}</option>
@@ -395,7 +293,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">직급</label>
+                    <label class="form-label fw-medium">직급</label>
                     <select id="editRank" class="form-select">
                         <c:forEach var="rank" items="${rankList}">
                             <option value="${rank.rankId}">${rank.rankName}</option>
@@ -426,66 +324,63 @@
                     <div class="col-md-9">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">이름</label>
-                                <input id="detailName" class="form-control" readonly>
+                                <label class="form-label fw-medium">이름</label>
+                                <input id="detailName" class="form-control bg-light" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">성별</label>
-                                <input id="detailGender" class="form-control" readonly>
+                                <label class="form-label fw-medium">성별</label>
+                                <input id="detailGender" class="form-control bg-light" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">생년월일</label>
-                                <input id="detailBirth" class="form-control" readonly>
+                                <label class="form-label fw-medium">생년월일</label>
+                                <input id="detailBirth" class="form-control bg-light" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">전화번호</label>
-                                <input id="detailPhone" class="form-control" readonly>
+                                <label class="form-label fw-medium">전화번호</label>
+                                <input id="detailPhone" class="form-control bg-light" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">부서</label>
-                                <input id="detailDept" class="form-control" readonly>
+                                <label class="form-label fw-medium">부서</label>
+                                <input id="detailDept" class="form-control bg-light" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">직급</label>
-                                <input id="detailRank" class="form-control" readonly>
+                                <label class="form-label fw-medium">직급</label>
+                                <input id="detailRank" class="form-control bg-light" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">재직상태</label>
-                                <input id="detailStatus" class="form-control" readonly>
+                                <label class="form-label fw-medium">재직상태</label>
+                                <input id="detailStatus" class="form-control bg-light" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">입사일</label>
-                                <input id="detailHire" class="form-control" readonly>
+                                <label class="form-label fw-medium">입사일</label>
+                                <input id="detailHire" class="form-control bg-light" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">이메일</label>
-                                <input id="detailEmail" class="form-control" readonly>
+                                <label class="form-label fw-medium">이메일</label>
+                                <input id="detailEmail" class="form-control bg-light" readonly>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">2차 이메일</label>
-                                <input id="detailPrivateEmail" class="form-control" readonly>
+                                <label class="form-label fw-medium">2차 이메일</label>
+                                <input id="detailPrivateEmail" class="form-control bg-light" readonly>
                             </div>
                             <div class="col-md-12">
-                                <label class="form-label">주소</label>
-                                <input id="detailAddress" class="form-control" readonly>
+                                <label class="form-label fw-medium">주소</label>
+                                <input id="detailAddress" class="form-control bg-light" readonly>
                             </div>
                         </div>
                     </div>
                 </div>
                 <h5 class="mt-4">연차 정보</h5>
-                <div id="annualInfo" class="border p-3 rounded mb-3"
-                     style="background-color: rgba(255, 255, 255, 0.1); color: #fff;">
-                </div>
-                <table class="table table-bordered text-white">
-                    <thead class="table-light text-dark">
+                <div id="annualInfo" class="border p-3 rounded mb-3 bg-light"></div>
+                <table class="table table-bordered">
+                    <thead class="table-light">
                     <tr>
                         <th>기간</th>
                         <th>결재자</th>
                         <th>휴가 종류</th>
                     </tr>
                     </thead>
-                    <tbody id="annualHistoryBody">
-                    </tbody>
+                    <tbody id="annualHistoryBody"></tbody>
                 </table>
             </div>
             <div class="modal-footer">

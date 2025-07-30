@@ -200,4 +200,10 @@
         WHERE mem_status = 'Active'
     </select>
 
+    <select id="getMemberList" resultType="MemberListDto">
+        SELECT m.mem_name, m.mem_phone, m.mem_email, r.rank_name, d.dept_name
+        FROM member m
+                 LEFT JOIN dept d ON m.dept_id = d.dept_id
+                 LEFT JOIN rank r ON m.rank_id = r.rank_id
+    </select>
 </mapper>

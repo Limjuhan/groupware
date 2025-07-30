@@ -237,4 +237,8 @@ public class MemberService {
         }
         return sb.toString();
     }
+
+    public List<MemberListDto> getMemberList() {
+        return memberMapper.getMemberList();
+    }
 }

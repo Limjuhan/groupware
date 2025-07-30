@@ -30,37 +30,6 @@ public class AdminController {
         return "admin/dashBoard";
     }
 
-    @GetMapping("itemListManage")
-    public String itemListManage() {
-        return "admin/itemListManage";
-    }
-
-    @GetMapping("itemRegistForm")
-    public String itemRegistForm() {
-        return "admin/itemRegistForm";
-    }
-
-    @GetMapping("meetingRoomManage")
-    public String meetingRoomManage() {
-        return "admin/meetingRoomManage";
-    }
-
-    @GetMapping("meetingRoomRegisterForm")
-    public String meetingRoomRegisterForm() {
-        return "admin/meetingRoomRegisterForm";
-    }
-
-    @GetMapping("roomManage")
-    public String roomManage() {
-        return "admin/roomManage";
-    }
-
-    @GetMapping("roomRegisterForm")
-    public String roomRegisterForm() {
-        return "admin/roomRegisterForm";
-    }
-
-
     @GetMapping("commTypeManage")
     public String CommTypeManage() {
         return "admin/commTypeManage";

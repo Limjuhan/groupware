@@ -6,75 +6,50 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>일정 등록</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일정 등록 - LDBSOFT</title>
     <style>
         body {
-            background-color: #1e1e1e;
-            color: white;
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
-        .bg-glass {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        .container {
+            max-width: 1000px;
+            margin-top: 2rem;
         }
 
-        label {
+        .card {
+            border-radius: 0.375rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
             font-weight: 500;
         }
 
         .form-control {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
+            border-radius: 0.375rem;
         }
 
         .form-control:focus {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            border-color: #66afe9;
-            outline: none;
-            box-shadow: none;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
 
-        .btn-primary {
-            background-color: #0d6efd;
-            border: none;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            border: none;
-        }
-
-        .btn-outline-primary {
-            color: #0d6efd;
-            border: 1px solid #0d6efd;
-            background-color: transparent;
-        }
-
-        .btn-outline-primary:hover {
-            background-color: #0d6efd;
-            color: white;
+        .btn {
+            border-radius: 0.375rem;
         }
 
         .text-danger {
-            font-size: 0.875em;
-        }
-
-        h3 {
-            font-weight: bold;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+            font-size: 0.875rem;
         }
     </style>
 </head>
 <body>
-
-<div class="container mt-5" style="max-width: 600px;">
-    <div class="bg-glass">
-        <h3 class="mb-4">일정 등록</h3>
+<div class="container">
+    <div class="card p-4">
+        <h3 class="mb-4 fw-bold">일정 등록</h3>
 
         <form:form method="post" modelAttribute="dto" action="insertCalendarByMng">
             <div class="mb-3">
@@ -105,13 +80,12 @@
             </div>
 
             <div class="text-end">
-                <a href="/calendar/getCalendarList" class="btn btn-secondary">목록</a>
-                <button type="submit" class="btn btn-primary">등록</button>
-                <button type="reset" class="btn btn-secondary">초기화</button>
+                <a href="/calendar/getCalendarList" class="btn btn-outline-secondary btn-sm">목록</a>
+                <button type="submit" class="btn btn-primary btn-sm">등록</button>
+                <button type="reset" class="btn btn-outline-secondary btn-sm">초기화</button>
             </div>
         </form:form>
     </div>
 </div>
-
 </body>
 </html>
