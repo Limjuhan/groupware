@@ -257,9 +257,9 @@ public class DraftController {
     }
 
     /**
-     * [전자결재 결재프로세스]
+     * [받은전자결재 결재프로세스]
      *
-     * 결재자 -> 승인or반려
+     * 결재자 -> 승인or반려 분기처리
      *
      * 1차결재대기
      *  -> 세션에서 가져온 id와 해당문서의 1차결재자id가 동일한지 검증
@@ -269,12 +269,12 @@ public class DraftController {
      *     approval_line의 1차결재자id(memId)기준 comment 업데이트
      *     approval_line에서 docId기준 status값 4로 일괄 업데이트
      *
-     *     alarm테이블 2차결재자, 기안자 insert. 참조자는 readYn='N' update
+     *     alarm테이블 2차결재자, 기안자, 참조자는 readYn='N' update
      *
      * 2차결재대기
      *  -> 세션에서 가져온 id와 해당문서의 2차결재자id가 동일한지 검증
      *
-     *  -> 연차관련 2차결재승인시에는 annual_leave에서 남은연차일수(remainDays) 차감해줘야됨.
+     *  -> 연차양식은 2차결재승인시에 annual_leave에서 남은연차일수(remainDays) 차감해줘야됨.
      *     수정일시는 현재시간, 수정자는 2차결재담당자
      *
      *     approval_document의 status 4(2차결재대기)로 변경

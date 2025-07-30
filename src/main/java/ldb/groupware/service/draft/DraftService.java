@@ -301,12 +301,14 @@ public class DraftService {
         return result;
     }
 
-    //TODO: 마지막 작업구간. 7/30 오후 6시
-    public void approveDraft(DraftUpdateDto dto, String memId) throws Exception {
+    //TODO: 마지막 작업구간. 7/30 오후 12시.
+    @Transactional
+    public void approveDraft(DraftUpdateDto dto, String memId) {
 
     }
 
-    public void rejectDraft(DraftUpdateDto dto, String memId) throws Exception {
+    @Transactional
+    public void rejectDraft(DraftUpdateDto dto, String memId) {
 
     }
 }
