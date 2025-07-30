@@ -45,6 +45,15 @@
         <h2 class="text-shadow">받은 전자결재 상세보기</h2>
     </div>
 
+    <%-- 에러 메시지 출력   --%>
+    <c:if test="${not empty globalError}">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+                ${globalError}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </c:if>
+
     <!-- 문서 기본 정보 -->
     <table class="table table-bordered mt-4 bg-glass">
         <tbody>
@@ -86,7 +95,7 @@
                     <p><strong>휴가 유형:</strong> ${draftDetail.leaveCode}</p>
                     <p><strong>휴가 기간:</strong> ${draftDetail.leaveStartStr} ~ ${draftDetail.leaveEndStr}</p>
                     <p><strong>총 일수:</strong> ${draftDetail.totalDays}일</p>
-                    <p><strong>잔여 연차:</strong> ${draftDetail.remainDays}일</p>
+                    <p><strong>잔여 연차:</strong> ${remainDays}일</p>
                 </div>
             </div>
         </c:when>
@@ -158,19 +167,25 @@
 
     <!-- 결재 처리 -->
     <div class="section-title">결재 처리</div>
-    <form action="processApproval" method="post">
+    <form action="updateDraft" method="post">
         <input type="hidden" name="docId" value="${draftDetail.docId}"/>
-
+        <input type="hidden" name="status" value="${draftDetail.status}"/>
         <div class="mb-3">
             <label class="form-label">결재 의견 (선택)</label>
             <textarea class="form-control bg-glass" name="comment" rows="3"
                       placeholder="결재 의견을 입력하세요 (선택 사항)"></textarea>
         </div>
 
+        <c:if test="${(draftDetail.status == 1 && draftDetail.approver1 == sessionScope.loginId)
+                    || ((draftDetail.status == 2 || draftDetail.status == 4)
+                    && draftDetail.approver2 == sessionScope.loginId)}">
         <div class="d-flex justify-content-start gap-2">
-            <button type="submit" name="action" value="approve" class="btn btn-success bg-glass">승인</button>
-            <button type="submit" name="action" value="reject" class="btn btn-danger bg-glass">반려</button>
-        </div>
+                <button type="submit" name="action" value="approve" class="btn btn-success bg-glass">승인</button>
+                <button type="submit" name="action" value="reject" class="btn btn-danger bg-glass">반려</button>
+            </div>
+        </c:if>
+
+
     </form>
 
     <div class="d-flex justify-content-between align-items-center mt-4">
@@ -181,6 +196,7 @@
 
 <script>
     $(document).ready(function () {
+
         var status = "${draftDetail.status}";
         var badgeHtml = getStatusBadge(status);
         $("#status-badge").html(badgeHtml);

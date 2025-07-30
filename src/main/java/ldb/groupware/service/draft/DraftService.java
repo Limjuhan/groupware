@@ -62,7 +62,11 @@ public class DraftService {
     }
 
     public Integer getRemainAnnual(String memId) {
-        return draftMapper.getRemainAnnual(memId);
+        Integer remainAnnual = draftMapper.getRemainAnnual(memId);
+        if (remainAnnual == null) {
+            remainAnnual = 0;
+        }
+        return remainAnnual;
     }
 
     /**
@@ -81,13 +85,12 @@ public class DraftService {
                           String memId,
                           String savedFormCode) throws IllegalArgumentException {
 
-
         //글등록방식(임시저장or제출) 확인
         int saveType = getStatus(action);
 
         if (dto.getStatus() != null && dto.getStatus() == ApprovalConst.STATUS_TEMP) { // 임시저장 -> 임시저장 or 제출
             if (savedFormCode != null && !dto.getFormCode().equals(savedFormCode)) {
-                throw new IllegalArgumentException("임시저장한글 제출(임시저장)시 같은양식만 가능합니다.");
+                throw new IllegalArgumentException("임시저장된문서 제출(or임시저장)시 같은양식만 가능합니다.");
             }
             updateApprovalDraft(dto, memId, saveType);
         } else { // 새글작성->임시저장 or 제출
@@ -101,10 +104,13 @@ public class DraftService {
         attachmentService.saveAttachments(dto.getDocId().toString(), dto.getAttachType(), attachments);
     }
 
-    private void updateFormDetail(DraftFormDto dto, String memId) {
+    private void updateFormDetail(DraftFormDto dto, String memId, int saveType) {
         switch (dto.getFormCode()) {
             case ApprovalConst.FORM_ANNUAL -> {
-                validateAnnualLeave(dto, memId);
+                // 임시저장은 유효성검사 x
+                if (saveType != ApprovalConst.STATUS_TEMP) {
+                    validateAnnualLeave(dto, memId);
+                }
                 draftMapper.updateFormAnnualLeave(FormAnnualLeave.from(dto));
             }
             case ApprovalConst.FORM_PROJECT -> draftMapper.updateFormProject(FormProject.from(dto));
@@ -116,7 +122,10 @@ public class DraftService {
     private void insertFormDetail(DraftFormDto dto, String memId, int saveType) {
         switch (dto.getFormCode()) {
             case ApprovalConst.FORM_ANNUAL -> {
-                validateAnnualLeave(dto, memId);
+                // 임시저장은 유효성검사 x
+                if (saveType != ApprovalConst.STATUS_TEMP) {
+                    validateAnnualLeave(dto, memId);
+                }
                 draftMapper.insertFormAnnualLeave(FormAnnualLeave.from(dto));
             }
             case ApprovalConst.FORM_PROJECT -> draftMapper.insertFormProject(FormProject.from(dto));
@@ -127,7 +136,7 @@ public class DraftService {
 
     private void updateApprovalDraft(DraftFormDto dto, String memId, int saveType) {
         draftMapper.updateApprovalDocument(dto, saveType, memId);
-        updateFormDetail(dto, memId);
+        updateFormDetail(dto, memId, saveType);
     }
 
     private void insertNewApprovalDraft(DraftFormDto dto, String memId, int saveType) {
@@ -297,4 +306,11 @@ public class DraftService {
         return result;
     }
 
+    //TODO: 마지막 작업구간. 7/30 오후 6시
+    public void approveDraft(DraftUpdateDto dto, String memId) {
+
+    }
+
+    public void rejectDraft(DraftUpdateDto dto, String memId) {
+    }
 }

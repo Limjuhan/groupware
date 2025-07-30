@@ -160,14 +160,16 @@
     <select id="getMyDraftDetail" resultType="DraftFormDto">
         SELECT
             a.doc_id AS docId,
-            m.mem_name AS mem_name,
-            a.form_code AS formCode,
+            m.mem_name AS mem_name,  <!-- 기안자 -->
+            a.form_code AS formCode, <!-- 전자결재 양식 -->
             a.doc_title AS title,
             a.doc_content AS content,
             a.doc_endDate AS docEndDate,
             a.status AS status,
-            approver1.mem_name AS approver1Name,
-            approver2.mem_name AS approver2Name
+            approver1.mem_id as approver1, <!-- 1차결재자 id -->
+            approver2.mem_id as approver2, <!-- 2차결재자 id -->
+            approver1.mem_name AS approver1Name, <!-- 1차결재자 이름 -->
+            approver2.mem_name AS approver2Name <!-- 2차결재자 이름 -->
         FROM approval_document a
         LEFT JOIN member m ON a.mem_id = m.mem_id
         LEFT JOIN approval_line l1 ON l1.doc_id = a.doc_id AND l1.step_order = 1 AND l1.ref_yn = 'N'
