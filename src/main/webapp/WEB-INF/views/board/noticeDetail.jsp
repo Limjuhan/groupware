@@ -124,6 +124,7 @@
     <!-- 버튼 그룹 -->
     <div class="button-group">
         <a href="getNoticeList" class="btn btn-outline-secondary btn-custom">← 목록</a>
+
         <div class="d-flex gap-2">
             <a onclick="goForm('getNoticeEditForm?id=${notice.noticeId}')" class="btn btn-outline-primary btn-custom">수정</a>
             <a href="deleteNoticeByMng?id=${notice.noticeId}" class="btn btn-outline-danger btn-custom"

@@ -17,9 +17,9 @@ public class QnaListDto {
     private LocalDateTime updatedAt;
     private String dateFormat;
 
-    //LocaldateTime--> string
-    public void setDateFormat(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        this.dateFormat =  this.updatedAt.format(formatter);
+
+    public String getUpdatedAtStr(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return formatter.format(updatedAt);
     }
 }

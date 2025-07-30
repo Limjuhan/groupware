@@ -176,18 +176,11 @@
                     <div class="collapse ps-3" id="facilityMenu">
                         <ul class="nav flex-column">
                             <li class="nav-item"><a class="nav-link" href="/facility/getVehicleList">차량예약</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/facility/getMeetingRoomList"><i
-                                    class="fa-solid fa-door-open"></i> 회의실예약</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/facility/getItemList"><i
-                                    class="fa-solid fa-box"></i> 비품예약</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/facility/getReservationList"><i
-                                    class="fa-solid fa-list"></i> 내 예약내역</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/facility/roomManage"><i
-                                    class="fa-solid fa-car-side"></i> 차량관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/facility/getMeetingRoomManage"><i
-                                    class="fa-solid fa-building"></i> 회의실관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/facility/itemListManage"><i
-                                    class="fa-solid fa-tools"></i> 비품관리</a></li>
+                           <li class="nav-item"><a class="nav-link" href="/board/getNoticeList"><i class="fa-solid fa-bullhorn"></i> 공지사항</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getFaqList"><i class="fa-solid fa-question"></i> 자주묻는질문</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getQnaList"><i class="fa-solid fa-comments"></i> 질문게시판</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage"><i class="fa-solid fa-tools"></i> 자주묻는질문 관리</a></li>
+
                         </ul>
                     </div>
                 </li>

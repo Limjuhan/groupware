@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -15,7 +16,36 @@
 
 <div class="container bg-white p-4 shadow rounded">
   <h2 class="mb-4">🏢 회의실관리</h2>
-  <a href="meetingRoomRegisterForm" class="btn btn-primary" >+ 회의실 등록</a>
+  <!-- 검색 및 필터 폼 -->
+  <form class="row g-2 align-items-center mb-4" method="get" action="getMeetingRoomManage">
+    <!-- 비품명 검색 -->
+    <div class="col-md-5">
+      <div class="form-floating">
+        <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: 회의실205호">
+        <label for="keyword">이름/공용설비ID</label>
+      </div>
+    </div>
+
+    <!-- 반납 여부 -->
+    <div class="col-md-3">
+      <div class="form-floating">
+        <select name="rentYn" id="rentYn" class="form-select">
+          <option value="">전체</option>
+          <option value="Y">Y</option>
+          <option value="N">N</option>
+        </select>
+        <label for="rentYn">반납여부</label>
+      </div>
+    </div>
+
+    <!-- 검색 버튼 -->
+    <div class="col-md-2 d-grid">
+      <button type="submit" class="btn btn-primary">
+        <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
+      </button>
+    </div>
+  </form>
+  <a href="getMeetingRoomForm" class="btn btn-primary" >+ 회의실 등록</a>
   <table class="table table-bordered text-center align-middle">
     <thead class="table-light">
       <tr>
@@ -28,24 +58,37 @@
       </tr>
     </thead>
     <tbody>
+    <c:forEach items="${meetingRooms}" var="m">
       <tr>
-        <td>R0001</td><td>중회의실 1</td><td>88899</td><td>10</td><td>Y</td>
-        <td><button class="btn btn-outline-danger btn-sm" onclick="confirmDelete('R0001')">삭제하기</button></td>
+        <td>${m.facId}</td><td>${m.facName}</td><td>${m.facUid}</td><td>${m.capacity}</td><td>${m.rentYn}</td>
+        <td>
+          <c:if test="${m.rentYn=='Y'}">
+            <button class="btn btn-outline-danger btn-sm" onclick="confirmDelete('${m.facId}','${m.facName}','${m.facType}')">삭제하기</button></td>
+          </c:if>
       </tr>
-      <tr>
-        <td>R0002</td><td>대회의실</td><td>99999</td><td>20</td><td>Y</td>
-        <td><button class="btn btn-outline-danger btn-sm" onclick="confirmDelete('R0002')">삭제하기</button></td>
-      </tr>
+    </c:forEach>
     </tbody>
   </table>
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" href="?page=${pageDto.page - 1}">이전</a>
+      </li>
+      <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
+        <li class="page-item ">
+          <a class="page-link" href="?page=${p}">${p}</a>
+        </li>
+      </c:forEach>
+      <li class="page-item">
+        <a class="page-link" href="?page=${pageDto.page+1}">다음</a>
+      </li>
+    </ul>
+  </nav>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  function confirmDelete(roomId) {
-    if (confirm(roomId + " 회의실을 삭제하시겠습니까?")) {
-      alert("삭제되었습니다. (예시)");
-      // 실제 삭제 처리 로직 추가 가능
+  function confirmDelete(roomId,roomName,facType) {
+    if (confirm(roomName + "("+roomId+") 회의실을 삭제하시겠습니까?")) {
+     location.href = "deleteFacilityByMng?facId="+roomId+"&facType="+facType;
     }
   }
 </script>

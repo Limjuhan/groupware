@@ -28,7 +28,21 @@
 <div class="container mt-5">
     <h3 class="fw-bold mb-4" style="color: darkgray">자주 묻는 질문 (FAQ)</h3>
 
-
+    <form action="getFaqList" method="get" class="row g-2 mb-4">
+        <div class="col-md-3">
+            <select name="searchType" class="form-select">
+                <option value="faqTitle">제목</option>
+                <option value="deptName">작성부서</option>
+                <option value="all">제목+작성부서</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <input type="text" name="keyword" class="form-control" placeholder="검색어를 입력하세요">
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-outline-secondary w-100">검색</button>
+        </div>
+    </form>
     <!-- FAQ 리스트 -->
     <div class="accordion" id="faqAccordion">
         <c:if test="${faq==null}">

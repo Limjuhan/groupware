@@ -26,8 +26,6 @@ public class NoticeService {
     public Map<String, Object> getNoticeList(PaginationDto pageDto) {
         HashMap<String, Object> map = new HashMap<>();
         List<NoticeListDto> pinnedList = mapper.getPinnedList(pageDto);
-
-
         int pinnedCount = mapper.pinnedCount();
         int count = mapper.noticeCount(); //공지사항(상단고정X)의 갯수
       pageDto.setTotalRows(count);
@@ -37,13 +35,6 @@ public class NoticeService {
 
         System.out.println("pageDto : "+pageDto);
         List<NoticeListDto> dto = mapper.getNoticeList(pageDto);
-
-        for (NoticeListDto dto1 : dto) {
-            dto1.updatedAtToString(); //LocalDateTime-->String 변환
-        }
-        for (NoticeListDto dto2 : pinnedList) {
-            dto2.updatedAtToString();
-        }
         System.out.println("getNoticeListDto :: "+dto);
         map.put("pinnedList", pinnedList);
         map.put("notice", dto);

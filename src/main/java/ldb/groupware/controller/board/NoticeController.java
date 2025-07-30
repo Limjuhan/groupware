@@ -27,6 +27,7 @@ public class NoticeController {
         this.service = service;
     }
 
+    //A_0002 (공지사항페이지 ) (권한처리X)
     @GetMapping("getNoticeList")
     public String getNoticeList(
             @RequestParam(value = "page", defaultValue = "1") int currentPage ,
@@ -40,35 +41,34 @@ public class NoticeController {
         return "board/noticeList";
     }
 
+    //공지사항등록(관리) (A_0003) (세션검증 필요)
     @GetMapping("getNoticeForm")
     public String getNoticeForm(Model model , HttpServletRequest request) {
-        //String id = (String)request.getSession().getAttribute("loginId");
-        String id   = "admin";
+        String id = (String)request.getSession().getAttribute("loginId");
        String name = service.getMember(id);
        model.addAttribute("memName",name);
        model.addAttribute("memId",id);
         return "board/noticeForm";
     }
 
+    //공지사항등록->등록버튼 (A_003) (이것도역시 세션검증이필요)
     @PostMapping("insertNotice")
     public String insertNotice(@Valid @ModelAttribute("noticeFormDto") NoticeFormDto dto, BindingResult result, @RequestParam("uploadFile") List<MultipartFile> files ,
                                HttpServletRequest request , Model model) {
-        //String id = (String)request.getSession().getAttribute("loginId");
-
-        String id   = "admin";
+        String id = (String)request.getSession().getAttribute("loginId");
         String name = service.getMember(id);
         model.addAttribute("memName",name);
         model.addAttribute("memId",id);
         if(result.hasErrors()) {
             return "board/noticeForm";
         }
-        String text = Jsoup.parse(dto.getNoticeContent()).text();
+        String text = Jsoup.parse(dto.getNoticeContent()).text(); //summnerNote떄문에 순수문자열만으로 유효성검사
         System.out.println("HTML태그를  제거한 순수한 문자열 : "+text);
         if(text.trim().length()<8){
             result.rejectValue("noticeContent", "error.content.size");
             return "board/noticeForm";
         }
-        
+
         //유효성검사 모두성공시
         if(service.insertNotice(dto,files)){
             model.addAttribute("msg","등록 성공");
@@ -79,9 +79,12 @@ public class NoticeController {
         return "alert";
     }
 
+
+    //공지사항상세보기 (A_002)(모두의권한)
+    //수정삭제를 권한에따라 막아야하는데 그걸안했음
+    //session으로 부서뽑고 권한뽑아서 처리해야할듯
     @GetMapping("getNoticeDetail")
     public String getNoticeDetail(Model model , @RequestParam("id")  String id) {
-
         Map<String,Object> map = service.getNoticeById(id);
         model.addAttribute("notice",map.get("notice"));
         model.addAttribute("attach",map.get("attach"));
@@ -89,14 +92,18 @@ public class NoticeController {
         return "board/noticeDetail";
     }
 
+    //공지사항수정(A_0003) (권한이있어야가능)
     @GetMapping("getNoticeEditForm")
-    public String getNoticeEditForm(Model model , @RequestParam("id")  String id) {
+    public String getNoticeEditForm(Model model , @RequestParam("id")  String id,HttpServletRequest request) {
+        String loginId= (String)request.getSession().getAttribute("loginId");
+
         Map<String, Object> noticeById = service.getNoticeById(id);
         model.addAttribute("notice",noticeById.get("notice"));
         model.addAttribute("attachedFiles",noticeById.get("attach"));
         return "board/noticeEditForm";
     }
 
+    //공지사항수정->수정버튼 (A_0003) (역시권한이 있어야함)
     @PostMapping("updateNoticeByMng")
     public String updateNoticeByMng(@Valid @ModelAttribute("noticeUpdateDto") NoticeUpdateDto dto,BindingResult result
             ,@RequestParam("uploadFile") List<MultipartFile> files , Model model) {
@@ -130,6 +137,7 @@ public class NoticeController {
         return "alert";
     }
 
+    //공지사항 삭제(A_0003) 권한필요
     @GetMapping("deleteNoticeByMng")
     public String deleteNoticeByMng(Model model , @RequestParam("id")  String id ) {
         System.out.println(id);

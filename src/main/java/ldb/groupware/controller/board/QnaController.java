@@ -33,7 +33,7 @@ public class QnaController {
 
     }
 
-    //질문게시판 목록 (자주묻는질문까지불러와야함)
+    //질문게시판 목록 (자주묻는질문까지불러와야함) (권한필요X) ((A_0005))
     @GetMapping("getQnaList")
     public String getQnaList (@RequestParam(value = "page", defaultValue = "1") int currentPage ,
                               PaginationDto paging, Model model) {
@@ -48,24 +48,24 @@ public class QnaController {
     }
 
 
-    //질문작성폼
+    //질문작성폼(A_0005)
     @GetMapping("getQnaForm")
     public String getQnaForm(Model model , HttpServletRequest request) {
-        //(String)request.getSession("loginUser");
-        String loginUser = "LDB20220001";
-        String memName = memService.findNameById(loginUser);//나중에 세션으로바꿔야함
+        String loginId = (String) request.getSession().getAttribute("loginId");
+        String memName = memService.findNameById(loginId);//나중에 세션으로바꿔야함
         model.addAttribute("memName", memName);
-        model.addAttribute("loginUser", loginUser);
+        model.addAttribute("loginId", loginId);
         return  "board/qnaForm";
     }
 
-    //작성 폼( 나중에는 세션id로 name뽑고할거임)
+    //질문작성->작성버튼( 나중에는 세션id로 name뽑고할거임) (A_0005)
     @PostMapping("insertQna")
-    public String insertQna(@Valid QnaFormDto dto , BindingResult bindingResult, Model model ,@RequestParam("uploadFile") List<MultipartFile> files ) {
+    public String insertQna(@Valid QnaFormDto dto , BindingResult bindingResult, Model model
+            ,@RequestParam("uploadFile") List<MultipartFile> files ) {
 
         String memName = memService.findNameById(dto.getMemId());
         model.addAttribute("memName", memName);
-        model.addAttribute("loginUser", dto.getMemId());
+        model.addAttribute("loginId", dto.getMemId());
         if(bindingResult.hasErrors()){
             return "board/qnaForm";
         }
