@@ -1,11 +1,7 @@
 package ldb.groupware.service.draft;
 
 import ldb.groupware.domain.*;
-import ldb.groupware.dto.common.CommonConst;
-import ldb.groupware.dto.common.CommonTypeDto;
 import ldb.groupware.dto.draft.*;
-import ldb.groupware.dto.page.PaginationDto;
-import ldb.groupware.mapper.mapstruct.ConvertDtoMapper;
 import ldb.groupware.mapper.mybatis.draft.DraftMapper;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.common.CommonService;
@@ -14,7 +10,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -307,10 +302,11 @@ public class DraftService {
     }
 
     //TODO: 마지막 작업구간. 7/30 오후 6시
-    public void approveDraft(DraftUpdateDto dto, String memId) {
-        
+    public void approveDraft(DraftUpdateDto dto, String memId) throws Exception {
+
     }
 
-    public void rejectDraft(DraftUpdateDto dto, String memId) {
+    public void rejectDraft(DraftUpdateDto dto, String memId) throws Exception {
+
     }
 }

@@ -8,8 +8,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class DraftUpdateDto {
-    private String docId;
+    private Integer docId;
     private Integer status;
     private String action;
     private String comment;
+    private String formCode;
 }

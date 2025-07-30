@@ -226,6 +226,7 @@ public class DraftController {
     public String getReceivedDraftDetail(DraftFormDto dto,
                                          @SessionAttribute(name = "loginId", required = false) String memId,
                                          Model model) {
+        System.err.println("[받은전자결재 상새네역 조회시 파라미터 확인" + dto.toString());
 
         try {
             if (dto.getDocId() == null) {
@@ -285,10 +286,9 @@ public class DraftController {
      * @param redirectAttributes
      * @return
      */
-    @GetMapping("updateDraft")
+    @PostMapping("updateDraft")
     public String updateDraft(DraftUpdateDto dto,
                               @SessionAttribute(name = "loginId") String memId,
-                              Model model,
                               RedirectAttributes redirectAttributes) {
 
         try {
@@ -300,9 +300,13 @@ public class DraftController {
                 redirectAttributes.addFlashAttribute("message", "결재 반려처리 완료");
             }
         } catch (Exception e) {
-            model.addAttribute("globalError", e.getMessage());
+            DraftFormDto draftFormDto = new DraftFormDto();
+            draftFormDto.setDocId(dto.getDocId());
+            draftFormDto.setFormCode(dto.getFormCode());
 
-            return "draft/receivedDraftDetail";
+            redirectAttributes.addFlashAttribute("globalError", e.getMessage());
+            redirectAttributes.addFlashAttribute("draftFormDto", draftFormDto);
+            return "redirect:/draft/receivedDraftDetail";
         }
 
         return "redirect:/draft/receivedDraftList";
