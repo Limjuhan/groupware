@@ -1,9 +1,8 @@
 package ldb.groupware.config;
 
 import jakarta.servlet.MultipartConfigElement;
-import org.apache.coyote.http11.AbstractHttp11Protocol;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import ldb.groupware.interceptor.LoginCheckInterceptor;
+import ldb.groupware.interceptor.MenuAuthorityInterceptor;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +14,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    private final LoginCheckInterceptor loginCheckInterceptor;
+    private final MenuAuthorityInterceptor menuAuthorityInterceptor;
+
+    public WebConfig(LoginCheckInterceptor loginCheckInterceptor, MenuAuthorityInterceptor menuAuthorityInterceptor) {
+        this.loginCheckInterceptor = loginCheckInterceptor;
+        this.menuAuthorityInterceptor = menuAuthorityInterceptor;
+    }
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //클라이언트가 브라우저에서 /**/파일명 요청 시, 실제 서버의 upload/**/ 디렉토리에 있는 파일을 응답으로 보냄.
@@ -32,6 +40,15 @@ public class WebConfig implements WebMvcConfigurer {
 
     }
 
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(loginCheckInterceptor)
+//                .addPathPatterns("/member/**")
+//                .addPathPatterns("/admin/**")
+//                .addPathPatterns("/");
+//
+//    }
+
     @Bean
     public MultipartResolver multipartResolver() {
         StandardServletMultipartResolver resolver = new StandardServletMultipartResolver();
@@ -45,9 +62,6 @@ public class WebConfig implements WebMvcConfigurer {
         factory.setMaxRequestSize(DataSize.ofMegabytes(20));
         return factory.createMultipartConfig();
     }
-
-
-
 
 
 }

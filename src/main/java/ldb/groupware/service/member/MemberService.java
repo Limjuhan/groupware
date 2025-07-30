@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class MemberService {
     }
 
     // 사원등록
-    public boolean insertMember(MemberFormDto dto, MultipartFile file,String loginId) {
+    public boolean insertMember(MemberFormDto dto, MultipartFile file, String loginId) {
         // 입사년도
         String year = String.valueOf(dto.getMemHiredate().getYear());
         // 4자리숫자 조회 + 1
@@ -105,7 +104,7 @@ public class MemberService {
     }
 
     // 사원 설정(부서,직급)
-    public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(UpdateMemberDto dto,String loginId) {
+    public ResponseEntity<ApiResponseDto<UpdateMemberDto>> updateMemberByMng(UpdateMemberDto dto, String loginId) {
         dto.setUpdatedBy(loginId);
         int updated = memberMapper.updateMemberByMng(dto);
         if (updated <= 0) {
@@ -131,7 +130,7 @@ public class MemberService {
     // 새로입력한 비밀번호 암호화
     public boolean checkPw(String memId, String rawPassword) {
         String pass = memberMapper.checkPw(memId);
-        if (pass == null ||  rawPassword == null) {
+        if (pass == null || rawPassword == null) {
             return false;
         }
         return BCrypt.checkpw(rawPassword, pass);
@@ -201,7 +200,7 @@ public class MemberService {
         String ewc = BCrypt.hashpw(tempPw, BCrypt.gensalt());
         int reuslt = memberMapper.changePw(memId, ewc);
         if (reuslt <= 0) {
-           return   ApiResponseDto.fail("비밀번호 변경 실패했습니다");
+            return ApiResponseDto.fail("비밀번호 변경 실패했습니다");
         }
         String email = memberMapper.selectEmail(memId);
 
@@ -240,5 +239,9 @@ public class MemberService {
 
     public List<MemberListDto> getMemberList() {
         return memberMapper.getMemberList();
+    }
+
+    public AuthDto selectAuth(String loginId) {
+        return memberMapper.selectAuth(loginId);
     }
 }

@@ -206,4 +206,10 @@
                  LEFT JOIN dept d ON m.dept_id = d.dept_id
                  LEFT JOIN rank r ON m.rank_id = r.rank_id
     </select>
+
+    <select id="selectAuth" parameterType="string" resultType="AuthDto">
+        SELECT rank_id, dept_id
+        FROM member
+        WHERE mem_id = #{loginId}
+    </select>
 </mapper>
