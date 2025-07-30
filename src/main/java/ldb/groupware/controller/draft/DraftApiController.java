@@ -27,13 +27,11 @@ public class DraftApiController {
 
     @GetMapping("/searchMyDraftList")
     public ResponseEntity<ApiResponseDto<Map<String, Object>>> searchMyDraftList(
+            @SessionAttribute(name = "loginId", required = false) String memId,
             MyDraftSearchDto dto,
             @RequestParam(defaultValue = "1") int page) {
 
-        // 로그인 사용자 ID (임시 하드코딩)
-        String memId = "user008";
         Map<String, Object> result = draftService.searchMyDraftList(memId, dto, page);
-
         return ApiResponseDto.ok(result);
     }
 
@@ -49,12 +47,10 @@ public class DraftApiController {
     @GetMapping("/searchReceivedDraftList")
     public ResponseEntity<ApiResponseDto<Map<String, Object>>> searchReceivedDraftList(
             MyDraftSearchDto dto,
+            @SessionAttribute(name = "loginId", required = false) String memId,
             @RequestParam(defaultValue = "1") int page) {
 
-        // 로그인 사용자 ID (임시 하드코딩)
-        String memId = "user008";
         Map<String, Object> result = draftService.searchReceivedDraftList(memId, dto, page);
-
         return ApiResponseDto.ok(result);
     }
 

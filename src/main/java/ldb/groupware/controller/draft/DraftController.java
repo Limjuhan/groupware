@@ -7,6 +7,7 @@ import ldb.groupware.dto.common.CommonConst;
 import ldb.groupware.dto.common.CommonTypeDto;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
+import ldb.groupware.dto.draft.DraftUpdateDto;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.common.CommonService;
 import ldb.groupware.service.draft.DraftService;
@@ -18,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Locale;
@@ -51,14 +53,9 @@ public class DraftController {
     @GetMapping("draftForm")
     public String draftForm(
             @RequestParam(value = "docId", required = false) Integer docId,
-            @RequestParam(value = "memId", required = false) String memId,
+            @SessionAttribute(name = "loginId", required = false) String memId,
             @RequestParam(value = "formCode", required = false) String formCode,
             Model model) {
-
-        // 세션 또는 고정 아이디 (테스트용)
-        if (memId == null) {
-            memId = "user008";
-        }
 
         // 연차 정보 및 결재자 목록 조회
         Integer remainAnnual = draftService.getRemainAnnual(memId);
@@ -92,12 +89,13 @@ public class DraftController {
     }
 
     /**
-     *TODO: 1. 알람테이블 저장 처리 아직 안함.
-     *      2. 1차,2차,참조자 중복없도록 방어로직 필요
+     * TODO:이용자id, 문서id로 alarm테이블에 insert 단, 임시저장은 저장처리 X. 1차결재자, 참조자만 등록
      *
+     * <p>
+     * <p>
      * 저장프로세스
      * 1. 임시저장글 -> 임시저장 or 제출
-     *  -. 임시저장한글 다시 처리시 기존저장했던글 양식과 불일치시 저장불가.
+     * -. 임시저장한글 다시 처리시 기존저장했던글 양식과 불일치시 저장불가.
      * <p>
      * 2. 새글 -> 임시저장 or 제출
      * <p>
@@ -126,12 +124,11 @@ public class DraftController {
             @RequestParam(value = "attachments", required = false) List<MultipartFile> attachments,
             @RequestParam(value = "action", required = false) String action,
             @RequestParam(value = "savedFormCode", required = false) String savedFormCode,
+            @SessionAttribute(name = "loginId", required = false) String memId,
             Model model) {
 
+        // 임시저장or제출 2가지 경우가 맞는지 검증
         validateAction(action);
-
-        // 임시 하드코딩
-        String memId = "user008";
         // 1차,2차,참조자 사원리스트
         List<DraftForMemberDto> memberList = draftService.getMemberList();
         // 잔여 연차조회
@@ -194,7 +191,6 @@ public class DraftController {
     }
 
 
-
     private void validateAction(String action) {
         if (!"save".equals(action) && !"temporary".equals(action)) {
             throw new IllegalArgumentException(
@@ -236,12 +232,7 @@ public class DraftController {
 
 
     /**
-     * 내전자결재 상세페이지
-     *
-     * 참조자 : 승인,반려버튼 안보이고 클릭시 클릭한유저에대한 검증 필요
-     * 1차결재자 : 1차결재대기상태일때만 승인or반려버튼 조회가능.클릭시 클릭한유저에대한 검증 필요
-     * 2차결재자: 1차결재승인일때만 승인or반려버튼 조회가능.클릭시 클릭한유저에대한 검증 필요
-     *
+     *TODO:이용자id, 문서id로 alarm테이블에 row존재하는지 확인하여 readYn='Y' 업데이트
      *
      * @param model
      * @return draft/draftDetail
@@ -280,22 +271,40 @@ public class DraftController {
         return "draft/receivedDraftList";
     }
 
+    /**
+     * TODO:이용자id, 문서id로 alarm테이블에 row존재하는지 확인하여 readYn='Y' 업데이트
+     *
+     * 참조자 : 승인,반려버튼 안보이고 클릭시 클릭한유저에대한 검증 필요
+     * 1차결재자 : 1차결재대기상태일때만 승인or반려버튼 조회가능.클릭시 클릭한유저에대한 검증 필요
+     * 2차결재자: 2차결재대기일때만 승인or반려버튼 조회가능.클릭시 클릭한유저에대한 검증 필요
+     *
+     *
+     * @param dto
+     * @param memId
+     * @param model
+     * @return
+     */
     @GetMapping("receivedDraftDetail")
     public String getReceivedDraftDetail(DraftFormDto dto,
+                                         @SessionAttribute(name = "loginId", required = false) String memId,
                                          Model model) {
 
-        System.out.println("dto정보 확인: " + dto);
         try {
             if (dto.getDocId() == null) {
                 throw new IllegalArgumentException("문서가 존재하지 않습니다.");
             }
 
+            // 현재 잔여연차 조회
+            Integer remainAnnual = draftService.getRemainAnnual(memId);
+
             // 문서 상세 정보 조회
             DraftFormDto draftInfo = draftService.getMyDraftDetail(dto);
+
             // 첨부파일조회
             Optional<List<Attachment>> optionalAttachmentList =
                     attachmentService.getAttachments(dto.getDocId().toString(), dto.getAttachType());
 
+            model.addAttribute("remainDays", remainAnnual);
             model.addAttribute("draftDetail", draftInfo);
             optionalAttachmentList.ifPresent(attachments -> {
                 model.addAttribute("attachments", attachments);
@@ -306,6 +315,46 @@ public class DraftController {
             return "draft/receivedDraftDetail";
         }
 
+    }
+
+    /**
+     * 결재자-> 승인or반려
+     *
+     * 1.차결재대기
+     *  -> 세션에서 가져온 id와 해당문서의 1차결재자id가 동일한지 검증
+     *
+     *  -> approval_document의 status 4(2차결재대기)로 변경
+     *     approval_line의 1차결재자id(memId)기준 comment 업데이트
+     *     approval_line에서 docId기준 status값 4로 일괄 업데이트
+     *     alarm테이블 2차결재자, 기안자 insert. 참조자는 readYn='Y' update
+     *
+     * 2.차결재대기
+     *  -> 세션에서 가져온 id와 해당문서의 2차결재자id가 동일한지 검증
+     *
+     *  -> 연차관련 2차결재승인시에는 annual_leave에서 남은연차일수(remainDays) 차감해줘야됨.
+     *     수정일시는 현재시간, 수정자는 2차결재담당자
+     *
+     *     approval_document의 status 4(2차결재대기)로 변경
+     *
+     *
+     * @param dto
+     * @param memId
+     * @param redirectAttributes
+     * @return
+     */
+    @GetMapping("updateDraft")
+    public String updateDraft(DraftUpdateDto dto,
+                              @SessionAttribute(name = "loginId") String memId,
+                              RedirectAttributes redirectAttributes) {
+
+        if ("approve".equals(dto.getAction())) {
+            draftService.approveDraft(dto, memId);
+            redirectAttributes.addFlashAttribute("message", "결재 승인");
+        } else if ("reject".equals(dto.getAction())) {
+            draftService.rejectDraft(dto, memId);
+            redirectAttributes.addFlashAttribute("message", "결재 반려");
+        }
+        return "redirect:/draft/receivedDraftList";
     }
 
     // 결재대기상태 공통코드 조회

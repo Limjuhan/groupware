@@ -325,6 +325,11 @@
             alert(errorMessage);
         }
 
+        var confirmMsg = '${message}';
+        if (confirmMsg !== '') {
+            alert(confirmMsg);
+        }
+
         $("#searchKeyword").on("keydown", function(e) {
             if (e.key === "Enter" ||  e.keyCode === 13) {
                 searchMyDraftList();
