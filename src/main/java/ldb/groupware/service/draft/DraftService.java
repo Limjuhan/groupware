@@ -308,7 +308,7 @@ public class DraftService {
 
     //TODO: 마지막 작업구간. 7/30 오후 6시
     public void approveDraft(DraftUpdateDto dto, String memId) {
-
+        
     }
 
     public void rejectDraft(DraftUpdateDto dto, String memId) {

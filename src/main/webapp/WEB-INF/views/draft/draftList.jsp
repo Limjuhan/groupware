@@ -7,22 +7,6 @@
     <meta charset="UTF-8">
     <title>전자결재 - LDBSOFT</title>
     <style>
-        body { color: white; }
-        h2 { text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6); }
-
-        #documentTable.bg-glass th,
-        #documentTable.bg-glass td {
-            background: rgba(255, 255, 255, 0.05) !important;
-            backdrop-filter: blur(1px);
-            -webkit-backdrop-filter: blur(1px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: white;
-        }
-
-        a.link-white {
-            color: #cfe2ff;
-            text-decoration: underline;
-        }
 
         a.link-white:hover {
             color: #ffffff;
@@ -35,36 +19,11 @@
             position: relative;
         }
 
-        .form-select.bg-glass.custom-select-arrow {
-            appearance: none;
-            background: rgba(255, 255, 255, 0.05) !important;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(1px);
-            padding-right: 2.5rem;
-            border-radius: 0.5rem;
-        }
-
-        .select-wrapper::after {
-            content: "▼";
-            position: absolute;
-            top: 65%;
-            right: 1.0rem;
-            transform: translateY(-40%);
-            pointer-events: none;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .form-select.bg-glass option {
-            background-color: #ffffff;
-            color: #000000;
-        }
     </style>
 </head>
 <body>
 
-<div class="container bg-glass p-4 shadow rounded">
+<div class="container bg-glass p-4  rounded">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>전자결재</h2>
         <a href="draftForm" class="btn btn-primary bg-glass">+ 새 결재문서 작성</a>
@@ -75,7 +34,7 @@
         <!-- 결재 상태 -->
         <div class="col-md-3 select-wrapper">
             <label for="searchStatus" class="form-label small mb-1">결재 상태</label>
-            <select id="searchStatus" class="form-select bg-glass custom-select-arrow">
+            <select id="searchStatus" class="form-select">
                 <option value="">전체</option>
                 <c:forEach var="status" items="${approvalStatusList}">
                     <option value="${status.commCode}">${status.commName}</option>
@@ -86,7 +45,7 @@
         <!-- 검색 기준 -->
         <div class="col-md-3 select-wrapper">
             <label for="searchType" class="form-label small mb-1">검색 기준</label>
-            <select id="searchType" class="form-select bg-glass custom-select-arrow">
+            <select id="searchType" class="form-select">
                 <option value="title">제목</option>
                 <option value="content">내용</option>
             </select>
@@ -223,35 +182,35 @@
         // 처음으로
         if (pageDto.page > 1) {
             html += "<li class='page-item'>" +
-                "<a class='page-link bg-glass text-white' href='#' onclick='searchMyDraftList(1)'>&laquo;&laquo;</a>" +
+                "<a class='page-link bg-glass ' href='#' onclick='searchMyDraftList(1)'>&laquo;&laquo;</a>" +
                 "</li>";
         }
 
         // 이전
         if (pageDto.page > 1) {
             html += "<li class='page-item'>" +
-                "<a class='page-link bg-glass text-white' href='#' onclick='searchMyDraftList(" + (pageDto.page - 1) + ")'>&laquo;</a>" +
+                "<a class='page-link bg-glass ' href='#' onclick='searchMyDraftList(" + (pageDto.page - 1) + ")'>&laquo;</a>" +
                 "</li>";
         }
 
         // 페이지 번호
         for (let i = pageDto.startPage; i <= pageDto.endPage; i++) {
             html += "<li class='page-item" + (pageDto.page === i ? " active" : "") + "'>" +
-                "<a class='page-link bg-glass text-white' href='#' onclick='searchMyDraftList(" + i + ")'>" + i + "</a>" +
+                "<a class='page-link bg-glass ' href='#' onclick='searchMyDraftList(" + i + ")'>" + i + "</a>" +
                 "</li>";
         }
 
         // 다음
         if (pageDto.page < pageDto.totalPages) {
             html += "<li class='page-item'>" +
-                "<a class='page-link bg-glass text-white' href='#' onclick='searchMyDraftList(" + (pageDto.page + 1) + ")'>&raquo;</a>" +
+                "<a class='page-link bg-glass ' href='#' onclick='searchMyDraftList(" + (pageDto.page + 1) + ")'>&raquo;</a>" +
                 "</li>";
         }
 
         // 끝으로
         if (pageDto.page < pageDto.totalPages) {
             html += "<li class='page-item'>" +
-                "<a class='page-link bg-glass text-white' href='#' onclick='searchMyDraftList(" + pageDto.totalPages + ")'>&raquo;&raquo;</a>" +
+                "<a class='page-link bg-glass ' href='#' onclick='searchMyDraftList(" + pageDto.totalPages + ")'>&raquo;&raquo;</a>" +
                 "</li>";
         }
 

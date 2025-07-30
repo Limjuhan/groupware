@@ -6,17 +6,7 @@
     <meta charset="UTF-8"/>
     <title>받은 전자결재 - LDBSOFT</title>
     <style>
-        body { color: white; }
-
-        .container { max-width: 1200px; margin-top: 40px; }
-
-        .table.bg-glass td, .table.bg-glass th {
-            background: rgba(255, 255, 255, 0.05) !important;
-            backdrop-filter: blur(1px);
-            -webkit-backdrop-filter: blur(1px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: white;
-        }
+        .container { max-width: 1500px; margin-top: 80px; }
 
         .select-wrapper {
             position: relative;
@@ -32,34 +22,20 @@
             color: white;
             font-size: 1.2rem;
         }
-
-        .form-select.bg-glass option {
-            background-color: #ffffff;
-            color: #000000;
-        }
-
-        a.link-white {
-            color: #cfe2ff;
-            text-decoration: underline;
-        }
-
-        a.link-white:hover {
-            color: #ffffff;
-        }
     </style>
 </head>
 <body>
 
-<div class="container bg-glass p-4 shadow rounded">
+<div class="container  p-4  rounded">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-shadow">받은 전자결재</h2>
+        <h2 class="text-">받은 전자결재</h2>
     </div>
 
     <!-- 검색 필터 -->
     <div class="row mb-3 align-items-end g-2">
         <div class="col-md-3 select-wrapper">
             <label for="searchStatus" class="form-label small mb-1">결재 상태</label>
-            <select id="searchStatus" class="form-select bg-glass">
+            <select id="searchStatus" class="form-select ">
                 <option value="">전체</option>
                 <c:forEach var="status" items="${approvalStatusList}">
                     <option value="${status.commCode}">${status.commName}</option>
@@ -69,7 +45,7 @@
 
         <div class="col-md-3 select-wrapper">
             <label for="searchType" class="form-label small mb-1">검색 기준</label>
-            <select id="searchType" class="form-select bg-glass">
+            <select id="searchType" class="form-select ">
                 <option value="title">제목</option>
                 <option value="content">내용</option>
             </select>
@@ -77,17 +53,17 @@
 
         <div class="col-md-4">
             <label for="searchKeyword" class="form-label small mb-1">검색어 입력</label>
-            <input type="text" class="form-control bg-glass" id="searchKeyword" placeholder="검색어 입력">
+            <input type="text" class="form-control " id="searchKeyword" placeholder="검색어 입력">
         </div>
 
         <div class="col-md-2">
             <label class="form-label small mb-1">&nbsp;</label>
-            <button type="button" class="btn btn-primary w-100 bg-glass" onclick="searchReceivedList()">검색</button>
+            <button type="button" class="btn btn-primary w-100 " onclick="searchReceivedList()">검색</button>
         </div>
     </div>
 
     <!-- 결재문서 테이블 -->
-    <table class="table table-hover table-bordered text-center align-middle bg-glass" id="approvalTable">
+    <table class="table table-hover table-bordered text-center align-middle " id="approvalTable">
         <thead class="table-light">
         <tr>
             <th>문서번호</th>
@@ -178,18 +154,18 @@
         let html = "<nav><ul class='pagination pagination-sm'>";
 
         if (pageDto.page > 1) {
-            html += "<li class='page-item'><a class='page-link bg-glass text-white' href='#' onclick='searchReceivedList(1)'>&laquo;&laquo;</a></li>";
-            html += "<li class='page-item'><a class='page-link bg-glass text-white' href='#' onclick='searchReceivedList(" + (pageDto.page - 1) + ")'>&laquo;</a></li>";
+            html += "<li class='page-item'><a class='page-link  text-white' href='#' onclick='searchReceivedList(1)'>&laquo;&laquo;</a></li>";
+            html += "<li class='page-item'><a class='page-link  text-white' href='#' onclick='searchReceivedList(" + (pageDto.page - 1) + ")'>&laquo;</a></li>";
         }
 
         for (let i = pageDto.startPage; i <= pageDto.endPage; i++) {
             html += "<li class='page-item" + (pageDto.page === i ? " active" : "") + "'>" +
-                "<a class='page-link bg-glass text-white' href='#' onclick='searchReceivedList(" + i + ")'>" + i + "</a></li>";
+                "<a class='page-link  text-white' href='#' onclick='searchReceivedList(" + i + ")'>" + i + "</a></li>";
         }
 
         if (pageDto.page < pageDto.totalPages) {
-            html += "<li class='page-item'><a class='page-link bg-glass text-white' href='#' onclick='searchReceivedList(" + (pageDto.page + 1) + ")'>&raquo;</a></li>";
-            html += "<li class='page-item'><a class='page-link bg-glass text-white' href='#' onclick='searchReceivedList(" + pageDto.totalPages + ")'>&raquo;&raquo;</a></li>";
+            html += "<li class='page-item'><a class='page-link  text-white' href='#' onclick='searchReceivedList(" + (pageDto.page + 1) + ")'>&raquo;</a></li>";
+            html += "<li class='page-item'><a class='page-link  text-white' href='#' onclick='searchReceivedList(" + pageDto.totalPages + ")'>&raquo;&raquo;</a></li>";
         }
 
         html += "</ul></nav>";

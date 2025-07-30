@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class Alaram {
+public class Alarm {
 
     private int alaramId;
     private String memId;

@@ -16,88 +16,153 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-        /* 스타일 생략 (기존과 동일) */
-        body { color: white; background-color: #1e1e1e; }
-        .container { max-width: 900px; margin-top: 40px; }
-        .form-template { margin-top: 20px; }
-        .text-danger { color: #ff6b6b; font-size: 0.9rem; }
-        .form-control, .form-select, select, input, textarea {
-            background-color: rgba(255, 255, 255, 0.05) !important;
-            color: white !important;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        /* Select wrapper 스타일링 */
+        .select-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
         }
-        .form-select option, select option {
-            background-color: #1e1e1e;
-            color: white;
-        }
-        .table, .table-bordered th, .table-bordered td {
-            background-color: rgba(255, 255, 255, 0.05) !important;
-            color: white !important;
-            border-color: rgba(255, 255, 255, 0.3) !important;
-        }
+
+        /* Select2 드롭다운 스타일 */
         .select2-container--default .select2-selection--single {
-            background-color: rgba(255, 255, 255, 0.05) !important;
-            color: white !important;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 0.5rem;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            padding-left: 0.75rem;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            background-color: #fff;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
-        .select2-container--default .select2-results > .select2-results__options {
-            background-color: #1e1e1e !important;
-            color: white !important;
-        }
-        .select2-results__option--highlighted.select2-results__option--selectable {
-            background-color: #0d6efd !important;
-            color: white !important;
-        }
-        .select2-container--default .select2-results__option {
-            background-color: #1e1e1e;
-            color: white;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            color: white !important;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__arrow {
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .select2-search__field {
-            background-color: #1e1e1e !important;
-            color: white !important;
-        }
-        .form-select,
-        .select2-container--default .select2-selection--single,
+
+        /* Select2 드롭다운 폭 조정 */
         .select2-container {
             width: 100% !important;
         }
-        .note-editor.note-frame {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+
+        .select2-container--default .select2-dropdown {
+            min-width: 300px !important; /* 드롭다운 최소 폭 확장 */
+            max-width: 500px !important; /* 드롭다운 최대 폭 제한 */
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
         }
-        .note-editable {
-            background-color: #2c2c2c;
-            color: white;
+
+        .select2-container--default .select2-results__option {
+            font-size: 0.875rem;
+            padding: 0.5rem;
+            white-space: normal; /* 텍스트 줄바꿈 허용 */
         }
+
+        /* Select2 포커스 및 호버 */
+        .select2-container--default .select2-selection--single:focus,
+        .select2-container--default .select2-selection--single:hover {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* Select2 화살표 */
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: calc(2.25rem + 2px);
+            top: 0;
+            right: 10px;
+        }
+
+        /* Select2 플레이스홀더 */
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #6c757d;
+        }
+
+        /* 결재자 및 참조자 테이블 스타일 */
+        .approver-table, .referrer-table {
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .approver-table th, .referrer-table th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            color: #333;
+            padding: 0.75rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #dee2e6;
+            width: 20%;
+        }
+
+        .approver-table td, .referrer-table td {
+            padding: 0.75rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        /* 참조자 표시 영역 */
+        #referrerDisplay {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            min-height: 2.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 0.5rem;
+        }
+
+        /* 참조자 아이템 */
         .referrer-item {
-            display: inline-block;
-            margin: 5px;
-            padding: 5px 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
+            background-color: #e9ecef;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            margin: 0.25rem;
+            font-size: 0.875rem;
+            color: #333;
+            display: inline-flex;
+            align-items: center;
         }
+
+        /* 참조자 삭제 버튼 */
         .referrer-item .btn-remove {
-            margin-left: 8px;
-            color: #ff6b6b;
             cursor: pointer;
+            color: #dc3545;
+            margin-left: 0.5rem;
+            font-size: 1rem;
+            transition: color 0.2s ease;
+        }
+
+        .referrer-item .btn-remove:hover {
+            color: #b02a37;
+        }
+
+        /* 에러 메시지 */
+        .text-danger {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* 반응형 조정 */
+        @media (max-width: 768px) {
+            .select2-container--default .select2-selection--single {
+                font-size: 0.875rem;
+            }
+
+            .select2-container--default .select2-dropdown {
+                min-width: 200px !important; /* 모바일에서 드롭다운 폭 조정 */
+            }
+
+            .referrer-item {
+                font-size: 0.75rem;
+            }
+
+            .approver-table th, .approver-table td,
+            .referrer-table th, .referrer-table td {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container bg-glass p-4 shadow rounded">
+<div class="container p-4 rounded">
     <h2 class="mb-4">결재문서 작성</h2>
 
     <form:form method="post" action="insertMyDraft" modelAttribute="draftFormDto" enctype="multipart/form-data">
@@ -108,7 +173,7 @@
         <!-- 결재양식 -->
         <div class="mb-3 select-wrapper">
             <label class="form-label">결재양식 선택 *</label>
-            <form:select path="formCode" cssClass="form-select bg-glass" id="formTypeSelect">
+            <form:select path="formCode" cssClass="form-select" id="formTypeSelect">
                 <form:option value="">양식을 선택하세요</form:option>
                 <form:option value="app_01">휴가신청서</form:option>
                 <form:option value="app_02">프로젝트 제안서</form:option>
@@ -119,50 +184,66 @@
         </div>
 
         <!-- 결재자 선택 -->
-        <div class="row mb-3 dependent-fields d-none">
-            <div class="col-md-6 select-wrapper">
-                <label class="form-label">1차 결재자 *</label>
-                <form:select path="approver1" cssClass="form-select bg-glass employee-select">
-                    <form:option value="">직원을 검색하세요</form:option>
-                    <c:forEach var="m" items="${draftMembers}">
-                        <form:option value="${m.memId}">[${m.deptName}, ${m.rankName}]${m.memName}&lt;${m.memEmail}&gt;</form:option>
-                    </c:forEach>
-                </form:select>
-                <form:errors path="approver1" cssClass="text-danger" />
-            </div>
-            <div class="col-md-6 select-wrapper">
-                <label class="form-label">2차 결재자 *</label>
-                <form:select path="approver2" cssClass="form-select bg-glass employee-select">
-                    <form:option value="">직원을 검색하세요</form:option>
-                    <c:forEach var="m" items="${draftMembers}">
-                        <form:option value="${m.memId}">[${m.deptName}, ${m.rankName}]${m.memName}&lt;${m.memEmail}&gt;</form:option>
-                    </c:forEach>
-                </form:select>
-                <form:errors path="approver2" cssClass="text-danger" />
-            </div>
+        <div class="mb-3 dependent-fields d-none">
+            <table class="table table-bordered approver-table">
+                <tr>
+                    <th>1차 결재자 *</th>
+                    <td>
+                        <div class="select-wrapper">
+                            <form:select path="approver1" cssClass="form-select employee-select">
+                                <form:option value="">직원을 검색하세요</form:option>
+                                <c:forEach var="m" items="${draftMembers}">
+                                    <form:option value="${m.memId}">[${m.deptName}, ${m.rankName}]${m.memName}&lt;${m.memEmail}&gt;</form:option>
+                                </c:forEach>
+                            </form:select>
+                            <form:errors path="approver1" cssClass="text-danger" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>2차 결재자 *</th>
+                    <td>
+                        <div class="select-wrapper">
+                            <form:select path="approver2" cssClass="form-select employee-select">
+                                <form:option value="">직원을 검색하세요</form:option>
+                                <c:forEach var="m" items="${draftMembers}">
+                                    <form:option value="${m.memId}">[${m.deptName}, ${m.rankName}]${m.memName}&lt;${m.memEmail}&gt;</form:option>
+                                </c:forEach>
+                            </form:select>
+                            <form:errors path="approver2" cssClass="text-danger" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
 
-        <!-- 참조자(다중 선택, JS 사용) -->
-        <div class="mb-3 select-wrapper dependent-fields d-none">
-            <label class="form-label">참조자</label>
-            <select class="form-select bg-glass employee-select" id="referrerSelect">
-                <option value="">직원을 선택하세요</option>
-                <c:forEach var="m" items="${draftMembers}">
-                    <option value='{"id":"${m.memId}","dept":"${m.deptName}","role":"${m.rankName}","name":"${m.memName}","email":"${m.memEmail}"}'
-                            <c:if test="${fn:contains(draftFormDto.referrers, m.memId)}">selected</c:if>
-                    >[${m.deptName}, ${m.rankName}]${m.memName}&lt;${m.memEmail}&gt;</option>
-                </c:forEach>
-            </select>
-        </div>
+        <!-- 참조자 -->
         <div class="mb-3 dependent-fields d-none">
-            <div id="referrerDisplay" class="bg-glass p-2"></div>
-            <input type="hidden" name="referrers" id="referrersHidden" value="${draftFormDto.referrers}" />
+            <table class="table table-bordered referrer-table">
+                <tr>
+                    <th>참조자</th>
+                    <td>
+                        <div class="select-wrapper">
+                            <select class="form-select employee-select" id="referrerSelect">
+                                <option value="">직원을 선택하세요</option>
+                                <c:forEach var="m" items="${draftMembers}">
+                                    <option value='{"id":"${m.memId}","dept":"${m.deptName}","role":"${m.rankName}","name":"${m.memName}","email":"${m.memEmail}"}'
+                                            <c:if test="${fn:contains(draftFormDto.referrers, m.memId)}">selected</c:if>
+                                    >[${m.deptName}, ${m.rankName}]${m.memName}&lt;${m.memEmail}&gt;</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div id="referrerDisplay" class="p-2"></div>
+                        <input type="hidden" name="referrers" id="referrersHidden" value="${draftFormDto.referrers}" />
+                    </td>
+                </tr>
+            </table>
         </div>
 
         <!-- 마감기한 -->
         <div class="mb-3 dependent-fields d-none">
             <label class="form-label">문서종료일 *</label>
-            <input type="date" name="docEndDate" cssClass="form-control bg-glass" value="${draftFormDto.docEndDateStr}"/>
+            <input type="date" name="docEndDate" cssClass="form-control" value="${draftFormDto.docEndDateStr}"/>
             <form:errors path="docEndDate" cssClass="text-danger" />
         </div>
 
@@ -173,7 +254,7 @@
                 <tr>
                     <th>휴가 유형</th>
                     <td>
-                        <form:select path="leaveCode" cssClass="form-select bg-glass">
+                        <form:select path="leaveCode" cssClass="form-select">
                             <form:option value="">선택</form:option>
                             <form:option value="ANNUAL">연차</form:option>
                             <form:option value="HALF">반차</form:option>
@@ -185,8 +266,8 @@
                 <tr>
                     <th>휴가 기간</th>
                     <td>
-                        <input type="date" name="leaveStart" class="bg-glass" value="${draftFormDto.leaveStartStr}" /> ~
-                        <input type="date" name="leaveEnd" class="bg-glass" value="${draftFormDto.leaveEndStr}" />
+                        <input type="date" name="leaveStart" class="" value="${draftFormDto.leaveStartStr}" /> ~
+                        <input type="date" name="leaveEnd" class="" value="${draftFormDto.leaveEndStr}" />
                         <form:errors path="leaveStart" cssClass="text-danger" />
                         <form:errors path="leaveEnd" cssClass="text-danger" />
                     </td>
@@ -204,13 +285,13 @@
             <table class="table table-bordered">
                 <tr>
                     <th>프로젝트명</th>
-                    <td><form:input path="projectName" cssClass="form-control bg-glass" /></td>
+                    <td><form:input path="projectName" cssClass="form-control" /></td>
                 </tr>
                 <tr>
                     <th>예상 기간</th>
                     <td>
-                        <input type="date" name="projectStart" class="bg-glass" value="${draftFormDto.projectStartStr}" /> ~
-                        <input type="date" name="projectEnd" class="bg-glass" value="${draftFormDto.projectEndStr}" />
+                        <input type="date" name="projectStart" class="" value="${draftFormDto.projectStartStr}" /> ~
+                        <input type="date" name="projectEnd" class="" value="${draftFormDto.projectEndStr}" />
                     </td>
                 </tr>
             </table>
@@ -222,15 +303,15 @@
             <table class="table table-bordered">
                 <tr>
                     <th>지출 항목</th>
-                    <td><form:input path="exName" cssClass="form-control bg-glass" /></td>
+                    <td><form:input path="exName" cssClass="form-control" /></td>
                 </tr>
                 <tr>
                     <th>금액</th>
-                    <td><form:input type="number" path="exAmount" cssClass="form-control bg-glass" /></td>
+                    <td><form:input type="number" path="exAmount" cssClass="form-control" /></td>
                 </tr>
                 <tr>
                     <th>사용일자</th>
-                    <td><form:input type="date" path="useDate" cssClass="form-control bg-glass" /></td>
+                    <td><form:input type="date" path="useDate" cssClass="form-control" /></td>
                 </tr>
             </table>
         </div>
@@ -241,7 +322,7 @@
             <table class="table table-bordered">
                 <tr>
                     <th>퇴사 희망일</th>
-                    <td><form:input type="date" path="resignDate" cssClass="form-control bg-glass" /></td>
+                    <td><form:input type="date" path="resignDate" cssClass="form-control" /></td>
                 </tr>
             </table>
         </div>
@@ -249,7 +330,7 @@
         <!-- 제목/내용/첨부 -->
         <div class="mb-3 form-template d-none">
             <label class="form-label">제목 *</label>
-            <form:input path="title" cssClass="form-control bg-glass" />
+            <form:input path="title" cssClass="form-control" />
             <form:errors path="title" cssClass="text-danger" />
         </div>
         <div class="mb-3 form-template d-none">
@@ -259,7 +340,7 @@
         </div>
         <div class="mb-3 form-template d-none">
             <label class="form-label">첨부파일</label>
-            <input type="file" class="form-control bg-glass" name="attachments" multiple>
+            <input type="file" class="form-control" name="attachments" multiple>
         </div>
         <c:if test="${not empty attachments}">
             <div class="mt-2">
@@ -280,9 +361,9 @@
 
         <!-- 제출 버튼 -->
         <div class="text-end mt-4">
-            <button type="submit" name="action" value="save" class="btn btn-primary bg-glass">제출</button>
-            <button type="submit" name="action" value="temporary" class="btn btn-secondary bg-glass">임시저장</button>
-            <a href="getMyDraftList" class="btn btn-light bg-glass">목록으로</a>
+            <button type="submit" name="action" value="save" class="btn btn-primary">제출</button>
+            <button type="submit" name="action" value="temporary" class="btn btn-secondary">임시저장</button>
+            <a href="getMyDraftList" class="btn btn-light">목록으로</a>
         </div>
     </form:form>
 </div>

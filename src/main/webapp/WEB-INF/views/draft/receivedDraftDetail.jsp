@@ -10,10 +10,6 @@
     <title>받은 전자결재 상세보기 - LDBSOFT</title>
 
     <style>
-        body {
-            color: white;
-        }
-
         .container {
             max-width: 1000px;
             margin-top: 40px;
@@ -23,26 +19,13 @@
             margin-top: 30px;
             font-weight: bold;
         }
-
-        .table.bg-glass td,
-        .table.bg-glass th {
-            background: rgba(255, 255, 255, 0.05) !important;
-            backdrop-filter: blur(1px);
-            -webkit-backdrop-filter: blur(1px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: white;
-        }
-
-        .text-shadow {
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
-        }
     </style>
 </head>
 <body>
 
-<div class="container bg-glass p-4 shadow rounded">
+<div class="container  p-4  rounded">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-shadow">받은 전자결재 상세보기</h2>
+        <h2 class="text-">받은 전자결재 상세보기</h2>
     </div>
 
     <%-- 에러 메시지 출력   --%>
@@ -55,7 +38,7 @@
     </c:if>
 
     <!-- 문서 기본 정보 -->
-    <table class="table table-bordered mt-4 bg-glass">
+    <table class="table table-bordered mt-4 ">
         <tbody>
         <tr>
             <th style="width: 15%;">문서번호</th>
@@ -90,7 +73,7 @@
     <c:choose>
         <c:when test="${draftDetail.formCode == 'app_01'}">
             <div class="section-title">휴가신청서</div>
-            <div class="card bg-glass text-white mb-4">
+            <div class="card   mb-4">
                 <div class="card-body">
                     <p><strong>휴가 유형:</strong> ${draftDetail.leaveCode}</p>
                     <p><strong>휴가 기간:</strong> ${draftDetail.leaveStartStr} ~ ${draftDetail.leaveEndStr}</p>
@@ -102,7 +85,7 @@
 
         <c:when test="${draftDetail.formCode == 'app_02'}">
             <div class="section-title">프로젝트 제안서</div>
-            <div class="card bg-glass text-white mb-4">
+            <div class="card   mb-4">
                 <div class="card-body">
                     <p><strong>프로젝트명:</strong> ${draftDetail.projectName}</p>
                     <p><strong>기간:</strong> ${draftDetail.projectStartStr} ~ ${draftDetail.projectEndStr}</p>
@@ -112,11 +95,11 @@
 
         <c:when test="${draftDetail.formCode == 'app_03'}">
             <div class="section-title">지출결의서</div>
-            <div class="card bg-glass text-white mb-4">
+            <div class="card mb-4">
                 <div class="card-body">
                     <p><strong>지출 내역:</strong> ${draftDetail.exName}</p>
                     <p><strong>지출 금액:</strong>
-                        <fmt:formatNumber value="${draftDetail.exAmount}" type="currency" currencySymbol="₩"/>
+                        <fmt:formatNumber value="${draftDetail.exAmount}" type="currency" currencySymbol="₩"/>원
                     </p>
                     <p><strong>사용일자:</strong> ${draftDetail.useDateStr}</p>
                 </div>
@@ -125,7 +108,7 @@
 
         <c:when test="${draftDetail.formCode == 'app_04'}">
             <div class="section-title">사직서</div>
-            <div class="card bg-glass text-white mb-4">
+            <div class="card   mb-4">
                 <div class="card-body">
                     <p><strong>사직일자:</strong> ${draftDetail.resignDateStr}</p>
                 </div>
@@ -134,7 +117,7 @@
 
         <c:otherwise>
             <div class="section-title">기타 양식</div>
-            <div class="card bg-glass text-white mb-4">
+            <div class="card   mb-4">
                 <div class="card-body">
                     <p>해당 양식에 대한 상세 정보가 없습니다.</p>
                 </div>
@@ -143,8 +126,8 @@
     </c:choose>
 
     <!-- 본문 내용 -->
-    <div class="section-title text-shadow">본문 내용</div>
-    <div class="border p-3 bg-glass">
+    <div class="section-title text-">본문 내용</div>
+    <div class="border p-3 ">
         ${draftDetail.content}
     </div>
 
@@ -172,7 +155,7 @@
         <input type="hidden" name="status" value="${draftDetail.status}"/>
         <div class="mb-3">
             <label class="form-label">결재 의견 (선택)</label>
-            <textarea class="form-control bg-glass" name="comment" rows="3"
+            <textarea class="form-control " name="comment" rows="3"
                       placeholder="결재 의견을 입력하세요 (선택 사항)"></textarea>
         </div>
 
@@ -180,8 +163,8 @@
                     || ((draftDetail.status == 2 || draftDetail.status == 4)
                     && draftDetail.approver2 == sessionScope.loginId)}">
         <div class="d-flex justify-content-start gap-2">
-                <button type="submit" name="action" value="approve" class="btn btn-success bg-glass">승인</button>
-                <button type="submit" name="action" value="reject" class="btn btn-danger bg-glass">반려</button>
+                <button type="submit" name="action" value="approve" class="btn btn-success ">승인</button>
+                <button type="submit" name="action" value="reject" class="btn btn-danger ">반려</button>
             </div>
         </c:if>
 
@@ -190,7 +173,7 @@
 
     <div class="d-flex justify-content-between align-items-center mt-4">
         <a href="receivedDraftList" class="btn btn-secondary">← 목록으로</a>
-        <button onclick="window.print()" class="btn btn-outline-light bg-glass">인쇄</button>
+        <button onclick="window.print()" class="btn btn-outline-light ">인쇄</button>
     </div>
 </div>
 

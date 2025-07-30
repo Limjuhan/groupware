@@ -55,6 +55,8 @@ public class DraftFormDto {
 
     private String attachType = "D"; // 전자결재 첨부파일 타입
 
+    private String readYn;
+
     // 휴가신청서
     private String leaveCode;
     private LocalDate leaveStart;
