@@ -131,86 +131,71 @@
 
 <div class="container-fluid px-3">
     <div class="content-wrapper">
-        <div class="col-md-2 me-2 sidebar">
+        <div class="col-md-2 bg-glass me-2 sidebar">
             <ul class="nav flex-column nav-pills" id="sidebarMenu">
                 <li class="nav-item"><a class="nav-link" href="/"><i class="fa-solid fa-house"></i> 홈</a></li>
-                <li class="nav-item"><a class="nav-link" href="/member/getMemberInfo"><i class="fa-solid fa-user"></i>
-                    개인정보</a></li>
+                <li class="nav-item"><a class="nav-link" href="/member/getMemberInfo"><i class="fa-solid fa-user"></i> 개인정보</a></li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="collapse" href="#boardMenu" role="button" aria-expanded="false"
-                       aria-controls="boardMenu">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#boardMenu" role="button" aria-expanded="false" aria-controls="boardMenu">
                         <i class="fa-solid fa-thumbtack me-1"></i> 게시판 ▾
                     </a>
                     <div class="collapse ps-3" id="boardMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/board/getNoticeList"><i
-                                    class="fa-solid fa-bullhorn"></i> 공지사항</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/board/getFaqList"><i
-                                    class="fa-solid fa-question"></i> 자주묻는질문</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/board/getQnaList"><i
-                                    class="fa-solid fa-comments"></i> 질문게시판</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage"><i
-                                    class="fa-solid fa-tools"></i> 자주묻는질문 관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getNoticeList"><i class="fa-solid fa-bullhorn"></i> 공지사항</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getFaqList"><i class="fa-solid fa-question"></i> 자주묻는질문</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getQnaList"><i class="fa-solid fa-comments"></i> 질문게시판</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage"><i class="fa-solid fa-tools"></i> 자주묻는질문 관리</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="collapse" href="#draftMenu" role="button" aria-expanded="false"
-                       aria-controls="draftMenu">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#draftMenu" role="button" aria-expanded="false" aria-controls="draftMenu">
                         <i class="fa-solid fa-pen-nib me-1"></i> 전자결재 ▾
                     </a>
                     <div class="collapse ps-3" id="draftMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/draft/getMyDraftList"><i
-                                    class="fa-solid fa-file-signature"></i> 내 전자결재</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/draft/receivedDraftList"><i
-                                    class="fa-solid fa-inbox"></i> 받은 전자결재</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/draft/getMyDraftList"><i class="fa-solid fa-file-signature"></i> 내 전자결재</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/draft/receivedDraftList"><i class="fa-solid fa-inbox"></i> 받은 전자결재</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="collapse" href="#facilityMenu" role="button"
-                       aria-expanded="false" aria-controls="facilityMenu">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#facilityMenu" role="button" aria-expanded="false" aria-controls="facilityMenu">
                         <i class="fa-solid fa-cogs me-1"></i> 공용설비 ▾
                     </a>
                     <div class="collapse ps-3" id="facilityMenu">
                         <ul class="nav flex-column">
                             <li class="nav-item"><a class="nav-link" href="/facility/getVehicleList">차량예약</a></li>
-                           <li class="nav-item"><a class="nav-link" href="/board/getNoticeList"><i class="fa-solid fa-bullhorn"></i> 공지사항</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/board/getFaqList"><i class="fa-solid fa-question"></i> 자주묻는질문</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/board/getQnaList"><i class="fa-solid fa-comments"></i> 질문게시판</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage"><i class="fa-solid fa-tools"></i> 자주묻는질문 관리</a></li>
-
+                            <li class="nav-item"><a class="nav-link" href="/facility/getMeetingRoomList"><i class="fa-solid fa-door-open"></i> 회의실예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/getItemList"><i class="fa-solid fa-box"></i> 비품예약</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/getReservationList"><i class="fa-solid fa-list"></i> 내 예약내역</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/getVehicleManage"><i class="fa-solid fa-car-side"></i> 차량관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/getMeetingRoomManage"><i class="fa-solid fa-building"></i> 회의실관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/facility/getItemManage"><i class="fa-solid fa-tools"></i> 비품관리</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="collapse" href="#calendarMenu" role="button"
-                       aria-expanded="false" aria-controls="calendarMenu">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#calendarMenu" role="button" aria-expanded="false" aria-controls="calendarMenu">
                         <i class="fa-solid fa-calendar-days"></i> 캘린더 ▾
                     </a>
                     <div class="collapse ps-3" id="calendarMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/calendar/getCalendar"><i
-                                    class="fa-regular fa-calendar-check me-1"></i> 캘린더</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/calendar/getCalendarList"><i
-                                    class="fa-solid fa-sliders me-1"></i> 일정관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/calendar/getCalendar"><i class="fa-regular fa-calendar-check me-1"></i>
+                                캘린더</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/calendar/getCalendarList"><i class="fa-solid fa-sliders me-1"></i> 일정관리</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="collapse" href="#adminMenu" role="button" aria-expanded="false"
-                       aria-controls="adminMenu">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#adminMenu" role="button" aria-expanded="false" aria-controls="adminMenu">
                         <i class="fa-solid fa-user-gear me-1"></i> 관리자 ▾
                     </a>
                     <div class="collapse ps-3" id="adminMenu">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link" href="/admin/getMemberList"><i
-                                    class="fa-solid fa-users"></i> 사원관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/getDeptAuthList"><i
-                                    class="fa-solid fa-shield-alt"></i> 부서권한관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/dashBoard"><i
-                                    class="fa-solid fa-chart-pie"></i> 연차사용률</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/getMemberList"><i class="fa-solid fa-users"></i> 사원관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/getDeptAuthList"><i class="fa-solid fa-shield-alt"></i> 부서권한관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/dashBoard"><i class="fa-solid fa-chart-pie"></i> 연차사용률</a></li>
                         </ul>
                     </div>
                 </li>
