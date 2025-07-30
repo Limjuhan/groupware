@@ -24,9 +24,10 @@ public class FaqService {
         HashMap<String, Object> map = new HashMap<>();
         int count = mapper.faqCount();
         pageDto.setTotalRows(count);
+        pageDto.setItemsPerPage(5);
         pageDto.calculatePagination(); //최대row를 이용해 최대페이지등을 정해줌
         List<FaqListDto> list = mapper.findFaqList(pageDto);
-
+        System.out.println("list ::: "+list);
         map.put("list", list);
         map.put("pageDto", pageDto);
         return map;

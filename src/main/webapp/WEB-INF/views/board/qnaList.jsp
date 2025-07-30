@@ -68,7 +68,7 @@
                     <a href="getQnaDetail?id=${q.qnaId}" class="text-decoration-none">${q.qnaTitle}</a>
                 </td>
                 <td>${q.memName}</td>
-                <td>${q.dateFormat}</td>
+                <td>${q.updatedAtStr}</td>
             </tr>
         </c:forEach>
         </tbody>

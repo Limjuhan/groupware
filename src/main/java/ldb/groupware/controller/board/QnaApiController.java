@@ -34,6 +34,7 @@ public class QnaApiController {
         return ResponseEntity.badRequest().body(new ApiResponseDto<>(false, "입력 값을 확인해주세요.", errors));
     }
 
+    //권한은필요없
     @PostMapping("insertComment")
     public ResponseEntity<?> insertComment(@Valid @RequestBody CommentFormDto dto, BindingResult result , HttpSession session) {
         if(result.hasErrors()) {
