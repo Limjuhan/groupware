@@ -23,34 +23,32 @@ public class FaqController {
         this.faqService = faqService;
     }
 
+    //자주묻는질문 페이지(A_0004)
     @GetMapping("getFaqList")
-    public String faqList(Model model,   @RequestParam(value = "page", defaultValue = "1") int currentPage) {
-        PaginationDto pageDto = new PaginationDto();
-        pageDto.setPage(currentPage);
-
-        Map<String, Object> map = faqService.findFaqList(pageDto);
-        pageDto = (PaginationDto)map.get("pageDto");
-        System.out.println("faqListPageDto = " + pageDto);
+    public String faqList(Model model,   @RequestParam(value = "page", defaultValue = "1") int currentPage , PaginationDto pDto) {
+        pDto.setPage(currentPage);
+        Map<String, Object> map = faqService.findFaqList(pDto);
+        pDto = (PaginationDto)map.get("pageDto");
+        System.out.println("faqListPageDto = " + pDto);
         model.addAttribute("faq", map.get("list"));
-        model.addAttribute("pageDto", pageDto);
+        model.addAttribute("pageDto", pDto);
         return "board/faqList";
     }
 
-    //관리자의 자주묻는질문 관리페이지(권한 및 세션검증필요)
+    //관리자의 자주묻는질문 관리페이지(권한 및 세션검증필요) (A_0006)
+    //여기는 관리자만 들어와야함 (경영지원팀도 X)
     @GetMapping("getFaqListManage")
-    public String faqManage(Model model , @RequestParam(value = "page", defaultValue = "1") int currentPage){
-        PaginationDto pageDto = new PaginationDto();
-        pageDto.setPage(currentPage);
-
-        Map<String, Object> map = faqService.findFaqList(pageDto);
-        pageDto = (PaginationDto)map.get("pageDto");
-        System.out.println("pageDto = " + pageDto);
+    public String faqManage(Model model , @RequestParam(value = "page", defaultValue = "1") int currentPage,PaginationDto pDto){
+        pDto.setPage(currentPage);
+        Map<String, Object> map = faqService.findFaqList(pDto);
+        pDto = (PaginationDto)map.get("pageDto");
+        System.out.println("pageDto = " + pDto);
         model.addAttribute("faq", map.get("list"));
-        model.addAttribute("pageDto", pageDto);
+        model.addAttribute("pageDto", pDto);
         return "board/faqListManage";
     }
 
-    //(권한 및 세션검증필요)
+    //(자주묻는질문관리 -> 등록페이지)(A_0006) (오직 관리자만접근해야함 session정보(mem_id)가들어가지않음)
     @GetMapping("getFaqForm")
     public String getFaqForm(Model model){
         List<DeptDto> dept = faqService.findDept();
@@ -58,7 +56,7 @@ public class FaqController {
         return"board/faqForm";
     }
 
-    //(권한 및 세션검증필요)
+    //(자주묻는질문관리 -> 등록버튼)(A_0006)(오직 관리자만접근해야함 session정보(mem_id)가들어가지않음)
     @PostMapping("insertFaqByMng")
     public String insertFaqByMng(@Valid @ModelAttribute("faqFormDto")FaqFormDto dto , BindingResult bresult,Model model){
         if(bresult.hasErrors()){
@@ -78,7 +76,7 @@ public class FaqController {
         return "alert";
     }
 
-    //페이지접근 전 권한체크 추가
+    //(자주묻는질문관리 -> 수정폼)(A_0006)(오직 관리자만접근해야함 session정보(mem_id)가들어가지않음)
     @GetMapping("getFaqEditForm")
     public String getFaqEditForm(@RequestParam("id") String faqId,
                                       @RequestParam(value = "page", defaultValue = "1") int currentPage,
@@ -90,7 +88,7 @@ public class FaqController {
         return "board/faqEditForm";
     }
 
-    //권한설정필요
+    //(자주묻는질문관리 -> 수정버튼)(A_0006)(오직 관리자만접근해야함 session정보(mem_id)가들어가지않음)
     @PostMapping("updateFaqByMng")
     public String updateFaqByMng(@Valid FaqFormDto dto, BindingResult bresult,Model model){
         if(bresult.hasErrors()){
@@ -108,6 +106,7 @@ public class FaqController {
         return "alert";
     }
 
+    // (자주묻는질문관리 -> 삭제)(A_0006)(오직 관리자만접근해야함 session정보(mem_id)가들어가지않음)
     @GetMapping("deleteFaqByMng")
     public String deleteFaqByMng(@RequestParam("id") String faqId,
                                  @RequestParam(value = "page", defaultValue = "1") int currentPage,

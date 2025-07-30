@@ -22,4 +22,8 @@ public class NoticeListDto {
          DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
          this.dateFormat =  this.updatedAt.format(formatter);
     }
+    public String getUpdatedAtToStr(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return formatter.format(updatedAt);
+    }
 }

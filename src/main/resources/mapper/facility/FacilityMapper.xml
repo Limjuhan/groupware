@@ -3,32 +3,44 @@
 <mapper namespace="ldb.groupware.mapper.mybatis.facility.FacilityMapper">
 
     <select id="countByType" parameterType="String" resultType="int">
-        select count(*) from facility_info where fac_type = #{val}
+        select count(*) from facility_info where fac_type = #{val} and del_yn='N'
     </select>
 
-    <select id="getList" resultType="FacilityListDto" >
+    <!--공용설비타입에 따른 내역조회 (rent_yn(반납여부)가 하나라도 N이 있다면 rentYn = 'N'  , 없다면 Y ) -->
+    <!-- 반납처리를 했더라도 facility_rent테이블에서 지우는게 아니기에 이런쿼리가 만들어짐-->
+    <select id="getList" resultType="FacilityListDto">
         SELECT
-        distinct fi.fac_id, fi.fac_name, fi.fac_type, fi.fac_uid, fi.capacity,
-        IFNULL(fr.rent_yn, 'Y') AS rent_yn,
-        fi.created_at, fi.created_by
+        fi.fac_id,
+        fi.fac_name,
+        fi.fac_type,
+        fi.fac_uid,
+        fi.capacity,
+        CASE
+        WHEN SUM(CASE WHEN fr.rent_yn = 'N' THEN 1 ELSE 0 END) > 0 THEN 'N'
+        ELSE 'Y'
+        END AS rent_yn,
+        MAX(fi.created_at) AS created_at,
+        MAX(fi.created_by) AS created_by
         FROM facility_info fi
         LEFT JOIN facility_rent fr ON fi.fac_id = fr.fac_id
         <where>
+            fi.del_yn = 'N'
             <if test="pDto.keyword != null and pDto.keyword != ''">
                 AND fi.fac_name LIKE CONCAT('%', #{pDto.keyword}, '%')
+                or fi.fac_id like CONCAT('%', #{pDto.keyword}, '%')
             </if>
-            <choose>
-                <when test='"Y".equals(sDto.rentYn)'>
-                    AND (fr.rent_yn = 'Y' OR fr.fac_id IS NULL)
-                </when>
-                <when test='"N".equals(sDto.rentYn)'>
-                    AND fr.rent_yn = 'N'
-                </when>
-            </choose>
-            AND fi.fac_type = #{sDto.facType}
+            <if test="sDto.facType != null and sDto.facType != ''">
+                AND fi.fac_type = #{sDto.facType}
+            </if>
         </where>
+        GROUP BY fi.fac_id
+        <if test="sDto.rentYn != null and sDto.rentYn != ''">
+            HAVING fr.rent_yn = #{sDto.rentYn}
+        </if>
+            order by fr.rent_yn desc
         LIMIT #{pDto.startNum}, #{pDto.itemsPerPage}
     </select>
+
 
 
     <select id="findById" parameterType="String" resultType="FacilityRentDto" >
@@ -42,7 +54,7 @@
            )
             values(
                  #{facId}, #{facType}, #{renterId}, #{rentalPurpose},
-                 #{startLocalDateTime}, #{endLocalDateTime}, now(), #{renterId},#{cancleStatus}
+                 #{startLocalDateTime}, #{endLocalDateTime}, now(), #{renterId},#{cancelStatus}
             )
     </insert>
     <select id="myReserveCount" parameterType="String" resultType="int">
@@ -70,8 +82,8 @@
             <if test="!sDto.includeCancel">
                 AND fr.cancel_status = 'N'
             </if>
-
         </where>
+        order by fr.rent_yn asc
         LIMIT #{pDto.startNum}, #{pDto.itemsPerPage}
     </select>
 
@@ -82,5 +94,35 @@
     <update id="returnFacility">
         update   facility_rent set  rent_yn='Y' where renter_id = #{loginId} and fac_id = #{facId}
     </update>
+
+    <select id="maxFacId" resultType="String">
+        select max(fac_id) from facility_info
+    </select>
+
+    <select id="findUid" resultType="int">
+        select count(*) from facility_info where fac_type=#{facType} and fac_uid = #{facUid}
+    </select>
+
+    <insert id="insertFacilityByMng">
+        insert into facility_info
+        (fac_id,fac_type,fac_name,capacity,fac_uid,del_yn,created_by,created_at,updated_by,updated_at)
+        values
+            (#{dto.facId},#{dto.facType},#{dto.facName},#{dto.capacity},#{dto.facUid},'N',#{loginId},now(),null,null)
+    </insert>
+
+    <!-- 혹시나 url로 접근에서 삭제를 시도할경우 반납이안된 공용설비는 삭제하지못하게-->
+    <select id="findRentYn" parameterType="String" resultType="int">
+        select count(fi.fac_id)
+        from facility_info fi join facility_rent fr on(fi.fac_id = fr.fac_id)
+        where fr.rent_yn = 'N' and fi.fac_id = #{val}
+    </select>
+
+    <update id="deleteFacilityByMng">
+        update facility_info set del_yn='Y', updated_at=now(),updated_by=#{loginId} where fac_id=#{facId}
+    </update>
+
+    <select id="findFacUid" resultType="int">
+    select count(fac_uid) from facility_info where fac_uid = #{facUid}
+    </select>
 
 </mapper>

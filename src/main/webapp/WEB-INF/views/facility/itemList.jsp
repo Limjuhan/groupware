@@ -7,68 +7,54 @@
   <title>비품리스트</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {
-      background-color: #f8f9fa;
-    }
-    .container {
-      max-width: 960px;
-      margin-top: 50px;
-    }
-    .table th, .table td {
-      vertical-align: middle;
-      text-align: center;
-    }
-    tbody tr {
-      transition: background-color 0.2s;
-    }
-    tbody tr:hover {
-      cursor: pointer;
-      background-color: #e7f1ff;
-    }
-    .search-form .form-control,
-    .search-form .form-select {
-      height: 100%;
-    }
-    .search-form .form-label {
-      font-weight: 500;
-    }
-    .search-form {
-      margin-bottom: 40px;
-    }
+    body { background-color: #f4f6f9; }
+    .container { max-width: 1100px; margin-top: 40px; }
+    .table td, .table th { vertical-align: middle; }
   </style>
 </head>
 <body>
-<div class="container">
-  <h3 class="mb-4 fw-bold" style="color: white">비품 리스트</h3>
-
+<div class="container  bg-white p-4 shadow rounded">
+  <h2 class="mb-4">
+    <i class="fa-solid fa-box-open me-2"></i> 비품 리스트
+  </h2>
   <!-- 검색 및 필터 폼 -->
-  <form class="row align-items-end g-3 search-form" method="get" style="color: white;" action="getItemList">
-    <div class="col-md-6">
-      <label for="keyword" class="form-label">비품명</label>
-      <input type="text" id="keyword" class="form-control" name="keyword" placeholder="예: 노트북">
+  <form class="row g-2 align-items-center mb-4" method="get" action="getItemList">
+    <!-- 비품명 검색 -->
+    <div class="col-md-5">
+      <div class="form-floating">
+        <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: 노트북">
+        <label for="keyword">비품명/공용설비ID</label>
+      </div>
     </div>
+
+    <!-- 반납 여부 -->
     <div class="col-md-3">
-      <label for="rentYn" class="form-label">반납여부</label>
-      <select name="rentYn" id="rentYn" class="form-select">
-        <option value="">전체</option>
-        <option value="Y">Y</option>
-        <option value="N">N</option>
-      </select>
+      <div class="form-floating">
+        <select name="rentYn" id="rentYn" class="form-select">
+          <option value="">전체</option>
+          <option value="Y">Y</option>
+          <option value="N">N</option>
+        </select>
+        <label for="rentYn">반납여부</label>
+      </div>
     </div>
-    <div class="col-md-3">
-      <label class="form-label d-block">&nbsp;</label>
-      <button type="submit" class="btn btn-outline-primary w-100">검색</button>
+
+    <!-- 검색 버튼 -->
+    <div class="col-md-2 d-grid">
+      <button type="submit" class="btn btn-primary">
+        <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
+      </button>
     </div>
   </form>
 
   <!-- 품목 리스트 -->
-  <table class="table table-bordered table-hover bg-white">
+  <table class="table table-bordered text-center align-middle">
     <thead class="table-light">
       <tr>
         <th>공용설비ID</th>
         <th>이름</th>
         <th>식별번호</th>
-        <th>수용인원</th>
+        <th>갯수</th>
         <th>반납여부</th>
         <th>예약</th>
       </tr>

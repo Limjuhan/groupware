@@ -36,7 +36,7 @@
         <div class="mb-4">
             <label for="v" class="form-label">작성자</label>
             <input type="text" class="form-control" id="memName" name="memName" value="${memName}" readonly>
-            <input type="hidden" name="memId" value="${loginUser}">
+            <input type="hidden" name="memId" value="${loginId}">
         </div>
         <!-- 제목 -->
         <div class="mb-3">
@@ -89,7 +89,7 @@
     $(document).ready(function() { /*summerNote*/
         $('#qnaContent').summernote({
             height: 300,
-            placeholder: '공지 내용을 입력하세요',
+            placeholder: '질문 내용을 입력하세요',
             lang: 'ko-KR'
         });
     });

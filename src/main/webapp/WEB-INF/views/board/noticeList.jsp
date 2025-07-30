@@ -70,7 +70,7 @@
                         </a>
                     </td>
                     <td>${p.memName}</td>
-                    <td>${p.dateFormat}</td>
+                    <td>${p.updatedAtToStr}</td>
                     <td>${p.noticeCnt}</td>
                 </tr>
                 </c:forEach>
@@ -85,7 +85,7 @@
                             </a>
                         </td>
                         <td>${n.memName}</td>
-                        <td>${n.dateFormat}</td>
+                        <td>${n.updatedAtToStr}</td>
                         <td>${n.noticeCnt}</td>
                     </tr>
                 </c:forEach>

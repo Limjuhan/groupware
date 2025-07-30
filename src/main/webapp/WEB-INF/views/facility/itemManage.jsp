@@ -17,15 +17,16 @@
 <body>
 
 <div class="container bg-white p-4 shadow rounded">
-  <h2 class="mb-0">🚗 차량관리시스템</h2>
+  <h2 class="mb-4">
+    <i class="fa-solid fa-box-open me-2"></i> 비품 관리
+  </h2>
   <!-- 검색 및 필터 폼 -->
-  <form class="row g-2 align-items-center mb-4" method="get" action="getVehicleManage">
+  <form class="row g-2 align-items-center mb-4" method="get" action="getItemManage">
     <!-- 비품명 검색 -->
-    <input type="hidden" name="manage" value="manage">
     <div class="col-md-5">
       <div class="form-floating">
-        <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: G70">
-        <label for="keyword">차량명/공용설비ID</label>
+        <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: 노트북">
+        <label for="keyword">비품명/공용설비ID</label>
       </div>
     </div>
 
@@ -48,27 +49,25 @@
       </button>
     </div>
   </form>
-
-
-  <a href="getVehicleForm" class="btn btn-primary">+ 차량 등록</a>
+  <a href="getItemForm" class="btn btn-primary" >+ 비품 등록</a>
   <table class="table table-bordered text-center align-middle">
     <thead class="table-light">
     <tr>
       <th>공용설비ID</th>
       <th>이름</th>
-      <th>차량번호</th>
-      <th>수용인원</th>
+      <th>식별번호</th>
+      <th>갯수</th>
       <th>반납여부</th>
       <th>관리</th>
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${facility}" var="c">
+    <c:forEach items="${items}" var="i">
       <tr>
-        <td>${c.facId}</td><td>${c.facName}</td><td>${c.facUid}</td><td>${c.capacity}</td><td>${c.rentYn}</td>
+        <td>${i.facId}</td><td>${i.facName}</td><td>${i.facUid}</td><td>${i.capacity}</td><td>${i.rentYn}</td>
         <td>
-          <c:if test="${c.rentYn=='Y'}">
-          <button class="btn btn-outline-danger btn-sm" onclick="confirmDelete('${c.facId}','${c.facName}','${c.facType}')">삭제하기</button></td>
+          <c:if test="${i.rentYn=='Y'}">
+          <button class="btn btn-outline-danger btn-sm" onclick="confirmDelete('${i.facId}','${i.facName}','${i.facType}')">삭제하기</button></td>
         </c:if>
       </tr>
     </c:forEach>
@@ -91,9 +90,9 @@
   </nav>
 </div>
 <script>
-  function confirmDelete(carId,carName,facType) {
-    if (confirm(carName + "("+carId+") 차량을 삭제하시겠습니까?")) {
-      location.href = "deleteFacilityByMng?facId="+carId+"&facType="+facType;
+  function confirmDelete(itemId,itemName,facType) {
+    if (confirm(itemName + "("+itemId+") 비품을 삭제하시겠습니까?")) {
+      location.href = "deleteFacilityByMng?facId="+itemId+"&facType="+facType;
     }
   }
 </script>
