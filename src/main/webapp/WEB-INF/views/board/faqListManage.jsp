@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.*" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -11,13 +11,16 @@
         body {
             background-color: #f8f9fa;
         }
+
         .container {
             max-width: 960px;
         }
+
         .faq-question {
             font-weight: 600;
             color: #0d6efd;
         }
+
         .faq-answer {
             white-space: pre-wrap;
         }
@@ -49,7 +52,6 @@
     </form>
 
 
-
     <div class="accordion" id="faqAccordion">
         <c:forEach var="q" items="${faq}">
             <div class="accordion-item mb-2">
@@ -72,14 +74,15 @@
                         <div class="text-muted small">작성 부서: ${q.deptName}</div>
                     </div>
                     <div class="mt-2">
-                        <a onclick="goForm('getFaqEditForm?id=${q.faqId}&page=${pageDto.page}')" class="btn btn-sm btn-outline-secondary">수정</a>
-                        <a href="deleteFaqByMng?id=${q.faqId}&page=${pageDto.page}" class="btn btn-sm btn-outline-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                        <a onclick="goForm('getFaqEditForm?id=${q.faqId}&page=${pageDto.page}')"
+                           class="btn btn-sm btn-outline-secondary">수정</a>
+                        <a href="deleteFaqByMng?id=${q.faqId}&page=${pageDto.page}"
+                           class="btn btn-sm btn-outline-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
                     </div>
                 </div>
             </div>
         </c:forEach>
     </div>
-
 
 
     <!-- 페이징 -->
@@ -104,7 +107,7 @@
 
 </div>
 <script>
-    function goForm(url){
+    function goForm(url) {
         let op = "width=500,height=700,top=50,left=150";
         window.open(url, "", op);
     }

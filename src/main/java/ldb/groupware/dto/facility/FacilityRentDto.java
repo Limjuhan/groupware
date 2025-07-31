@@ -1,7 +1,6 @@
 package ldb.groupware.dto.facility;
 
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,6 +32,7 @@ public class FacilityRentDto {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
     }
+
     public LocalDateTime getEndLocalDateTime() {
         if (endAt == null) return null;
         return endAt.toInstant()

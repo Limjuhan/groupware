@@ -6,7 +6,6 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>개인정보 - LDBSOFT</title>
     <style>
         body {
@@ -103,9 +102,11 @@
         <form:form method="post" action="updateMemberInfo" modelAttribute="user" enctype="multipart/form-data">
             <div class="row mb-4">
                 <div class="col-md-3 text-center">
-                    <img id="profileImg" src="${not empty user.memPicture ? user.memPicture : '/img/profile_default.png'}"
+                    <img id="profileImg"
+                         src="${not empty user.memPicture ? user.memPicture : '/img/profile_default.png'}"
                          alt="사원 사진" class="img-thumbnail mb-2">
-                    <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removePhoto()">사진 삭제</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removePhoto()">사진 삭제
+                    </button>
                     <input type="file" name="photo" class="form-control form-control-sm" id="photoInput"/>
                     <input type="hidden" name="deletePhoto" id="deletePhoto" value="N">
                 </div>

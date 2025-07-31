@@ -1,10 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>부서별 메뉴 권한 설정 - LDBSOFT</title>
     <style>
         /* 리스트 아이템 스타일 */
@@ -16,10 +15,12 @@
             border: none;
             border-bottom: 1px solid #e9ecef;
         }
+
         .list-group-item span {
             cursor: pointer;
             color: #0d6efd;
         }
+
         .list-group-item span:hover {
             color: #0a58ca;
         }
@@ -123,12 +124,26 @@
                 return;
             }
 
-            fetch("/admin/updateAuth?deptId=" + deptId, {
-                method: 'POST',
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(menuListDept)
-            }).then(res => res.json())
-                .then(res => alert(res.message));
+            var menuListDept = [];
+            $("#authMenuList input").each(function () {
+                menuListDept.push($(this).val());
+            });
+
+            // jQuery $.ajax를 사용하여 데이터 전송
+            $.ajax({
+                url: "/admin/updateAuth?deptId=" + deptId,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(menuListDept),
+                dataType: "json",
+                success: function (response) {
+                    alert(response.message);
+                },
+                error: function (xhr, status, error) {
+                    console.error("권한 저장 중 오류 발생:", error);
+                    alert("권한 저장에 실패했습니다.");
+                }
+            });
         }
     </script>
 </head>
@@ -161,8 +176,12 @@
 
                 <div class="col-md-2 d-flex align-items-center justify-content-center">
                     <div>
-                        <button type="button" class="btn btn-outline-primary btn-move" onclick="moveMenus('all','auth')">➡</button>
-                        <button type="button" class="btn btn-outline-primary btn-move" onclick="moveMenus('auth','all')">⬅</button>
+                        <button type="button" class="btn btn-outline-primary btn-move"
+                                onclick="moveMenus('all','auth')">➡
+                        </button>
+                        <button type="button" class="btn btn-outline-primary btn-move"
+                                onclick="moveMenus('auth','all')">⬅
+                        </button>
                     </div>
                 </div>
 

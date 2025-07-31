@@ -135,14 +135,16 @@
             <ul class="nav flex-column nav-pills" id="sidebarMenu">
 
                 <!-- 홈 -->
+                <c:if test="${fn:contains(allowedMenus, 'A_0000')}">
                 <li class="nav-item">
                     <a class="nav-link" href="/">
                         <i class="fa-solid fa-house"></i> 홈
                     </a>
                 </li>
+                </c:if>
 
                 <!-- 개인정보 -->
-                <c:if test="${fn:contains(allowedMenus, 'MEMBER_INFO')}">
+                <c:if test="${fn:contains(allowedMenus, 'A_0001')}">
                     <li class="nav-item">
                         <a class="nav-link" href="/member/getMemberInfo">
                             <i class="fa-solid fa-user"></i> 개인정보
@@ -151,10 +153,10 @@
                 </c:if>
 
                 <!-- ================= 게시판 ================= -->
-                <c:if test="${fn:contains(allowedMenus, 'BOARD_NOTICE')
-                     || fn:contains(allowedMenus, 'BOARD_FAQ')
-                     || fn:contains(allowedMenus, 'BOARD_QNA')
-                     || fn:contains(allowedMenus, 'BOARD_FAQ_MANAGE')}">
+                <c:if test="${fn:contains(allowedMenus, 'A_0002')
+                     || fn:contains(allowedMenus, 'A_0004')
+                     || fn:contains(allowedMenus, 'A_0005')
+                     || fn:contains(allowedMenus, 'A_0006')}">
 
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#boardMenu" role="button"
@@ -163,16 +165,16 @@
                         </a>
                         <div class="collapse" id="boardMenu">
                             <ul class="nav flex-column ms-3">
-                                <c:if test="${fn:contains(allowedMenus, 'BOARD_NOTICE')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0002')}">
                                     <li class="nav-item"><a class="nav-link" href="/board/getNoticeList">공지사항</a></li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'BOARD_FAQ')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0004')}">
                                     <li class="nav-item"><a class="nav-link" href="/board/getFaqList">자주묻는질문</a></li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'BOARD_QNA')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0005')}">
                                     <li class="nav-item"><a class="nav-link" href="/board/getQnaList">질문게시판</a></li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'BOARD_FAQ_MANAGE')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0006')}">
                                     <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage">FAQ 관리</a>
                                     </li>
                                 </c:if>
@@ -182,8 +184,8 @@
                 </c:if>
 
                 <!-- ================= 전자결재 ================= -->
-                <c:if test="${fn:contains(allowedMenus, 'DRAFT_MY')
-                     || fn:contains(allowedMenus, 'DRAFT_RECEIVED')}">
+                <c:if test="${fn:contains(allowedMenus, 'A_0007')
+                     || fn:contains(allowedMenus, 'A_0008')}">
 
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#draftMenu" role="button"
@@ -192,11 +194,11 @@
                         </a>
                         <div class="collapse" id="draftMenu">
                             <ul class="nav flex-column ms-3">
-                                <c:if test="${fn:contains(allowedMenus, 'DRAFT_MY')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0007')}">
                                     <li class="nav-item"><a class="nav-link" href="/draft/getMyDraftList">내 전자결재</a>
                                     </li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'DRAFT_RECEIVED')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0008')}">
                                     <li class="nav-item"><a class="nav-link" href="/draft/receivedDraftList">받은 전자결재</a>
                                     </li>
                                 </c:if>
@@ -206,13 +208,13 @@
                 </c:if>
 
                 <!-- ================= 공용설비 ================= -->
-                <c:if test="${fn:contains(allowedMenus, 'FACILITY_VEHICLE')
-                     || fn:contains(allowedMenus, 'FACILITY_MEETING_ROOM')
-                     || fn:contains(allowedMenus, 'FACILITY_ITEM')
-                     || fn:contains(allowedMenus, 'FACILITY_MY_RESERVATION')
-                     || fn:contains(allowedMenus, 'FACILITY_VEHICLE_MANAGE')
-                     || fn:contains(allowedMenus, 'FACILITY_MEETING_ROOM_MANAGE')
-                     || fn:contains(allowedMenus, 'FACILITY_ITEM_MANAGE')}">
+                <c:if test="${fn:contains(allowedMenus, 'A_0009')
+                     || fn:contains(allowedMenus, 'A_0010')
+                     || fn:contains(allowedMenus, 'A_0011')
+                     || fn:contains(allowedMenus, 'A_0012')
+                     || fn:contains(allowedMenus, 'A_0013')
+                     || fn:contains(allowedMenus, 'A_0014')
+                     || fn:contains(allowedMenus, 'A_0015')}">
 
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#facilityMenu" role="button"
@@ -221,30 +223,30 @@
                         </a>
                         <div class="collapse" id="facilityMenu">
                             <ul class="nav flex-column ms-3">
-                                <c:if test="${fn:contains(allowedMenus, 'FACILITY_VEHICLE')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0009')}">
                                     <li class="nav-item"><a class="nav-link" href="/facility/getVehicleList">차량예약</a>
                                     </li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'FACILITY_MEETING_ROOM')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0010')}">
                                     <li class="nav-item"><a class="nav-link"
                                                             href="/facility/getMeetingRoomList">회의실예약</a></li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'FACILITY_ITEM')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0011')}">
                                     <li class="nav-item"><a class="nav-link" href="/facility/getItemList">비품예약</a></li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'FACILITY_MY_RESERVATION')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0012')}">
                                     <li class="nav-item"><a class="nav-link" href="/facility/getReservationList">내
                                         예약내역</a></li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'FACILITY_VEHICLE_MANAGE')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0013')}">
                                     <li class="nav-item"><a class="nav-link" href="/facility/getVehicleManage">차량관리</a>
                                     </li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'FACILITY_MEETING_ROOM_MANAGE')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0014')}">
                                     <li class="nav-item"><a class="nav-link"
                                                             href="/facility/getMeetingRoomManage">회의실관리</a></li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'FACILITY_ITEM_MANAGE')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0015')}">
                                     <li class="nav-item"><a class="nav-link" href="/facility/getItemManage">비품관리</a>
                                     </li>
                                 </c:if>
@@ -254,8 +256,8 @@
                 </c:if>
 
                 <!-- ================= 일정 ================= -->
-                <c:if test="${fn:contains(allowedMenus, 'CALENDAR_VIEW')
-                     || fn:contains(allowedMenus, 'CALENDAR_MANAGE')}">
+                <c:if test="${fn:contains(allowedMenus, 'A_0016')
+                     || fn:contains(allowedMenus, 'A_0017')}">
 
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#calendarMenu" role="button"
@@ -264,10 +266,10 @@
                         </a>
                         <div class="collapse" id="calendarMenu">
                             <ul class="nav flex-column ms-3">
-                                <c:if test="${fn:contains(allowedMenus, 'CALENDAR_VIEW')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0016')}">
                                     <li class="nav-item"><a class="nav-link" href="/calendar/getCalendar">캘린더</a></li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'CALENDAR_MANAGE')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0017')}">
                                     <li class="nav-item"><a class="nav-link" href="/calendar/getCalendarList">일정관리</a>
                                     </li>
                                 </c:if>
@@ -277,9 +279,9 @@
                 </c:if>
 
                 <!-- ================= 관리자 메뉴 ================= -->
-                <c:if test="${fn:contains(allowedMenus, 'MEMBER_MANAGE')
-                     || fn:contains(allowedMenus, 'DEPT_AUTH')
-                     || fn:contains(allowedMenus, 'ANNUAL_USAGE_RATE')}">
+                <c:if test="${fn:contains(allowedMenus, 'A_0018')
+                     || fn:contains(allowedMenus, 'A_0019')
+                     || fn:contains(allowedMenus, 'A_0020')}">
 
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#adminMenu" role="button"
@@ -288,14 +290,14 @@
                         </a>
                         <div class="collapse" id="adminMenu">
                             <ul class="nav flex-column ms-3">
-                                <c:if test="${fn:contains(allowedMenus, 'MEMBER_MANAGE')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0018')}">
                                     <li class="nav-item"><a class="nav-link" href="/admin/getMemberList">사원관리</a></li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'DEPT_AUTH')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0019')}">
                                     <li class="nav-item"><a class="nav-link" href="/admin/getDeptAuthList">부서권한관리</a>
                                     </li>
                                 </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'ANNUAL_USAGE_RATE')}">
+                                <c:if test="${fn:contains(allowedMenus, 'A_0020')}">
                                     <li class="nav-item"><a class="nav-link" href="/admin/dashBoard">연차사용률 조회</a></li>
                                 </c:if>
                             </ul>

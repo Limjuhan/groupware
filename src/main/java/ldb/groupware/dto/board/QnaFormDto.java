@@ -1,14 +1,11 @@
 package ldb.groupware.dto.board;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @ToString
@@ -16,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 public class QnaFormDto {
 
     private Integer qnaId;
-    @NotEmpty(message = "제목은 입력해야죠")
+    @NotEmpty(message = "제목은 입력 필수입니다.")
     private String qnaTitle;
 
     private String qnaContent;

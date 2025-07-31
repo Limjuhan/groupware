@@ -1,5 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ page import="java.util.*" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -12,13 +11,16 @@
         body {
             background-color: #f8f9fa;
         }
+
         .container {
             max-width: 960px;
         }
+
         .faq-question {
             font-weight: 600;
             color: #0d6efd;
         }
+
         .faq-answer {
             white-space: pre-wrap;
         }
@@ -50,19 +52,20 @@
         </c:if>
         <c:if test="${faq!=null}">
             <c:forEach var="q" items="${faq}">
-        <div class="accordion-item mb-2">
-            <h2 class="accordion-header" id="heading${q}>">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${q.faqId}">
-                        ${q.faqTitle}
-                </button>
-            </h2>
-            <div id="collapse${q.faqId}" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                <div class="accordion-body">
-                    <div class="faq-answer mb-2">${q.faqContent}</div>
-                    <div class="text-muted small">작성 부서: ${q.deptName}</div>
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header" id="heading${q}>">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse${q.faqId}">
+                                ${q.faqTitle}
+                        </button>
+                    </h2>
+                    <div id="collapse${q.faqId}" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <div class="faq-answer mb-2">${q.faqContent}</div>
+                            <div class="text-muted small">작성 부서: ${q.deptName}</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
             </c:forEach>
         </c:if>
     </div>

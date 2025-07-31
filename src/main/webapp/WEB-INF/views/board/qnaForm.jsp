@@ -1,5 +1,5 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
@@ -18,9 +18,11 @@
         body {
             background-color: #f6f8fa;
         }
+
         .container {
             max-width: 800px;
         }
+
         .form-label {
             font-weight: 600;
         }
@@ -32,7 +34,7 @@
 
     <form:form action="insertQna" method="post" modelAttribute="qnaFormDto" enctype="multipart/form-data">
 
-    <!-- 작성자 (자동 입력) -->
+        <!-- 작성자 (자동 입력) -->
         <div class="mb-4">
             <label for="v" class="form-label">작성자</label>
             <input type="text" class="form-control" id="memName" name="memName" value="${memName}" readonly>
@@ -41,20 +43,21 @@
         <!-- 제목 -->
         <div class="mb-3">
             <label for="qnaTitle" class="form-label">질문 제목</label>
-            <input type="text" class="form-control" id="qnaTitle" name="qnaTitle"  placeholder="예: 연차 신청은 어떻게 하나요?">
+            <input type="text" class="form-control" id="qnaTitle" name="qnaTitle" placeholder="예: 연차 신청은 어떻게 하나요?">
             <p style="color: red"><form:errors path="qnaTitle"/></p>
         </div>
 
         <!-- 내용 -->
         <div class="mb-3">
             <label for="qnaContent" class="form-label">질문 내용</label>
-            <textarea class="form-control" id="qnaContent" name="qnaContent" rows="7"  placeholder="질문의 상세 내용을 입력해 주세요."></textarea>
+            <textarea class="form-control" id="qnaContent" name="qnaContent" rows="7"
+                      placeholder="질문의 상세 내용을 입력해 주세요."></textarea>
             <p style="color: red"><form:errors path="qnaContent"/></p>
         </div>
         <!-- 첨부파일 -->
         <div id="fileInputs">
             <div class="mb-2">
-                <input class="form-control" type="file" name="uploadFile" />
+                <input class="form-control" type="file" name="uploadFile"/>
             </div>
         </div>
 
@@ -86,7 +89,7 @@
         container.appendChild(newInput);
     }
 
-    $(document).ready(function() { /*summerNote*/
+    $(document).ready(function () { /*summerNote*/
         $('#qnaContent').summernote({
             height: 300,
             placeholder: '질문 내용을 입력하세요',
@@ -101,7 +104,6 @@
         newInput.innerHTML = '<input class="form-control" type="file" name="uploadFile" />'; //동적으로 파일추가를
         container.appendChild(newInput);
     }
-
 
 
 </script>

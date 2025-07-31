@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -6,16 +6,17 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .notice-table th, .notice-table td {
             vertical-align: middle;
             text-align: center;
         }
+
         .fixed-row {
             background-color: #f8f9fa;
             font-weight: bold;
         }
+
         .notice-title {
             text-align: left;
             padding-left: 1rem;
@@ -50,45 +51,45 @@
     <div class="table-responsive">
         <table class="table table-bordered table-hover notice-table">
             <thead class="table-light">
-                <tr>
-                    <th style="width: 10%;">공지번호</th>
-                    <th style="width: 40%;">제목</th>
-                    <th style="width: 15%;">작성자</th>
-                    <th style="width: 15%;">작성일</th>
-                    <th style="width: 10%;">조회수</th>
-                </tr>
+            <tr>
+                <th style="width: 10%;">공지번호</th>
+                <th style="width: 40%;">제목</th>
+                <th style="width: 15%;">작성자</th>
+                <th style="width: 15%;">작성일</th>
+                <th style="width: 10%;">조회수</th>
+            </tr>
             </thead>
             <tbody>
-                <!-- 상단 고정 공지 -->
-                <c:forEach var="p" items="${pinnedList}">
+            <!-- 상단 고정 공지 -->
+            <c:forEach var="p" items="${pinnedList}">
                 <tr class='fixed-row'>
                     <td><i class="bi bi-pin-angle-fill text-danger"></i>
                     </td>
                     <td class="notice-title">
                         <a href="getNoticeDetail?id=${p.noticeId}" class="text-decoration-none text-dark">
-                            ${p.noticeTitle}
+                                ${p.noticeTitle}
                         </a>
                     </td>
                     <td>${p.memName}</td>
                     <td>${p.updatedAtToStr}</td>
                     <td>${p.noticeCnt}</td>
                 </tr>
-                </c:forEach>
-                <c:forEach var="n" items="${notice}">
-                    <tr>
-                        <td>
-                                ${n.noticeId}
-                        </td>
-                        <td class="notice-title">
-                            <a href="getNoticeDetail?id=${n.noticeId}" class="text-decoration-none text-dark">
-                                    ${n.noticeTitle}
-                            </a>
-                        </td>
-                        <td>${n.memName}</td>
-                        <td>${n.updatedAtToStr}</td>
-                        <td>${n.noticeCnt}</td>
-                    </tr>
-                </c:forEach>
+            </c:forEach>
+            <c:forEach var="n" items="${notice}">
+                <tr>
+                    <td>
+                            ${n.noticeId}
+                    </td>
+                    <td class="notice-title">
+                        <a href="getNoticeDetail?id=${n.noticeId}" class="text-decoration-none text-dark">
+                                ${n.noticeTitle}
+                        </a>
+                    </td>
+                    <td>${n.memName}</td>
+                    <td>${n.updatedAtToStr}</td>
+                    <td>${n.noticeCnt}</td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>
@@ -108,10 +109,11 @@
     </nav>
 </div>
 <script>
-    function goForm(url){
+    function goForm(url) {
         let op = "width=600,height=1000,top=50,left=150";
         window.open(url, "", op);
     }
+
     $(document).ready(function () {
         var errorMsg = '${globalError}';
         if (errorMsg && errorMsg != '') {

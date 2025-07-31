@@ -6,7 +6,6 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>사원 등록 - LDBSOFT</title>
     <style>
         body {
@@ -58,18 +57,20 @@
 <div class="container">
     <div class="card p-4">
         <h3 class="mb-4 fw-bold">사원 등록</h3>
-        <form:form modelAttribute="memberFormDto" method="post" action="insertMemberByMng" enctype="multipart/form-data">
+        <form:form modelAttribute="memberFormDto" method="post" action="insertMemberByMng"
+                   enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-3 text-center">
-                    <img id="preview" src="/img/profile_default.png" alt="사진 미리보기" class="photo-preview mb-2" />
-                    <form:input path="photo" type="file" class="form-control form-control-sm mt-2" onchange="previewPhoto(event)" accept="image/*" />
+                    <img id="preview" src="/img/profile_default.png" alt="사진 미리보기" class="photo-preview mb-2"/>
+                    <form:input path="photo" type="file" class="form-control form-control-sm mt-2"
+                                onchange="previewPhoto(event)" accept="image/*"/>
                 </div>
                 <div class="col-md-9">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">이름</label>
-                            <form:input path="memName" class="form-control" />
-                            <form:errors path="memName" cssClass="text-danger" />
+                            <form:input path="memName" class="form-control"/>
+                            <form:errors path="memName" cssClass="text-danger"/>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">성별</label>
@@ -81,23 +82,23 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">전화번호</label>
-                            <form:input path="memPhone" class="form-control" />
-                            <form:errors path="memPhone" cssClass="text-danger" />
+                            <form:input path="memPhone" class="form-control"/>
+                            <form:errors path="memPhone" cssClass="text-danger"/>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">2차 이메일</label>
-                            <form:input path="memPrivateEmail" type="email" class="form-control" />
-                            <form:errors path="memPrivateEmail" cssClass="text-danger" />
+                            <form:input path="memPrivateEmail" type="email" class="form-control"/>
+                            <form:errors path="memPrivateEmail" cssClass="text-danger"/>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">주민번호 앞자리</label>
-                            <form:input path="juminFront" class="form-control" maxlength="6" />
-                            <form:errors path="juminFront" cssClass="text-danger" />
+                            <form:input path="juminFront" class="form-control" maxlength="6"/>
+                            <form:errors path="juminFront" cssClass="text-danger"/>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">주민번호 뒷자리</label>
-                            <form:password path="juminBack" class="form-control" maxlength="7" />
-                            <form:errors path="juminBack" cssClass="text-danger" />
+                            <form:password path="juminBack" class="form-control" maxlength="7"/>
+                            <form:errors path="juminBack" cssClass="text-danger"/>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">부서</label>
@@ -107,7 +108,7 @@
                                     <form:option value="${dept.deptId}">${dept.deptName}</form:option>
                                 </c:forEach>
                             </form:select>
-                            <form:errors path="deptId" cssClass="text-danger" />
+                            <form:errors path="deptId" cssClass="text-danger"/>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">직급</label>
@@ -117,12 +118,12 @@
                                     <form:option value="${rank.rankId}">${rank.rankName}</form:option>
                                 </c:forEach>
                             </form:select>
-                            <form:errors path="rankId" cssClass="text-danger" />
+                            <form:errors path="rankId" cssClass="text-danger"/>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">입사일</label>
-                            <form:input path="memHiredate" type="date" class="form-control" />
-                            <form:errors path="memHiredate" cssClass="text-danger" />
+                            <form:input path="memHiredate" type="date" class="form-control"/>
+                            <form:errors path="memHiredate" cssClass="text-danger"/>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">재직상태</label>
@@ -131,11 +132,11 @@
                                 <form:option value="재직">재직</form:option>
                                 <form:option value="퇴직">퇴직</form:option>
                             </form:select>
-                            <form:errors path="memStatus" cssClass="text-danger" />
+                            <form:errors path="memStatus" cssClass="text-danger"/>
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">주소</label>
-                            <form:input path="memAddress" class="form-control" />
+                            <form:input path="memAddress" class="form-control"/>
                         </div>
                     </div>
                 </div>
@@ -154,7 +155,7 @@
         const preview = document.getElementById("preview");
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 preview.src = e.target.result;
             };
             reader.readAsDataURL(file);

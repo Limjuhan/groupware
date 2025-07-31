@@ -5,8 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @ToString
@@ -19,10 +17,9 @@ public class SearchDto {
 
 
     public String getRentYn() {
-        if(StringUtils.isBlank(this.rentYn)){
+        if (StringUtils.isBlank(this.rentYn)) {
             return null;
-        }
-        else{
+        } else {
             return this.rentYn;
         }
     }

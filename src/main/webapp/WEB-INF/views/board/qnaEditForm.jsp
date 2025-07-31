@@ -1,5 +1,5 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
@@ -18,9 +18,11 @@
         body {
             background-color: #f6f8fa;
         }
+
         .container {
             max-width: 800px;
         }
+
         .form-label {
             font-weight: 600;
         }
@@ -31,8 +33,8 @@
     <h3 class="fw-bold mb-4">질문 수정</h3>
 
     <form:form action="updateQna" method="post" modelAttribute="qnaUpdateDto" enctype="multipart/form-data">
-    <input type="hidden" value="${q.qnaId}" name="qnaId">
-    <!-- 작성자 (자동 입력) -->
+        <input type="hidden" value="${q.qnaId}" name="qnaId">
+        <!-- 작성자 (자동 입력) -->
         <div class="mb-4">
             <label for="v" class="form-label">작성자</label>
             <input type="text" class="form-control" id="memName" name="memName" value="${q.memName}" readonly>
@@ -41,14 +43,16 @@
         <!-- 제목 -->
         <div class="mb-3">
             <label for="qnaTitle" class="form-label">질문 제목</label>
-            <input type="text" class="form-control" id="qnaTitle" name="qnaTitle"  placeholder="예: 연차 신청은 어떻게 하나요?" value="${q.qnaTitle}">
+            <input type="text" class="form-control" id="qnaTitle" name="qnaTitle" placeholder="예: 연차 신청은 어떻게 하나요?"
+                   value="${q.qnaTitle}">
             <p style="color: red"><form:errors path="qnaTitle"/></p>
         </div>
 
         <!-- 내용 -->
         <div class="mb-3">
             <label for="qnaContent" class="form-label">질문 내용</label>
-            <textarea class="form-control" id="qnaContent" name="qnaContent" rows="7"  placeholder="질문의 상세 내용을 입력해 주세요.">${q.qnaContent}</textarea>
+            <textarea class="form-control" id="qnaContent" name="qnaContent" rows="7"
+                      placeholder="질문의 상세 내용을 입력해 주세요.">${q.qnaContent}</textarea>
             <p style="color: red"><form:errors path="qnaContent"/></p>
         </div>
         <!-- 첨부파일 -->
@@ -58,7 +62,8 @@
                         ${file.originalName}
                 </a>
                 <button type="button" class="btn btn-sm btn-outline-danger ms-2"
-                        onclick="removeFile('${file.savedName}')">삭제</button>
+                        onclick="removeFile('${file.savedName}')">삭제
+                </button>
             </div>
         </c:forEach>
         <div id="deleteFile">
@@ -67,7 +72,7 @@
         <!-- 첨부파일 -->
         <div id="fileInputs">
             <div class="mb-2">
-                <input class="form-control" type="file" name="uploadFile" />
+                <input class="form-control" type="file" name="uploadFile"/>
             </div>
         </div>
 
@@ -92,8 +97,8 @@
     }
 
 
-    function removeFile(f){
-        if(confirm("삭제할건가요??")) {
+    function removeFile(f) {
+        if (confirm("삭제할건가요??")) {
             document.getElementById(f).remove();
             let container = document.getElementById("deleteFile");
             let newInput = document.createElement("div");
@@ -111,16 +116,13 @@
         container.appendChild(newInput);
     }
 
-    $(document).ready(function() { /*summerNote*/
+    $(document).ready(function () { /*summerNote*/
         $('#qnaContent').summernote({
             height: 300,
             placeholder: '공지 내용을 입력하세요',
             lang: 'ko-KR'
         });
     });
-
-
-
 
 
 </script>

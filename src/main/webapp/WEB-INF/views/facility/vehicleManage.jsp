@@ -1,13 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>비품 관리 - LDBSOFT 그룹웨어</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  <title>차량 관리 - LDBSOFT 그룹웨어</title>
   <style>
     body { background-color: #f4f6f9; }
     .container { max-width: 1000px; margin-top: 40px; }
@@ -18,39 +15,45 @@
 
 <div class="container bg-white p-4 shadow rounded">
   <h2 class="mb-0">🚗 차량관리시스템</h2>
-  <!-- 검색 및 필터 폼 -->
-  <form class="row g-2 align-items-center mb-4" method="get" action="getVehicleManage">
-    <!-- 비품명 검색 -->
-    <input type="hidden" name="manage" value="manage">
-    <div class="col-md-5">
-      <div class="form-floating">
-        <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: G70">
-        <label for="keyword">차량명/공용설비ID</label>
-      </div>
-    </div>
+    <!-- 검색 및 필터 폼 -->
+    <form class="mb-4" method="get" action="getVehicleManage">
+        <input type="hidden" name="manage" value="manage">
 
-    <!-- 반납 여부 -->
-    <div class="col-md-3">
-      <div class="form-floating">
-        <select name="rentYn" id="rentYn" class="form-select">
-          <option value="">전체</option>
-          <option value="Y">Y</option>
-          <option value="N">N</option>
-        </select>
-        <label for="rentYn">반납여부</label>
-      </div>
-    </div>
+        <div class="row mb-3 align-items-end g-2">
+            <!-- 차량명/공용설비ID -->
+            <div class="col-md-5">
+                <label for="keyword" class="form-label fw-medium">차량명 / 공용설비ID</label>
+                <input type="text" id="keyword" name="keyword" class="form-control"
+                       placeholder="예: G70 또는 f002" value="${param.keyword}">
+            </div>
 
-    <!-- 검색 버튼 -->
-    <div class="col-md-2 d-grid">
-      <button type="submit" class="btn btn-primary">
-        <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
-      </button>
-    </div>
-  </form>
+            <!-- 반납 여부 -->
+            <div class="col-md-3">
+                <label for="rentYn" class="form-label fw-medium">반납 여부</label>
+                <select name="rentYn" id="rentYn" class="form-select">
+                    <option value="">전체</option>
+                    <option value="Y" ${param.rentYn == 'Y' ? 'selected' : ''}>Y</option>
+                    <option value="N" ${param.rentYn == 'N' ? 'selected' : ''}>N</option>
+                </select>
+            </div>
 
+            <!-- 검색 버튼 -->
+            <div class="col-md-2">
+                <label class="form-label fw-medium d-block">&nbsp;</label>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
+                </button>
+            </div>
 
-  <a href="getVehicleForm" class="btn btn-primary">+ 차량 등록</a>
+            <!-- 등록 버튼 -->
+            <div class="col-md-2">
+                <label class="form-label fw-medium d-block">&nbsp;</label>
+                <a href="getVehicleForm" class="btn btn-success w-100">
+                    <i class="fa-solid fa-plus me-1"></i> 차량 등록
+                </a>
+            </div>
+        </div>
+    </form>
   <table class="table table-bordered text-center align-middle">
     <thead class="table-light">
     <tr>

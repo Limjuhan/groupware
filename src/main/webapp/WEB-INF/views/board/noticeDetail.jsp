@@ -1,5 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ page import="java.io.*, java.util.*" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
@@ -7,7 +6,6 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항 상세</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f4f6f9;
@@ -19,7 +17,7 @@
             margin: 50px auto;
             background: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
             padding: 40px 50px;
         }
 
@@ -110,30 +108,31 @@
     <div class="content-box">${notice.noticeContent}</div>
 
 
-<c:if test="${attach != null }">
-    <c:forEach items="${attach}" var="a">
-        <c:if test="${a.filePath != null}">
-            <div class="file-section mt-4">
-                첨부파일:
-                <a href="${a.filePath}${a.savedName}" download="${a.originalName}">${a.originalName}</a>
-            </div>
-        </c:if>
-    </c:forEach>
-</c:if>
+    <c:if test="${attach != null }">
+        <c:forEach items="${attach}" var="a">
+            <c:if test="${a.filePath != null}">
+                <div class="file-section mt-4">
+                    첨부파일:
+                    <a href="${a.filePath}${a.savedName}" download="${a.originalName}">${a.originalName}</a>
+                </div>
+            </c:if>
+        </c:forEach>
+    </c:if>
 
     <!-- 버튼 그룹 -->
     <div class="button-group">
         <a href="getNoticeList" class="btn btn-outline-secondary btn-custom">← 목록</a>
 
         <div class="d-flex gap-2">
-            <a onclick="goForm('getNoticeEditForm?id=${notice.noticeId}')" class="btn btn-outline-primary btn-custom">수정</a>
+            <a onclick="goForm('getNoticeEditForm?id=${notice.noticeId}')"
+               class="btn btn-outline-primary btn-custom">수정</a>
             <a href="deleteNoticeByMng?id=${notice.noticeId}" class="btn btn-outline-danger btn-custom"
                onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
         </div>
     </div>
 </div>
 <script>
-    function goForm(url){
+    function goForm(url) {
         let op = "width=600,height=1000,top=50,left=150";
         window.open(url, "", op);
     }
