@@ -40,4 +40,27 @@
         INSERT INTO menu_info (menu_code, menu_name, description, use_yn, created_date, created_by)
         VALUES (#{menuCode}, #{menuName}, #{description}, #{useYn}, now(), 'admin')
     </insert>
+    
+    <!-- 연차대시보드   -->
+    <select id="getAnnualLeaveUsage" resultType="DashboardInfoDto">
+        SELECT
+        m.dept_id      AS deptId,
+        d.dept_name    AS deptName,
+        m.mem_name     AS memName,
+        r.rank_name    AS rankName,
+        al.total_days  AS totalDays,
+        al.use_days    AS useDays,
+        al.remain_days AS remainDays
+        FROM member m
+        JOIN dept d ON m.dept_id = d.dept_id
+        JOIN rank r ON m.rank_id = r.rank_id
+        JOIN annual_leave al ON m.mem_id = al.mem_id
+        WHERE al.year = #{year}
+
+        <if test="deptId != null and deptId != ''">
+            AND m.dept_id = #{deptId}
+        </if>
+
+        ORDER BY d.dept_name
+    </select>
 </mapper>

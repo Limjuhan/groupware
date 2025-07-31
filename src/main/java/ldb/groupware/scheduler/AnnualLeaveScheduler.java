@@ -13,7 +13,7 @@ public class AnnualLeaveScheduler {
         this.batchService = batchService;
     }
 
-    @Scheduled(cron = "0 41 17 * * *")
+    @Scheduled(cron = "0 20 20 * * *")
     public void run() {
         batchService.runAnnualLeaveBatch();
     }

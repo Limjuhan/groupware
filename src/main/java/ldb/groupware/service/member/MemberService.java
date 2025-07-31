@@ -1,6 +1,7 @@
 package ldb.groupware.service.member;
 
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
+import ldb.groupware.dto.common.DeptDto;
 import ldb.groupware.dto.member.*;
 import ldb.groupware.mapper.mybatis.member.MemberMapper;
 import ldb.groupware.service.attachment.AttachmentService;

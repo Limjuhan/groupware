@@ -12,4 +12,10 @@
         ORDER BY order_no
     </select>
 
+    <select id="getDeptList" resultType="DeptDto">
+        select dept_id, dept_name
+        from dept
+        where use_yn = 'Y'
+    </select>
+
 </mapper>

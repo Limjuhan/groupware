@@ -6,43 +6,66 @@
   <title>연차 사용률 대시보드</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>
-    body { background-color: #f4f6f9; }
+    body {
+      background: linear-gradient(135deg, #f4f6f9, #e9ecf3);
+      font-family: 'Pretendard', sans-serif;
+    }
     .container { max-width: 1200px; margin-top: 40px; }
-    .filter-box { background-color: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-    .table thead th { background-color: #f1f3f5; }
+    .filter-box {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.7);
+      padding: 20px; border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .card {
+      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .table thead th { background-color: rgba(241, 243, 245, 0.8); }
+    .btn-glass {
+      backdrop-filter: blur(6px);
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: 0.2s;
+    }
+    .btn-glass:hover {
+      background: rgba(255,255,255,0.8);
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <h3 class="mb-4 fw-bold">📊 연차 사용률 대시보드</h3>
 
-
-
   <!-- 필터 영역 -->
   <div class="filter-box shadow-sm">
     <form class="row g-3">
       <div class="col-md-3">
         <label class="form-label">연도</label>
-        <select id="yearFilter" class="form-select" onchange="updateDashboard()">
-          <option selected>2025</option>
-          <option>2024</option>
+        <select id="yearFilter" class="form-select">
+          <option value="2025" selected>2025</option>
+          <option value="2024">2024</option>
         </select>
       </div>
       <div class="col-md-3">
         <label class="form-label">부서</label>
-        <select id="deptFilter" class="form-select" onchange="updateDashboard()">
-          <option selected>전체</option>
-          <option>개발팀</option>
-          <option>영업팀</option>
-          <option>고객지원팀</option>
-          <option>경영지원팀</option>
+        <select id="deptFilter" class="form-select">
+          <option value="" selected>전체</option>
         </select>
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="button" class="btn btn-primary w-100" id="btnSearch">검색</button>
       </div>
     </form>
   </div>
 
-<!-- 차트 -->
+  <!-- 차트 -->
   <div class="card p-4 mb-4">
     <canvas id="leaveChart" height="100"></canvas>
   </div>
@@ -51,114 +74,98 @@
   <div class="card p-4">
     <div class="d-flex justify-content-between mb-3">
       <h5 class="fw-bold">부서별 직원 연차 현황</h5>
-      <button class="btn btn-sm btn-outline-success">엑셀 다운로드</button>
+      <button class="btn btn-sm btn-outline-success" id="btnExcel">엑셀 다운로드</button>
     </div>
     <table class="table table-bordered text-center" id="leaveTable">
       <thead>
-        <tr>
-          <th>부서</th>
-          <th>이름</th>
-          <th>직급</th>
-          <th>총 연차</th>
-          <th>사용 연차</th>
-          <th>잔여 연차</th>
-          <th>사용률(%)</th>
-        </tr>
+      <tr>
+        <th>부서</th>
+        <th>이름</th>
+        <th>직급</th>
+        <th>총 연차</th>
+        <th>사용 연차</th>
+        <th>잔여 연차</th>
+        <th>사용률(%)</th>
+      </tr>
       </thead>
       <tbody id="leaveTableBody">
-        <!-- JS로 동적 렌더링 -->
+      <!-- JS로 동적 렌더링 -->
       </tbody>
     </table>
   </div>
 </div>
 
 <script>
-  // 연도별 부서별 데이터
-  const rawData = {
-    "2025": {
-      "개발팀": [
-        { name: "김동곤", grade: "대리", total: 15, used: 5 },
-        { name: "정호준", grade: "팀장", total: 20, used: 10 }
-      ],
-      "영업팀": [
-        { name: "최윤아", grade: "주임", total: 15, used: 9 }
-      ],
-      "고객지원팀": [
-        { name: "박지성", grade: "사원", total: 15, used: 12 }
-      ],
-      "경영지원팀": [
-        { name: "이정은", grade: "과장", total: 15, used: 2 }
-      ]
-    },
-    "2024": {
-      "개발팀": [
-        { name: "김동곤", grade: "대리", total: 15, used: 7 }
-      ],
-      "영업팀": [
-        { name: "최윤아", grade: "주임", total: 15, used: 11 }
-      ],
-      "고객지원팀": [
-        { name: "박지성", grade: "사원", total: 15, used: 8 }
-      ],
-      "경영지원팀": [
-        { name: "이정은", grade: "과장", total: 15, used: 4 }
-      ]
-    }
-  };
+  var chartInstance = null;
 
-  let chartInstance = null;
+  function loadDashboard() {
+    var year = $("#yearFilter").val();
+    var dept = $("#deptFilter").val();
 
-  function updateDashboard() {
-    const year = document.getElementById("yearFilter").value;
-    const dept = document.getElementById("deptFilter").value;
+    $.ajax({
+      url: "/admin/getAnnualLeaveUsage",
+      method: "GET",
+      data: { year: year, deptId: dept },
+      success: function(res) {
+        if (!res || !res.data) {
+          alert("데이터가 없습니다.");
+          return;
+        }
+        var data = res.data;
 
-    const yearData = rawData[year];
-    const filteredDepts = dept === "전체" ? Object.keys(yearData) : [dept];
+        renderTable(data);
+        renderChart(data);
+      },
+      error: function() {
+        alert("데이터를 불러오는 중 오류가 발생했습니다.");
+      }
+    });
+  }
 
-    // 테이블 렌더링
-    const tbody = document.getElementById("leaveTableBody");
-    tbody.innerHTML = "";
-    filteredDepts.forEach(function(team) {
-      yearData[team].forEach(function(emp) {
-        const remain = emp.total - emp.used;
-        const percent = Math.round((emp.used / emp.total) * 100);
-        const row =
-          "<tr>" +
-            "<td>" + team + "</td>" +
-            "<td>" + emp.name + "</td>" +
-            "<td>" + emp.grade + "</td>" +
-            "<td>" + emp.total + "</td>" +
-            "<td>" + emp.used + "</td>" +
-            "<td>" + remain + "</td>" +
-            "<td>" + percent + "%</td>" +
-          "</tr>";
-        tbody.insertAdjacentHTML("beforeend", row);
-      });
+  function renderTable(data) {
+    var $tbody = $("#leaveTableBody");
+    $tbody.empty();
+
+    $.each(data, function(i, emp) {
+      // remainDays와 calcAnnualPercent는 서버에서 DTO로 계산해서 내려줌
+      var row = '<tr>'
+              + '<td>' + emp.deptName + '</td>'
+              + '<td>' + emp.memName + '</td>'
+              + '<td>' + emp.rankName + '</td>'
+              + '<td>' + emp.totalDays + '</td>'
+              + '<td>' + emp.useDays + '</td>'
+              + '<td>' + emp.remainDays + '</td>'
+              + '<td>' + emp.annualPercent + '</td>'
+              + '</tr>';
+
+      $tbody.append(row);
+    });
+  }
+
+  function renderChart(data) {
+    var deptMap = {};
+    $.each(data, function(i, emp) {
+      if (!deptMap[emp.deptName]) deptMap[emp.deptName] = { used: 0, remain: 0 };
+      deptMap[emp.deptName].used += emp.useDays;
+      deptMap[emp.deptName].remain += emp.remainDays;
     });
 
-    // 차트 데이터 준비
-    const chartLabels = filteredDepts;
-    const usedData = [];
-    const remainData = [];
+    var labels = [];
+    var usedData = [];
+    var remainData = [];
 
-    chartLabels.forEach(function(team) {
-      const teamData = yearData[team];
-      let usedSum = 0, remainSum = 0;
-      teamData.forEach(function(emp) {
-        usedSum += emp.used;
-        remainSum += (emp.total - emp.used);
-      });
-      usedData.push(usedSum);
-      remainData.push(remainSum);
+    $.each(deptMap, function(dept, values) {
+      labels.push(dept);
+      usedData.push(values.used);
+      remainData.push(values.remain);
     });
 
-    // 차트 렌더링
     if (chartInstance) chartInstance.destroy();
-    const ctx = document.getElementById("leaveChart").getContext("2d");
+    var ctx = document.getElementById("leaveChart").getContext("2d");
     chartInstance = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: chartLabels,
+        labels: labels,
         datasets: [
           {
             label: "사용 연차",
@@ -188,11 +195,40 @@
     });
   }
 
-  // 초기 렌더링
-  window.onload = updateDashboard;
+  $("#btnSearch").on("click", loadDashboard);
+
+  $("#btnExcel").on("click", function() {
+    var year = $("#yearFilter").val();
+    var dept = $("#deptFilter").val();
+    window.location.href = "/admin/annualLeaveExcel?year=" + year + "&dept=" + dept;
+  });
+
+  function getDeptList() {
+    $.ajax({
+      url: "/admin/getDeptList",
+      method: "GET",
+      success: function(res) {
+        if (!res || !res.success) {
+          alert(res.message || "부서 목록을 불러오지 못했습니다.");
+          return;
+        }
+        var deptList = res.data;
+        var $deptFilter = $("#deptFilter");
+        $deptFilter.empty().append('<option value="" selected>전체</option>');
+        $.each(deptList, function(i, deptDto) {
+          $deptFilter.append('<option value="' + deptDto.deptId + '">' + deptDto.deptName + '</option>');
+        });
+      },
+      error: function() {
+        alert("부서목록을 불러오는 중 오류가 발생했습니다.");
+      }
+    });
+  }
+
+  $(document).ready(function() {
+    getDeptList();
+    loadDashboard();
+  });
 </script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

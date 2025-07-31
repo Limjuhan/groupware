@@ -55,7 +55,7 @@ public class NoticeController {
     //공지사항등록(관리) (A_0003) (세션검증 필요)
     @GetMapping("getNoticeForm")
     public String getNoticeForm(Model model, HttpServletRequest request) {
-        System.out.println("공지사항등록 호출 확인");
+
         String id = (String) request.getSession().getAttribute("loginId");
         String redirect = validateUserAuth(id, model);
         if (redirect != null) {
@@ -196,9 +196,9 @@ public class NoticeController {
         AuthDto authDto = memberService.selectAuth(id);
         List<String> menuAuthority = adminService.getMenuAuthority(authDto.getDeptId());
         boolean hasAuth = false;
+
         for (String menuId : menuAuthority) {
             if ("A_0003".equals(menuId)) {
-                System.out.println("A0003확인 = " + menuId);
                 hasAuth = true;
                 break;
             }

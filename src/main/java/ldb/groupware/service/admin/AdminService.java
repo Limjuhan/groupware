@@ -1,5 +1,6 @@
 package ldb.groupware.service.admin;
 
+import ldb.groupware.dto.admin.DashboardInfoDto;
 import ldb.groupware.dto.admin.MenuDto;
 import ldb.groupware.dto.admin.MenuFormDto;
 import ldb.groupware.mapper.mybatis.admin.AdminMapper;
@@ -45,5 +46,9 @@ public class AdminService {
 
         adminMapper.insertMenu(dto);
         return true;
+    }
+
+    public List<DashboardInfoDto> getAnnualLeaveUsage(String year, String deptId) {
+        return adminMapper.getAnnualLeaveUsage(year, deptId);
     }
 }
