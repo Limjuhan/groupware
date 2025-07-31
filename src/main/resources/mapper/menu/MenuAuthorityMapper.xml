@@ -8,6 +8,5 @@
     SELECT menu_code
     FROM menu_authority
     WHERE dept_id = #{deptId}
-    AND (rank_id IS NULL OR rank_id = #{rankId})
     </select>
 </mapper>

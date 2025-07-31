@@ -71,7 +71,7 @@ public class MemberController {
     }
 
     // 비밀번호 변경 저장
-    @PostMapping("UpdatePass")
+    @PostMapping("updatePass")
     public String updatePassword(@Valid @ModelAttribute("dto") PasswordChangeDto dto,
                                  BindingResult result,
                                  HttpSession session,

@@ -96,7 +96,7 @@
     </div>
   </c:if>
 
-  <form:form modelAttribute="dto" method="post" action="/member/UpdatePass" id="pwForm">
+  <form:form modelAttribute="dto" method="post" action="updatePass" id="pwForm">
     <div class="mb-3">
       <label for="curPw" class="form-label"><i class="fa-solid fa-lock"></i> 현재 비밀번호</label>
       <form:password path="curPw" cssClass="form-control" id="curPw" required="true"/>

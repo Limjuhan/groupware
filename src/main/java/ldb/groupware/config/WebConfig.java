@@ -1,7 +1,6 @@
 package ldb.groupware.config;
 
 import jakarta.servlet.MultipartConfigElement;
-import ldb.groupware.interceptor.LoginCheckInterceptor;
 import ldb.groupware.interceptor.MenuAuthorityInterceptor;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
@@ -9,17 +8,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final LoginCheckInterceptor loginCheckInterceptor;
     private final MenuAuthorityInterceptor menuAuthorityInterceptor;
 
-    public WebConfig(LoginCheckInterceptor loginCheckInterceptor, MenuAuthorityInterceptor menuAuthorityInterceptor) {
-        this.loginCheckInterceptor = loginCheckInterceptor;
+    public WebConfig(MenuAuthorityInterceptor menuAuthorityInterceptor) {
         this.menuAuthorityInterceptor = menuAuthorityInterceptor;
     }
 
@@ -39,15 +37,15 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:upload/profile/");
 
     }
-
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(loginCheckInterceptor)
-//                .addPathPatterns("/member/**")
-//                .addPathPatterns("/admin/**")
-//                .addPathPatterns("/");
-//
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(menuAuthorityInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/alert/**")
+                .excludePathPatterns("/login/**")
+                .excludePathPatterns( "/login", "/css/**", "/js/**","/img/**","/fullcalendar/**")
+                .excludePathPatterns("/N/**", "/Q/**", "/D/**", "/P/**");
+    }
 
     @Bean
     public MultipartResolver multipartResolver() {
