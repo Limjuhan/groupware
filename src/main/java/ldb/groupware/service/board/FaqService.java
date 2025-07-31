@@ -2,7 +2,7 @@ package ldb.groupware.service.board;
 
 import ldb.groupware.dto.board.FaqFormDto;
 import ldb.groupware.dto.board.FaqListDto;
-import ldb.groupware.dto.member.DeptDto;
+import ldb.groupware.dto.common.DeptDto;
 import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.mapper.mapstruct.ConvertDtoMapper;
 import ldb.groupware.mapper.mybatis.board.FaqMapper;

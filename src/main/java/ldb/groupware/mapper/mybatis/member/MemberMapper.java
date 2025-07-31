@@ -1,6 +1,7 @@
 package ldb.groupware.mapper.mybatis.member;
 
 import ldb.groupware.domain.Member;
+import ldb.groupware.dto.common.DeptDto;
 import ldb.groupware.dto.member.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

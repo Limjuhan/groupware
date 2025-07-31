@@ -1,5 +1,6 @@
 package ldb.groupware.mapper.mybatis.admin;
 
+import ldb.groupware.dto.admin.DashboardInfoDto;
 import ldb.groupware.dto.admin.MenuDto;
 import ldb.groupware.dto.admin.MenuFormDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,4 +22,7 @@ public interface AdminMapper {
     String nextMenuCode();
 
     void insertMenu(MenuFormDto dto);
+
+    List<DashboardInfoDto> getAnnualLeaveUsage(@Param("year") String year,
+                                               @Param("deptId") String deptId);
 }

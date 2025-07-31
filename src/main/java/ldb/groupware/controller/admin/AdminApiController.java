@@ -1,12 +1,15 @@
 package ldb.groupware.controller.admin;
 
 import jakarta.servlet.http.HttpSession;
+import ldb.groupware.dto.admin.DashboardInfoDto;
 import ldb.groupware.dto.admin.MenuDto;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
+import ldb.groupware.dto.common.DeptDto;
 import ldb.groupware.dto.member.MemberInfoDto;
 import ldb.groupware.dto.member.MemberSearchDto;
 import ldb.groupware.dto.member.UpdateMemberDto;
 import ldb.groupware.service.admin.AdminService;
+import ldb.groupware.service.common.CommonService;
 import ldb.groupware.service.member.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +25,12 @@ public class AdminApiController {
 
     private final MemberService memberService;
     private final AdminService adminService;
+    private final CommonService  commonService;
 
-    public AdminApiController(MemberService memberService, AdminService adminService) {
+    public AdminApiController(MemberService memberService, AdminService adminService, CommonService commonService) {
         this.memberService = memberService;
         this.adminService = adminService;
+        this.commonService = commonService;
     }
 
     // 사원 목록
@@ -73,4 +78,31 @@ public class AdminApiController {
         return ApiResponseDto.successMessage("부서별 권한 설정 완료되었습니다.");
     }
 
+    // 대시보드 정보 로드
+    @GetMapping("getAnnualLeaveUsage")
+    public ResponseEntity<ApiResponseDto<List<DashboardInfoDto>>> getAnnualLeaveUsage(
+            @RequestParam("year") String year,
+            @RequestParam(value = "deptId", required = false) String deptId) {
+
+        try {
+            List<DashboardInfoDto> list = adminService.getAnnualLeaveUsage(year, deptId);
+            log.info("연차정보확인:{}", list);
+            return ApiResponseDto.ok(list);
+        } catch (Exception e) {
+            return ApiResponseDto.error("연차 사용정보 조회 실패");
+        }
+    }
+
+    // 부서목록 조회
+    @GetMapping("getDeptList")
+    public ResponseEntity<ApiResponseDto<List<DeptDto>>> getDeptList() {
+        List<DeptDto> deptList;
+
+        try {
+            deptList = commonService.getDeptList();
+            return ApiResponseDto.ok(deptList);
+        } catch (Exception e) {
+            return ApiResponseDto.fail(e.getMessage());
+        }
+    }
 }
