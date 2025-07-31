@@ -112,6 +112,12 @@
         let op = "width=600,height=1000,top=50,left=150";
         window.open(url, "", op);
     }
+    $(document).ready(function () {
+        var errorMsg = '${globalError}';
+        if (errorMsg && errorMsg != '') {
+            alert(errorMsg);
+        }
+    });
 </script>
 
 
