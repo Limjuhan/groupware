@@ -47,7 +47,7 @@ public class MenuAuthorityInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        if ("XMLHttpRequest".equals(ajaxHeader) || uri.startsWith("/calendar/getScheduleList") || uri.startsWith("/draft/insertMyDraft")) {
+        if ("XMLHttpRequest".equals(ajaxHeader) || uri.startsWith("/calendar/getScheduleList")) {
             return true; // AJAX 요청은 인터셉터 우회
         }
 
