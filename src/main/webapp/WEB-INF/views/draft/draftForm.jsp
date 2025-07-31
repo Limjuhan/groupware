@@ -166,7 +166,7 @@
     <h2 class="mb-4">결재문서 작성</h2>
 
     <form:form method="post" action="insertMyDraft" modelAttribute="draftFormDto" enctype="multipart/form-data">
-        <form:errors cssClass="text-danger fw-bold fs-5" />
+        <form:errors path="" cssClass="text-danger fw-bold fs-5" />
         <form:input type="hidden" path="docId"/>
         <form:input type="hidden" path="status"/>
         <input type="hidden" name="savedFormCode" value="${draftFormDto.formCode}">

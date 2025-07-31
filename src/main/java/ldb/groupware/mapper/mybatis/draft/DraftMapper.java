@@ -79,4 +79,11 @@ public interface DraftMapper {
 
     List<DraftListDto> getReceivedDraftList(@Param("dto") MyDraftSearchDto dto,
                                             @Param("memId") String memId);
+
+    void updateApprovalDocumentStatus(@Param("docId") Integer docId,
+                                      @Param("chgStatus") int chgStatus);
+
+    void updateApprovalLine(@Param("docId") Integer docId,
+                            @Param("chgStatus") int chgStatus,
+                            @Param("comment") String comment);
 }

@@ -91,7 +91,7 @@ public class DraftController {
 
     /**
      * [알람 저장프로세스]
-     * 이용자id, 문서id로 alarm테이블에 insert 단, 임시저장은 저장처리 X. 기안자,1차결재자, 2차결재자,참조자(들)등록
+     * 문서id로 alarm테이블에 insert 단, 임시저장은 저장처리 X. 기안자,1차결재자, 2차결재자,참조자(들)등록
      * 1차결재자와참조자들만 readYn='Y', 기안자,2차결재자는 'N'
      *
      * <p>
@@ -139,7 +139,7 @@ public class DraftController {
         // 제출시에만 입력값 검증
         if ("save".equals(action)) {
             // 결재자 중복체크
-            validateApproval(dto);
+            validateApproval(dto, memId, bindingResult);
             // 추가 유효성 검증 (양식별 필드)
             validFormType(dto, bindingResult);
 
@@ -266,10 +266,9 @@ public class DraftController {
      *
      *  -> approval_document의 status 4(2차결재대기)로 변경
      *
-     *     approval_line의 1차결재자id(memId)기준 comment 업데이트
-     *     approval_line에서 docId기준 status값 4로 일괄 업데이트
+     *     approval_line의 docId기준 comment, status 업데이트
      *
-     *     alarm테이블 2차결재자, 기안자, 참조자는 readYn='N' update
+     *     alarm테이블 2차결재자는 readYn='N' update
      *
      * 2차결재대기
      *  -> 세션에서 가져온 id와 해당문서의 2차결재자id가 동일한지 검증
@@ -279,7 +278,7 @@ public class DraftController {
      *
      *     approval_document의 status 4(2차결재대기)로 변경
      *     docId기준 approval_line의 1차,2차결재자들,참조자(들) status 변경 및 2차결재자는 comment 업데이트
-     *     alarm테이블에 docId기준 기안자 readYn='N'
+     *     alarm테이블에 docId,기안자로  readYn='N'
      *
      * @param dto
      * @param memId
@@ -292,13 +291,8 @@ public class DraftController {
                               RedirectAttributes redirectAttributes) {
 
         try {
-            if ("approve".equals(dto.getAction())) {
-                draftService.approveDraft(dto, memId);
-                redirectAttributes.addFlashAttribute("message", "결재 승인처리 완료");
-            } else if ("reject".equals(dto.getAction())) {
-                draftService.rejectDraft(dto, memId);
-                redirectAttributes.addFlashAttribute("message", "결재 반려처리 완료");
-            }
+            draftService.updateDraftStatus(dto, memId);
+            redirectAttributes.addFlashAttribute("message", "결재 처리 완료");
         } catch (Exception e) {
             DraftFormDto draftFormDto = new DraftFormDto();
             draftFormDto.setDocId(dto.getDocId());
@@ -317,32 +311,36 @@ public class DraftController {
         return commonService.getCommonTypesByGroup(CommonConst.APPROVAL_STATUS.getValue());
     }
 
-    private void validateApproval(DraftFormDto dto) {
+    private void validateApproval(DraftFormDto dto, String memId, BindingResult bindingResult) {
         String approver1 = dto.getApprover1();
         String approver2 = dto.getApprover2();
         List<String> referrers = dto.getReferrerList();
 
-        // 1. 필수값 체크
-        if (StringUtils.isBlank(approver1)) {
-            throw new IllegalStateException("1차 결재자를 선택하세요.");
-        }
-        if (StringUtils.isBlank(approver2)) {
-            throw new IllegalStateException("2차 결재자를 선택하세요.");
-        }
-
         // 2. 1차/2차 결재자 중복 방지
         if (approver1.equals(approver2)) {
-            throw new IllegalStateException("1차 결재자와 2차 결재자가 같을 수 없습니다.");
+            bindingResult.reject("error.approval1same2", "1차 결재자와 2차 결재자가 같을 수 없습니다.");
+        }
+
+        // 2-1. 기안자 체크
+        if (memId.equals(approver1)) {
+            bindingResult.reject("error.approvalsame.writer1", "1차 결재자와 기안자가 같을 수 없습니다.");
+        }
+        if (memId.equals(approver2)) {
+            bindingResult.reject("error.approvalsame.writer2", "2차 결재자와 기안자가 같을 수 없습니다.");
+            throw new IllegalStateException("2차 결재자와 기안자가 같을 수 없습니다.");
         }
 
         // 3. 참조자 목록이 비어있지 않을 때만 체크
         if (referrers != null && !referrers.isEmpty()) {
             for (String ref : referrers) {
                 if (approver1.equals(ref)) {
-                    throw new IllegalStateException("참조자 목록에 1차 결재자가 포함될 수 없습니다.");
+                    bindingResult.reject("error.approval1same.ref", "참조자 목록에 1차 결재자가 포함될 수 없습니다.");
                 }
                 if (approver2.equals(ref)) {
-                    throw new IllegalStateException("참조자 목록에 2차 결재자가 포함될 수 없습니다.");
+                    bindingResult.reject("error.approval2same.ref", "참조자 목록에 2차 결재자가 포함될 수 없습니다.");
+                }
+                if (memId.equals(ref)) {
+                    bindingResult.reject("error.writersame.ref", "참조자 목록에 기안자가 포함될 수 없습니다.");
                 }
             }
         }

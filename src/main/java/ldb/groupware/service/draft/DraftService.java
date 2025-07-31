@@ -3,6 +3,7 @@ package ldb.groupware.service.draft;
 import ldb.groupware.domain.*;
 import ldb.groupware.dto.draft.*;
 import ldb.groupware.mapper.mybatis.draft.DraftMapper;
+import ldb.groupware.service.alarm.AlarmService;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.common.CommonService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +22,16 @@ public class DraftService {
     private final DraftMapper draftMapper;
     private final AttachmentService attachmentService;
     private final MessageSource messageSource;
-    private final CommonService commonService;
+    private final AlarmService alarmService;
 
-    public DraftService(DraftMapper draftMapper, AttachmentService attachmentService, MessageSource messageSource, CommonService commonService) {
+    public DraftService(DraftMapper draftMapper,
+                        AttachmentService attachmentService,
+                        MessageSource messageSource,
+                        AlarmService alarmService) {
         this.draftMapper = draftMapper;
         this.attachmentService = attachmentService;
         this.messageSource = messageSource;
-        this.commonService = commonService;
+        this.alarmService = alarmService;
     }
 
     public Map<String, Object> searchMyDraftList(String memId, MyDraftSearchDto dto, int page) {
@@ -303,12 +307,59 @@ public class DraftService {
 
     //TODO: 마지막 작업구간. 7/30 오후 12시.
     @Transactional
-    public void approveDraft(DraftUpdateDto dto, String memId) {
-
+    public void updateDraftStatus(DraftUpdateDto dto, String memId) {
+        validateApproval(dto, memId);
+        int chgStatus = validateAction(dto.getStatus(), dto.getAction());
+        updateApprovalDraft(dto.getDocId(), chgStatus, dto.getComment());
+        alarmService.updateAlarm(dto.getDocId(), dto.getStatus(), chgStatus);
     }
 
-    @Transactional
-    public void rejectDraft(DraftUpdateDto dto, String memId) {
+    private void validateApproval(DraftUpdateDto dto, String memId) {
+        DraftFormDto draftFormDto = draftMapper.getApprovalDocumentByDocId(dto.getDocId());
 
+        if (dto.getStatus() == ApprovalConst.STATUS_FIRST_APPROVAL_WAITING) {
+                if (!memId.equals(draftFormDto.getApprover1())) {
+                    throw new IllegalStateException("1차결재 대상자가 아닙니다.");
+                }
+        } else if (dto.getStatus() == ApprovalConst.STATUS_SECOND_APPROVAL_WAITING) {
+            if (!memId.equals(draftFormDto.getApprover2())) {
+                throw new IllegalStateException("2차결재 대상자가 아닙니다.");
+            }
+        } else {
+            throw new IllegalStateException("해당문서는 결재불가능한 상태입니다. 관리자에게 문의하세요.");
+        }
     }
+
+    private void updateApprovalDraft(Integer docId, int chgStatus, String comment) {
+        try {
+            draftMapper.updateApprovalDocumentStatus(docId, chgStatus);
+            draftMapper.updateApprovalLine(docId, chgStatus, comment);
+        } catch (Exception e) {
+            log.error("결재처리 실패. docId: {}, error: {}", docId, e.getMessage(), e);
+            throw new RuntimeException("결재처리 실패. 관리자에게 문의하세요.", e);
+        }
+    }
+
+    public Integer validateAction(Integer status, String action) {
+        int chgStatus = 0;
+
+        if (ApprovalConst.STATUS_FIRST_APPROVAL_WAITING == status) {
+            if ("approve".equals(action)) {
+                chgStatus =  ApprovalConst.STATUS_SECOND_APPROVAL_WAITING;
+            } else if ("reject".equals(action)) {
+                chgStatus = ApprovalConst.STATUS_FIRST_APPROVAL_REJECTED;
+            }
+        }  else if (ApprovalConst.STATUS_SECOND_APPROVAL_WAITING == status) {
+            if ("approve".equals(action)) {
+                chgStatus = ApprovalConst.STATUS_SECOND_APPROVAL_APPROVED;
+            } else if ("reject".equals(action)) {
+                chgStatus = ApprovalConst.STATUS_SECOND_APPROVAL_REJECTED;
+            }
+        } else {
+            log.error("[알람등록] 참조하는 문서의 결재상태가 잘못되었습니다. stats={}", status);
+            throw new IllegalArgumentException("해당문서의 결재상태가 처리할수없는 상태입니다.");
+        }
+        return chgStatus;
+    }
+
 }
