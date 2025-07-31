@@ -50,7 +50,7 @@
         AND d.del_yn = 'N'
 
         <if test="searchStatus != null and searchStatus != ''">
-            AND a.status = #{searchStatus}
+            AND d.status = #{searchStatus}
         </if>
 
         <if test="searchType != null and keyword != null and keyword != ''">
@@ -144,6 +144,7 @@
 
     <select id="getApprovalDocumentByDocId" resultType="DraftFormDto">
         SELECT a.doc_id as docId,
+               a.mem_id as memId,
                a.form_code as formCode,
                a.doc_title as title,
                a.doc_content as content,
@@ -242,6 +243,25 @@
             doc_endDate = #{dto.docEndDate}
         WHERE
             doc_id = #{dto.docId}
+    </update>
+
+    <update id="updateApprovalDocumentStatus">
+        UPDATE approval_document
+        SET
+            status = #{chgStatus},
+            updated_at = NOW()
+        WHERE
+            doc_id = #{docId}
+    </update>
+
+    <update id="updateApprovalLine">
+        UPDATE approval_line
+        SET
+            status = #{chgStatus},
+            approved_at = NOW(),
+            approved_comment = #{comment}
+        WHERE
+            doc_id = #{docId}
     </update>
 
     <insert id="insertFormProject" parameterType="FormProject">

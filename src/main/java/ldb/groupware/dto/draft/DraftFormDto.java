@@ -27,6 +27,7 @@ public class DraftFormDto {
 
     private Integer docId;
 
+    private String memId;
     private String memName;
 
     @NotBlank(message = "제목은 필수 입력입니다.")
@@ -41,8 +42,8 @@ public class DraftFormDto {
     private Integer status;
 
     @NotBlank(message = "1차 결재자를 선택하세요.")
-    private String approver1;
-    private String approver1Name;
+    private String approver1; // ID
+    private String approver1Name; //name
 
     @NotBlank(message = "2차 결재자를 선택하세요.")
     private String approver2;

@@ -153,7 +153,7 @@
     <form action="updateDraft" method="post">
         <input type="hidden" name="docId" value="${draftDetail.docId}"/>
         <input type="hidden" name="status" value="${draftDetail.status}"/>
-        <input type="hidden" name="status" value="${draftDetail.formCode}"/>
+        <input type="hidden" name="formCode" value="${draftDetail.formCode}"/>
         <div class="mb-3">
             <label class="form-label">결재 의견 (선택)</label>
             <textarea class="form-control " name="comment" rows="3"
@@ -163,7 +163,7 @@
         <c:if test="${(draftDetail.status == 1 && draftDetail.approver1 == sessionScope.loginId)
                     || ((draftDetail.status == 2 || draftDetail.status == 4)
                     && draftDetail.approver2 == sessionScope.loginId)}">
-        <div class="d-flex justify-content-start gap-2">
+        <div class="d-flex justify-content-end gap-2">
                 <button type="submit" name="action" value="approve" class="btn btn-success ">승인</button>
                 <button type="submit" name="action" value="reject" class="btn btn-danger ">반려</button>
             </div>
