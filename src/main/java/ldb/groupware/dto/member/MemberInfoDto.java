@@ -48,4 +48,14 @@ public class MemberInfoDto {
             }
         }
     }
+
+    public String getStatusStr() {
+        if ("Active".equalsIgnoreCase(memStatus)) {
+            return "재직";
+        } else if ("Resigned".equalsIgnoreCase(memStatus)) {
+            return "퇴직";
+        } else {
+            return memStatus;
+        }
+    }
 }

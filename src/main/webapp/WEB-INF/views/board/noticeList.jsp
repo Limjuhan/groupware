@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -6,17 +6,16 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .notice-table th, .notice-table td {
             vertical-align: middle;
             text-align: center;
         }
-
         .fixed-row {
             background-color: #f8f9fa;
             font-weight: bold;
         }
-
         .notice-title {
             text-align: left;
             padding-left: 1rem;
@@ -109,17 +108,10 @@
     </nav>
 </div>
 <script>
-    function goForm(url) {
+    function goForm(url){
         let op = "width=600,height=1000,top=50,left=150";
         window.open(url, "", op);
     }
-
-    $(document).ready(function () {
-        var errorMsg = '${globalError}';
-        if (errorMsg && errorMsg != '') {
-            alert(errorMsg);
-        }
-    });
 </script>
 
 

@@ -34,7 +34,7 @@
             <div class="col-md-5">
                 <label for="keyword" class="form-label fw-medium">비품명 / 공용설비ID</label>
                 <input type="text" id="keyword" name="keyword" class="form-control"
-                       placeholder="예: 노트북 또는 i005" value="${param.keyword}">
+                       placeholder="예: 노트북" value="${param.keyword}">
             </div>
 
             <!-- 반납 여부 -->

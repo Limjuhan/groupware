@@ -102,4 +102,15 @@
                end_at AS end
         FROM company_schedule
     </select>
+
+    <!--메인 화면에 들어갈 일정 목록-->
+    <select id="selectRecentSchedules" resultType="ScheduleListDto">
+        SELECT schedule_id,
+               schedule_title,
+               start_at,
+               end_at
+        FROM company_schedule
+        WHERE start_at >= NOW()
+        ORDER BY start_at ASC LIMIT 5
+    </select>
 </mapper>

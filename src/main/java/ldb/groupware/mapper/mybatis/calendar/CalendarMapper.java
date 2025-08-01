@@ -25,4 +25,6 @@ public interface CalendarMapper {
     void updateCalendar(ScheduleEditFormDto dto);
 
     List<EventDto> selectAllScheduleList();
+
+    List<ScheduleListDto> selectRecentSchedules();
 }

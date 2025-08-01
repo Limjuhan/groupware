@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -19,7 +20,7 @@
         .card {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
             height: 100%;
         }
 
@@ -78,9 +79,14 @@
             <div class="card p-4 h-100">
                 <h5>📆 회사 일정</h5>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">7/18 - 부서별 정기회의</li>
-                    <li class="list-group-item">7/22 - 전사 워크숍</li>
-                    <li class="list-group-item">7/25 - 연차 등록 마감</li>
+                    <c:forEach var="s" items="${scheduleList}">
+                        <li class="list-group-item">
+                                ${s.startAtStr} - ${s.scheduleTitle}
+                        </li>
+                    </c:forEach>
+                    <c:if test="${empty scheduleList}">
+                        <li class="list-group-item text-muted">등록된 일정이 없습니다.</li>
+                    </c:if>
                 </ul>
             </div>
         </div>

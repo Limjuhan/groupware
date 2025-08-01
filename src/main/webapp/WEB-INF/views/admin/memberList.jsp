@@ -58,10 +58,10 @@
                         $('#detailPhone').val(user.memPhone);
                         $('#detailDept').val(user.deptName);
                         $('#detailRank').val(user.rankName);
-                        $('#detailStatus').val(user.memStatus);
+                        $('#detailStatus').val(user.statusStr);
                         $('#detailHire').val(user.memHiredate);
                         $('#detailEmail').val(user.memEmail);
-                        $('#detailPrivateEmail').val(user.memPrivateEmail);
+                        $('#detailPrivateEmail').val(user.privateEmail);
                         $('#detailAddress').val(user.memAddress);
                         const $annualInfo = $('#annualInfo');
                         $annualInfo.empty();

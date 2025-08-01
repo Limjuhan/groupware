@@ -37,14 +37,16 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:upload/profile/");
 
     }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(menuAuthorityInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/alert/**")
                 .excludePathPatterns("/login/**")
-                .excludePathPatterns( "/login", "/css/**", "/js/**","/img/**","/fullcalendar/**")
-                .excludePathPatterns("/N/**", "/Q/**", "/D/**", "/P/**");
+                .excludePathPatterns("/login", "/css/**", "/js/**", "/img/**", "/fullcalendar/**")
+                .excludePathPatterns("/N/**", "/Q/**", "/D/**", "/P/**")
+                .excludePathPatterns("/member/register", "/member/sendCode", "/member/sendTemp", "/member/verifyCode", "/member/resetPw");;
     }
 
     @Bean

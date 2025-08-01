@@ -24,7 +24,7 @@
             <div class="col-md-5">
                 <label for="keyword" class="form-label fw-medium">차량명 / 공용설비ID</label>
                 <input type="text" id="keyword" name="keyword" class="form-control"
-                       placeholder="예: G70 또는 f002" value="${param.keyword}">
+                       placeholder="예: G70" value="${param.keyword}">
             </div>
 
             <!-- 반납 여부 -->

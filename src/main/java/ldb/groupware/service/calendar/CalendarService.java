@@ -70,4 +70,9 @@ public class CalendarService {
     public List<EventDto> getEventList() {
         return calendarMapper.selectAllScheduleList();
     }
+
+    // 메인화면 목록 조회
+    public List<ScheduleListDto> getRecentSchedules() {
+        return calendarMapper.selectRecentSchedules();
+    }
 }

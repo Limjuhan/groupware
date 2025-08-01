@@ -141,7 +141,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">재직상태</label>
-                            <input type="text" class="form-control" value="${user.memStatus}" readonly>
+                            <input type="text" class="form-control" value="${user.statusStr}" readonly>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">입사일</label>
