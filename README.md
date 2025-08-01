@@ -1,7 +1,8 @@
-<img src="./screenshots/main.png" alt="메인화면" width="3000"/>
 # LDBSOFT Groupware
 
 기업용 웹 그룹웨어 시스템
+
+<img src="./screenshots/main.png" alt="메인화면" width="3000"/>
 
 ## 📌 기술 스택
 
