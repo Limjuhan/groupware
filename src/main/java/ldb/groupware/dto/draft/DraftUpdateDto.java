@@ -13,4 +13,6 @@ public class DraftUpdateDto {
     private String action; // 제출구분(결재or반려)
     private String comment; // 결재시 내용
     private String formCode; // 결재양식
+
+    private double requestDays;// 연차 사용일수
 }

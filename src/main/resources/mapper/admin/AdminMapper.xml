@@ -49,6 +49,7 @@
             d.dept_name AS deptName,
             m.mem_name AS memName,
             r.rank_name AS rankName,
+            al.year as realYear,
             al.total_days AS totalDays,
             al.use_days AS useDays,
             al.remain_days AS remainDays

@@ -75,7 +75,7 @@
                 <div class="card-body">
                     <p><strong>휴가 유형:</strong> ${draftDetail.leaveCode}</p>
                     <p><strong>휴가 기간:</strong> ${draftDetail.leaveStartStr} ~ ${draftDetail.leaveEndStr}</p>
-                    <p><strong>총 일수:</strong> ${draftDetail.totalDays}일</p>
+                    <p><strong>총 일수:</strong> ${draftDetail.requestDays}일</p>
                 </div>
             </div>
         </c:when>

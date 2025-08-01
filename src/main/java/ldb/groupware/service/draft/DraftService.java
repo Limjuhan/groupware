@@ -98,8 +98,10 @@ public class DraftService {
 
         if (action.equals("save")) {// 새글작성 -> 제출
             saveApprovalLine(dto); // 결재선 저장
+            alarmService.saveAlarm(dto, memId);
         }
 
+        //첨부파일 처리
         attachmentService.saveAttachments(dto.getDocId().toString(), dto.getAttachType(), attachments);
     }
 
@@ -121,7 +123,7 @@ public class DraftService {
     private void insertFormDetail(DraftFormDto dto, String memId, int saveType) {
         switch (dto.getFormCode()) {
             case ApprovalConst.FORM_ANNUAL -> {
-                // 임시저장은 유효성검사 x
+                // 임시저장이 아니면 유효성검사
                 if (saveType != ApprovalConst.STATUS_TEMP) {
                     validateAnnualLeave(dto, memId);
                 }
@@ -153,9 +155,9 @@ public class DraftService {
     }
 
     private void validateAnnualLeave(DraftFormDto dto, String memId) {
-        double remainAnnualLeave = getRemainAnnual(memId);
+        double remainDays = getRemainAnnual(memId);
 
-        if (remainAnnualLeave < dto.getTotalDays()) {
+        if (remainDays < dto.getRequestDays()) {
             throw new IllegalArgumentException(
                     messageSource.getMessage("error.annual.overflow", null, Locale.KOREA)
             );
@@ -305,13 +307,27 @@ public class DraftService {
         return result;
     }
 
-    //TODO: 마지막 작업구간. 7/30 오후 12시.
     @Transactional
     public void updateDraftStatus(DraftUpdateDto dto, String memId) {
         validateApproval(dto, memId);
         int chgStatus = validateAction(dto.getStatus(), dto.getAction());
-        updateApprovalDraft(dto.getDocId(), chgStatus, dto.getComment());
+        updateDraftInfo(dto.getDocId(), chgStatus, dto.getComment());
+        // 휴가계획서 && 2차결재승인
+        if (dto.getFormCode().equals(ApprovalConst.FORM_ANNUAL) &&
+                chgStatus == ApprovalConst.STATUS_SECOND_APPROVAL_APPROVED) {
+
+            updateAnnualLeaveInfo(dto, memId);
+        }
         alarmService.updateAlarm(dto.getDocId(), dto.getStatus(), chgStatus);
+    }
+
+    private void updateAnnualLeaveInfo(DraftUpdateDto dto, String memId) {
+        Integer remainDays = draftMapper.getRemainAnnual(memId);
+        if (dto.getRequestDays() > remainDays) {
+            throw new IllegalStateException("사용하려는 연차일수가 잔여연차보다 많습니다.");
+        }
+        draftMapper.updateAnnualLeaveInfo(dto.getRequestDays(), memId);
+
     }
 
     private void validateApproval(DraftUpdateDto dto, String memId) {
@@ -330,7 +346,7 @@ public class DraftService {
         }
     }
 
-    private void updateApprovalDraft(Integer docId, int chgStatus, String comment) {
+    private void updateDraftInfo(Integer docId, int chgStatus, String comment) {
         try {
             draftMapper.updateApprovalDocumentStatus(docId, chgStatus);
             draftMapper.updateApprovalLine(docId, chgStatus, comment);
@@ -344,15 +360,15 @@ public class DraftService {
         int chgStatus = 0;
 
         if (ApprovalConst.STATUS_FIRST_APPROVAL_WAITING == status) {
-            if ("approve".equals(action)) {
+            if (action.equals(ApprovalConst.ACTION_APPROVE)) {
                 chgStatus =  ApprovalConst.STATUS_SECOND_APPROVAL_WAITING;
-            } else if ("reject".equals(action)) {
+            } else if (action.equals(ApprovalConst.ACTION_REJECT)) {
                 chgStatus = ApprovalConst.STATUS_FIRST_APPROVAL_REJECTED;
             }
         }  else if (ApprovalConst.STATUS_SECOND_APPROVAL_WAITING == status) {
-            if ("approve".equals(action)) {
+            if (action.equals(ApprovalConst.ACTION_APPROVE)) {
                 chgStatus = ApprovalConst.STATUS_SECOND_APPROVAL_APPROVED;
-            } else if ("reject".equals(action)) {
+            } else if (action.equals(ApprovalConst.ACTION_REJECT)) {
                 chgStatus = ApprovalConst.STATUS_SECOND_APPROVAL_REJECTED;
             }
         } else {

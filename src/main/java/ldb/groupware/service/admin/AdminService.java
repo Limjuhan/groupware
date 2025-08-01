@@ -58,11 +58,16 @@ public class AdminService {
         int totalRows = adminMapper.countAnnualLeaveUsage(year, deptId);
         PaginationDto pageDto = new PaginationDto();
         pageDto.setPageData(page, null, null,  totalRows);
+        pageDto.calculatePagination();
 
-        List<DashboardInfoDto> list =
+        List<DashboardInfoDto> tableList =
                 adminMapper.getAnnualLeaveUsage(year, deptId, pageDto.getStartNum(), pageDto.getItemsPerPage());
-        System.out.println("list = " + list);
-        result.put("list", list);
+
+        List<DashboardInfoDto> chartList =
+                adminMapper.getAnnualLeaveUsage(year, deptId, null, null);
+
+        result.put("tableList", tableList);
+        result.put("chartList", chartList);
         result.put("pageInfo", pageDto);
 
         return result;

@@ -10,4 +10,22 @@
         WHERE ref_doc_id = #{docId}
           AND   mem_id = #{memId}
     </update>
+
+    <insert id="insertAlarm">
+        INSERT INTO alarm (
+            mem_id,
+            step_order,
+            status,
+            ref_doc_id,
+            read_yn,
+            created_at
+        ) VALUES (
+                     #{memId},                  -- 알림 받을 사람
+                     #{step_order},             -- 결재진행자 구분(0:기안자, 1:1차결재자, 2:2차결재자)
+                     #{status},                 -- 결재 진행상태
+                     #{docId},
+                     #{readYn},
+                     NOW()
+                 );
+    </insert>
 </mapper>

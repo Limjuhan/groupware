@@ -112,9 +112,9 @@
 
     <insert id="insertApprovalDocument" useGeneratedKeys="true" keyProperty="dto.docId">
         INSERT INTO approval_document
-        (form_code, doc_title, doc_content, mem_id, created_at, status, updated_at, del_yn, doc_endDate)
+        (form_code, doc_title, doc_content, mem_id, created_at, status, del_yn, doc_endDate)
         VALUES
-            (#{dto.formCode}, #{dto.title},#{dto.content}, #{memId}, NOW(), #{status}, NOW(), 'N', #{dto.docEndDate})
+            (#{dto.formCode}, #{dto.title},#{dto.content}, #{memId}, NOW(), #{status}, 'N', #{dto.docEndDate})
     </insert>
 
     <insert id="insertFormAnnualLeave" parameterType="FormAnnualLeave">
@@ -124,7 +124,7 @@
             `leave_code`,
             `start_date`,
             `end_date`,
-            `total_days`,
+            `request_days`,
             `annual_content`
         ) VALUES (
                      #{docId},
@@ -132,7 +132,7 @@
                      #{leaveCode},
                      #{startDate},
                      #{endDate},
-                     #{totalDays},
+                     #{requestDays},
                      #{annualContent}
                  )
     </insert>
@@ -202,7 +202,7 @@
         SET leave_code = #{leaveCode},
             start_date = #{startDate},
             end_date = #{endDate},
-            total_days = #{totalDays},
+            request_days = #{requestDays},
             annual_content = #{annualContent}
         WHERE doc_id = #{docId}
     </update>
@@ -367,6 +367,18 @@
         LIMIT #{dto.startNum}, #{dto.itemsPerPage}
     </select>
 
+    <!-- 이용자 연차정보 수정-->
+    <update id="updateAnnualLeaveInfo">
+        UPDATE annual_leave
+        SET use_days = use_days + #{requestDays},  <!-- 사용일수 증가 -->
+            remain_days = remain_days - #{requestDays} <!-- 잔여일수 감소 -->
+            WHERE mem_id = #{memId}
+            AND year = (
+                        SELECT MAX(year)
+                        FROM annual_leave
+                        WHERE mem_id = #{memId}
+                        )
+    </update>
 
 
 </mapper>

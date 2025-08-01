@@ -86,4 +86,7 @@ public interface DraftMapper {
     void updateApprovalLine(@Param("docId") Integer docId,
                             @Param("chgStatus") int chgStatus,
                             @Param("comment") String comment);
+
+    void updateAnnualLeaveInfo(@Param("requestDays") double requestDays,
+                               @Param("memId") String memId);
 }

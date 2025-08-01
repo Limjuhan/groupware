@@ -77,7 +77,7 @@
                 <div class="card-body">
                     <p><strong>휴가 유형:</strong> ${draftDetail.leaveCode}</p>
                     <p><strong>휴가 기간:</strong> ${draftDetail.leaveStartStr} ~ ${draftDetail.leaveEndStr}</p>
-                    <p><strong>총 일수:</strong> ${draftDetail.totalDays}일</p>
+                    <p><strong>총 일수:</strong> ${draftDetail.requestDays}일</p>
                     <p><strong>잔여 연차:</strong> ${remainDays}일</p>
                 </div>
             </div>
@@ -154,6 +154,7 @@
         <input type="hidden" name="docId" value="${draftDetail.docId}"/>
         <input type="hidden" name="status" value="${draftDetail.status}"/>
         <input type="hidden" name="formCode" value="${draftDetail.formCode}"/>
+        <input type="hidden" name="requestDays" value="${draftDetail.requestDays}"/>
         <div class="mb-3">
             <label class="form-label">결재 의견 (선택)</label>
             <textarea class="form-control " name="comment" rows="3"

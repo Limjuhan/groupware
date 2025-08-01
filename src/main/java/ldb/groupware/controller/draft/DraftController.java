@@ -121,7 +121,7 @@ public class DraftController {
      * @return
      */
     @PostMapping("insertMyDraft")
-    public String insertMyDraft(
+    public String insertMyDraft(// 알람테이블 저장해야함. 그래야 테스트 가능
             @Valid @ModelAttribute("draftFormDto") DraftFormDto dto,
             BindingResult bindingResult,
             @RequestParam(value = "attachments", required = false) List<MultipartFile> attachments,
@@ -284,6 +284,8 @@ public class DraftController {
      *     approval_document의 status 4(2차결재대기)로 변경
      *     docId기준 approval_line의 1차,2차결재자들,참조자(들) status 변경 및 2차결재자는 comment 업데이트
      *     alarm테이블에 docId,기안자로  readYn='N'
+     *TODO:연차양식은 2차결재승인시에 annual_leave에서 남은연차일수(remainDays) 차감해줘야됨
+     *  ->그리고 나서 연차대시보드 연차정보수정작업도 연계해서 ㄱㄱ
      *
      * @param dto
      * @param memId

@@ -148,14 +148,18 @@
       method: "GET",
       data: { year: year, deptId: dept, page: currentPage },
       success: function(res) {
-        console.log(res.message);
         if (!res || !res.success) {
+          console.log(res.message);
           alert("데이터조회중 오류가 발생하였습니다.");
           return;
         }
-        var data = res.data.list;
-        renderTable(data);
-        renderChart(data);
+        var chartData = res.data.chartList;
+        var tableData = res.data.tableList;
+        console.log('차트데이터확인 ',chartData);
+        console.log('페이징데이터확인 ',tableData);
+        renderTable(tableData);
+        renderChart(chartData);
+        console.log("page정보", res.data.pageInfo);
         if (res.data.pageInfo) renderPagination(res.data.pageInfo);
       },
       error: function(error) {
@@ -164,12 +168,13 @@
     });
   }
 
+  // 사원 리스트
   function renderTable(data) {
     var $tbody = $("#leaveTableBody");
     $tbody.empty();
 
     $.each(data, function(i, emp) {
-      var row = '<tr data-mem-id="' + emp.memId + '">'
+      var row = '<tr data-mem-id="' + emp.memId + '" data-year="' + emp.realYear + '">'
               + '<td>' + emp.deptName + '</td>'
               + '<td>' + emp.memName + '</td>'
               + '<td>' + emp.rankName + '</td>'
@@ -183,6 +188,86 @@
     });
   }
 
+  $(document).on('click', '.btnSaveRow', function () {
+
+    var $row = $(this).closest("tr");
+    var memId = $row.data("mem-id");
+    var realYear = $row.data("year");
+    var totalDays = $row.find(".totalDays").val();
+    var useDays = $row.find(".useDays").val();
+    var remainDays = $row.find(".remainDays").val();
+
+    if (!memId) {
+      alert("사원 ID가 없습니다.");
+      return;
+    }
+
+    totalDays  = parseInt(totalDays, 10);
+    useDays    = parseInt(useDays, 10);
+    remainDays = parseInt(remainDays, 10);
+
+    // 유효성 검사
+    if (isNaN(totalDays) || isNaN(useDays) || isNaN(remainDays)) {
+      alert("모든 값을 숫자로 입력해주세요.");
+      return;
+    }
+
+    if (totalDays < 0 || useDays < 0 || remainDays < 0) {
+      alert("연차 일수는 0보다 작을 수 없습니다.");
+      return;
+    }
+
+    if (totalDays === 0) {
+      alert("총 연차 일수는 0보다 커야 합니다.");
+      return;
+    }
+
+    if (useDays > totalDays) {
+      alert("사용 연차 일수는 총 연차 일수를 초과할 수 없습니다.");
+      return;
+    }
+
+    if (remainDays > totalDays) {
+      alert("잔여 연차 일수는 총 연차 일수를 초과할 수 없습니다.");
+      return;
+    }
+
+    if (useDays + remainDays !== totalDays) {
+      alert("사용일수와 잔여일수의 합은 총 연차 일수와 같아야 합니다.");
+      return;
+    }
+
+    // AJAX로 저장
+    var data = {
+      memId: memId,
+      totalDays: totalDays,
+      useDays: useDays,
+      remainDays: remainDays,
+      year: realYear,
+    }
+
+    $.ajax({
+      url: "/admin/updateAnnualLeave",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function (res) {
+        if (res && res.success) {
+          console.log(res.message);
+          loadDashboard(currentPage); // 현재 페이지 새로 로딩
+        } else {
+          alert(res.message || "저장에 실패했습니다.");
+        }
+      },
+      error: function () {
+        alert("저장 중 오류가 발생했습니다.");
+      }
+    });
+
+
+  });
+
+  //차트 렌더링
   function renderChart(data) {
     var deptMap = {};
     $.each(data, function(i, emp) {
@@ -237,24 +322,27 @@
       var active = (i === pageInfo.currentPage) ? "active" : "";
       $pagination.append('<li class="page-item ' + active + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
     }
-    if (pageInfo.totalPages > page) {
+    if (pageInfo.totalPages > pageInfo.page) {
       $pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (pageInfo.currentPage + 1) + '">다음</a></li>');
     }
   }
 
+  // 검색
   $("#btnSearch").on("click", function() { loadDashboard(1); });
+  // 페이지 이동
   $("#pagination").on("click", "a", function(e) {
     e.preventDefault();
     var page = $(this).data("page");
     loadDashboard(page);
   });
-
+  // 엑셀다운
   $("#btnExcel").on("click", function() {
     var year = $("#yearFilter").val();
     var dept = $("#deptFilter").val();
     window.location.href = "/admin/annualLeaveExcel?year=" + year + "&deptId=" + dept;
   });
 
+  // 부서목록 조회
   function getDeptList() {
     $.ajax({
       url: "/admin/getDeptList",

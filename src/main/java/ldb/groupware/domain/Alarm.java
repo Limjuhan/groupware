@@ -13,9 +13,21 @@ public class Alarm {
 
     private int alaramId;
     private String memId;
-    private String status;
+    private Integer status;
     private Integer refDocId;
     private String readYn;
     private LocalDateTime createdAt;
     private int stepOrder;
+
+    public Alarm() {
+    }
+
+    public Alarm(String memId, Integer status, Integer refDocId, String readYn, int stepOrder) {
+        this.memId = memId;
+        this.status = status;
+        this.refDocId = refDocId;
+        this.readYn = readYn;
+        this.stepOrder = stepOrder;
+    }
+
 }

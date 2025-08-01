@@ -52,7 +52,7 @@ public class DraftFormDto {
     @NotNull(message = "문서종료일을 입력하세요.")
     private LocalDate docEndDate;
 
-    private String referrers;
+    private String referrers;// ,이루어진 문자열로 받음
 
     private String attachType = "D"; // 전자결재 첨부파일 타입
 
@@ -124,7 +124,7 @@ public class DraftFormDto {
         }
     }
 
-    public double getTotalDays() {
+    public double getRequestDays() {
         if (leaveStart == null || leaveEnd == null) {
             throw new IllegalArgumentException("휴가 시작일or종료일이 존재하지않습니다.");
         }
