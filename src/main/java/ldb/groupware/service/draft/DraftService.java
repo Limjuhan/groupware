@@ -82,7 +82,7 @@ public class DraftService {
                           List<MultipartFile> attachments,
                           String action,
                           String memId,
-                          String savedFormCode) throws IllegalArgumentException {
+                          String savedFormCode) throws Exception {
 
         //글등록방식(임시저장or제출) 확인
         int saveType = getStatus(action);
@@ -103,6 +103,7 @@ public class DraftService {
 
         //첨부파일 처리
         attachmentService.saveAttachments(dto.getDocId().toString(), dto.getAttachType(), attachments);
+
     }
 
     private void updateFormDetail(DraftFormDto dto, String memId, int saveType) {

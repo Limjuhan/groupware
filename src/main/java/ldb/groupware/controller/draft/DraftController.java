@@ -111,6 +111,7 @@ public class DraftController {
      * <p>
      * 기본적으로 임시저장은 입력값 유효성검사 제외.
      * 단, 휴가계획서는 임시저장할때도 휴가시작,끝나는날 필수입력받음.
+     *TODO:참조자도 알람테이블에 들어가야함.
      *
      * @param dto
      * @param bindingResult
@@ -130,6 +131,7 @@ public class DraftController {
             @SessionAttribute(name = "loginId") String memId,
             Model model,
             RedirectAttributes redirectAttributes) {
+
         try {
             // 제출수단, 양식코드 입력여부 검증
             validateAction(dto,action);

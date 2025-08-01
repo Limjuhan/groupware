@@ -13,11 +13,11 @@ public class Alarm {
 
     private int alaramId;
     private String memId;
+    private int stepOrder;
     private Integer status;
     private Integer refDocId;
     private String readYn;
     private LocalDateTime createdAt;
-    private int stepOrder;
 
     public Alarm() {
     }

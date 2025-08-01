@@ -19,7 +19,7 @@ public class FormAnnualLeave {
     private String leaveCode;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Double totalDays;
+    private Double requestDays;
     private String annualContent;
 
     public static FormAnnualLeave from(DraftFormDto dto) {
@@ -30,7 +30,7 @@ public class FormAnnualLeave {
         formAnnualLeave.setLeaveCode(dto.getLeaveCode());
         formAnnualLeave.setStartDate(dto.getLeaveStart());
         formAnnualLeave.setEndDate(dto.getLeaveEnd());
-        formAnnualLeave.setTotalDays((double) (ChronoUnit.DAYS.between(dto.getLeaveStart(), dto.getLeaveEnd()) + 1));
+        formAnnualLeave.setRequestDays((double) (ChronoUnit.DAYS.between(dto.getLeaveStart(), dto.getLeaveEnd()) + 1));
         formAnnualLeave.setAnnualContent(dto.getContent());
 
         return formAnnualLeave;

@@ -46,7 +46,7 @@ public class AlarmService {
         int resultCnt = 0;
 
         for (Alarm alarm : alarmList) {
-            resultCnt += alarmMapper.insertAlarm(alarm);
+                resultCnt += alarmMapper.insertAlarm(alarm);
         }
 
         if (alarmList.size() != resultCnt) {

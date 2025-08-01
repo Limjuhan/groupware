@@ -20,12 +20,12 @@
             read_yn,
             created_at
         ) VALUES (
-                     #{memId},                  -- 알림 받을 사람
-                     #{step_order},             -- 결재진행자 구분(0:기안자, 1:1차결재자, 2:2차결재자)
-                     #{status},                 -- 결재 진행상태
-                     #{docId},
+                     #{memId},
+                     #{stepOrder},
+                     #{status},
+                     #{refDocId},
                      #{readYn},
                      NOW()
-                 );
+         )
     </insert>
 </mapper>
