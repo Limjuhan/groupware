@@ -23,6 +23,11 @@ public interface AdminMapper {
 
     void insertMenu(MenuFormDto dto);
 
-    List<DashboardInfoDto> getAnnualLeaveUsage(@Param("year") String year,
-                                               @Param("deptId") String deptId);
+    List<DashboardInfoDto> getAnnualLeaveUsage(@Param("year") Integer year,
+                                               @Param("deptId") String deptId,
+                                               @Param("startNum") Integer startNum,
+                                               @Param("itemsPerPage") Integer itemsPerPage);
+
+    int countAnnualLeaveUsage(@Param("year") Integer year,
+                              @Param("deptId") String deptId);
 }

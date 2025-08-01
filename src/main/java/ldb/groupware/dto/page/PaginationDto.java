@@ -18,7 +18,7 @@ public class PaginationDto {
     private int totalPages;         // 총 페이지 수
     private String search;   			// 검색 키워드 
     private String sortDirection;   	// 정렬방향
-    private int startNum;//페이지조회시 시작할 지점
+    private int startNum;//페이지조회시 시작할 ROW지점
     private String searchType;
     private String keyword;
 
