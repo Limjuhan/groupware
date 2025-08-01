@@ -128,14 +128,15 @@ public class DraftController {
             @RequestParam(value = "action", required = false) String action,
             @RequestParam(value = "savedFormCode", required = false) String savedFormCode,
             @SessionAttribute(name = "loginId") String memId,
-            Model model) {
-
-        // 임시저장or제출 2가지 경우가 맞는지 검증
-        validateAction(action);
-
-        // 추가 유효성 검증 (양식별 필드)
-        validFormType(dto, bindingResult);
-
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            // 제출수단, 양식코드 입력여부 검증
+            validateAction(dto,action);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("globalError", e.getMessage());
+            return "redirect:/draft/getMyDraftList";
+        }
         // 1차,2차,참조자 사원리스트
         List<DraftForMemberDto> memberList = draftService.getMemberList();
         // 잔여 연차조회
@@ -144,6 +145,8 @@ public class DraftController {
         if ("save".equals(action)) {
             // 결재자 중복체크
             validateApproval(dto, memId, bindingResult);
+            // 추가 유효성 검증 (양식별 필드)
+            validFormType(dto, bindingResult);
 
             if (bindingResult.hasErrors()) {
                 model.addAttribute("draftMembers", draftService.getMemberList());
@@ -349,12 +352,19 @@ public class DraftController {
     }
 
 
-    private void validateAction(String action) {
+    private void validateAction(DraftFormDto dto, String action) {
         if (!"save".equals(action) && !"temporary".equals(action)) {
             throw new IllegalArgumentException(
                     messageSource.getMessage("error.action.invalid", null, Locale.KOREA)
             );
         }
+
+        if (StringUtils.isEmpty(dto.getFormCode())) {
+            throw new IllegalArgumentException(
+                    messageSource.getMessage("error.formtype.missing", null, Locale.KOREA)
+            );
+        }
+
     }
 
     private void validFormType(DraftFormDto dto, BindingResult bindingResult) {
