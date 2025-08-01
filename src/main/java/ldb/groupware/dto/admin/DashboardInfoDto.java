@@ -17,6 +17,8 @@ public class DashboardInfoDto {
     private Integer remainDays;
     private String annualPercent;
 
+
+
     public String getAnnualPercent() {
         return calcAnnualPercent();
     }

@@ -132,6 +132,10 @@ public class DraftController {
 
         // 임시저장or제출 2가지 경우가 맞는지 검증
         validateAction(action);
+
+        // 추가 유효성 검증 (양식별 필드)
+        validFormType(dto, bindingResult);
+
         // 1차,2차,참조자 사원리스트
         List<DraftForMemberDto> memberList = draftService.getMemberList();
         // 잔여 연차조회
@@ -140,8 +144,6 @@ public class DraftController {
         if ("save".equals(action)) {
             // 결재자 중복체크
             validateApproval(dto, memId, bindingResult);
-            // 추가 유효성 검증 (양식별 필드)
-            validFormType(dto, bindingResult);
 
             if (bindingResult.hasErrors()) {
                 model.addAttribute("draftMembers", draftService.getMemberList());
