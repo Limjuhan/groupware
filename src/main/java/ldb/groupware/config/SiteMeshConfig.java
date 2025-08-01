@@ -20,6 +20,8 @@ public class SiteMeshConfig  {
                 builder.addDecoratorPath("/*", "layout.jsp")
                         .addExcludedPath("/login/*")
 
+                        .addExcludedPath("/alert")
+
                         .addExcludedPath("/member/passEditForm")
                         .addExcludedPath("/member/UpdatePass")
 

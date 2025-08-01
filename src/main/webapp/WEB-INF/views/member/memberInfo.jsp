@@ -62,9 +62,6 @@
             border: 1px solid #dee2e6;
         }
 
-        .text-danger {
-            font-size: 0.875rem;
-        }
     </style>
     <script>
         function getPassEditForm() {

@@ -18,9 +18,8 @@ import java.util.Map;
 public class NoticeService {
 
 
-    private  final  NoticeMapper mapper;
+    private final NoticeMapper mapper;
     private final AttachmentService attachService;
-
 
 
     public Map<String, Object> getNoticeList(PaginationDto pageDto) {
@@ -28,14 +27,14 @@ public class NoticeService {
         List<NoticeListDto> pinnedList = mapper.getPinnedList(pageDto);
         int pinnedCount = mapper.pinnedCount();
         int count = mapper.noticeCount(); //공지사항(상단고정X)의 갯수
-      pageDto.setTotalRows(count);
-        pageDto.setItemsPerPage(pageDto.getItemsPerPage()-pinnedCount); //10개 - 고정된 핀 갯수만 출력
-      pageDto.calculatePagination(); //보여줄 페이지의갯수 , 페이지당 제한갯수 등 설정
+        pageDto.setTotalRows(count);
+        pageDto.setItemsPerPage(pageDto.getItemsPerPage() - pinnedCount); //10개 - 고정된 핀 갯수만 출력
+        pageDto.calculatePagination(); //보여줄 페이지의갯수 , 페이지당 제한갯수 등 설정
 
 
-        System.out.println("pageDto : "+pageDto);
+        System.out.println("pageDto : " + pageDto);
         List<NoticeListDto> dto = mapper.getNoticeList(pageDto);
-        System.out.println("getNoticeListDto :: "+dto);
+        System.out.println("getNoticeListDto :: " + dto);
         map.put("pinnedList", pinnedList);
         map.put("notice", dto);
         map.put("pageDto", pageDto);
@@ -43,13 +42,12 @@ public class NoticeService {
     }
 
 
-
     public boolean insertNotice(NoticeFormDto dto, List<MultipartFile> files) {
         AttachmentDto attach = new AttachmentDto();
         mapper.insertNotice(dto);
-        int noticeId  = mapper.getMaxNum(dto.getMemId());
+        int noticeId = mapper.getMaxNum(dto.getMemId());
         String noId = String.valueOf(noticeId);
-        attachService.saveAttachments(noId,"N",files);
+        attachService.saveAttachments(noId, "N", files);
         return true;
     }
 
@@ -63,7 +61,7 @@ public class NoticeService {
         NoticeDetailDto notice = mapper.getNoticeById(id);
         List<AttachmentDto> attach = mapper.getAttachByNoticeId(id);
         map.put("notice", notice);
-        if(attach!=null && attach.size()>0){
+        if (attach != null && attach.size() > 0) {
             map.put("attach", attach);
         }
         return map;
@@ -79,16 +77,15 @@ public class NoticeService {
     public boolean updateNotice(List<MultipartFile> files, NoticeUpdateDto dto) {
         AttachmentDto attach = new AttachmentDto();
         String noId = String.valueOf(dto.getNoticeId());
-        if(mapper.updateNotice(dto)>0){
+        if (mapper.updateNotice(dto) > 0) {
             List<String> existingFiles = dto.getExistingFiles();
-            if(existingFiles!=null && existingFiles.size()>0) {
-               attachService.deleteAttachment(existingFiles,"N");
+            if (existingFiles != null && existingFiles.size() > 0) {
+                attachService.deleteAttachment(existingFiles, "N");
             }
-            attachService.saveAttachments(noId,"N",files);
+            attachService.saveAttachments(noId, "N", files);
             return true;
-        }
-        else{
-            return  false;
+        } else {
+            return false;
         }
     }
 
@@ -98,10 +95,9 @@ public class NoticeService {
 
     public boolean deleteNotice(String id) {
         Integer noticeId = Integer.valueOf(id);
-        if(mapper.deleteNotice(noticeId)>0){
+        if (mapper.deleteNotice(noticeId) > 0) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }

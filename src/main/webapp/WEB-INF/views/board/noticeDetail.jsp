@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -124,10 +125,14 @@
         <a href="getNoticeList" class="btn btn-outline-secondary btn-custom">← 목록</a>
 
         <div class="d-flex gap-2">
-            <a onclick="goForm('getNoticeEditForm?id=${notice.noticeId}')"
-               class="btn btn-outline-primary btn-custom">수정</a>
-            <a href="deleteNoticeByMng?id=${notice.noticeId}" class="btn btn-outline-danger btn-custom"
-               onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+            <c:choose>
+                <c:when test="${fn:contains(allowedMenus, 'A_0003')}">
+                    <a onclick="goForm('getNoticeEditForm?id=${notice.noticeId}')"
+                       class="btn btn-outline-primary btn-custom">수정</a>
+                    <a href="deleteNoticeByMng?id=${notice.noticeId}" class="btn btn-outline-danger btn-custom"
+                       onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                </c:when>
+            </c:choose>
         </div>
     </div>
 </div>

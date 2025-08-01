@@ -38,12 +38,19 @@ public class MenuAuthorityInterceptor implements HandlerInterceptor {
         }
 
         String loginId = (String) session.getAttribute("loginId");
+
+        // 원본 URI
         String uri = request.getRequestURI();
+        String contextPath = request.getContextPath();
+        if (contextPath != null && !contextPath.isEmpty() && uri.startsWith(contextPath)) {
+            uri = uri.substring(contextPath.length());
+        }
+
         String ajaxHeader = request.getHeader("X-Requested-With");
 
-        // CDN / 정적 자원 / AJAX 요청 우회
-        if (uri.contains("cdn.jsdelivr.net") ||
-                "XMLHttpRequest".equalsIgnoreCase(ajaxHeader) ||
+        // **AJAX, 정적 자원, 예외 URI 먼저 우회**
+        if ("XMLHttpRequest".equalsIgnoreCase(ajaxHeader) ||
+                uri.contains("cdn.jsdelivr.net") ||
                 uri.startsWith("/calendar/getScheduleList")) {
             return true;
         }
@@ -67,4 +74,5 @@ public class MenuAuthorityInterceptor implements HandlerInterceptor {
 
         return true;
     }
+
 }

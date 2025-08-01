@@ -6,9 +6,7 @@ public enum MenuConst {
             "/member/getMemberInfo", "/member/updateMemberInfo", "/member/passEditForm", "/member/UpdatePass"
     }),
     BOARD_NOTICE("A_0002", new String[]{
-            "/board/getNoticeList", "/board/getNoticeForm", "/board/insertNotice",
-            "/board/getNoticeDetail", "/board/getNoticeEditForm", "/board/updateNoticeByMng",
-            "/board/deleteNoticeByMng"
+            "/board/getNoticeList"
     }),
     BOARD_NOTICE_MANAGE("A_0003", new String[]{
             "/board/getNoticeForm", "/board/insertNotice",
@@ -65,10 +63,12 @@ public enum MenuConst {
             "/admin/insertMemberForm"
     }),
     DEPT_AUTH("A_0019", new String[]{
-            "/admin/getDeptAuthList", "/admin/getMenuForm", "/admin/insertMenu",
-            "/admin/insertMemberByMng"
+            "/admin/getDeptAuthList", "/admin/getMenuForm", "/admin/insertMenu"
     }),
-    ANNUAL_USAGE_RATE("A_0020", new String[]{"/admin/dashBoard"});
+    ANNUAL_USAGE_RATE("A_0020", new String[]{
+            "/admin/dashBoard"
+    }),
+    COMMON_CODE_MANAGER("A_0021", new String[]{"/admin/getCommType"});
 
     private final String value;
     private final String[] uris;
@@ -89,7 +89,7 @@ public enum MenuConst {
     public static String fromUri(String uri) {
         for (MenuConst menu : values()) {
             for (String pattern : menu.getUris()) {
-                if (uri.startsWith(pattern)) {
+                if (uri.equals(pattern)) {
                     return menu.getValue();
                 }
             }

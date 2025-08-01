@@ -23,43 +23,67 @@
         }
 
         .navbar {
-            background-color: #ffffff;
+            background-color: #4b5e8c; /* 부드러운 남색 */
+            margin: 0; /* 상단/하단 여백 제거 */
+            padding: 0.5rem 1rem; /* 최소 패딩 */
+            border-bottom: none; /* 하단 경계선 제거 */
         }
 
         .navbar-brand {
             font-weight: bold;
-            color: #0d6efd !important;
+            color: #ffffff !important;
+        }
+
+        .navbar .btn-outline-danger {
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+
+        .navbar .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: #ffffff;
+            border-color: #dc3545;
+        }
+
+        .navbar .text-dark {
+            color: #ffffff !important;
         }
 
         .sidebar {
-            height: calc(100vh - 90px);
-            padding-top: 20px;
-            background-color: #ffffff;
-            border-end: 1px solid #dee2e6;
+            height: 100vh; /* 화면 전체 높이 */
+            padding: 0.5rem 0; /* 최소 패딩 */
+            background-color: #2c3e50; /* 짙은 회색-남색 */
+            border-right: 1px solid #2c3e50; /* 오른쪽 경계선 */
+            position: sticky;
+            top: 0; /* 상단 바 바로 아래 */
+            overflow-y: auto; /* 스크롤 가능 */
         }
 
         .nav-pills .nav-link {
-            color: #212529;
+            color: #ffffff;
         }
 
         .nav-pills .nav-link.active {
-            background-color: #0d6efd;
+            background-color: #17a2b8; /* 청록색 */
             color: #ffffff;
         }
 
         .nav-pills .nav-link:hover {
-            background-color: #e9ecef;
+            background-color: #1a252f; /* 더 어두운 회색-남색 */
+            color: #ffffff;
         }
 
         .content-wrapper {
             display: flex;
-            min-height: calc(100vh - 100px);
+            min-height: calc(100vh - 60px); /* 상단 바 높이(약 60px) 제외 */
+            padding: 0; /* 여백 제거 */
         }
 
         .glass-content {
             padding: 20px;
             background-color: #ffffff;
             border-radius: 0.375rem;
+            flex-grow: 1; /* 나머지 공간 채우기 */
         }
 
         .modal-content {
@@ -87,15 +111,15 @@
         }
 
         .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
         }
     </style>
     <sitemesh:write property="head"/>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light shadow-sm m-2 px-3">
-    <div class="container-fluid">
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid p-2">
         <a class="navbar-brand" href="/"><i class="fa-solid fa-cubes"></i> LDBSOFT Groupware</a>
         <div class="d-flex">
             <div class="dropdown me-3 dropstart">
@@ -110,7 +134,6 @@
                     <div id="searchResults"></div>
                 </ul>
             </div>
-
             <div class="dropdown me-3">
                 <a class="btn position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-bell"></i>
@@ -122,200 +145,164 @@
                     <li><a class="dropdown-item" href="#">새 공지사항 등록</a></li>
                 </ul>
             </div>
-
             <span class="me-3 text-dark"><i class="fa-solid fa-user-circle"></i> ${sessionScope.loginId} 님</span>
             <a href="/login/doLogout" class="btn btn-outline-danger btn-sm">로그아웃</a>
         </div>
     </div>
 </nav>
-
-<div class="container-fluid px-3">
-    <div class="content-wrapper">
-        <div class="col-md-2 bg-glass me-2 sidebar">
-            <ul class="nav flex-column nav-pills" id="sidebarMenu">
-
-                <!-- 홈 -->
-                <c:if test="${fn:contains(allowedMenus, 'A_0000')}">
+<div class="content-wrapper">
+    <div class="col-md-2 sidebar p-0">
+        <ul class="nav flex-column nav-pills" id="sidebarMenu">
+            <!-- 홈 -->
+            <c:if test="${fn:contains(allowedMenus, 'A_0000')}">
                 <li class="nav-item">
                     <a class="nav-link" href="/">
                         <i class="fa-solid fa-house"></i> 홈
                     </a>
                 </li>
-                </c:if>
-
-                <!-- 개인정보 -->
-                <c:if test="${fn:contains(allowedMenus, 'A_0001')}">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/member/getMemberInfo">
-                            <i class="fa-solid fa-user"></i> 개인정보
-                        </a>
-                    </li>
-                </c:if>
-
-                <!-- ================= 게시판 ================= -->
-                <c:if test="${fn:contains(allowedMenus, 'A_0002')
-                     || fn:contains(allowedMenus, 'A_0004')
-                     || fn:contains(allowedMenus, 'A_0005')
-                     || fn:contains(allowedMenus, 'A_0006')}">
-
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#boardMenu" role="button"
-                           aria-expanded="false" aria-controls="boardMenu">
-                            <i class="fa-solid fa-thumbtack me-1"></i> 게시판 ▾
-                        </a>
-                        <div class="collapse" id="boardMenu">
-                            <ul class="nav flex-column ms-3">
-                                <c:if test="${fn:contains(allowedMenus, 'A_0002')}">
-                                    <li class="nav-item"><a class="nav-link" href="/board/getNoticeList">공지사항</a></li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0004')}">
-                                    <li class="nav-item"><a class="nav-link" href="/board/getFaqList">자주묻는질문</a></li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0005')}">
-                                    <li class="nav-item"><a class="nav-link" href="/board/getQnaList">질문게시판</a></li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0006')}">
-                                    <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage">FAQ 관리</a>
-                                    </li>
-                                </c:if>
-                            </ul>
-                        </div>
-                    </li>
-                </c:if>
-
-                <!-- ================= 전자결재 ================= -->
-                <c:if test="${fn:contains(allowedMenus, 'A_0007')
-                     || fn:contains(allowedMenus, 'A_0008')}">
-
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#draftMenu" role="button"
-                           aria-expanded="false" aria-controls="draftMenu">
-                            <i class="fa-solid fa-file-signature me-1"></i> 전자결재 ▾
-                        </a>
-                        <div class="collapse" id="draftMenu">
-                            <ul class="nav flex-column ms-3">
-                                <c:if test="${fn:contains(allowedMenus, 'A_0007')}">
-                                    <li class="nav-item"><a class="nav-link" href="/draft/getMyDraftList">내 전자결재</a>
-                                    </li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0008')}">
-                                    <li class="nav-item"><a class="nav-link" href="/draft/receivedDraftList">받은 전자결재</a>
-                                    </li>
-                                </c:if>
-                            </ul>
-                        </div>
-                    </li>
-                </c:if>
-
-                <!-- ================= 공용설비 ================= -->
-                <c:if test="${fn:contains(allowedMenus, 'A_0009')
-                     || fn:contains(allowedMenus, 'A_0010')
-                     || fn:contains(allowedMenus, 'A_0011')
-                     || fn:contains(allowedMenus, 'A_0012')
-                     || fn:contains(allowedMenus, 'A_0013')
-                     || fn:contains(allowedMenus, 'A_0014')
-                     || fn:contains(allowedMenus, 'A_0015')}">
-
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#facilityMenu" role="button"
-                           aria-expanded="false" aria-controls="facilityMenu">
-                            <i class="fa-solid fa-building me-1"></i> 공용설비 ▾
-                        </a>
-                        <div class="collapse" id="facilityMenu">
-                            <ul class="nav flex-column ms-3">
-                                <c:if test="${fn:contains(allowedMenus, 'A_0009')}">
-                                    <li class="nav-item"><a class="nav-link" href="/facility/getVehicleList">차량예약</a>
-                                    </li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0010')}">
-                                    <li class="nav-item"><a class="nav-link"
-                                                            href="/facility/getMeetingRoomList">회의실예약</a></li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0011')}">
-                                    <li class="nav-item"><a class="nav-link" href="/facility/getItemList">비품예약</a></li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0012')}">
-                                    <li class="nav-item"><a class="nav-link" href="/facility/getReservationList">내
-                                        예약내역</a></li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0013')}">
-                                    <li class="nav-item"><a class="nav-link" href="/facility/getVehicleManage">차량관리</a>
-                                    </li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0014')}">
-                                    <li class="nav-item"><a class="nav-link"
-                                                            href="/facility/getMeetingRoomManage">회의실관리</a></li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0015')}">
-                                    <li class="nav-item"><a class="nav-link" href="/facility/getItemManage">비품관리</a>
-                                    </li>
-                                </c:if>
-                            </ul>
-                        </div>
-                    </li>
-                </c:if>
-
-                <!-- ================= 일정 ================= -->
-                <c:if test="${fn:contains(allowedMenus, 'A_0016')
-                     || fn:contains(allowedMenus, 'A_0017')}">
-
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#calendarMenu" role="button"
-                           aria-expanded="false" aria-controls="calendarMenu">
-                            <i class="fa-solid fa-calendar-days me-1"></i> 일정 ▾
-                        </a>
-                        <div class="collapse" id="calendarMenu">
-                            <ul class="nav flex-column ms-3">
-                                <c:if test="${fn:contains(allowedMenus, 'A_0016')}">
-                                    <li class="nav-item"><a class="nav-link" href="/calendar/getCalendar">캘린더</a></li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0017')}">
-                                    <li class="nav-item"><a class="nav-link" href="/calendar/getCalendarList">일정관리</a>
-                                    </li>
-                                </c:if>
-                            </ul>
-                        </div>
-                    </li>
-                </c:if>
-
-                <!-- ================= 관리자 메뉴 ================= -->
-                <c:if test="${fn:contains(allowedMenus, 'A_0018')
-                     || fn:contains(allowedMenus, 'A_0019')
-                     || fn:contains(allowedMenus, 'A_0020')}">
-
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#adminMenu" role="button"
-                           aria-expanded="false" aria-controls="adminMenu">
-                            <i class="fa-solid fa-cogs me-1"></i> 관리자 ▾
-                        </a>
-                        <div class="collapse" id="adminMenu">
-                            <ul class="nav flex-column ms-3">
-                                <c:if test="${fn:contains(allowedMenus, 'A_0018')}">
-                                    <li class="nav-item"><a class="nav-link" href="/admin/getMemberList">사원관리</a></li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0019')}">
-                                    <li class="nav-item"><a class="nav-link" href="/admin/getDeptAuthList">부서권한관리</a>
-                                    </li>
-                                </c:if>
-                                <c:if test="${fn:contains(allowedMenus, 'A_0020')}">
-                                    <li class="nav-item"><a class="nav-link" href="/admin/dashBoard">연차사용률 조회</a></li>
-                                </c:if>
-                            </ul>
-                        </div>
-                    </li>
-                </c:if>
-
-            </ul>
-        </div>
-
-        <div class="flex-fill">
-            <div class="glass-content">
-                <sitemesh:write property="body"/>
-            </div>
+            </c:if>
+            <!-- 개인정보 -->
+            <c:if test="${fn:contains(allowedMenus, 'A_0001')}">
+                <li class="nav-item">
+                    <a class="nav-link" href="/member/getMemberInfo">
+                        <i class="fa-solid fa-user"></i> 개인정보
+                    </a>
+                </li>
+            </c:if>
+            <!-- ================= 게시판 ================= -->
+            <c:if test="${fn:contains(allowedMenus, 'A_0002') || fn:contains(allowedMenus, 'A_0004') || fn:contains(allowedMenus, 'A_0005') || fn:contains(allowedMenus, 'A_0006')}">
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#boardMenu" role="button" aria-expanded="false"
+                       aria-controls="boardMenu">
+                        <i class="fa-solid fa-thumbtack me-1"></i> 게시판 ▾
+                    </a>
+                    <div class="collapse" id="boardMenu">
+                        <ul class="nav flex-column ms-3">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0002')}">
+                                <li class="nav-item"><a class="nav-link" href="/board/getNoticeList">공지사항</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0004')}">
+                                <li class="nav-item"><a class="nav-link" href="/board/getFaqList">자주묻는질문</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0005')}">
+                                <li class="nav-item"><a class="nav-link" href="/board/getQnaList">질문게시판</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0006')}">
+                                <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage">FAQ 관리</a></li>
+                            </c:if>
+                        </ul>
+                    </div>
+                </li>
+            </c:if>
+            <!-- ================= 전자결재 ================= -->
+            <c:if test="${fn:contains(allowedMenus, 'A_0007') || fn:contains(allowedMenus, 'A_0008')}">
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#draftMenu" role="button" aria-expanded="false"
+                       aria-controls="draftMenu">
+                        <i class="fa-solid fa-file-signature me-1"></i> 전자결재 ▾
+                    </a>
+                    <div class="collapse" id="draftMenu">
+                        <ul class="nav flex-column ms-3">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0007')}">
+                                <li class="nav-item"><a class="nav-link" href="/draft/getMyDraftList">내 전자결재</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0008')}">
+                                <li class="nav-item"><a class="nav-link" href="/draft/receivedDraftList">받은 전자결재</a>
+                                </li>
+                            </c:if>
+                        </ul>
+                    </div>
+                </li>
+            </c:if>
+            <!-- ================= 공용설비 ================= -->
+            <c:if test="${fn:contains(allowedMenus, 'A_0009') || fn:contains(allowedMenus, 'A_0010') || fn:contains(allowedMenus, 'A_0011') || fn:contains(allowedMenus, 'A_0012') || fn:contains(allowedMenus, 'A_0013') || fn:contains(allowedMenus, 'A_0014') || fn:contains(allowedMenus, 'A_0015')}">
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#facilityMenu" role="button"
+                       aria-expanded="false" aria-controls="facilityMenu">
+                        <i class="fa-solid fa-building me-1"></i> 공용설비 ▾
+                    </a>
+                    <div class="collapse" id="facilityMenu">
+                        <ul class="nav flex-column ms-3">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0009')}">
+                                <li class="nav-item"><a class="nav-link" href="/facility/getVehicleList">차량예약</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0010')}">
+                                <li class="nav-item"><a class="nav-link" href="/facility/getMeetingRoomList">회의실예약</a>
+                                </li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0011')}">
+                                <li class="nav-item"><a class="nav-link" href="/facility/getItemList">비품예약</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0012')}">
+                                <li class="nav-item"><a class="nav-link" href="/facility/getReservationList">내 예약내역</a>
+                                </li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0013')}">
+                                <li class="nav-item"><a class="nav-link" href="/facility/getVehicleManage">차량관리</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0014')}">
+                                <li class="nav-item"><a class="nav-link" href="/facility/getMeetingRoomManage">회의실관리</a>
+                                </li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0015')}">
+                                <li class="nav-item"><a class="nav-link" href="/facility/getItemManage">비품관리</a></li>
+                            </c:if>
+                        </ul>
+                    </div>
+                </li>
+            </c:if>
+            <!-- ================= 일정 ================= -->
+            <c:if test="${fn:contains(allowedMenus, 'A_0016') || fn:contains(allowedMenus, 'A_0017')}">
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#calendarMenu" role="button"
+                       aria-expanded="false" aria-controls="calendarMenu">
+                        <i class="fa-solid fa-calendar-days me-1"></i> 일정 ▾
+                    </a>
+                    <div class="collapse" id="calendarMenu">
+                        <ul class="nav flex-column ms-3">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0016')}">
+                                <li class="nav-item"><a class="nav-link" href="/calendar/getCalendar">캘린더</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0017')}">
+                                <li class="nav-item"><a class="nav-link" href="/calendar/getCalendarList">일정관리</a></li>
+                            </c:if>
+                        </ul>
+                    </div>
+                </li>
+            </c:if>
+            <!-- ================= 관리자 메뉴 ================= -->
+            <c:if test="${fn:contains(allowedMenus, 'A_0018') || fn:contains(allowedMenus, 'A_0019') || fn:contains(allowedMenus, 'A_0020') || fn:contains(allowedMenus,'A_0021' )}">
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#adminMenu" role="button" aria-expanded="false"
+                       aria-controls="adminMenu">
+                        <i class="fa-solid fa-cogs me-1"></i> 관리자 ▾
+                    </a>
+                    <div class="collapse" id="adminMenu">
+                        <ul class="nav flex-column ms-3">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0018')}">
+                                <li class="nav-item"><a class="nav-link" href="/admin/getMemberList">사원관리</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0019')and fn:startsWith(sessionScope.loginId,'admin')}">
+                                <li class="nav-item"><a class="nav-link" href="/admin/getDeptAuthList">부서권한관리</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0020')}">
+                                <li class="nav-item"><a class="nav-link" href="/admin/dashBoard">연차사용률 조회</a></li>
+                            </c:if>
+                            <c:if test="${fn:contains(allowedMenus, 'A_0021') and fn:startsWith(sessionScope.loginId,'admin') }">
+                                <li class="nav-item"><a class="nav-link" href="/admin/getCommType">공통 코드 관리</a></li>
+                            </c:if>
+                        </ul>
+                    </div>
+                </li>
+            </c:if>
+        </ul>
+    </div>
+    <div class="flex-fill">
+        <div class="glass-content">
+            <sitemesh:write property="body"/>
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -327,7 +314,6 @@
         </div>
     </div>
 </div>
-
 <script>
     let employees = [];
 

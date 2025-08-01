@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,13 +13,25 @@
             vertical-align: middle;
             text-align: center;
         }
+
         .fixed-row {
             background-color: #f8f9fa;
             font-weight: bold;
         }
+
         .notice-title {
             text-align: left;
             padding-left: 1rem;
+        }
+
+        .disabled-link {
+            cursor: not-allowed;
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: #fff;
+            pointer-events: none;
+            opacity: 0.65;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -27,7 +40,11 @@
     <!-- 제목 + 등록 버튼 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold">공지사항</h3>
-        <a onclick="goForm('getNoticeForm')" class="btn btn-primary">공지 등록</a>
+        <c:choose>
+            <c:when test="${fn:contains(allowedMenus, 'A_0003')}">
+                <a onclick="goForm('getNoticeForm')" class="btn btn-primary">공지 등록</a>
+            </c:when>
+        </c:choose>
     </div>
 
     <!-- 검색 폼 -->
@@ -94,7 +111,6 @@
     </div>
 
     <!-- 페이징 UI -->
-
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item disabled"><a class="page-link" href="?page=${pageDto.page - 1}">이전</a></li>
@@ -108,12 +124,10 @@
     </nav>
 </div>
 <script>
-    function goForm(url){
+    function goForm(url) {
         let op = "width=600,height=1000,top=50,left=150";
         window.open(url, "", op);
     }
 </script>
-
-
 </body>
 </html>

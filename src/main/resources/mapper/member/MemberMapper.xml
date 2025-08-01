@@ -47,8 +47,7 @@
                  LEFT JOIN attachment a ON a.business_id = m.mem_id AND a.attach_type = 'P'
                  LEFT JOIN annual_leave al ON al.mem_id = m.mem_id
         WHERE m.mem_id = #{memId}
-        ORDER BY al.year DESC
-            LIMIT 1
+        ORDER BY al.year DESC LIMIT 1
     </select>
 
     <!-- 연차 사용내역 조회 -->
@@ -141,15 +140,12 @@
 
     <!-- 사원 등록 -->
     <insert id="insertMember" parameterType="MemberFormDto">
-        INSERT INTO member (
-            mem_id, mem_pass, mem_email, mem_private_email, mem_name,
-            mem_gender, mem_phone, jumin_front, jumin_back,
-            mem_address, mem_status, mem_hiredate, dept_id, rank_id, created_by, created_at
-        ) VALUES (
-                     #{memId}, #{memPass}, #{memEmail}, #{memPrivateEmail}, #{memName},
-                     #{memGender}, #{memPhone}, #{juminFront}, #{juminBack},
-                     #{memAddress}, #{memStatus}, #{memHiredate}, #{deptId}, #{rankId}, #{createdBy}, NOW()
-                 )
+        INSERT INTO member (mem_id, mem_pass, mem_email, mem_private_email, mem_name,
+                            mem_gender, mem_phone, jumin_front, jumin_back,
+                            mem_address, mem_status, mem_hiredate, dept_id, rank_id, created_by, created_at)
+        VALUES (#{memId}, #{memPass}, #{memEmail}, #{memPrivateEmail}, #{memName},
+                #{memGender}, #{memPhone}, #{juminFront}, #{juminBack},
+                #{memAddress}, #{memStatus}, #{memHiredate}, #{deptId}, #{rankId}, #{createdBy}, NOW())
     </insert>
 
     <!-- 부서/직급 변경 -->

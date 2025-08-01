@@ -30,7 +30,7 @@ public class AdminController {
         return "admin/dashBoard";
     }
 
-    @GetMapping("commTypeManage")
+    @GetMapping("getCommType")
     public String CommTypeManage() {
         return "admin/commTypeManage";
     }
