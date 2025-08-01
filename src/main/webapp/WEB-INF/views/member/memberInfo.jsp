@@ -10,17 +10,11 @@
     <style>
         body {
             background-color: #f8f9fa;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
         .container {
+            padding: 2rem 0;
             max-width: 900px;
-            margin-top: 2rem;
-        }
-
-        .card {
-            border-radius: 0.375rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .form-label {
@@ -31,19 +25,20 @@
             border-radius: 0.375rem;
         }
 
-        .form-control:focus, .form-select:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        .btn-warning, .btn-primary, .btn-outline-secondary, .btn-outline-danger {
+            border-radius: 0.375rem;
         }
 
-        .form-control[readonly], .form-select[disabled] {
-            background-color: #e9ecef;
-            opacity: 1;
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         }
 
-        .editable-field {
-            background-color: #ffffff;
-            border-color: #0d6efd;
+        .table {
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            border: 1px solid #dee2e6;
         }
 
         .img-thumbnail {
@@ -58,8 +53,13 @@
             background-color: #ffffff;
         }
 
-        .annual-table th, .annual-table td {
-            border: 1px solid #dee2e6;
+        .form-control[readonly], .form-select[disabled] {
+            background-color: #e9ecef;
+        }
+
+        .editable-field {
+            background-color: #ffffff;
+            border-color: #ced4da;
         }
 
     </style>

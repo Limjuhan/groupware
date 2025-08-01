@@ -154,7 +154,7 @@
     <div class="col-md-2 sidebar p-0">
         <ul class="nav flex-column nav-pills" id="sidebarMenu">
             <!-- 홈 -->
-            <c:if test="${fn:contains(allowedMenus, 'A_0000')}">
+            <c:if test="${fn:contains(allowedMenus, 'A_0000') || fn:startsWith(sessionScope.loginId,'admin')}">
                 <li class="nav-item">
                     <a class="nav-link" href="/">
                         <i class="fa-solid fa-house"></i> 홈
@@ -162,7 +162,7 @@
                 </li>
             </c:if>
             <!-- 개인정보 -->
-            <c:if test="${fn:contains(allowedMenus, 'A_0001')}">
+            <c:if test="${fn:contains(allowedMenus, 'A_0001') || fn:startsWith(sessionScope.loginId,'admin')}">
                 <li class="nav-item">
                     <a class="nav-link" href="/member/getMemberInfo">
                         <i class="fa-solid fa-user"></i> 개인정보
@@ -170,7 +170,7 @@
                 </li>
             </c:if>
             <!-- ================= 게시판 ================= -->
-            <c:if test="${fn:contains(allowedMenus, 'A_0002') || fn:contains(allowedMenus, 'A_0004') || fn:contains(allowedMenus, 'A_0005') || fn:contains(allowedMenus, 'A_0006')}">
+            <c:if test="${fn:contains(allowedMenus, 'A_0002') || fn:contains(allowedMenus, 'A_0004') || fn:contains(allowedMenus, 'A_0005') || fn:contains(allowedMenus, 'A_0006') || fn:startsWith(sessionScope.loginId,'admin')}">
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#boardMenu" role="button" aria-expanded="false"
                        aria-controls="boardMenu">
@@ -178,16 +178,16 @@
                     </a>
                     <div class="collapse" id="boardMenu">
                         <ul class="nav flex-column ms-3">
-                            <c:if test="${fn:contains(allowedMenus, 'A_0002')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0002') || fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/board/getNoticeList">공지사항</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0004')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0004') || fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/board/getFaqList">자주묻는질문</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0005')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0005') || fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/board/getQnaList">질문게시판</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0006')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0006') || fn:startsWith(sessionScope.loginId,'admin') }">
                                 <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage">FAQ 관리</a></li>
                             </c:if>
                         </ul>
@@ -195,7 +195,7 @@
                 </li>
             </c:if>
             <!-- ================= 전자결재 ================= -->
-            <c:if test="${fn:contains(allowedMenus, 'A_0007') || fn:contains(allowedMenus, 'A_0008')}">
+            <c:if test="${fn:contains(allowedMenus, 'A_0007') || fn:contains(allowedMenus, 'A_0008') || fn:startsWith(sessionScope.loginId,'admin')}">
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#draftMenu" role="button" aria-expanded="false"
                        aria-controls="draftMenu">
@@ -203,10 +203,10 @@
                     </a>
                     <div class="collapse" id="draftMenu">
                         <ul class="nav flex-column ms-3">
-                            <c:if test="${fn:contains(allowedMenus, 'A_0007')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0007')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/draft/getMyDraftList">내 전자결재</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0008')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0008')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/draft/receivedDraftList">받은 전자결재</a>
                                 </li>
                             </c:if>
@@ -215,7 +215,9 @@
                 </li>
             </c:if>
             <!-- ================= 공용설비 ================= -->
-            <c:if test="${fn:contains(allowedMenus, 'A_0009') || fn:contains(allowedMenus, 'A_0010') || fn:contains(allowedMenus, 'A_0011') || fn:contains(allowedMenus, 'A_0012') || fn:contains(allowedMenus, 'A_0013') || fn:contains(allowedMenus, 'A_0014') || fn:contains(allowedMenus, 'A_0015')}">
+            <c:if test="${fn:contains(allowedMenus, 'A_0009') || fn:contains(allowedMenus, 'A_0010')
+            || fn:contains(allowedMenus, 'A_0011') || fn:contains(allowedMenus, 'A_0012') || fn:contains(allowedMenus, 'A_0013')
+            || fn:contains(allowedMenus, 'A_0014') || fn:contains(allowedMenus, 'A_0015') || fn:startsWith(sessionScope.loginId,'admin')}">
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#facilityMenu" role="button"
                        aria-expanded="false" aria-controls="facilityMenu">
@@ -223,28 +225,28 @@
                     </a>
                     <div class="collapse" id="facilityMenu">
                         <ul class="nav flex-column ms-3">
-                            <c:if test="${fn:contains(allowedMenus, 'A_0009')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0009')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/facility/getVehicleList">차량예약</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0010')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0010')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/facility/getMeetingRoomList">회의실예약</a>
                                 </li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0011')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0011')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/facility/getItemList">비품예약</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0012')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0012')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/facility/getReservationList">내 예약내역</a>
                                 </li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0013')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0013')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/facility/getVehicleManage">차량관리</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0014')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0014')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/facility/getMeetingRoomManage">회의실관리</a>
                                 </li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0015')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0015')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/facility/getItemManage">비품관리</a></li>
                             </c:if>
                         </ul>
@@ -252,7 +254,7 @@
                 </li>
             </c:if>
             <!-- ================= 일정 ================= -->
-            <c:if test="${fn:contains(allowedMenus, 'A_0016') || fn:contains(allowedMenus, 'A_0017')}">
+            <c:if test="${fn:contains(allowedMenus, 'A_0016') || fn:contains(allowedMenus, 'A_0017') || fn:startsWith(sessionScope.loginId,'admin')}">
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#calendarMenu" role="button"
                        aria-expanded="false" aria-controls="calendarMenu">
@@ -260,10 +262,10 @@
                     </a>
                     <div class="collapse" id="calendarMenu">
                         <ul class="nav flex-column ms-3">
-                            <c:if test="${fn:contains(allowedMenus, 'A_0016')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0016')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/calendar/getCalendar">캘린더</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0017')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0017')|| fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/calendar/getCalendarList">일정관리</a></li>
                             </c:if>
                         </ul>
@@ -271,7 +273,7 @@
                 </li>
             </c:if>
             <!-- ================= 관리자 메뉴 ================= -->
-            <c:if test="${fn:contains(allowedMenus, 'A_0018') || fn:contains(allowedMenus, 'A_0019') || fn:contains(allowedMenus, 'A_0020') || fn:contains(allowedMenus,'A_0021' )}">
+            <c:if test="${fn:contains(allowedMenus, 'A_0018') || fn:contains(allowedMenus, 'A_0020') || fn:startsWith(sessionScope.loginId,'admin')}">
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#adminMenu" role="button" aria-expanded="false"
                        aria-controls="adminMenu">
@@ -279,16 +281,16 @@
                     </a>
                     <div class="collapse" id="adminMenu">
                         <ul class="nav flex-column ms-3">
-                            <c:if test="${fn:contains(allowedMenus, 'A_0018')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0018') || fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/admin/getMemberList">사원관리</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0019')and fn:startsWith(sessionScope.loginId,'admin')}">
+                            <c:if test="${fn:startsWith(sessionScope.loginId,'admin') }">
                                 <li class="nav-item"><a class="nav-link" href="/admin/getDeptAuthList">부서권한관리</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0020')}">
+                            <c:if test="${fn:contains(allowedMenus, 'A_0020') || fn:startsWith(sessionScope.loginId,'admin')}">
                                 <li class="nav-item"><a class="nav-link" href="/admin/dashBoard">연차사용률 조회</a></li>
                             </c:if>
-                            <c:if test="${fn:contains(allowedMenus, 'A_0021') and fn:startsWith(sessionScope.loginId,'admin') }">
+                            <c:if test="${fn:startsWith(sessionScope.loginId,'admin') }">
                                 <li class="nav-item"><a class="nav-link" href="/admin/getCommType">공통 코드 관리</a></li>
                             </c:if>
                         </ul>

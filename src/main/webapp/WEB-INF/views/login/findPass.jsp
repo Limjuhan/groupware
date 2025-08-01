@@ -198,8 +198,8 @@
         fetch("/member/sendTemp", {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-                , "X-Requested-With": "XMLHttpRequest"
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Requested-With": "XMLHttpRequest"
             },
             body: new URLSearchParams({memId})
         })
@@ -298,9 +298,14 @@
         if (el) {
             el.addEventListener("keyup", function (e) {
                 if (e.key === "Enter") {
-                    e.preventDefault();
-                    const btn = el.querySelector("button[type='submit'], button[type='button']");
-                    btn?.click();
+                    e.preventDefault(); // 기본 동작(모달 닫기) 방지
+                    const submitBtn = el.querySelector("#resetPwBtn"); // resetModal에서 특정 버튼 타겟
+                    if (submitBtn) {
+                        submitBtn.click(); // "변경" 버튼 클릭
+                    } else {
+                        const btn = el.querySelector("button[type='submit'], button[type='button']");
+                        btn?.click(); // 다른 폼은 기존 로직 유지
+                    }
                 }
             });
         }

@@ -9,58 +9,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>일정 목록 - LDBSOFT</title>
     <style>
+        /* 테이블 호버 효과 */
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* 페이지네이션 스타일 커스터마이징 */
+        .pagination .page-link {
+            border-radius: 0.375rem;
+            margin: 0 0.125rem;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        /* 추가 스타일 (사원 관리 페이지의 룩앤필 반영) */
         body {
             background-color: #f8f9fa;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
         .container {
-            margin-top: 2rem;
-            max-width: 1200px;
-        }
-
-        .table th, .table td {
-            border: 1px solid #dee2e6;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #f1f3f5;
+            padding: 2rem 0;
         }
 
         .form-label {
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .form-control, .form-select {
             border-radius: 0.375rem;
         }
 
-        .btn-warning, .btn-danger, .btn-primary {
+        .btn-warning, .btn-primary, .btn-danger {
             border-radius: 0.375rem;
         }
 
-        .pagination .page-link {
-            color: #0d6efd;
-            border: none;
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         }
 
-        .pagination .page-item.active .page-link {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            color: #ffffff;
+        .table {
+            border-collapse: collapse;
         }
 
-        .pagination .page-item.disabled .page-link {
-            color: #6c757d;
-        }
-
-        a.text-primary {
-            text-decoration: none;
-        }
-
-        a.text-primary:hover {
-            text-decoration: underline;
-            color: #0a58ca;
+        .table th, .table td {
+            border: 1px solid #dee2e6;
         }
     </style>
     <script>

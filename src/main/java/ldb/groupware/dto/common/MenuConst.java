@@ -3,15 +3,15 @@ package ldb.groupware.dto.common;
 public enum MenuConst {
     HOME("A_0000", new String[]{"/"}),
     MEMBER_INFO("A_0001", new String[]{
-            "/member/getMemberInfo", "/member/updateMemberInfo", "/member/passEditForm", "/member/UpdatePass"
+            "/member/getMemberInfo", "/member/updateMemberInfo", "/member/passEditForm", "/member/updatePass"
     }),
     BOARD_NOTICE("A_0002", new String[]{
-            "/board/getNoticeList"
+            "/board/getNoticeList","/board/getNoticeDetail"
     }),
     BOARD_NOTICE_MANAGE("A_0003", new String[]{
             "/board/getNoticeForm", "/board/insertNotice",
             "/board/getNoticeEditForm", "/board/updateNoticeByMng",
-            "/board/deleteNoticeByMng"
+            "/board/deleteNoticeByMng","/board/getNoticeDetail"
     }),
     BOARD_FAQ("A_0004", new String[]{"/board/getFaqList"}),
     BOARD_QNA("A_0005", new String[]{
@@ -40,7 +40,7 @@ public enum MenuConst {
             "/facility/getItemList", "/facility/insertFacilityItem"
     }),
     FACILITY_MY_RESERVATION("A_0012", new String[]{
-            "/facility/getReservationList", "/facility/cancelReservation", "/facility/returnFacility"
+            "/facility/getReservationList", "/facility/cancelReservation", "/facility/returnFacility","/facility/getReservationList/**"
     }),
     FACILITY_VEHICLE_MANAGE("A_0013", new String[]{
             "/facility/getVehicleManage", "/facility/getVehicleForm"

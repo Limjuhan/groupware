@@ -19,7 +19,7 @@ public class NoticeListDto {
 
     //LocaldateTime--> string
     public void updatedAtToString(){
-         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
          this.dateFormat =  this.updatedAt.format(formatter);
     }
     public String getUpdatedAtToStr(){

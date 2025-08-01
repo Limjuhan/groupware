@@ -115,8 +115,11 @@
                             <form:select path="rankId" class="form-select">
                                 <form:option value="">직급 선택</form:option>
                                 <c:forEach var="rank" items="${rankList}">
-                                    <form:option value="${rank.rankId}">${rank.rankName}</form:option>
+                                    <c:if test="${rank.rankName ne '관리자'}">
+                                        <form:option value="${rank.rankId}">${rank.rankName}</form:option>
+                                    </c:if>
                                 </c:forEach>
+
                             </form:select>
                             <form:errors path="rankId" cssClass="text-danger"/>
                         </div>
