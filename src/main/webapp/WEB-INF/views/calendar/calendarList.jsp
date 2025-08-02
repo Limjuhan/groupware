@@ -6,7 +6,6 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>일정 목록 - LDBSOFT</title>
     <style>
         /* 테이블 호버 효과 */

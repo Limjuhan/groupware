@@ -40,15 +40,7 @@ public class NoticeController {
 
     //A_0002 (공지사항페이지 ) (권한처리X)
     @GetMapping("getNoticeList")
-    public String getNoticeList(
-            @RequestParam(value = "page", defaultValue = "1") int currentPage,
-            PaginationDto paging, Model model) {
-        paging.setPage(currentPage);
-        Map<String, Object> map = service.getNoticeList(paging);
-        model.addAttribute("notice", map.get("notice"));
-        model.addAttribute("pageDto", map.get("pageDto"));
-        model.addAttribute("pinnedList", map.get("pinnedList"));
-
+    public String getNoticeList(){
         return "board/noticeList";
     }
 

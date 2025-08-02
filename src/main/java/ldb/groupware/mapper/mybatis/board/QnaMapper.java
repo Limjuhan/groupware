@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface QnaMapper {
-    int countQna();
+    int countQna(PaginationDto paging);
 
     List<QnaListDto> getQnaList(PaginationDto paging);
 

@@ -25,8 +25,8 @@ public class NoticeService {
     public Map<String, Object> getNoticeList(PaginationDto pageDto) {
         HashMap<String, Object> map = new HashMap<>();
         List<NoticeListDto> pinnedList = mapper.getPinnedList(pageDto);
-        int pinnedCount = mapper.pinnedCount();
-        int count = mapper.noticeCount(); //공지사항(상단고정X)의 갯수
+        int pinnedCount = mapper.pinnedCount(pageDto);
+        int count = mapper.noticeCount(pageDto); //공지사항(상단고정X)의 갯수
         pageDto.setTotalRows(count);
         pageDto.setItemsPerPage(pageDto.getItemsPerPage() - pinnedCount); //10개 - 고정된 핀 갯수만 출력
         pageDto.calculatePagination(); //보여줄 페이지의갯수 , 페이지당 제한갯수 등 설정

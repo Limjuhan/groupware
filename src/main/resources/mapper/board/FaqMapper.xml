@@ -2,9 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ldb.groupware.mapper.mybatis.board.FaqMapper">
 
-    <select id="faqCount" resultType="int">
-        select count(*) from faq
+    <select id="faqCount" parameterType="PaginationDto" resultType="int">
+        SELECT COUNT(*)
+        FROM faq f
+        JOIN dept d ON f.dept_id = d.dept_id
+        <where>
+            <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
+                <choose>
+                    <when test="searchType eq 'faqTitle'">
+                        AND f.faq_title LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="searchType eq 'deptName'">
+                        AND d.dept_name LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="searchType eq 'all'">
+                        AND (d.dept_name LIKE CONCAT('%', #{keyword}, '%')
+                        OR f.faq_title LIKE CONCAT('%', #{keyword}, '%'))
+                    </when>
+                </choose>
+            </if>
+        </where>
     </select>
+
 
     <select id="findFaqList" resultType="FaqListDto" parameterType="PaginationDto">
         select f.faq_id , d.dept_name , f.faq_title , f.faq_content , f.dept_id

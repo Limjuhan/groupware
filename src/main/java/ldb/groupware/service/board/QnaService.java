@@ -31,7 +31,7 @@ public class QnaService {
 
     public Map<String, Object> getQnaList(PaginationDto paging) {
         HashMap<String, Object> map = new HashMap<>();
-        int count = mapper.countQna();
+        int count = mapper.countQna(paging);
         paging.setTotalRows(count);
         paging.calculatePagination();
         List<QnaListDto> list = mapper.getQnaList(paging);

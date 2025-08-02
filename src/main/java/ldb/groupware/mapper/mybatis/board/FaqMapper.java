@@ -13,7 +13,7 @@ public interface FaqMapper {
 
     public List<FaqListDto> findFaqList(PaginationDto dto);
 
-    int faqCount();
+    int faqCount(PaginationDto dto);
 
     int insertFaq(FaqFormDto dto);
 

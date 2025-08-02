@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface NoticeMapper {
-    int noticeCount();
+    int noticeCount(PaginationDto pageDto);
 
     List<NoticeListDto> getNoticeList(PaginationDto pageDto);
 
@@ -35,5 +35,5 @@ public interface NoticeMapper {
 
     List<NoticeListDto> getPinnedList(PaginationDto pageDto);
 
-    int pinnedCount();
+    int pinnedCount(PaginationDto pageDto);
 }

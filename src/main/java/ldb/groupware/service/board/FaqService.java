@@ -22,22 +22,22 @@ public class FaqService {
 
     public Map<String, Object> findFaqList(PaginationDto pageDto) {
         HashMap<String, Object> map = new HashMap<>();
-        int count = mapper.faqCount();
+        int count = mapper.faqCount(pageDto);
         pageDto.setTotalRows(count);
         pageDto.setItemsPerPage(5);
         pageDto.calculatePagination(); //최대row를 이용해 최대페이지등을 정해줌
         List<FaqListDto> list = mapper.findFaqList(pageDto);
         System.out.println("list ::: "+list);
-        map.put("list", list);
+        map.put("faqList", list);
         map.put("pageDto", pageDto);
         return map;
     }
 
-    public int insertFaq(FaqFormDto dto) {
+    public int insertFaq(FaqFormDto dto,PaginationDto pageDto) {
         int a = mapper.insertFaq(dto);
 
         if (a > 0) {
-            int count = mapper.faqCount();
+            int count = mapper.faqCount(pageDto);
             PaginationDto paginationDto = new PaginationDto();
             paginationDto.setTotalRows(count);
             paginationDto.calculatePagination();

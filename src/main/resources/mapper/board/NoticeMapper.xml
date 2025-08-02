@@ -2,12 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ldb.groupware.mapper.mybatis.board.NoticeMapper">
 
-    <select id="noticeCount" resultType="int">
-        select count(*) from notice where is_pinned='N'
+    <select id="noticeCount" parameterType="PaginationDto" resultType="int">
+        select count(*) from notice n left join member m on n.mem_id = m.mem_id
+        <where>
+            <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
+                <choose>
+                    <when test="searchType eq 'noticeTitle'">
+                        AND n.notice_title LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="searchType eq 'memId'">
+                        AND m.mem_name LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND n.is_pinned='N'
+        </where>
     </select>
 
-    <select id="pinnedCount">
-        select count(*) from notice where is_pinned='Y'
+    <select id="pinnedCount" parameterType="PaginationDto" resultType="int">
+        select count(*) from notice n left join member m on n.mem_id = m.mem_id
+        <where>
+            <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
+                <choose>
+                    <when test="searchType eq 'noticeTitle'">
+                        AND n.notice_title LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="searchType eq 'memId'">
+                        AND m.mem_name LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND n.is_pinned='Y'
+        </where>
     </select>
 
     <select id="getPinnedList" parameterType="PaginationDto" resultType="NoticeListDto">

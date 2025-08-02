@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
@@ -25,11 +24,134 @@
             text-align: left;
             padding-left: 1rem;
         }
+
+        .page-link {
+            cursor: pointer;
+        }
     </style>
+    <script>
+        function goForm(url) {
+            var op = "width=500,height=700,top=50,left=150";
+            window.open(url, "", op);
+        }
+
+        // QnA 목록을 불러오는 함수
+        function loadQnaList(page) {
+            if (!page) page = 1;
+            var searchType = $('select[name="searchType"]').val();
+            var keyword = $('input[name="keyword"]').val();
+
+            $.ajax({
+                url: '/api/qna/qnaList',
+                type: 'GET',
+                data: {
+                    page: page,
+                    searchType: searchType,
+                    keyword: keyword
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        var qnaList = response.data.qna;
+                        var pagination = response.data.pageDto;
+                        var $tbody = $('#qnaTableBody').empty();
+
+                        if (qnaList && qnaList.length > 0) {
+                            $.each(qnaList, function (index, q) {
+                                var qnaRow = '';
+                                qnaRow += '<tr>';
+                                qnaRow += '<td>' + q.qnaId + '</td>';
+                                qnaRow += '<td class="question-title">';
+                                qnaRow += '<a href="getQnaDetail?id=' + q.qnaId + '" class="text-decoration-none">' + q.qnaTitle + '</a>';
+                                qnaRow += '</td>';
+                                qnaRow += '<td>' + q.memName + '</td>';
+                                qnaRow += '<td>' + q.updatedAtStr + '</td>';
+                                qnaRow += '</tr>';
+                                $tbody.append(qnaRow);
+                            });
+                        } else {
+                            $tbody.append('<tr><td colspan="4" class="text-muted">게시물이 없습니다.</td></tr>');
+                        }
+
+                        renderPagination(pagination);
+                        // FAQ 데이터도 함께 불러와 모달에 표시
+                        renderFaq(response.data.faq);
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('질문 게시판 데이터를 불러오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        // 페이징을 렌더링하는 함수
+        function renderPagination(pagination) {
+            var $paginationArea = $('#paginationArea').empty();
+            if (!pagination) return;
+
+            var html = '<ul class="pagination justify-content-center">';
+            var currentPage = pagination.page;
+            var startPage = pagination.startPage;
+            var endPage = pagination.endPage;
+            var totalPages = pagination.totalPages;
+
+            // 이전 페이지 버튼
+            var prevClass = currentPage > 1 ? '' : 'disabled';
+            html += '<li class="page-item ' + prevClass + '"><a class="page-link" onclick="loadQnaList(' + (currentPage - 1) + ');">이전</a></li>';
+
+            // 페이지 번호 버튼
+            for (var i = startPage; i <= endPage; i++) {
+                var activeClass = currentPage === i ? ' active' : '';
+                html += '<li class="page-item' + activeClass + '">' +
+                    '<a class="page-link" onclick="loadQnaList(' + i + ');">' + i + '</a>' +
+                    '</li>';
+            }
+
+            // 다음 페이지 버튼
+            var nextClass = currentPage < totalPages ? '' : 'disabled';
+            html += '<li class="page-item ' + nextClass + '"><a class="page-link" onclick="loadQnaList(' + (currentPage + 1) + ');">다음</a></li>';
+
+            html += '</ul>';
+            $paginationArea.append(html);
+        }
+
+        // FAQ 모달에 FAQ 목록을 렌더링하는 함수
+        function renderFaq(faqList) {
+            var $faqAccordion = $('#faqAccordion').empty();
+            if (faqList && faqList.length > 0) {
+                $.each(faqList, function (index, f) {
+                    var faqItem = '';
+                    faqItem += '<div class="accordion-item">';
+                    faqItem += '<h2 class="accordion-header" id="heading' + index + '">';
+                    faqItem += '<button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse' + index + '">';
+                    faqItem += f.faqTitle;
+                    faqItem += '</button>';
+                    faqItem += '</h2>';
+                    faqItem += '<div id="collapse' + index + '" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">';
+                    faqItem += '<div class="accordion-body">' + f.faqContent + '</div>';
+                    faqItem += '</div>';
+                    faqItem += '</div>';
+                    $faqAccordion.append(faqItem);
+                });
+            } else {
+                $faqAccordion.append('<div class="p-3 text-muted">등록된 FAQ가 없습니다.</div>');
+            }
+        }
+
+        $(document).ready(function () {
+            loadQnaList(1);
+
+            $('form').on('submit', function (e) {
+                e.preventDefault();
+                loadQnaList(1);
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="container mt-5">
-    <!-- 헤더 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold">질문 게시판</h3>
         <div>
@@ -37,11 +159,10 @@
                 자주 묻는 질문
             </button>
             <a onclick="goForm('getQnaForm')" class="btn btn-primary">질문하기</a>
-
         </div>
     </div>
 
-    <form action="getQnaList" method="get" class="row g-2 mb-4">
+    <form class="row g-2 mb-4">
         <div class="col-md-3">
             <select name="searchType" class="form-select">
                 <option value="qnaTitle">제목</option>
@@ -57,7 +178,6 @@
         </div>
     </form>
 
-    <!-- 질문 테이블 -->
     <table class="table table-bordered table-hover bg-white">
         <thead class="table-light">
         <tr>
@@ -67,40 +187,14 @@
             <th style="width: 20%;">작성일</th>
         </tr>
         </thead>
-        <tbody>
-        <c:if test="${qna==null}">
-            <tr>
-                <td colspan="4">게시물 없음</td>
-            </tr>
-        </c:if>
-        <c:forEach items="${qna}" var="q">
-            <tr>
-                <td>${q.qnaId}</td>
-                <td class="question-title">
-                    <a href="getQnaDetail?id=${q.qnaId}" class="text-decoration-none">${q.qnaTitle}</a>
-                </td>
-                <td>${q.memName}</td>
-                <td>${q.updatedAtStr}</td>
-            </tr>
-        </c:forEach>
+        <tbody id="qnaTableBody">
         </tbody>
     </table>
 
-
-    <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link" href="?page=${pageDto.page - 1}">이전</a></li>
-            <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
-                <li class="page-item ">
-                    <a class="page-link" href="?page=${p}">${p}</a>
-                </li>
-            </c:forEach>
-            <li class="page-item"><a class="page-link" href="?page=${pageDto.page+1}">다음</a></li>
-        </ul>
+    <nav class="mt-4" id="paginationArea">
     </nav>
 </div>
 
-<!-- FAQ Modal -->
 <div class="modal fade" id="faqModal" tabindex="-1" aria-labelledby="faqModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -109,38 +203,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
             </div>
             <div class="modal-body">
-
                 <div class="accordion" id="faqAccordion">
-                    <c:forEach items="${faq}" var="f" varStatus="status">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="heading${status.index}">
-                                <button class="accordion-button collapsed"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#collapse${status.index}" <%-- 해당id를 가진 토글을 접기/펴기--%>
-                                >
-                                        <%-- 현재 연결된 콘텐츠가 펼쳐져 있지 않음을 스크린 리더에 알려줌
-                                                JavaScript가 자동으로 true/false를 토글함--%>
-                                        ${f.faqTitle}
-                                </button>
-                            </h2>
-                            <div id="collapse${status.index}" class="accordion-collapse collapse"
-                                 data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">${f.faqContent}</div>
-                            </div>
-                        </div>
-                    </c:forEach>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    function goForm(url) {
-        let op = "width=500,height=700,top=50,left=150";
-        window.open(url, "", op);
-    }
-</script>
 </body>
 </html>

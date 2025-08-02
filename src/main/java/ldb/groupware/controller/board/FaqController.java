@@ -25,13 +25,7 @@ public class FaqController {
 
     //자주묻는질문 페이지(A_0004)
     @GetMapping("getFaqList")
-    public String faqList(Model model,   @RequestParam(value = "page", defaultValue = "1") int currentPage , PaginationDto pDto) {
-        pDto.setPage(currentPage);
-        Map<String, Object> map = faqService.findFaqList(pDto);
-        pDto = (PaginationDto)map.get("pageDto");
-        System.out.println("faqListPageDto = " + pDto);
-        model.addAttribute("faq", map.get("list"));
-        model.addAttribute("pageDto", pDto);
+    public String faqList() {
         return "board/faqList";
     }
 
@@ -58,13 +52,13 @@ public class FaqController {
 
     //(자주묻는질문관리 -> 등록버튼)(A_0006)(오직 관리자만접근해야함 session정보(mem_id)가들어가지않음)
     @PostMapping("insertFaqByMng")
-    public String insertFaqByMng(@Valid @ModelAttribute("faqFormDto")FaqFormDto dto , BindingResult bresult,Model model){
+    public String insertFaqByMng(@Valid @ModelAttribute("faqFormDto")FaqFormDto dto , BindingResult bresult,Model model,PaginationDto pDto){
         if(bresult.hasErrors()){
             List<DeptDto> dept = faqService.findDept();
             model.addAttribute("dept", dept);
             return  "board/faqForm";
         }
-        int count = faqService.insertFaq(dto);
+        int count = faqService.insertFaq(dto,pDto);
         System.out.println("count : " + count);
         if(count>0){
            model.addAttribute("msg","등록성공");

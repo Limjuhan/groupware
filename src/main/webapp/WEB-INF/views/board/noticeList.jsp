@@ -7,6 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .notice-table th, .notice-table td {
@@ -33,26 +34,141 @@
             opacity: 0.65;
             text-decoration: none;
         }
+
+        .page-link {
+            cursor: pointer;
+        }
     </style>
+    <script>
+        function goForm(url) {
+            var op = "width=600,height=1000,top=50,left=150";
+            window.open(url, "", op);
+        }
+
+        // 공지사항 목록을 불러오는 함수
+        function loadNoticeList(page) {
+            if (!page) page = 1;
+            var searchType = $('select[name="searchType"]').val();
+            var keyword = $('input[name="keyword"]').val();
+
+            $.ajax({
+                url: '/api/notice/noticeList',
+                type: 'GET',
+                data: {
+                    page: page,
+                    searchType: searchType,
+                    keyword: keyword
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        var pinnedList = response.data.pinnedList;
+                        var notice = response.data.notice;
+                        var pageDto = response.data.pageDto;
+                        var $tbody = $('.notice-table tbody').empty();
+
+                        // 상단 고정 공지사항 렌더링
+                        $.each(pinnedList, function(index, p) {
+                            var pinnedRow = '';
+                            pinnedRow += '<tr class="fixed-row">';
+                            pinnedRow += '<td><i class="bi bi-pin-angle-fill text-danger"></i></td>';
+                            pinnedRow += '<td class="notice-title">';
+                            pinnedRow += '<a href="getNoticeDetail?id=' + p.noticeId + '" class="text-decoration-none text-dark">' + p.noticeTitle + '</a>';
+                            pinnedRow += '</td>';
+                            pinnedRow += '<td>' + p.memName + '</td>';
+                            pinnedRow += '<td>' + p.updatedAtToStr + '</td>';
+                            pinnedRow += '<td>' + p.noticeCnt + '</td>';
+                            pinnedRow += '</tr>';
+                            $tbody.append(pinnedRow);
+                        });
+
+                        // 일반 공지사항 렌더링
+                        if (notice && notice.length > 0) {
+                            $.each(notice, function(index, n) {
+                                var noticeRow = '';
+                                noticeRow += '<tr>';
+                                noticeRow += '<td>' + n.noticeId + '</td>';
+                                noticeRow += '<td class="notice-title">';
+                                noticeRow += '<a href="getNoticeDetail?id=' + n.noticeId + '" class="text-decoration-none text-dark">' + n.noticeTitle + '</a>';
+                                noticeRow += '</td>';
+                                noticeRow += '<td>' + n.memName + '</td>';
+                                noticeRow += '<td>' + n.updatedAtToStr + '</td>';
+                                noticeRow += '<td>' + n.noticeCnt + '</td>';
+                                noticeRow += '</tr>';
+                                $tbody.append(noticeRow);
+                            });
+                        } else {
+                            if(pinnedList.length === 0){
+                                $tbody.append('<tr><td colspan="5" class="text-muted">검색 결과가 없습니다.</td></tr>');
+                            }
+                        }
+
+                        // 페이징 UI 렌더링
+                        renderPagination(pageDto);
+
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('공지사항 데이터를 불러오는 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        // 페이징을 렌더링하는 함수
+        function renderPagination(pageDto) {
+            var $paginationArea = $('.pagination').empty();
+            if (!pageDto) return;
+
+            var currentPage = pageDto.page;
+            var startPage = pageDto.startPage;
+            var endPage = pageDto.endPage;
+            var totalPages = pageDto.totalPages;
+
+            // 이전 페이지 버튼
+            var prevClass = currentPage > 1 ? '' : 'disabled';
+            $paginationArea.append('<li class="page-item ' + prevClass + '"><a class="page-link" onclick="loadNoticeList(' + (currentPage - 1) + ');">이전</a></li>');
+
+            // 페이지 번호 버튼
+            for (var i = startPage; i <= endPage; i++) {
+                var activeClass = currentPage === i ? 'active' : '';
+                $paginationArea.append('<li class="page-item ' + activeClass + '"><a class="page-link" onclick="loadNoticeList(' + i + ');">' + i + '</a></li>');
+            }
+
+            // 다음 페이지 버튼
+            var nextClass = currentPage < totalPages ? '' : 'disabled';
+            $paginationArea.append('<li class="page-item ' + nextClass + '"><a class="page-link" onclick="loadNoticeList(' + (currentPage + 1) + ');">다음</a></li>');
+        }
+
+        $(document).ready(function () {
+            // 페이지 로드 시 공지사항 목록 불러오기
+            loadNoticeList(1);
+
+            // 검색 폼 제출 이벤트
+            $('form').on('submit', function (e) {
+                e.preventDefault();
+                loadNoticeList(1);
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="container mt-5">
-    <!-- 제목 + 등록 버튼 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold">공지사항</h3>
         <c:choose>
-            <c:when test="${fn:contains(allowedMenus, 'A_0003')}">
+            <c:when test="${fn:contains(allowedMenus, 'A_0003') || fn:startsWith(sessionScope.loginId,'admin')}">
                 <a onclick="goForm('getNoticeForm')" class="btn btn-primary">공지 등록</a>
             </c:when>
         </c:choose>
     </div>
 
-    <!-- 검색 폼 -->
-    <form action="getNoticeList" method="get" class="row g-2 mb-4">
+    <form class="row g-2 mb-4">
         <div class="col-md-3">
             <select name="searchType" class="form-select">
                 <option value="noticeTitle">제목</option>
-                <option value="memId">작성자</option>
+                <option value="memName">작성자</option>
             </select>
         </div>
         <div class="col-md-6">
@@ -63,7 +179,6 @@
         </div>
     </form>
 
-    <!-- 공지 테이블 -->
     <div class="table-responsive">
         <table class="table table-bordered table-hover notice-table">
             <thead class="table-light">
@@ -76,58 +191,14 @@
             </tr>
             </thead>
             <tbody>
-            <!-- 상단 고정 공지 -->
-            <c:forEach var="p" items="${pinnedList}">
-                <tr class='fixed-row'>
-                    <td><i class="bi bi-pin-angle-fill text-danger"></i>
-                    </td>
-                    <td class="notice-title">
-                        <a href="getNoticeDetail?id=${p.noticeId}" class="text-decoration-none text-dark">
-                                ${p.noticeTitle}
-                        </a>
-                    </td>
-                    <td>${p.memName}</td>
-                    <td>${p.updatedAtToStr}</td>
-                    <td>${p.noticeCnt}</td>
-                </tr>
-            </c:forEach>
-            <c:forEach var="n" items="${notice}">
-                <tr>
-                    <td>
-                            ${n.noticeId}
-                    </td>
-                    <td class="notice-title">
-                        <a href="getNoticeDetail?id=${n.noticeId}" class="text-decoration-none text-dark">
-                                ${n.noticeTitle}
-                        </a>
-                    </td>
-                    <td>${n.memName}</td>
-                    <td>${n.updatedAtToStr}</td>
-                    <td>${n.noticeCnt}</td>
-                </tr>
-            </c:forEach>
             </tbody>
         </table>
     </div>
 
-    <!-- 페이징 UI -->
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link" href="?page=${pageDto.page - 1}">이전</a></li>
-            <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
-                <li class="page-item ">
-                    <a class="page-link" href="?page=${p}">${p}</a>
-                </li>
-            </c:forEach>
-            <li class="page-item"><a class="page-link" href="?page=${pageDto.page+1}">다음</a></li>
         </ul>
     </nav>
 </div>
-<script>
-    function goForm(url) {
-        let op = "width=600,height=1000,top=50,left=150";
-        window.open(url, "", op);
-    }
-</script>
 </body>
 </html>
