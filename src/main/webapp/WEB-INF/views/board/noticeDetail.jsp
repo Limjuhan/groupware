@@ -126,7 +126,7 @@
 
         <div class="d-flex gap-2">
             <c:choose>
-                <c:when test="${fn:contains(allowedMenus, 'A_0003')}">
+                <c:when test="${fn:contains(allowedMenus, 'A_0003') || fn:startsWith(sessionScope.loginId,'admin')}">
                     <a onclick="goForm('getNoticeEditForm?id=${notice.noticeId}')"
                        class="btn btn-outline-primary btn-custom">수정</a>
                     <a href="deleteNoticeByMng?id=${notice.noticeId}" class="btn btn-outline-danger btn-custom"
