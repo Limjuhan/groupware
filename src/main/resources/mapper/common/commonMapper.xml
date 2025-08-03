@@ -18,4 +18,21 @@
         where use_yn = 'Y'
     </select>
 
+    <select id="selectAllCodes" resultType="CommonCodeDto">
+        SELECT
+            code_group AS codeGroup,
+            comm_code AS codeId,
+            comm_name AS codeName,
+            use_yn AS useYn
+        FROM common_type
+        ORDER BY code_group, order_no
+    </select>
+
+    <update id="updateCodeUsage">
+        UPDATE common_type
+        SET use_yn = #{useYn}
+        WHERE code_group = #{codeGroup}
+          AND comm_code = #{codeId}
+    </update>
+
 </mapper>
