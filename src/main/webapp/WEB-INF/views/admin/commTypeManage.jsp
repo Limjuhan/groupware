@@ -36,6 +36,7 @@
           return;
         }
         renderTable(res.data);
+        console.log('공통코드목록', res.data);
       });
     }
 
@@ -74,11 +75,13 @@
         var group = parts[0];
         var codeId = parts.slice(1).join("_");
         var useYn = $(this).val();
-        updates.push({
-          codeGroup: group,
-          codeId: codeId,
-          useYn: useYn
-        });
+        updates.push(
+                {
+                  codeGroup: group,
+                  codeId: codeId,
+                  useYn: useYn
+                }
+        );
       });
 
       $.ajax({
