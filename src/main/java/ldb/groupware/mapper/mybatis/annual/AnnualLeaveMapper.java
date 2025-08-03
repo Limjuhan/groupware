@@ -2,6 +2,7 @@ package ldb.groupware.mapper.mybatis.annual;
 
 import ldb.groupware.domain.AnnualLeave;
 import ldb.groupware.domain.Member;
+import ldb.groupware.dto.admin.UpdateAnnualDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,4 +16,7 @@ public interface AnnualLeaveMapper {
     void updateAnnualLeave(AnnualLeave annualLeave);
 
     AnnualLeave selectAnnualLeave(@Param("memId") String memId,@Param("hireYear") int hireYear);
+
+    int updateAnnualLeaveByDashboard(@Param("dto") UpdateAnnualDto dto,
+                                      @Param("loginId") String loginId);
 }

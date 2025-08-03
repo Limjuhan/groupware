@@ -63,6 +63,13 @@
     .pagination .page-link {
       color: #0d6efd;
     }
+    #leaveChart {
+      max-height: 400px; /* 최대 높이 제한 */
+    }
+
+    .card-chart {
+      height: 420px; /* 카드 높이 고정 */
+    }
   </style>
 </head>
 <body>
@@ -90,7 +97,7 @@
 
   <!-- 차트 -->
   <div class="card p-4 mb-4">
-    <canvas id="leaveChart" height="100"></canvas>
+    <canvas id="leaveChart"></canvas>
   </div>
 
   <!-- 테이블 -->
@@ -245,7 +252,7 @@
       remainDays: remainDays,
       year: realYear,
     }
-
+    console.log('data: ',data);
     $.ajax({
       url: "/admin/updateAnnualLeave",
       method: "POST",
@@ -253,7 +260,6 @@
       data: JSON.stringify(data),
       success: function (res) {
         if (res && res.success) {
-          console.log(res.message);
           loadDashboard(currentPage); // 현재 페이지 새로 로딩
         } else {
           alert(res.message || "저장에 실패했습니다.");
@@ -296,6 +302,7 @@
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           tooltip: { mode: "index", intersect: false },
           legend: { position: "top" }
@@ -306,6 +313,7 @@
         }
       }
     });
+    setTimeout(() => chartInstance.resize(), 100);
   }
 
   // 페이징 렌더링
@@ -370,6 +378,8 @@
     getDeptList();
     loadDashboard();
   });
+
+
 </script>
 </body>
 </html>

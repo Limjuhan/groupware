@@ -45,6 +45,7 @@
     <select id="getAnnualLeaveUsage" resultType="DashboardInfoDto">
         <![CDATA[
             SELECT
+            m.mem_id as memId,
             m.dept_id AS deptId,
             d.dept_name AS deptName,
             m.mem_name AS memName,
@@ -69,7 +70,7 @@
                 m.dept_id = #{deptId}
             </if>
         </where>
-        ORDER BY d.dept_name
+        ORDER BY d.dept_name, m.rank_id
         <if test="startNum != null and itemsPerPage != null">
             LIMIT #{startNum}, #{itemsPerPage}
         </if>

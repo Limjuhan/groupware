@@ -8,6 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class DashboardInfoDto {
+    private String memId;
     private String deptId;
     private String deptName;
     private String memName;

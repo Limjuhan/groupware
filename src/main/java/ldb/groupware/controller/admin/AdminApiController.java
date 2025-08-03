@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import ldb.groupware.dto.admin.DashboardInfoDto;
 import ldb.groupware.dto.admin.MenuDto;
+import ldb.groupware.dto.admin.UpdateAnnualDto;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.common.DeptDto;
 import ldb.groupware.dto.member.MemberInfoDto;
@@ -11,6 +12,7 @@ import ldb.groupware.dto.member.MemberSearchDto;
 import ldb.groupware.dto.member.UpdateMemberDto;
 import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.service.admin.AdminService;
+import ldb.groupware.service.annualleave.AnnualService;
 import ldb.groupware.service.common.CommonService;
 import ldb.groupware.service.member.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +38,13 @@ public class AdminApiController {
     private final MemberService memberService;
     private final AdminService adminService;
     private final CommonService  commonService;
+    private final AnnualService annualService;
 
-    public AdminApiController(MemberService memberService, AdminService adminService, CommonService commonService) {
+    public AdminApiController(MemberService memberService, AdminService adminService, CommonService commonService, AnnualService annualService) {
         this.memberService = memberService;
         this.adminService = adminService;
         this.commonService = commonService;
+        this.annualService = annualService;
     }
 
     // 사원 목록
@@ -236,6 +240,14 @@ public class AdminApiController {
         // ================================
         workbook.write(response.getOutputStream());
         workbook.close();
+    }
+
+
+    @PostMapping("updateAnnualLeave")
+    public ResponseEntity<ApiResponseDto<Void>> updateAnnualLeave(@RequestBody UpdateAnnualDto dto,
+                                                                  @SessionAttribute("loginId") String loginId) {
+        annualService.updateAnnualLeave(dto, loginId);
+        return ApiResponseDto.successMessage("연차정보 수정 성공.");
     }
 
 

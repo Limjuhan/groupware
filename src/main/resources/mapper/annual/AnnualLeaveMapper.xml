@@ -50,5 +50,16 @@
           AND year = #{hireYear}
     </select>
 
+    <update id="updateAnnualLeaveByDashboard">
+        update annual_leave
+        set
+               total_days = #{dto.totalDays},
+               use_days = #{dto.useDays},
+               remain_days = #{dto.remainDays},
+               updated_at = now(),
+               updated_by = #{loginId}
+       where year = #{dto.year}
+       and   mem_id = #{dto.memId}
+    </update>
 
 </mapper>
