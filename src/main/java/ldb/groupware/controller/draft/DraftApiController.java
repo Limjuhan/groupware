@@ -49,7 +49,6 @@ public class DraftApiController {
             @RequestParam("savedName") String savedName,
             @RequestParam("attachType") String attachType) {
 
-        // 예외 발생 시 GlobalExceptionHandler가 처리
         attachmentService.deleteAttachment(List.of(savedName), attachType);
         return ApiResponseDto.successMessage("첨부파일이 성공적으로 삭제되었습니다.");
     }
