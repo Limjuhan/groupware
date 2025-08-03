@@ -8,6 +8,7 @@ import ldb.groupware.dto.common.CommonTypeDto;
 import ldb.groupware.dto.draft.DraftForMemberDto;
 import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.dto.draft.DraftUpdateDto;
+import ldb.groupware.mapper.mybatis.alarm.AlarmMapper;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.common.CommonService;
 import ldb.groupware.service.draft.DraftService;
@@ -35,7 +36,7 @@ public class DraftController {
     private final AttachmentService attachmentService;
     private final CommonService commonService;
 
-    public DraftController(DraftService draftService, MessageSource messageSource, AttachmentService attachmentService, CommonService commonService) {
+    public DraftController(DraftService draftService, MessageSource messageSource, AttachmentService attachmentService, CommonService commonService, AlarmMapper alarmMapper) {
         this.draftService = draftService;
         this.messageSource = messageSource;
         this.attachmentService = attachmentService;
@@ -111,7 +112,6 @@ public class DraftController {
      * <p>
      * 기본적으로 임시저장은 입력값 유효성검사 제외.
      * 단, 휴가계획서는 임시저장할때도 휴가시작,끝나는날 필수입력받음.
-     *TODO:참조자도 알람테이블에 들어가야함.
      *
      * @param dto
      * @param bindingResult
@@ -170,7 +170,6 @@ public class DraftController {
     }
 
     /**
-     *TODO:이용자id, 문서id로 alarm테이블 조회하여 readYn='Y' 업데이트
      *
      * @param model
      * @return draft/draftDetail
@@ -218,7 +217,6 @@ public class DraftController {
     }
 
     /**
-     * TODO:이용자id, 문서id로 alarm테이블 확인하여 readYn='Y' 업데이트
      *
      * 참조자 : 승인,반려버튼 안보이고 클릭시 클릭한유저에대한 검증 필요
      * 1차결재자 : 1차결재대기상태일때만 승인or반려버튼 조회가능.클릭시 클릭한유저에대한 검증 필요
@@ -233,7 +231,6 @@ public class DraftController {
     public String getReceivedDraftDetail(DraftFormDto dto,
                                          @SessionAttribute(name = "loginId", required = false) String memId,
                                          Model model) {
-        System.err.println("[받은전자결재 상새네역 조회시 파라미터 확인" + dto.toString());
 
         try {
             if (dto.getDocId() == null) {
@@ -286,9 +283,7 @@ public class DraftController {
      *     approval_document의 status 4(2차결재대기)로 변경
      *     docId기준 approval_line의 1차,2차결재자들,참조자(들) status 변경 및 2차결재자는 comment 업데이트
      *     alarm테이블에 docId,기안자로  readYn='N'
-     *TODO:연차양식은 2차결재승인시에 annual_leave에서 남은연차일수(remainDays) 차감해줘야됨
-     *  ->그리고 나서 연차대시보드 연차정보수정작업도 연계해서 ㄱㄱ
-     *
+
      * @param dto
      * @param memId
      * @param redirectAttributes

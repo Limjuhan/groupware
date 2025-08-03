@@ -13,6 +13,7 @@
         a.doc_title AS docTitle,
         a.doc_endDate AS docEndDate,
         a.status AS status,
+        alarm.read_yn as readYn,
         approver1.mem_name AS approver1Name,
         approver2.mem_name AS approver2Name
         FROM approval_document a
@@ -21,6 +22,7 @@
         LEFT JOIN member approver1 ON l1.mem_id = approver1.mem_id
         LEFT JOIN approval_line l2 ON l2.doc_id = a.doc_id AND l2.step_order = 2 AND l2.ref_yn = 'N'
         LEFT JOIN member approver2 ON l2.mem_id = approver2.mem_id
+        left join alarm alarm on alarm.mem_id = a.mem_id and a.doc_id = alarm.ref_doc_id and alarm.step_order = 0
         WHERE a.mem_id = #{memId}
         AND a.del_yn = 'N'
 
@@ -324,6 +326,8 @@
         a.doc_title AS docTitle,
         a.doc_endDate AS docEndDate,
         a.status AS status,
+        al.read_yn as readYn,
+        al.mem_id as receivedMemId,
         approver1.mem_name AS approver1Name,
         approver2.mem_name AS approver2Name
         FROM approval_document a
@@ -341,6 +345,7 @@
         AND l2.ref_yn = 'N'
         LEFT JOIN member approver2
         ON l2.mem_id = approver2.mem_id
+        left join alarm al on al.mem_id = #{memId} and a.doc_id = al.ref_doc_id
         WHERE a.del_yn = 'N'
         AND a.doc_id IN (
         SELECT doc_id

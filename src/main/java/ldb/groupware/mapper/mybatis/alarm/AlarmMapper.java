@@ -1,6 +1,7 @@
 package ldb.groupware.mapper.mybatis.alarm;
 
 import ldb.groupware.domain.Alarm;
+import ldb.groupware.dto.alarm.AlarmDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,4 +15,6 @@ public interface AlarmMapper {
 
 
     int insertAlarm(Alarm alarm);
+
+    int markAsRead(AlarmDto dto);
 }

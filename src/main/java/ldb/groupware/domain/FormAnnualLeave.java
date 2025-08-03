@@ -30,7 +30,12 @@ public class FormAnnualLeave {
         formAnnualLeave.setLeaveCode(dto.getLeaveCode());
         formAnnualLeave.setStartDate(dto.getLeaveStart());
         formAnnualLeave.setEndDate(dto.getLeaveEnd());
-        formAnnualLeave.setRequestDays((double) (ChronoUnit.DAYS.between(dto.getLeaveStart(), dto.getLeaveEnd()) + 1));
+        if (dto.getLeaveStart() != null && dto.getLeaveEnd() != null) {
+            long days = ChronoUnit.DAYS.between(dto.getLeaveStart(), dto.getLeaveEnd()) + 1;
+            formAnnualLeave.setRequestDays((double) days);
+        } else {
+            formAnnualLeave.setRequestDays(0.0);
+        }
         formAnnualLeave.setAnnualContent(dto.getContent());
 
         return formAnnualLeave;

@@ -28,6 +28,7 @@ public class DraftService {
                         AttachmentService attachmentService,
                         MessageSource messageSource,
                         AlarmService alarmService) {
+
         this.draftMapper = draftMapper;
         this.attachmentService = attachmentService;
         this.messageSource = messageSource;
@@ -128,6 +129,8 @@ public class DraftService {
                 if (saveType != ApprovalConst.STATUS_TEMP) {
                     validateAnnualLeave(dto, memId);
                 }
+                System.out.println("form저장 확인~~~~~~~~~~~~~~~~~~~~~~~~");
+                System.out.println("DraftFormDto dto = " + dto);
                 draftMapper.insertFormAnnualLeave(FormAnnualLeave.from(dto));
             }
             case ApprovalConst.FORM_PROJECT -> draftMapper.insertFormProject(FormProject.from(dto));

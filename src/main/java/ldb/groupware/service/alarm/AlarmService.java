@@ -1,11 +1,13 @@
 package ldb.groupware.service.alarm;
 
 import ldb.groupware.domain.Alarm;
+import ldb.groupware.dto.alarm.AlarmDto;
 import ldb.groupware.dto.draft.ApprovalConst;
 import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.mapper.mybatis.alarm.AlarmMapper;
 import ldb.groupware.mapper.mybatis.draft.DraftMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,6 +41,31 @@ public class AlarmService {
             log.error("[받은전자결내역 프로세스]알람등록 실패. docId: {}", docId);
             throw new RuntimeException("알람업데이트 작업 실패");
         }
+    }
+
+    public void markAsRead(AlarmDto dto, String loginId) throws IllegalAccessException {
+        System.out.println("알람dto = " + dto);
+        // 본인확인
+        if (StringUtils.isBlank(dto.getMemId()) || !loginId.equals(dto.getMemId())) {
+            throw new IllegalAccessException("해당문서의 결재자,참조자만 접근 가능합니다.");
+        }
+
+        // 기본값 세팅
+        if (dto.getReadYn() == null) dto.setReadYn("Y");
+
+        // 읽음 여부 값 유효성 체크
+        if (!"Y".equals(dto.getReadYn()) && !"N".equals(dto.getReadYn())) {
+            throw new IllegalArgumentException("readYn 값은 Y 또는 N이어야 합니다.");
+        }
+
+        // DB 업데이트
+        int updatedRows = alarmMapper.markAsRead(dto);
+        if (updatedRows == 0) {
+            throw new IllegalArgumentException("업데이트할 알람 정보가 없습니다.");
+        }
+
+        log.info("알람 읽음 처리 완료 - docId: {}, memId: {}", dto.getDocId(), dto.getMemId());
+
     }
 
     public void saveAlarm(DraftFormDto dto, String memId) {
@@ -77,9 +104,21 @@ public class AlarmService {
             alarms.add(new Alarm(dto.getApprover2(),
                     ApprovalConst.STATUS_FIRST_APPROVAL_WAITING,
                     dto.getDocId(),
-                    "N",
+                    "Y",
                     2));
         }
+
+        //참조자(들)
+        if (dto.getReferrerList() != null && !dto.getReferrerList().isEmpty()) {
+            for (String referrer : dto.getReferrerList()) {
+                alarms.add(new Alarm(referrer,
+                        ApprovalConst.STATUS_FIRST_APPROVAL_WAITING,
+                        dto.getDocId(),
+                        "N",
+                        3));
+            }
+        }
+
         return alarms;
     }
 }

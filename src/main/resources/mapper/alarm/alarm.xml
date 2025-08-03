@@ -28,4 +28,12 @@
                      NOW()
          )
     </insert>
+
+    <update id="markAsRead" parameterType="AlarmDto">
+        UPDATE alarm
+        SET read_yn = #{readYn}
+        WHERE ref_doc_id = #{docId}
+          AND   mem_id = #{memId}
+    </update>
+
 </mapper>

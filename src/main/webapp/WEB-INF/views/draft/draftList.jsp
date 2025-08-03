@@ -142,15 +142,16 @@
                         if (!draft.approver1Name) draft.approver1Name = '-';
                         if (!draft.approver2Name) draft.approver2Name = '-';
                         if (!draft.docEndDate) draft.docEndDate = '-';
+                        if (!draft.docTitle)  draft.docTitle = '-';
 
                         var isTemp =
                             draft.status == 0 ? "<td><a href='#' onclick=\"deleteMyDraft('" + draft.docId + "','" + draft.formCode + "','" + draft.status + "')\" " +
                                 "class='btn btn-sm btn-outline-danger bg-glass'>삭제</a></td>" : "<td>-</td>";
 
-                        var row = "<tr>" +
+                        var row = "<tr class='" + (draft.readYn === 'N' ? "fw-bold" : "text-muted") + "'>" +
                             "<td>" + draft.docId + "</td>" +
                             "<td>" + draft.formCodeStr + "</td>" +
-                            "<td><a href='#' onclick=\"moveToDraft('" + draft.docId + "','" + draft.writer + "','" + draft.formCode + "','" + draft.status + "')\" class='link-white'>" + draft.docTitle + "</a></td>" +
+                            "<td><a href='#' onclick=\"moveToDraft('" + draft.docId + "','" + draft.writer + "','" + draft.formCode + "','" + draft.status + "','" + draft.readYn + "')\" class='link-white'>" + draft.docTitle + "</a></td>" +
                             "<td>" + draft.docEndDate + "</td>" +
                             "<td>" + draft.writer + "</td>" +
                             "<td>" + draft.approver1Name + "</td>" +
@@ -218,7 +219,21 @@
         $pagination.html(html);
     }
 
-    function moveToDraft(docId, memId, formCode, status) {
+    function moveToDraft(docId, memId, formCode, status, readYn) {
+
+        if (readYn === 'N') {
+            $.ajax({
+                url: "/alarm/markAsRead",
+                type: "POST",
+                contentType: "application/json",
+                data: { docId: docId,
+                        memId: memId,
+                        readYn: 'Y',
+                },
+                async: false // 읽음 처리 후 이동
+            });
+        }
+
         const form = document.getElementById("draftMoveForm");
 
         // 상태값이 0(임시저장)인 경우 draftForm, 그 외는 getMyDraftDetail
@@ -254,6 +269,7 @@
             },
             error: function (xhr) {
                 alert("삭제 요청 중 오류 발생");
+                console.error(xhr.responseText);
             }
         });
     }

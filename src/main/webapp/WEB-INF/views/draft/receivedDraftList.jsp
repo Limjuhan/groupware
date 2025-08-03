@@ -6,7 +6,10 @@
     <meta charset="UTF-8"/>
     <title>받은 전자결재 - LDBSOFT</title>
     <style>
-        .container { max-width: 1500px; margin-top: 80px; }
+        .container {
+            max-width: 1500px;
+            margin-top: 80px;
+        }
 
         .select-wrapper {
             position: relative;
@@ -123,10 +126,15 @@
                         const approver1Name = item.approver1Name || "-";
                         const approver2Name = item.approver2Name || "-";
 
-                        const row = "<tr>" +
+                        const row = "<tr class='" + (item.readYn === 'N' ? "fw-bold" : "text-muted") + "'>" +
                             "<td>" + item.docId + "</td>" +
                             "<td>" + formCodeStr + "</td>" +
-                            "<td><a href='receivedDraftDetail?docId=" + item.docId + "&formCode=" + item.formCode + "' class='link-white'>" + item.docTitle + "</a></td>" +
+                            "<td><a href='receivedDraftDetail?docId=" + item.docId + "&formCode=" + item.formCode + "' " +
+                            "class='link-white read-link' " +
+                            "data-docid='" + item.docId + "' " +
+                            "data-receivedMemId='" + item.receivedMemId + "'" +
+                            "data-ready='" + item.readYn + "'>" +
+                            item.docTitle + "</a></td>" +
                             "<td>" + docEndDate + "</td>" +
                             "<td>" + item.writer + "</td>" +
                             "<td>" + approver1Name + "</td>" +
@@ -145,6 +153,33 @@
             }
         });
     }
+
+    $(document).on("click", ".read-link", function (e) {
+
+        const readYn = $(this).data("ready");
+        const docId = $(this).data("docid");
+        const memId = $(this).data("receivedmemid");
+
+        // 안 읽은 상태만 처리
+        if (readYn === "N") {
+            $.ajax({
+                url: "/alarm/markAsRead",
+                method: "POST",
+                data: {docId: docId,
+                       readYn: "Y",
+                       memId : memId,
+                },
+                success: function () {
+                    console.log("읽음 처리 완료");
+                },
+                error: function (error) {
+                    alert(error.responseText);
+                    console.error("읽음 처리 실패");
+                }
+            });
+        }
+    });
+
 
     function renderPagination(pageDto) {
         const $pagination = $("#pagination");
@@ -192,7 +227,7 @@
             alert(confirmMsg);
         }
 
-        $("#searchKeyword").on("keydown", function(e) {
+        $("#searchKeyword").on("keydown", function (e) {
             if (e.key === "Enter" || e.keyCode === 13) {
                 searchReceivedList();
             }

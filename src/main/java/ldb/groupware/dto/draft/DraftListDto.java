@@ -17,6 +17,8 @@ public class DraftListDto {
     private String approver1Name; //1차결재자
     private String approver2Name; //2차결재자
     private String status; //결재진행단계
+    private String readYn; // 읽음여부
+    private String receivedMemId; // 받은문서(읽는사원) Id
 
     public String getFormCodeStr() {
         switch (formCode) {
