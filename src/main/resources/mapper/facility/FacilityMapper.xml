@@ -2,11 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ldb.groupware.mapper.mybatis.facility.FacilityMapper">
 
-    <select id="countByType" parameterType="String" resultType="int">
-        select count(*)
-        from facility_info
-        where fac_type = #{val}
-          and del_yn = 'N'
+    <select id="countByType" resultType="int">
+        SELECT COUNT(*) FROM (
+        SELECT fi.fac_id
+        FROM facility_info fi
+        LEFT JOIN facility_rent fr ON fi.fac_id = fr.fac_id
+        <where>
+            fi.del_yn = 'N'
+            <if test="sDto.keyword != null and sDto.keyword != ''">
+                AND (
+                fi.fac_name LIKE CONCAT('%', #{sDto.keyword}, '%')
+                OR fi.fac_id LIKE CONCAT('%', #{sDto.keyword}, '%')
+                )
+            </if>
+            <if test="sDto.facType != null and sDto.facType != ''">
+                AND fi.fac_type = #{sDto.facType}
+            </if>
+        </where>
+        GROUP BY fi.fac_id
+        <if test="sDto.rentYn != null and sDto.rentYn != ''">
+            HAVING
+            CASE
+            WHEN SUM(CASE WHEN fr.rent_yn = 'N' THEN 1 ELSE 0 END) > 0 THEN 'N'
+            ELSE 'Y'
+            END = #{sDto.rentYn}
+        </if>
+        ) sub
     </select>
 
     <!--공용설비타입에 따른 내역조회 (rent_yn(반납여부)가 하나라도 N이 있다면 rentYn = 'N'  , 없다면 Y ) -->
@@ -60,11 +81,25 @@
                 #{startLocalDateTime}, #{endLocalDateTime}, now(), #{renterId}, #{cancelStatus})
     </insert>
 
-    <select id="myReserveCount" parameterType="String" resultType="int">
+    <select id="myReserveCount" resultType="int">
         select count(*)
-        from facility_rent
-        where renter_id = #{val}
-          and rent_yn = 'N'
+        from facility_rent fr
+        INNER JOIN facility_info fi ON fi.fac_id = fr.fac_id
+        <where>
+            fr.renter_id = #{loginId}
+            <if test="sDto.keyword != null and sDto.keyword != ''">
+                AND fi.fac_name LIKE CONCAT('%', #{sDto.keyword}, '%')
+            </if>
+            <if test="sDto.facType != null and sDto.facType != '' ">
+                AND fr.fac_type = #{sDto.facType}
+            </if>
+            <if test="sDto.yearMonth != null and sDto.yearMonth != ''">
+                AND DATE_FORMAT(fr.created_at, '%Y-%m') = #{sDto.yearMonth}
+            </if>
+            <if test="!sDto.includeCancel">
+                AND fr.cancel_status = 'N'
+            </if>
+        </where>
     </select>
 
     <select id="myReservedList" resultType="MyFacilityReserveDto">
@@ -150,4 +185,21 @@
         where fac_uid = #{facUid}
     </select>
 
+    <select id="selectReservations">
+        SELECT fr.fac_id,
+               c.comm_name,
+               fi.fac_name,
+               fi.fac_type,
+               fr.renter_id,
+               fr.start_at,
+               fr.end_at
+        FROM facility_info fi
+                 INNER JOIN facility_rent fr ON fi.fac_id = fr.fac_id
+                 join common_type c on fr.fac_type = c.comm_code
+        WHERE fr.end_at >= NOW()
+          AND fr.renter_id = #{loginId}
+          AND fr.rent_yn = 'N'
+          AND fr.cancel_status = 'N'
+        ORDER BY fr.start_at ASC LIMIT 5
+    </select>
 </mapper>

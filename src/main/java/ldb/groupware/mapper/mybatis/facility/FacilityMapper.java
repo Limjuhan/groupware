@@ -10,15 +10,15 @@ import java.util.List;
 @Mapper
 public interface FacilityMapper {
 
-    public List<FacilityListDto> getList(@Param("pDto")PaginationDto dto , @Param("sDto")SearchDto searchDto);
+    List<FacilityListDto> getList(@Param("pDto")PaginationDto dto , @Param("sDto")SearchDto searchDto);
 
     int insertFacility(FacilityRentDto dto);
 
     FacilityRentDto findById(String facId);
 
-    int countByType(String type);
+    int countByType(@Param("sDto") SearchDto searchDto);
 
-    int myReserveCount(String loginId);
+    int myReserveCount(@Param("sDto") SearchDto sDto, @Param("loginId") String loginId);
 
     List<MyFacilityReserveDto> myReservedList(@Param("pDto")PaginationDto dto,
                                               @Param("sDto") SearchDto sDto,
@@ -43,4 +43,6 @@ public interface FacilityMapper {
 
 
     int findFacUid(String facUid);
+
+    List<MyFacilityReserveDto> selectReservations(@Param("loginId") String loginId);
 }

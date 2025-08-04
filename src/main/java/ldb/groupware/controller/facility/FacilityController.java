@@ -110,11 +110,7 @@ public class FacilityController {
 
     //회의실관리(A_0014)
     @GetMapping("getMeetingRoomManage")
-    public String getMeetingRoomManage(Model model, PaginationDto pDto, SearchDto sDto, HttpServletRequest request) {
-        sDto.setFacType(CommTypeDto.ROOM_TYPE);
-        Map<String, Object> map = service.getFacilityList(pDto, sDto);
-        model.addAttribute("meetingRooms", map.get("list"));
-        model.addAttribute("pageDto", map.get("pageDto"));
+    public String getMeetingRoomManage() {
         return "facility/meetingRoomManage";
     }
 
@@ -168,12 +164,7 @@ public class FacilityController {
 
     //비품관리(A_0015)
     @GetMapping("getItemManage")
-    public String getItemManage(Model model, PaginationDto pDto, SearchDto sDto, HttpServletRequest request) {
-        String loginId = (String) request.getSession().getAttribute("loginId");
-        sDto.setFacType(CommTypeDto.ITEM_TYPE);
-        Map<String, Object> map = service.getFacilityList(pDto, sDto);
-        model.addAttribute("items", map.get("list"));
-        model.addAttribute("pageDto", map.get("pageDto"));
+    public String getItemManage() {
         return "facility/itemManage";
     }
 
@@ -207,12 +198,7 @@ public class FacilityController {
 
     //차량관리 (A_0013
     @GetMapping("getVehicleManage")
-    public String getVehicleManage(Model model, PaginationDto pDto, SearchDto sDto, HttpServletRequest request) {
-        String loginId = (String) request.getSession().getAttribute("loginId");
-        sDto.setFacType(CommTypeDto.VEHICLE_TYPE);
-        Map<String, Object> map = service.getFacilityList(pDto, sDto);
-        model.addAttribute("facility", map.get("list"));
-        model.addAttribute("pageDto", map.get("pageDto"));
+    public String getVehicleManage() {
         return "facility/vehicleManage";
     }
 

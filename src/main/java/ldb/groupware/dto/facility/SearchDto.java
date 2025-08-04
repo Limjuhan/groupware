@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 @ToString
 public class SearchDto {
 
+    private String keyword;
     private String rentYn;
     private String facType;
     private String yearMonth;
