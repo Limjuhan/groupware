@@ -7,6 +7,7 @@ import ldb.groupware.service.alarm.AlarmService;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.common.CommonService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -382,4 +383,10 @@ public class DraftService {
         return chgStatus;
     }
 
+    public List<DraftListDto> getMyDraftSummary(String loginId) {
+        if (StringUtils.isBlank(loginId)) {
+            throw new IllegalStateException("로그인정보가 존재하지 않습니다.");
+        }
+        return draftMapper.getMyDraftSummary(loginId);
+    }
 }

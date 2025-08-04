@@ -39,6 +39,12 @@
                 padding: 20px;
             }
         }
+        #myDraftListBody {
+            cursor: pointer;
+        }
+        #myDraftListBody :hover {
+            background-color: #f5f5f5; /* 마우스 올렸을 때 배경 하이라이트 */
+        }
     </style>
 </head>
 <body>
@@ -49,11 +55,23 @@
         <div class="col-lg-6 col-md-12">
             <div class="card p-4">
                 <h5>📄 나의 결재 현황</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">[휴가신청서] - 1차 결재 대기</li>
-                    <li class="list-group-item">[지출결의서] - 결재 완료</li>
-                    <li class="list-group-item">[프로젝트제안서] - 반려</li>
-                </ul>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle text-center" id="myDraftTable">
+                        <thead class="table-light">
+                        <tr>
+                            <th style="width: 20%;">양식</th>
+                            <th style="width: 35%;">제목</th>
+                            <th style="width: 25%;">문서 종료일</th>
+                            <th style="width: 20%;">상태</th>
+                        </tr>
+                        </thead>
+                        <tbody id="myDraftListBody">
+                        <tr>
+                            <td colspan="4" class="text-muted">불러오는 중...</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -162,5 +180,77 @@
     </div>
 </div>
 
+<script>
+
+    $(document).on("click", "#myDraftTable", function (e) {
+        console.log("드래프트테이블클릭확인: ", e);
+
+        window.location.href = "/draft/getMyDraftList";
+    });
+
+    function loadMyDraftSummary() {
+        $.ajax({
+            url: "/draft/getMyDraftSummary",
+            type: "GET",
+            dataType: "json",
+            success: function(res) {
+                var list = res.data || [];
+                var tbody = $("#myDraftListBody");
+                tbody.empty();
+
+                if (list.length === 0) {
+                    tbody.append('<tr><td colspan="4" class="text-muted">결재 문서가 없습니다.</td></tr>');
+                } else {
+                    $.each(list, function(i, item) {
+                        var formCodeStr = item.formCodeStr || "양식 없음";
+                        var docTitle = item.docTitle || "제목 없음";
+                        var endDate = item.docEndDate ? item.docEndDate.substring(0, 10) : "-";
+                        var statusStr = getStatusBadge(item.status);
+
+                        tbody.append(
+                            '<tr>' +
+                            '<td>' + formCodeStr + '</td>' +
+                            '<td class="text-truncate" style="max-width:180px;" title="' + docTitle + '">' + docTitle + '</td>' +
+                            '<td>' + endDate + '</td>' +
+                            '<td>' + statusStr + '</td>' +
+                            '</tr>'
+                        );
+                    });
+                }
+            },
+            error: function(xhr) {
+                console.error("나의 결재 현황 조회 실패", xhr.responseText);
+                $("#myDraftListBody").html('<tr><td colspan="4" class="text-danger">데이터를 불러오지 못했습니다.</td></tr>');
+            }
+        });
+    }
+
+    // 상태 뱃지 함수
+    function getStatusBadge(status) {
+        if (status === "0") {
+            return "<span class='badge bg-secondary'>임시저장</span>";
+        } else if (status === "1") {
+            return "<span class='badge bg-warning text-dark'>1차결재 대기</span>";
+        } else if (status === "2") {
+            return "<span class='badge bg-warning text-dark'>1차결재 승인</span>";
+        } else if (status === "3") {
+            return "<span class='badge bg-danger'>1차결재 반려</span>";
+        } else if (status === "4") {
+            return "<span class='badge bg-info text-dark'>2차결재 대기</span>";
+        } else if (status === "5") {
+            return "<span class='badge bg-success'>2차결재 승인</span>";
+        } else if (status === "6") {
+            return "<span class='badge bg-danger'>2차결재 반려</span>";
+        } else {
+            return "<span class='badge bg-dark'>알 수 없음</span>";
+        }
+    }
+
+    // 페이지 로드 시 자동 실행
+    $(document).ready(function() {
+        loadMyDraftSummary();
+    });
+
+</script>
 </body>
 </html>

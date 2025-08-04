@@ -89,4 +89,6 @@ public interface DraftMapper {
 
     void updateAnnualLeaveInfo(@Param("requestDays") double requestDays,
                                @Param("memId") String memId);
+
+    List<DraftListDto> getMyDraftSummary(String loginId);
 }

@@ -385,5 +385,12 @@
                         )
     </update>
 
+    <select id="getMyDraftSummary">
+        SELECT *
+        FROM approval_document
+        WHERE mem_id = #{loginId}
+        ORDER BY created_at DESC
+            LIMIT 0, 5
+    </select>
 
 </mapper>

@@ -3,6 +3,7 @@ package ldb.groupware.controller.draft;
 import jakarta.validation.Valid;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
 import ldb.groupware.dto.draft.DraftDeleteDto;
+import ldb.groupware.dto.draft.DraftListDto;
 import ldb.groupware.dto.draft.MyDraftSearchDto;
 import ldb.groupware.service.attachment.AttachmentService;
 import ldb.groupware.service.draft.DraftService;
@@ -64,5 +65,13 @@ public class DraftApiController {
 
         draftService.deleteMyDraft(dto);
         return ApiResponseDto.successMessage("전자결재 삭제 처리 완료.");
+    }
+
+    @GetMapping("getMyDraftSummary")
+    public ResponseEntity<ApiResponseDto<List<DraftListDto>>> getMyDraftSummary(
+            @SessionAttribute("loginId") String loginId
+    ) {
+
+        return ApiResponseDto.ok(draftService.getMyDraftSummary(loginId));
     }
 }
