@@ -36,4 +36,6 @@ public interface NoticeMapper {
     List<NoticeListDto> getPinnedList(PaginationDto pageDto);
 
     int pinnedCount(PaginationDto pageDto);
+
+    List<NoticeListDto> selectNoticeList();
 }

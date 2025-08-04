@@ -25,27 +25,25 @@
 <div class="container bg-white p-4 shadow rounded">
     <h2 class="mb-4">📋 내 예약내역</h2>
 
-    <!-- 필터 & 검색 -->
-    <form class="row g-2 mb-3" method="get" action="getReservationList">
+    <!-- 검색/필터 -->
+    <form id="searchForm" class="row g-2 mb-3">
         <div class="col-auto">
-            <input type="month" class="form-control" name="yearMonth" value="${param.yearMonth}"/>
+            <input type="month" class="form-control" name="yearMonth" id="yearMonth"/>
         </div>
         <div class="col-auto">
-            <select class="form-select" name="facType">
+            <select class="form-select" name="facType" id="facType">
                 <option value="">전체유형</option>
-                <option value="R_01" <c:if test="${param.facType == 'R_01'}">selected</c:if>>차량</option>
-                <option value="R_02" <c:if test="${param.facType == 'R_02'}">selected</c:if>>회의실</option>
-                <option value="R_03" <c:if test="${param.facType == 'R_03'}">selected</c:if>>비품</option>
+                <option value="R_01">차량</option>
+                <option value="R_02">회의실</option>
+                <option value="R_03">비품</option>
             </select>
         </div>
         <div class="col-auto">
-            <input type="text" class="form-control" name="keyword" placeholder="이름 또는 차종/회의실명 검색"
-                   value="${param.keyword}"/>
+            <input type="text" class="form-control" name="keyword" id="keyword" placeholder="이름 또는 차종/회의실명"/>
         </div>
         <div class="col-auto form-check align-self-center">
-            <input type="checkbox" name="includeCancel" value="true"
-                   <c:if test="${param.includeCancel == 'true'}">checked</c:if>>
-            <label class="form-check-label" for="cancelCheck">취소 포함</label>
+            <input type="checkbox" id="includeCancel" name="includeCancel" value="true">
+            <label class="form-check-label">취소 포함</label>
         </div>
         <div class="col-auto">
             <button class="btn btn-primary" type="submit">검색</button>
@@ -66,72 +64,107 @@
             <th>상태/취소</th>
         </tr>
         </thead>
-        <tbody>
-        <c:forEach items="${facility}" var="f">
-            <tr>
-                <td>${f.facId}</td>
-                <td>${f.commName}</td>
-                <td>${f.facName}</td>
-                <td>${f.facUid}</td>
-                <td>${f.createdAt}</td>
-                <td>${f.startAt} ~ ${f.endAt}</td>
-                <td>
-                    <c:if test="${f.rentYn=='N' and f.cancelStatus=='N'}">
-                        <button type="button"
-                                class="btn btn-sm btn-outline-success d-flex align-items-center"
-                                onclick="returnFacility('${f.facId}')">
-                            <i class="bi bi-arrow-counterclockwise me-1"></i> 반납
-                        </button>
-                    </c:if>
-                </td>
-                <td>
-                    <c:choose>
-                        <c:when test="${f.cancelStatus == 'Y' and  f.rentYn == 'Y'}">
-                            <span class="text-danger fw-bold">[취소됨]</span>
-                        </c:when>
-                        <c:when test="${f.rentYn == 'Y'}">
-                            <span class="text-success fw-bold">[반납완료]</span>
-                        </c:when>
-                        <c:otherwise>
-                            <button type="button"
-                                    class="btn btn-outline-danger btn-sm d-flex align-items-center"
-                                    onclick="delReserve('${f.facId}')">
-                                <i class="bi bi-x-circle me-1"></i> 취소
-                            </button>
-
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-            </tr>
-        </c:forEach>
+        <tbody id="reservationTable">
+        <tr>
+            <td colspan="8">예약한 리스트가 없습니다.</td>
+        </tr>
         </tbody>
     </table>
 
     <!-- 페이징 -->
     <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <a class="page-link"
-                   href="?page=${pageDto.page - 1}&facType=${param.facType}&yearMonth=${param.yearMonth}&keyword=${param.keyword}&includeCancel=${param.includeCancel}">이전</a>
-            </li>
-            <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
-                <li class="page-item <c:if test='${p == pageDto.page}'>active</c:if>'">
-                    <a class="page-link"
-                       href="?page=${p}&facType=${param.facType}&yearMonth=${param.yearMonth}&keyword=${param.keyword}&includeCancel=${param.includeCancel}">${p}</a>
-                </li>
-            </c:forEach>
-            <li class="page-item">
-                <a class="page-link"
-                   href="?page=${pageDto.page + 1}&facType=${param.facType}&yearMonth=${param.yearMonth}&keyword=${param.keyword}&includeCancel=${param.includeCancel}">다음</a>
-            </li>
-        </ul>
+        <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
 </div>
 
 <script>
+    $(function () {
+        // 첫 로딩
+        loadReservations(1);
+
+        // 검색 이벤트
+        $("#searchForm").on("submit", function (e) {
+            e.preventDefault();
+            loadReservations(1);
+        });
+    });
+
+    // 예약 목록 불러오기
+    function loadReservations(page) {
+        const params = {
+            page: page,
+            yearMonth: $("#yearMonth").val(),
+            facType: $("#facType").val(),
+            keyword: $("#keyword").val(),
+            includeCancel: $("#includeCancel").is(":checked") ? "true" : "false"
+        };
+
+        $.get("/api/facility/myReservation", params, function (res) {
+            if (!res.success) {
+                alert(res.message);
+                return;
+            }
+            renderTable(res.data.facility);
+            renderPagination(res.data.pageDto);
+        });
+    }
+
+    function renderTable(list) {
+        let html = "";
+        if (!list || list.length === 0) {
+            html = "<tr><td colspan='8'>데이터가 없습니다.</td></tr>";
+        } else {
+            $.each(list, function (i, f) {
+                html += "<tr>"
+                    + "<td>" + f.facId + "</td>"
+                    + "<td>" + f.commName + "</td>"
+                    + "<td>" + f.facName + "</td>"
+                    + "<td>" + f.facUid + "</td>"
+                    + "<td>" + f.createdAt + "</td>"
+                    + "<td>" + f.startAt + " ~ " + f.endAt + "</td>"
+                    + "<td>";
+                if (f.rentYn === "N" && f.cancelStatus === "N") {
+                    html += "<button type='button' class='btn btn-sm btn-outline-success' onclick=\"returnFacility('" + f.facId + "')\">반납</button>";
+                }
+                html += "</td><td>";
+                if (f.cancelStatus === "Y" && f.rentYn === "Y") {
+                    html += "<span class='text-danger fw-bold'>[취소됨]</span>";
+                } else if (f.rentYn === "Y") {
+                    html += "<span class='text-success fw-bold'>[반납완료]</span>";
+                } else {
+                    html += "<button type='button' class='btn btn-outline-danger btn-sm' onclick=\"delReserve('" + f.facId + "')\">취소</button>";
+                }
+                html += "</td></tr>";
+            });
+        }
+        $("#reservationTable").html(html);
+    }
+
+    function renderPagination(p) {
+        let html = "";
+
+        // 이전 버튼 (첫 페이지 아니면 항상 표시)
+        if (p.page > 1) {
+            html += "<li class='page-item'><a class='page-link' onclick='loadReservations(" + (p.page - 1) + ")'>이전</a></li>";
+        }
+
+        // 페이지 번호
+        for (let i = p.startPage; i <= p.endPage; i++) {
+            html += "<li class='page-item " + (i === p.page ? "active" : "") + "'>"
+                + "<a class='page-link' onclick='loadReservations(" + i + ")'>" + i + "</a></li>";
+        }
+
+        // 다음 버튼 (마지막 페이지 아니면 항상 표시)
+        if (p.page < p.totalPages) {
+            html += "<li class='page-item'><a class='page-link' onclick='loadReservations(" + (p.page + 1) + ")'>다음</a></li>";
+        }
+
+        $("#pagination").html(html);
+    }
+
+
     function delReserve(facId) {
         if (confirm("예약을 취소하시겠습니까?")) {
-            // Ajax 또는 location.href로 취소 처리
             location.href = "cancelReservation?facId=" + facId;
         }
     }

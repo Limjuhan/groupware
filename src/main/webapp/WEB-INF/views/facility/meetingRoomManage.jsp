@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -18,51 +18,44 @@
         .table td, .table th {
             vertical-align: middle;
         }
+
+        .page-link {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <div class="container bg-white p-4 shadow rounded">
     <h2 class="mb-4">🏢 회의실관리</h2>
-    <form class="mb-4" method="get" action="getMeetingRoomManage">
-        <input type="hidden" name="manage" value="manage">
 
-        <div class="row mb-3 align-items-end g-2">
-            <!-- 회의실명/공용설비ID -->
-            <div class="col-md-5">
-                <label for="keyword" class="form-label fw-medium">회의실명 / 공용설비ID</label>
-                <input type="text" id="keyword" name="keyword" class="form-control"
-                       placeholder="예: 대회의실" value="${param.keyword}">
-            </div>
-
-            <!-- 반납 여부 -->
-            <div class="col-md-3">
-                <label for="rentYn" class="form-label fw-medium">반납 여부</label>
-                <select name="rentYn" id="rentYn" class="form-select">
-                    <option value="">전체</option>
-                    <option value="Y" ${param.rentYn == 'Y' ? 'selected' : ''}>Y</option>
-                    <option value="N" ${param.rentYn == 'N' ? 'selected' : ''}>N</option>
-                </select>
-            </div>
-
-            <!-- 검색 버튼 -->
-            <div class="col-md-2">
-                <label class="form-label fw-medium d-block">&nbsp;</label>
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
-                </button>
-            </div>
-
-            <!-- 등록 버튼 -->
-            <div class="col-md-2">
-                <label class="form-label fw-medium d-block">&nbsp;</label>
-                <a href="getMeetingRoomForm" class="btn btn-success w-100">
-                    <i class="fa-solid fa-plus me-1"></i> 회의실 등록
-                </a>
-            </div>
+    <!-- 검색폼 -->
+    <form id="searchForm" class="row mb-4 g-2 align-items-end">
+        <div class="col-md-5">
+            <label for="keyword" class="form-label fw-medium">회의실명 / 공용설비ID</label>
+            <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: 대회의실">
+        </div>
+        <div class="col-md-3">
+            <label for="rentYn" class="form-label fw-medium">반납 여부</label>
+            <select name="rentYn" id="rentYn" class="form-select">
+                <option value="">전체</option>
+                <option value="Y">Y</option>
+                <option value="N">N</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
+            </button>
+        </div>
+        <div class="col-md-2 d-grid">
+            <a href="getMeetingRoomForm" class="btn btn-success">
+                <i class="fa-solid fa-plus me-1"></i> 회의실 등록
+            </a>
         </div>
     </form>
 
+    <!-- 테이블 -->
     <table class="table table-bordered text-center align-middle">
         <thead class="table-light">
         <tr>
@@ -74,42 +67,97 @@
             <th>관리</th>
         </tr>
         </thead>
-        <tbody>
-        <c:forEach items="${meetingRooms}" var="m">
-            <tr>
-                <td>${m.facId}</td>
-                <td>${m.facName}</td>
-                <td>${m.facUid}</td>
-                <td>${m.capacity}</td>
-                <td>${m.rentYn}</td>
-                <td>
-                    <c:if test="${m.rentYn=='Y'}">
-                    <button class="btn btn-outline-danger btn-sm"
-                            onclick="confirmDelete('${m.facId}','${m.facName}','${m.facType}')">삭제하기
-                    </button>
-                </td>
-                </c:if>
-            </tr>
-        </c:forEach>
+        <tbody id="meetingRoomTable">
+        <tr>
+            <td colspan="6">데이터를 불러오는 중...</td>
+        </tr>
         </tbody>
     </table>
+
+    <!-- 페이징 -->
     <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <a class="page-link" href="?page=${pageDto.page - 1}">이전</a>
-            </li>
-            <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
-                <li class="page-item ">
-                    <a class="page-link" href="?page=${p}">${p}</a>
-                </li>
-            </c:forEach>
-            <li class="page-item">
-                <a class="page-link" href="?page=${pageDto.page+1}">다음</a>
-            </li>
-        </ul>
+        <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
 </div>
+
 <script>
+    $(function () {
+        loadMeetingRoomList(1);
+
+        $("#searchForm").on("submit", function (e) {
+            e.preventDefault();
+            loadMeetingRoomList(1);
+        });
+    });
+
+    function loadMeetingRoomList(page) {
+        const params = {
+            page: page,
+            keyword: $("#keyword").val(),
+            rentYn: $("#rentYn").val(),
+            facType: "R_02"
+        };
+
+        $.get("/api/facility/list", params, function (res) {
+            if (!res.success) {
+                alert(res.message);
+                return;
+            }
+            renderTable(res.data.list);
+            renderPagination(res.data.pageDto);
+        });
+    }
+
+    function renderTable(list) {
+        let html = "";
+        if (!list || list.length === 0) {
+            html = "<tr><td colspan='6'>데이터가 없습니다.</td></tr>";
+        } else {
+            $.each(list, function (i, v) {
+                html += "<tr>"
+                    + "<td>" + v.facId + "</td>"
+                    + "<td>" + v.facName + "</td>"
+                    + "<td>" + v.facUid + "</td>"
+                    + "<td>" + v.capacity + "</td>"
+                    + "<td>" + v.rentYn + "</td>"
+                    + "<td>";
+                if (v.rentYn === "Y") {
+                    html += "<button class='btn btn-outline-danger btn-sm' "
+                        + "onclick=\"confirmDelete('" + v.facId + "','" + v.facName + "','" + v.facType + "')\">삭제하기</button>";
+                }
+                html += "</td></tr>";
+            });
+        }
+        $("#meetingRoomTable").html(html);
+    }
+
+    function renderPagination(p) {
+        let html = "";
+
+        // 이전 버튼
+        if (p.page > 1) {
+            html += "<li class='page-item'><a class='page-link' onclick='loadMeetingRoomList(" + (p.page - 1) + ")'>이전</a></li>";
+        } else {
+            html += "<li class='page-item disabled'><span class='page-link'>이전</span></li>";
+        }
+
+        // 페이지 번호
+        for (let i = p.startPage; i <= p.endPage; i++) {
+            html += "<li class='page-item " + (i === p.page ? "active" : "") + "'>"
+                + "<a class='page-link' onclick='loadMeetingRoomList(" + i + ")'>" + i + "</a></li>";
+        }
+
+        // 다음 버튼
+        if (p.page < p.totalPages) {
+            html += "<li class='page-item'><a class='page-link' onclick='loadMeetingRoomList(" + (p.page + 1) + ")'>다음</a></li>";
+        } else {
+            html += "<li class='page-item disabled'><span class='page-link'>다음</span></li>";
+        }
+
+        $("#pagination").html(html);
+    }
+
+
     function confirmDelete(roomId, roomName, facType) {
         if (confirm(roomName + "(" + roomId + ") 회의실을 삭제하시겠습니까?")) {
             location.href = "deleteFacilityByMng?facId=" + roomId + "&facType=" + facType;

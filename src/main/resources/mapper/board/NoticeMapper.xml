@@ -149,4 +149,15 @@ values(#{businessId},#{attachType},#{originalName},#{savedName},#{filePath},now(
     <delete id="deleteNotice" parameterType="int">
         delete from notice where notice_id=#{val}
     </delete>
+
+    <select id="selectNoticeList" resultType="NoticeListDto">
+        SELECT m.mem_name,
+               n.notice_id,
+               n.notice_title,
+               n.updated_at,
+               n.mem_id
+        FROM notice n
+             JOIN member m ON n.mem_id = m.mem_id
+        ORDER BY updated_at desc LIMIT 5
+    </select>
 </mapper>

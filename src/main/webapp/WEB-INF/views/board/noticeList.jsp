@@ -7,7 +7,6 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .notice-table th, .notice-table td {
@@ -103,7 +102,6 @@
                             }
                         }
 
-                        // 페이징 UI 렌더링
                         renderPagination(pageDto);
 
                     } else {
@@ -116,7 +114,6 @@
             });
         }
 
-        // 페이징을 렌더링하는 함수
         function renderPagination(pageDto) {
             var $paginationArea = $('.pagination').empty();
             if (!pageDto) return;
@@ -126,26 +123,21 @@
             var endPage = pageDto.endPage;
             var totalPages = pageDto.totalPages;
 
-            // 이전 페이지 버튼
             var prevClass = currentPage > 1 ? '' : 'disabled';
             $paginationArea.append('<li class="page-item ' + prevClass + '"><a class="page-link" onclick="loadNoticeList(' + (currentPage - 1) + ');">이전</a></li>');
 
-            // 페이지 번호 버튼
             for (var i = startPage; i <= endPage; i++) {
                 var activeClass = currentPage === i ? 'active' : '';
                 $paginationArea.append('<li class="page-item ' + activeClass + '"><a class="page-link" onclick="loadNoticeList(' + i + ');">' + i + '</a></li>');
             }
 
-            // 다음 페이지 버튼
             var nextClass = currentPage < totalPages ? '' : 'disabled';
             $paginationArea.append('<li class="page-item ' + nextClass + '"><a class="page-link" onclick="loadNoticeList(' + (currentPage + 1) + ');">다음</a></li>');
         }
 
         $(document).ready(function () {
-            // 페이지 로드 시 공지사항 목록 불러오기
             loadNoticeList(1);
 
-            // 검색 폼 제출 이벤트
             $('form').on('submit', function (e) {
                 e.preventDefault();
                 loadNoticeList(1);

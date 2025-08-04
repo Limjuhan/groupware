@@ -101,4 +101,8 @@ public class NoticeService {
             return false;
         }
     }
+
+    public List<NoticeListDto> getLatestNotices() {
+        return mapper.selectNoticeList();
+    }
 }
