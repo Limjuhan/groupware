@@ -23,31 +23,16 @@ public class LoginService {
 
         String pass = memberMapper.checkPw(id);
 
-        System.out.println(" 로그인 : " + id);
-        System.out.println("입력한 비밀번호: " + password);
-        System.out.println("저장된 비밀번호: " + pass);
-
-        String memStatus = memberMapper.getMemStatus(id);
-        System.out.println("상태: " + memStatus);
-        if (!"Active".equals(memStatus)) {
-            System.out.println("퇴직자 처리: Resigned 반환");
-            return "Resigned";
-        }
-
-        if (pass != null) {
-            try {
-                boolean match = BCrypt.checkpw(password, pass);
-                System.out.println("checkpw 결과: " + match);
-            } catch (IllegalArgumentException e) {
-                System.out.println("checkpw 예외 발생: " + e.getMessage());
-            }
-        } else {
-            System.out.println("해당 ID에 대한 비밀번호 없음");
-        }
-
         if (pass == null || !BCrypt.checkpw(password, pass)) {
             return null;
         }
+
+        String memStatus = memberMapper.getMemStatus(id);
+
+        if (!"Active".equals(memStatus)) {
+            return "Resigned";
+        }
+
         return id;
     }
 
