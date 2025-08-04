@@ -2,6 +2,7 @@ package ldb.groupware.service.alarm;
 
 import ldb.groupware.domain.Alarm;
 import ldb.groupware.dto.alarm.AlarmDto;
+import ldb.groupware.dto.alarm.AlarmInfoDto;
 import ldb.groupware.dto.draft.ApprovalConst;
 import ldb.groupware.dto.draft.DraftFormDto;
 import ldb.groupware.mapper.mybatis.alarm.AlarmMapper;
@@ -44,7 +45,7 @@ public class AlarmService {
     }
 
     public void markAsRead(AlarmDto dto, String loginId) throws IllegalAccessException {
-        System.out.println("알람dto = " + dto);
+
         // 본인확인
         if (StringUtils.isBlank(dto.getMemId()) || !loginId.equals(dto.getMemId())) {
             throw new IllegalAccessException("해당문서의 결재자,참조자만 접근 가능합니다.");
@@ -120,5 +121,10 @@ public class AlarmService {
         }
 
         return alarms;
+    }
+
+    public List<AlarmInfoDto> getAlarmList(String loginId) {
+
+        return alarmMapper.getAlarmList(loginId);
     }
 }

@@ -147,7 +147,7 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center mt-4">
-        <a href="javascript:history.back()" class="btn btn-secondary">← 목록으로</a>
+        <a href="/draft/getMyDraftList" class="btn btn-secondary">← 목록으로</a>
         <button onclick="window.print()" class="btn btn-outline-light ">인쇄</button>
     </div>
 </div>

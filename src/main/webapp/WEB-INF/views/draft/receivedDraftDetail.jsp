@@ -154,7 +154,9 @@
         <input type="hidden" name="docId" value="${draftDetail.docId}"/>
         <input type="hidden" name="status" value="${draftDetail.status}"/>
         <input type="hidden" name="formCode" value="${draftDetail.formCode}"/>
-        <input type="hidden" name="requestDays" value="${draftDetail.requestDays}"/>
+        <c:if test="${draftDetail.formCode == 'app_01'}">
+            <input type="hidden" name="requestDays" value="${draftDetail.requestDays}"/>
+        </c:if>
         <div class="mb-3">
             <label class="form-label">결재 의견 (선택)</label>
             <textarea class="form-control " name="comment" rows="3"

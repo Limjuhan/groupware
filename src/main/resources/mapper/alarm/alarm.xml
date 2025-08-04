@@ -3,6 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ldb.groupware.mapper.mybatis.alarm.AlarmMapper">
+
     <update id="updateAlarmByDocId">
         UPDATE alarm
         SET STATUS = #{status},
@@ -35,5 +36,27 @@
         WHERE ref_doc_id = #{docId}
           AND   mem_id = #{memId}
     </update>
+
+    <select id="getAlarmList" resultType="AlarmInfoDto">
+        SELECT d.form_code  as formCode,
+               d.doc_id     as docId,
+               d.doc_title  as docTitle,
+               m.mem_name   as writer,
+               d.status     as status,
+               l.step_order as stepOrder
+        FROM approval_document d,
+             approval_line l,
+             member m
+        WHERE 1 = 1
+          and d.doc_id IN (SELECT ref_doc_id
+                           FROM alarm
+                           WHERE 1 = 1
+                             AND mem_id = #{loginId}
+                             AND read_yn = 'N')
+          AND d.status != 0
+          AND l.mem_id = #{loginId}
+          AND d.doc_id = l.doc_id
+          AND d.mem_id = m.mem_id
+    </select>
 
 </mapper>

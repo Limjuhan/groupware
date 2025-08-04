@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -114,6 +115,102 @@
             border-color: #17a2b8;
             box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
         }
+
+        /* 알람 드롭다운 목록 스타일 */
+        #alarmList {
+            min-width: 350px; /* 드롭다운 너비 유지 */
+            max-height: 400px; /* 최대 높이로 스크롤 가능 */
+            overflow-y: auto;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 0;
+        }
+
+        #alarmList li {
+            padding: 8px 12px; /* 패딩 축소로 컴팩트하게 */
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.2s ease;
+            display: flex; /* 한 줄로 배치 */
+            align-items: center; /* 수직 중앙 정렬 */
+            gap: 8px; /* 배지 간 간격 */
+        }
+
+        #alarmList li:last-child {
+            border-bottom: none;
+        }
+
+        #alarmList li:hover {
+            background-color: #f1f3f5; /* 호버 시 연한 회색 */
+        }
+
+        #alarmList .alarm-link {
+            display: flex; /* 한 줄로 배치 */
+            align-items: center; /* 수직 중앙 정렬 */
+            text-decoration: none;
+            color: #212529;
+            width: 100%; /* 전체 너비 사용 */
+            overflow: hidden; /* 넘치는 내용 숨김 */
+        }
+
+        /* 공통 배지 스타일 */
+        #alarmList .badge {
+            font-size: 0.75rem; /* 배지 폰트 크기 */
+            padding: 3px 8px; /* 패딩 조정 */
+            border-radius: 10px; /* 둥근 배지 */
+            font-weight: 500; /* 약간 굵은 폰트 */
+            white-space: nowrap; /* 한 줄로 유지 */
+            overflow: hidden; /* 넘치는 텍스트 숨김 */
+            text-overflow: ellipsis; /* 말줄임표 */
+            max-width: 100px; /* 각 배지 최대 너비 제한 */
+        }
+
+        /* formCodeStr별 배지 스타일 */
+        #alarmList .badge-form-annual {
+            background-color: #28a745; /* 휴가: 녹색 */
+            color: #ffffff;
+        }
+
+        #alarmList .badge-form-project {
+            background-color: #17a2b8; /* 프로젝트: 청록색 */
+            color: #ffffff;
+        }
+
+        #alarmList .badge-form-expense {
+            background-color: #dc3545; /* 지출: 빨간색 */
+            color: #ffffff;
+        }
+
+        #alarmList .badge-form-resign {
+            background-color: #6c757d; /* 사직: 회색 */
+            color: #ffffff;
+        }
+
+        #alarmList .badge-form-unknown {
+            background-color: #343a40; /* 양식정보없음: 어두운 회색 */
+            color: #ffffff;
+        }
+
+        /* 기타 배지 스타일 */
+        #alarmList .badge-title {
+            background-color: #6c757d; /* 제목: 회색 */
+            color: #ffffff;
+            max-width: 120px; /* 제목은 약간 더 길게 */
+        }
+
+        #alarmList .badge-writer {
+            background-color: #007bff; /* 작성자: 파란색 */
+            color: #ffffff;
+        }
+
+        /* 알람이 없을 경우 메시지 스타일 */
+        #alarmList .text-muted {
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-align: center;
+        }
     </style>
     <sitemesh:write property="head"/>
 </head>
@@ -137,12 +234,10 @@
             <div class="dropdown me-3">
                 <a class="btn position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-bell"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">[공지] 서버 점검 안내</a></li>
-                    <li><a class="dropdown-item" href="#">결제 요청이 있습니다</a></li>
-                    <li><a class="dropdown-item" href="#">새 공지사항 등록</a></li>
+                <ul class="dropdown-menu dropdown-menu-end" id="alarmList">
+                    <%-- 알람리스트 동적 생성 --%>
                 </ul>
             </div>
             <span class="me-3 text-dark"><i class="fa-solid fa-user-circle"></i> ${sessionScope.loginId} 님</span>
@@ -317,6 +412,141 @@
     </div>
 </div>
 <script>
+    function showAlarm() {
+        $.ajax({
+            url: "/alarm/getAlarmList",
+            type: "GET",
+            dataType: "json",
+            success: function (res) {
+                var alarms = res.data || [];
+                var alarmList = $("#alarmList");
+                alarmList.empty();
+
+                if (alarms.length === 0) {
+                    alarmList.append('<li class="dropdown-item text-muted">새 알람이 없습니다.</li>');
+                } else {
+                    for (var i = 0; i < alarms.length; i++) {
+                        var alarm = alarms[i];
+                        var formCodeStr = alarm.formCodeToStr || "양식정보없음";
+                        var statusNum = getStatusBadge(alarm.status) || "미지정";
+                        var docTitle = alarm.docTitle || "제목 없음";
+                        var writer = alarm.writer || "작성자 없음";
+                        var url = alarm.url || "#";
+                        var docId = alarm.docId || "";
+                        var stepOrder = alarm.stepOrder || "";
+
+                        // formCodeStr에 따라 다른 클래스 적용
+                        var formClass;
+                        switch (formCodeStr) {
+                            case "휴가":
+                                formClass = "badge-form-annual";
+                                break;
+                            case "프로젝트":
+                                formClass = "badge-form-project";
+                                break;
+                            case "지출":
+                                formClass = "badge-form-expense";
+                                break;
+                            case "사직":
+                                formClass = "badge-form-resign";
+                                break;
+                            default:
+                                formClass = "badge-form-unknown";
+                        }
+
+                        // 각 요소를 배지 스타일로 감싸기
+                        var alarmHtml = '<li>' +
+                            '<a class="dropdown-item alarm-link" href="' + url +
+                            '" data-docid="' + docId + '" data-statusnum="' + alarm.status + '" data-formcode="' + alarm.formCode + '">' +
+                            '<span class="badge ' + formClass + '">[' + formCodeStr + ']</span>' +
+                            '<span class="badge badge-title">제목: ' + docTitle + '</span>' +
+                            statusNum +
+                            '<span class="badge badge-writer">작성자: ' + writer + '</span>' +
+                            '</a></li>';
+
+                        alarmList.append(alarmHtml);
+                    }
+                }
+
+                // 클릭 이벤트 핸들러
+                $(".alarm-link").click(function (e) {
+                    e.preventDefault();
+                    var link = $(this);
+                    var baseUrl = link.attr("href");
+                    var docId = link.data("docid");
+                    var statusNum = link.data("statusnum");
+                    var formCode = link.data("formcode");
+
+                    alarmParams = {
+                        docId: docId,
+                        memId: '${sessionScope.loginId}',
+                        readYn: 'Y',
+                    };
+                    // 알람 읽음처리
+                    $.ajax({
+                        url: "/alarm/markAsRead",
+                        type: "POST",
+                        data: alarmParams,
+                        async: false // 읽음 처리 후 이동
+                    });
+
+                    // 쿼리 파라미터 동적으로 추가
+                    var params = {};
+                    if (docId) {
+                        params.docId = docId;
+                    }
+                    if (statusNum) {
+                        params.status = statusNum;
+                    }
+                    if (formCode) {
+                        params.formCode = formCode;
+                    }
+
+                    var finalUrl = baseUrl;
+                    if (Object.keys(params).length > 0) {
+                        var queryString = $.param(params);
+                        finalUrl += (baseUrl.indexOf("?") === -1 ? "?" : "&") + queryString;
+                    }
+
+                    window.location.href = finalUrl;
+                });
+
+                // 알람 개수 업데이트
+                var badge = $(".badge.rounded-pill.bg-danger");
+                badge.text(alarms.length);
+                if (alarms.length === 0) {
+                    badge.hide();
+                } else {
+                    badge.show();
+                }
+            },
+            error: function (xhr) {
+                console.error("알람정보 불러오기 실패", xhr.responseText);
+                $("#alarmList").empty().append('<li class="dropdown-item text-muted">알람을 불러오지 못했습니다.</li>');
+            }
+        });
+    }
+
+    function getStatusBadge(status) {
+        if (status == "0") {
+            return "<span class='badge bg-secondary'>임시저장</span>";
+        } else if (status == "1") {
+            return "<span class='badge bg-warning text-dark'>1차결재 대기</span>";
+        } else if (status == "2") {
+            return "<span class='badge bg-warning text-dark'>1차결재 승인</span>";
+        } else if (status == "3") {
+            return "<span class='badge bg-danger'>1차결재 반려</span>";
+        } else if (status == "4") {
+            return "<span class='badge bg-info text-dark'>2차결재 대기</span>";
+        } else if (status == "5") {
+            return "<span class='badge bg-success'>2차결재 승인</span>";
+        } else if (status == "6") {
+            return "<span class='badge bg-danger'>2차결재 반려</span>";
+        } else {
+            return "<span class='badge bg-dark'>알 수 없음</span>";
+        }
+    }
+
     let employees = [];
 
     document.getElementById("searchToggle").addEventListener("click", function (e) {
@@ -439,6 +669,11 @@
         alert("세션이 만료되어 자동 로그아웃됩니다.");
         location.href = "/login/doLogout";
     }, timeoutSec * 1000);
+
+    $(document).ready(function () {
+        showAlarm();
+    });
 </script>
 </body>
 </html>
+```
