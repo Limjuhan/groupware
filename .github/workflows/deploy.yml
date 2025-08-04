@@ -41,5 +41,6 @@ jobs:
             docker stop groupware || true
             docker rm groupware || true
             docker rmi groupware || true
+            docker builder prune -af || true   # 🔹 빌드 캐시 삭제
             docker build --no-cache -t groupware .
             docker run -d --name groupware -p 8080:8080 groupware
