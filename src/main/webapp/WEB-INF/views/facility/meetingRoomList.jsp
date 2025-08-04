@@ -11,12 +11,16 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin-top: 40px;
         }
 
         .table td, .table th {
             vertical-align: middle;
+        }
+
+        .page-link {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -24,9 +28,7 @@
 
 <div class="container bg-white p-4 shadow rounded">
     <h2 class="mb-4">🏢 회의실 리스트</h2>
-    <!-- 검색 및 필터 폼 -->
-    <form class="row g-2 align-items-center mb-4" method="get" action="getMeetingRoomList">
-        <!-- 비품명 검색 -->
+    <form id="searchForm" class="row g-2 align-items-center mb-4">
         <div class="col-md-5">
             <div class="form-floating">
                 <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: 회의실205호">
@@ -34,7 +36,6 @@
             </div>
         </div>
 
-        <!-- 반납 여부 -->
         <div class="col-md-3">
             <div class="form-floating">
                 <select name="rentYn" id="rentYn" class="form-select">
@@ -46,7 +47,6 @@
             </div>
         </div>
 
-        <!-- 검색 버튼 -->
         <div class="col-md-2 d-grid">
             <button type="submit" class="btn btn-primary">
                 <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
@@ -65,42 +65,14 @@
             <th>예약</th>
         </tr>
         </thead>
-        <tbody>
-        <c:forEach items="${facility}" var="room">
-            <tr>
-                <td>${room.facId}</td>
-                <td>${room.facName}</td>
-                <td>${room.facUid}</td>
-                <td>${room.capacity}</td>
-                <td>${room.rentYn}</td>
-                <c:if test="${room.rentYn eq 'Y'}">
-                    <td>
-                        <button class="btn btn-outline-primary btn-sm"
-                                onclick="openModal('${room.facId}', '${room.facName}')">예약하기
-                        </button>
-                    </td>
-                </c:if>
-            </tr>
-        </c:forEach>
+        <tbody id="meetingRoomTable">
         </tbody>
     </table>
     <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <a class="page-link" href="?page=${pageDto.page - 1}">이전</a>
-            </li>
-            <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
-                <li class="page-item ">
-                    <a class="page-link" href="?page=${p}">${p}</a>
-                </li>
-            </c:forEach>
-            <li class="page-item">
-                <a class="page-link" href="?page=${pageDto.page+1}">다음</a>
-            </li>
+        <ul class="pagination justify-content-center" id="pagination">
         </ul>
     </nav>
 </div>
-<!--모달 -->
 <div class="modal fade" id="reserveModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -114,27 +86,22 @@
                     <input type="hidden" name="endAt" id="endAt">
                     <input type="hidden" name="rentalPurpose" id="rentalPurpose">
                     <input type="hidden" name="facId" id="facId">
-                    <input type="hidden" name="renterId" value="${sessionScope.loginId}"> <%-- 세션으로변경해야함--%>
+                    <input type="hidden" name="renterId" value="${sessionScope.loginId}">
                 </form>
 
                 <p id="reserveInfo"></p>
-                <!-- 시작일 -->
                 <label class="form-label">시작일</label>
                 <input type="date" class="form-control mb-2" id="startDate">
 
-                <!-- 시작시간 (직접입력) -->
                 <label class="form-label">시작시간 (0~23)</label>
                 <input type="number" class="form-control mb-3" id="startHour" min="0" max="23" placeholder="예: 9">
 
-                <!-- 종료일 -->
                 <label class="form-label">종료일</label>
                 <input type="date" class="form-control mb-2" id="endDate">
 
-                <!-- 종료시간 (직접입력) -->
                 <label class="form-label">종료시간 (0~23)</label>
                 <input type="number" class="form-control mb-3" id="endHour" min="0" max="23" placeholder="예: 18">
 
-                <!-- 대여 목적 -->
                 <label class="form-label">대여 목적</label>
                 <input type="text" class="form-control" id="purpose">
             </div>
@@ -147,45 +114,116 @@
     </div>
 </div>
 <script>
-    document.getElementById("reserveBtn").addEventListener("click", function () {
-        var startDate = document.getElementById("startDate").value;
-        var startHour = document.getElementById("startHour").value;
-        var endDate = document.getElementById("endDate").value;
-        var endHour = document.getElementById("endHour").value;
-        var purpose = document.getElementById("purpose").value.trim();
+    $(function () {
+        // 페이지 로드 시 회의실 목록을 불러옵니다.
+        loadMeetingRoomList(1);
 
-        if (!startDate || !endDate || startHour === "" || endHour === "" || purpose === "") {
-            alert("모든 정보를 입력해주세요.");
-            return;
-        }
+        // 검색 폼 제출 시 첫 페이지를 다시 불러옵니다.
+        $("#searchForm").on("submit", function (e) {
+            e.preventDefault();
+            loadMeetingRoomList(1);
+        });
 
+        // 예약 버튼 클릭 이벤트
+        $("#reserveBtn").on("click", function () {
+            var startDate = document.getElementById("startDate").value;
+            var startHour = document.getElementById("startHour").value;
+            var endDate = document.getElementById("endDate").value;
+            var endHour = document.getElementById("endHour").value;
+            var purpose = document.getElementById("purpose").value.trim();
 
-        const start = new Date(startDate + "T" + startHour.padStart(2, "0") + ":00:00");
-        const end = new Date(endDate + "T" + endHour.padStart(2, "0") + ":00:00");
+            if (!startDate || !endDate || startHour === "" || endHour === "" || purpose === "") {
+                alert("모든 정보를 입력해주세요.");
+                return;
+            }
 
-        if (start >= end) {
-            alert("시작일시가 종료일시보다 같거나 늦을 수 없습니다.");
-            return;
-        }
+            const start = new Date(startDate + "T" + startHour.padStart(2, "0") + ":00:00");
+            const end = new Date(endDate + "T" + endHour.padStart(2, "0") + ":00:00");
 
-        console.log("예약 시작: " + start);
-        console.log("예약 종료: " + end);
-        console.log("목적: " + purpose);
+            if (start >= end) {
+                alert("시작일시가 종료일시보다 같거나 늦을 수 없습니다.");
+                return;
+            }
 
-        document.getElementById("startAt").value = start;
-        document.getElementById("endAt").value = end;
-        document.getElementById("rentalPurpose").value = purpose;
+            document.getElementById("startAt").value = start;
+            document.getElementById("endAt").value = end;
+            document.getElementById("rentalPurpose").value = purpose;
 
-        document.getElementById("reserveForm").submit(); // 폼 전송
-        // 이후 서버로 전송하거나 form에 값 넣기
+            document.getElementById("reserveForm").submit(); // 폼 전송
+        });
     });
-</script>
 
-<script>
-    function openModal(id, model, type) {
+    function loadMeetingRoomList(page) {
+        const params = {
+            page: page,
+            keyword: $("#keyword").val(),
+            rentYn: $("#rentYn").val(),
+            facType: "R_02" // 회의실 타입
+        };
+
+        $.get("/api/facility/list", params, function (res) {
+            if (!res.success) {
+                alert(res.message);
+                return;
+            }
+            renderTable(res.data.list);
+            renderPagination(res.data.pageDto);
+        });
+    }
+
+    function renderTable(list) {
+        let html = "";
+        if (!list || list.length === 0) {
+            html = "<tr><td colspan='6'>데이터가 없습니다.</td></tr>";
+        } else {
+            $.each(list, function (i, v) {
+                html += "<tr>"
+                    + "<td>" + v.facId + "</td>"
+                    + "<td>" + v.facName + "</td>"
+                    + "<td>" + v.facUid + "</td>"
+                    + "<td>" + v.capacity + "</td>"
+                    + "<td>" + v.rentYn + "</td>"
+                    + "<td>";
+                if (v.rentYn === "Y") {
+                    html += "<button class='btn btn-outline-primary btn-sm' "
+                        + "onclick=\"openModal('" + v.facId + "','" + v.facName + "')\">예약하기</button>";
+                }
+                html += "</td></tr>";
+            });
+        }
+        $("#meetingRoomTable").html(html);
+    }
+
+    function renderPagination(p) {
+        let html = "";
+
+        // 이전 버튼
+        if (p.page > 1) {
+            html += "<li class='page-item'><a class='page-link' onclick='loadMeetingRoomList(" + (p.page - 1) + ")'>이전</a></li>";
+        } else {
+            html += "<li class='page-item disabled'><span class='page-link'>이전</span></li>";
+        }
+
+        // 페이지 번호
+        for (let i = p.startPage; i <= p.endPage; i++) {
+            html += "<li class='page-item " + (i === p.page ? "active" : "") + "'>"
+                + "<a class='page-link' onclick='loadMeetingRoomList(" + i + ")'>" + i + "</a></li>";
+        }
+
+        // 다음 버튼
+        if (p.page < p.totalPages) {
+            html += "<li class='page-item'><a class='page-link' onclick='loadMeetingRoomList(" + (p.page + 1) + ")'>다음</a></li>";
+        } else {
+            html += "<li class='page-item disabled'><span class='page-link'>다음</span></li>";
+        }
+
+        $("#pagination").html(html);
+    }
+
+    function openModal(id, model) {
         document.getElementById('reserveInfo').innerText = '공용설비ID: ' + id + ' / 회의실명: ' + model;
         const modal = new bootstrap.Modal(document.getElementById('reserveModal'));
-        document.querySelector("#facId").value = id; //form에 fac_id값전송
+        document.querySelector("#facId").value = id;
         modal.show();
     }
 </script>

@@ -18,16 +18,19 @@
         .table td, .table th {
             vertical-align: middle;
         }
+
+        .page-link {
+            cursor: pointer;
+        }
     </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 
 <div class="container bg-white p-4 shadow rounded">
     <h2 class="mb-4">🚗 차량예약리스트</h2>
 
-    <!-- 검색 및 필터 폼 -->
-    <form class="row g-2 align-items-center mb-4" method="get" action="getVehicleList">
-        <!-- 비품명 검색 -->
+    <form id="searchForm" class="row g-2 align-items-center mb-4">
         <div class="col-md-5">
             <div class="form-floating">
                 <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: G70">
@@ -35,7 +38,6 @@
             </div>
         </div>
 
-        <!-- 반납 여부 -->
         <div class="col-md-3">
             <div class="form-floating">
                 <select name="rentYn" id="rentYn" class="form-select">
@@ -47,7 +49,6 @@
             </div>
         </div>
 
-        <!-- 검색 버튼 -->
         <div class="col-md-2 d-grid">
             <button type="submit" class="btn btn-primary">
                 <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
@@ -66,40 +67,11 @@
             <th>예약</th>
         </tr>
         </thead>
-        <tbody>
-        <!-- 차량목록 하드코딩 -->
-
-        <c:forEach items="${facility}" var="room">
-            <tr>
-                <td>${room.facId}</td>
-                <td>${room.facName}</td>
-                <td>${room.facUid}</td>
-                <td>${room.capacity}</td>
-                <td>${room.rentYn}</td>
-                <c:if test="${room.rentYn eq 'Y'}">
-                    <td>
-                        <button class="btn btn-outline-primary btn-sm"
-                                onclick="openModal('${room.facId}', '${room.facName}')">예약하기
-                        </button>
-                    </td>
-                </c:if>
-            </tr>
-        </c:forEach>
+        <tbody id="vehicleTable">
         </tbody>
     </table>
     <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <a class="page-link" href="?page=${pageDto.page - 1}">이전</a>
-            </li>
-            <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="p">
-                <li class="page-item ">
-                    <a class="page-link" href="?page=${p}">${p}</a>
-                </li>
-            </c:forEach>
-            <li class="page-item">
-                <a class="page-link" href="?page=${pageDto.page+1}">다음</a>
-            </li>
+        <ul class="pagination justify-content-center" id="pagination">
         </ul>
     </nav>
 </div>
@@ -117,33 +89,27 @@
                     <input type="hidden" name="endAt" id="endAt">
                     <input type="hidden" name="rentalPurpose" id="rentalPurpose">
                     <input type="hidden" name="facId" id="facId">
-                    <input type="hidden" name="renterId" value="${sessionScope.loginId}"> <%-- 세션으로변경해야함--%>
+                    <input type="hidden" name="renterId" value="${sessionScope.loginId}">
                 </form>
 
                 <p id="reserveInfo"></p>
-                <!-- 시작일 -->
                 <label class="form-label">시작일</label>
                 <input type="date" class="form-control mb-2" id="carStartDate">
 
-                <!-- 시작시간 (직접입력) -->
                 <label class="form-label">시작시간 (0~23)</label>
                 <input type="number" class="form-control mb-3" id="carStartHour" min="0" max="23" placeholder="예: 9">
 
-                <!-- 종료일 -->
                 <label class="form-label">종료일</label>
                 <input type="date" class="form-control mb-2" id="carEndDate">
 
-                <!-- 종료시간 (직접입력) -->
                 <label class="form-label">종료시간 (0~23)</label>
                 <input type="number" class="form-control mb-3" id="carEndHour" min="0" max="23" placeholder="예: 18">
 
-                <!-- 대여 목적 -->
                 <label class="form-label">대여 목적</label>
                 <input type="text" class="form-control" id="carPurpose">
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-
                 <button class="btn btn-primary" id="reserveBtn">예약</button>
             </div>
         </div>
@@ -151,45 +117,120 @@
 </div>
 
 <script>
-    document.getElementById("reserveBtn").addEventListener("click", function () {
-        var startDate = document.getElementById("carStartDate").value;
-        var startHour = document.getElementById("carStartHour").value;
-        var endDate = document.getElementById("carEndDate").value;
-        var endHour = document.getElementById("carEndHour").value;
-        var purpose = document.getElementById("carPurpose").value.trim();
+    $(function () {
+        // 페이지 로드 시 차량 목록을 불러옵니다.
+        loadVehicleList(1);
 
-        if (!startDate || !endDate || startHour === "" || endHour === "" || purpose === "") {
-            alert("모든 정보를 입력해주세요.");
-            return;
-        }
+        // 검색 폼 제출 시 첫 페이지를 다시 불러옵니다.
+        $("#searchForm").on("submit", function (e) {
+            e.preventDefault();
+            loadVehicleList(1);
+        });
 
+        // 예약 버튼 클릭 이벤트 (기존 코드와 동일)
+        document.getElementById("reserveBtn").addEventListener("click", function () {
+            var startDate = document.getElementById("carStartDate").value;
+            var startHour = document.getElementById("carStartHour").value;
+            var endDate = document.getElementById("carEndDate").value;
+            var endHour = document.getElementById("carEndHour").value;
+            var purpose = document.getElementById("carPurpose").value.trim();
 
-        const start = new Date(startDate + "T" + startHour.padStart(2, "0") + ":00:00");
-        const end = new Date(endDate + "T" + endHour.padStart(2, "0") + ":00:00");
+            if (!startDate || !endDate || startHour === "" || endHour === "" || purpose === "") {
+                alert("모든 정보를 입력해주세요.");
+                return;
+            }
 
-        if (start >= end) {
-            alert("시작일시가 종료일시보다 같거나 늦을 수 없습니다.");
-            return;
-        }
+            const start = new Date(startDate + "T" + startHour.padStart(2, "0") + ":00:00");
+            const end = new Date(endDate + "T" + endHour.padStart(2, "0") + ":00:00");
 
-        console.log("예약 시작: " + start);
-        console.log("예약 종료: " + end);
-        console.log("목적: " + purpose);
+            if (start >= end) {
+                alert("시작일시가 종료일시보다 같거나 늦을 수 없습니다.");
+                return;
+            }
 
-        document.getElementById("startAt").value = start;
-        document.getElementById("endAt").value = end;
-        document.getElementById("rentalPurpose").value = purpose;
+            document.getElementById("startAt").value = start;
+            document.getElementById("endAt").value = end;
+            document.getElementById("rentalPurpose").value = purpose;
 
-        document.getElementById("reserveForm").submit(); // 폼 전송
-        // 이후 서버로 전송하거나 form에 값 넣기
+            document.getElementById("reserveForm").submit();
+        });
     });
-</script>
 
-<script>
-    function openModal(id, model, type) {
+    // AJAX로 차량 목록을 불러오는 함수
+    function loadVehicleList(page) {
+        const params = {
+            page: page,
+            keyword: $("#keyword").val(),
+            rentYn: $("#rentYn").val(),
+            facType: "R_01" // 차량 타입
+        };
+
+        $.get("/api/facility/list", params, function (res) {
+            if (!res.success) {
+                alert(res.message);
+                return;
+            }
+            renderTable(res.data.list);
+            renderPagination(res.data.pageDto);
+        });
+    }
+
+    // 테이블 내용을 동적으로 생성하는 함수
+    function renderTable(list) {
+        let html = "";
+        if (!list || list.length === 0) {
+            html = "<tr><td colspan='6'>데이터가 없습니다.</td></tr>";
+        } else {
+            $.each(list, function (i, v) {
+                html += "<tr>"
+                    + "<td>" + v.facId + "</td>"
+                    + "<td>" + v.facName + "</td>"
+                    + "<td>" + v.facUid + "</td>"
+                    + "<td>" + v.capacity + "</td>"
+                    + "<td>" + v.rentYn + "</td>"
+                    + "<td>";
+                if (v.rentYn === "Y") {
+                    html += "<button class='btn btn-outline-primary btn-sm' "
+                        + "onclick=\"openModal('" + v.facId + "','" + v.facName + "')\">예약하기</button>";
+                }
+                html += "</td></tr>";
+            });
+        }
+        $("#vehicleTable").html(html);
+    }
+
+    // 페이징 UI를 동적으로 생성하는 함수
+    function renderPagination(p) {
+        let html = "";
+
+        // 이전 버튼
+        if (p.page > 1) {
+            html += "<li class='page-item'><a class='page-link' onclick='loadVehicleList(" + (p.page - 1) + ")'>이전</a></li>";
+        } else {
+            html += "<li class='page-item disabled'><span class='page-link'>이전</span></li>";
+        }
+
+        // 페이지 번호
+        for (let i = p.startPage; i <= p.endPage; i++) {
+            html += "<li class='page-item " + (i === p.page ? "active" : "") + "'>"
+                + "<a class='page-link' onclick='loadVehicleList(" + i + ")'>" + i + "</a></li>";
+        }
+
+        // 다음 버튼
+        if (p.page < p.totalPages) {
+            html += "<li class='page-item'><a class='page-link' onclick='loadVehicleList(" + (p.page + 1) + ")'>다음</a></li>";
+        } else {
+            html += "<li class='page-item disabled'><span class='page-link'>다음</span></li>";
+        }
+
+        $("#pagination").html(html);
+    }
+
+    // 예약 모달을 여는 함수
+    function openModal(id, model) {
         document.getElementById('reserveInfo').innerText = '차량번호: ' + id + ' / 차량명: ' + model;
         const modal = new bootstrap.Modal(document.getElementById('reserveModal'));
-        document.querySelector("#facId").value = id; //form에 fac_id값전송
+        document.querySelector("#facId").value = id;
         modal.show();
     }
 </script>
