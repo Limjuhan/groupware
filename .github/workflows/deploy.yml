@@ -2,7 +2,7 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: ["main"]   # main 브랜치 푸시될 때만 실행
+    branches: ["main"] # main 브랜치 푸시될 때만 실행
 
 jobs:
   deploy:
@@ -24,7 +24,7 @@ jobs:
       - name: Build WAR
         run: mvn clean package -DskipTests
 
-      # 4. EC2로 파일 복사
+      # 4. EC2로 파일 복사 (WAR + Dockerfile)
       - name: Copy files to EC2
         uses: appleboy/scp-action@master
         with:
@@ -43,7 +43,11 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd /home/ubuntu/app
+            # 기존 컨테이너와 이미지 정리
             docker stop groupware || true
             docker rm groupware || true
+            docker rmi groupware || true
+            # Docker 빌드
             docker build -t groupware .
+            # 새 컨테이너 실행
             docker run -d --name groupware -p 8080:8080 groupware
