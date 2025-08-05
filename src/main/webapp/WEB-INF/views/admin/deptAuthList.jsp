@@ -156,7 +156,7 @@
         </div>
 
         <div class="mb-4">
-            <label for="deptSelect" class="form-label fw-medium">부서 선택 <span class="text-danger">*</span></label>
+            <label for="deptSelect" class="form-label fw-medium">부서 선택 </label>
             <select id="deptSelect" class="form-select">
                 <option value="" selected>부서를 선택하세요</option>
                 <c:forEach var="dept" items="${deptList}">

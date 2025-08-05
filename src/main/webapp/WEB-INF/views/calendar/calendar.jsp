@@ -28,9 +28,6 @@
             display: block;
             margin-top: 2px;
         }
-        h2 {
-            color: #ffffff;
-        }
         .fc-daygrid-day-number,
         .fc-daygrid-day-top {
             color: #333;

@@ -9,16 +9,13 @@
         body {
             background-color: #f4f6f9;
         }
-
         .container {
             max-width: 1200px;
             margin-top: 40px;
         }
-
         .table td, .table th {
             vertical-align: middle;
         }
-
         .page-link {
             cursor: pointer;
         }
@@ -28,41 +25,39 @@
 
 <div class="container bg-white p-4 shadow rounded">
     <h2 class="mb-0">🚗 차량관리시스템</h2>
-    <!-- 검색 및 필터 폼 -->
-    <form id="searchForm" class="mb-4">
+
+    <!-- 검색 및 필터 폼 (회의실 예약리스트 스타일 적용) -->
+    <form id="searchForm" class="row mb-4 g-2 align-items-end">
         <input type="hidden" name="facType" value="vehicle">
-        <div class="row mb-3 align-items-end g-2">
-            <!-- 차량명/공용설비ID -->
-            <div class="col-md-5">
-                <label for="keyword" class="form-label fw-medium">차량명 / 공용설비ID</label>
-                <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: G70">
-            </div>
 
-            <!-- 반납 여부 -->
-            <div class="col-md-3">
-                <label for="rentYn" class="form-label fw-medium">반납 여부</label>
-                <select name="rentYn" id="rentYn" class="form-select">
-                    <option value="">전체</option>
-                    <option value="Y">Y</option>
-                    <option value="N">N</option>
-                </select>
-            </div>
+        <!-- 차량명/공용설비ID -->
+        <div class="col-md-5">
+            <label for="keyword" class="form-label fw-medium">차량명 / 공용설비ID</label>
+            <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: G70">
+        </div>
 
-            <!-- 검색 버튼 -->
-            <div class="col-md-2">
-                <label class="form-label fw-medium d-block">&nbsp;</label>
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
-                </button>
-            </div>
+        <!-- 반납 여부 -->
+        <div class="col-md-3">
+            <label for="rentYn" class="form-label fw-medium">반납 여부</label>
+            <select name="rentYn" id="rentYn" class="form-select">
+                <option value="">전체</option>
+                <option value="Y">Y</option>
+                <option value="N">N</option>
+            </select>
+        </div>
 
-            <!-- 등록 버튼 -->
-            <div class="col-md-2">
-                <label class="form-label fw-medium d-block">&nbsp;</label>
-                <a href="getVehicleForm" class="btn btn-success w-100">
-                    <i class="fa-solid fa-plus me-1"></i> 차량 등록
-                </a>
-            </div>
+        <!-- 검색 버튼 -->
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
+            </button>
+        </div>
+
+        <!-- 등록 버튼 -->
+        <div class="col-md-2 d-grid">
+            <a href="getVehicleForm" class="btn btn-success">
+                <i class="fa-solid fa-plus me-1"></i> 차량 등록
+            </a>
         </div>
     </form>
 
@@ -71,7 +66,7 @@
         <thead class="table-light">
         <tr>
             <th>공용설비ID</th>
-            <th>이름</th>
+            <th>차량명</th>
             <th>차량번호</th>
             <th>수용인원</th>
             <th>반납여부</th>
@@ -145,33 +140,24 @@
     }
 
     // 페이징 렌더링
-    // 페이징 렌더링
     function renderPagination(p) {
         let html = "";
-
-        // 이전 버튼
         if (p.page > 1) {
             html += "<li class='page-item'><a class='page-link' onclick='loadFacilityList(" + (p.page - 1) + ")'>이전</a></li>";
         } else {
             html += "<li class='page-item disabled'><span class='page-link'>이전</span></li>";
         }
-
-        // 페이지 번호
         for (let i = p.startPage; i <= p.endPage; i++) {
             html += "<li class='page-item " + (i === p.page ? "active" : "") + "'>"
                 + "<a class='page-link' onclick='loadFacilityList(" + i + ")'>" + i + "</a></li>";
         }
-
-        // 다음 버튼
         if (p.page < p.totalPages) {
             html += "<li class='page-item'><a class='page-link' onclick='loadFacilityList(" + (p.page + 1) + ")'>다음</a></li>";
         } else {
             html += "<li class='page-item disabled'><span class='page-link'>다음</span></li>";
         }
-
         $("#pagination").html(html);
     }
-
 
     // 삭제 확인
     function confirmDelete(carId, carName, facType) {

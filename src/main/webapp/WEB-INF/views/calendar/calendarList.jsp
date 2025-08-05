@@ -163,7 +163,7 @@
 <div class="container p-4">
     <div class="card shadow-sm p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0 fw-bold">일정 관리</h3>
+            <h3>일정 관리</h3>
             <a href="getCalendarForm" class="btn btn-primary">일정 등록</a>
         </div>
 

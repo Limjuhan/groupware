@@ -101,7 +101,7 @@
                         </c:forEach>
                         <c:if test="${empty myReservations}">
                             <tr>
-                                <td colspan="2" class="text-muted text-center">예약 내역이 없습니다.</td>
+                                <td colspan="3" class="text-muted text-center">예약 내역이 없습니다.</td>
                             </tr>
                         </c:if>
                         </tbody>

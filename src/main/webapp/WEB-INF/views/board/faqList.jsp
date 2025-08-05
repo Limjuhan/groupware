@@ -141,7 +141,7 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h3 class="fw-bold mb-4" style="color: darkgray">자주 묻는 질문 (FAQ)</h3>
+    <h3 class="fw-bold mb-4">자주 묻는 질문 (FAQ)</h3>
 
     <form class="row g-2 mb-4">
         <div class="col-md-3">
@@ -155,7 +155,7 @@
             <input type="text" name="keyword" id="keyword" class="form-control" placeholder="검색어를 입력하세요">
         </div>
         <div class="col-md-3">
-            <button type="submit" id="searchBtn" class="btn btn-outline-secondary w-100">검색</button>
+            <button type="submit" id="searchBtn" class="btn btn-primary w-100">검색</button>
         </div>
     </form>
     <div class="accordion" id="faqAccordion">

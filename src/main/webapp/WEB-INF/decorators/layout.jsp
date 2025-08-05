@@ -283,7 +283,7 @@
                                 <li class="nav-item"><a class="nav-link" href="/board/getQnaList">질문게시판</a></li>
                             </c:if>
                             <c:if test="${fn:contains(allowedMenus, 'A_0006') || fn:startsWith(sessionScope.loginId,'admin') }">
-                                <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage">FAQ 관리</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage">자주묻는질문 관리</a></li>
                             </c:if>
                         </ul>
                     </div>

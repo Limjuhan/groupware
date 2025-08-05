@@ -63,7 +63,7 @@
         <if test="sDto.rentYn != null and sDto.rentYn != ''">
             HAVING rent_yn = #{sDto.rentYn}
         </if>
-        ORDER BY rent_yn DESC
+        ORDER BY rent_yn DESC ,fi.fac_id ASC
         LIMIT #{pDto.startNum}, #{pDto.itemsPerPage}
     </select>
 
@@ -124,7 +124,7 @@
                 AND fr.cancel_status = 'N'
             </if>
         </where>
-        order by fr.rent_yn asc
+        order by fr.rent_yn asc ,fi.fac_id ASC
         LIMIT #{pDto.startNum}, #{pDto.itemsPerPage}
     </select>
 

@@ -23,6 +23,7 @@
     <form:form action="insertVehicleByMng" method="post" modelAttribute="facilityFormDto">
         <!-- 모델명 -->
         <div class="mb-3">
+            <label for="facName" class="form-label">차량명</label>
             <form:input path="facName" cssClass="form-control" id="facName"/>
             <p style="color: red"><form:errors path="facName"/></p>
         </div>

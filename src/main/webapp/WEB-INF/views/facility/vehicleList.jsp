@@ -23,32 +23,35 @@
             cursor: pointer;
         }
     </style>
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 
 <div class="container bg-white p-4 shadow rounded">
-    <h2 class="mb-4">🚗 차량예약리스트</h2>
+    <h2 class="mb-0">🚗 차량예약리스트</h2>
 
-    <form id="searchForm" class="row g-2 align-items-center mb-4">
+    <!-- 검색 및 필터 폼 (차량관리 스타일 적용) -->
+    <form id="searchForm" class="row mb-4 g-2 align-items-end">
+        <input type="hidden" name="facType" value="vehicle">
+
+        <!-- 차량명/공용설비ID -->
         <div class="col-md-5">
-            <div class="form-floating">
-                <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: G70">
-                <label for="keyword">차량명/공용설비ID</label>
-            </div>
+            <label for="keyword" class="form-label fw-medium">차량명 / 공용설비ID</label>
+            <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: G70">
         </div>
 
+        <!-- 반납 여부 -->
         <div class="col-md-3">
-            <div class="form-floating">
-                <select name="rentYn" id="rentYn" class="form-select">
-                    <option value="">전체</option>
-                    <option value="Y">Y</option>
-                    <option value="N">N</option>
-                </select>
-                <label for="rentYn">반납여부</label>
-            </div>
+            <label for="rentYn" class="form-label fw-medium">반납 여부</label>
+            <select name="rentYn" id="rentYn" class="form-select">
+                <option value="">전체</option>
+                <option value="Y">Y</option>
+                <option value="N">N</option>
+            </select>
         </div>
 
+        <!-- 검색 버튼 -->
         <div class="col-md-2 d-grid">
             <button type="submit" class="btn btn-primary">
                 <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
@@ -56,6 +59,7 @@
         </div>
     </form>
 
+    <!-- 테이블 -->
     <table class="table table-bordered text-center align-middle">
         <thead class="table-light">
         <tr>
@@ -70,12 +74,14 @@
         <tbody id="vehicleTable">
         </tbody>
     </table>
+
+    <!-- 페이징 -->
     <nav class="mt-4">
-        <ul class="pagination justify-content-center" id="pagination">
-        </ul>
+        <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
 </div>
 
+<!-- 예약 모달 -->
 <div class="modal fade" id="reserveModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -118,22 +124,22 @@
 
 <script>
     $(function () {
-        // 페이지 로드 시 차량 목록을 불러옵니다.
+        // 페이지 로드 시 차량 목록 불러오기
         loadVehicleList(1);
 
-        // 검색 폼 제출 시 첫 페이지를 다시 불러옵니다.
+        // 검색 폼 제출 시 첫 페이지 다시 로드
         $("#searchForm").on("submit", function (e) {
             e.preventDefault();
             loadVehicleList(1);
         });
 
-        // 예약 버튼 클릭 이벤트 (기존 코드와 동일)
-        document.getElementById("reserveBtn").addEventListener("click", function () {
-            var startDate = document.getElementById("carStartDate").value;
-            var startHour = document.getElementById("carStartHour").value;
-            var endDate = document.getElementById("carEndDate").value;
-            var endHour = document.getElementById("carEndHour").value;
-            var purpose = document.getElementById("carPurpose").value.trim();
+        // 예약 버튼 클릭 이벤트
+        $("#reserveBtn").on("click", function () {
+            var startDate = $("#carStartDate").val();
+            var startHour = $("#carStartHour").val();
+            var endDate = $("#carEndDate").val();
+            var endHour = $("#carEndHour").val();
+            var purpose = $("#carPurpose").val().trim();
 
             if (!startDate || !endDate || startHour === "" || endHour === "" || purpose === "") {
                 alert("모든 정보를 입력해주세요.");
@@ -148,21 +154,21 @@
                 return;
             }
 
-            document.getElementById("startAt").value = start;
-            document.getElementById("endAt").value = end;
-            document.getElementById("rentalPurpose").value = purpose;
+            $("#startAt").val(start);
+            $("#endAt").val(end);
+            $("#rentalPurpose").val(purpose);
 
-            document.getElementById("reserveForm").submit();
+            $("#reserveForm").submit();
         });
     });
 
-    // AJAX로 차량 목록을 불러오는 함수
+    // 차량 목록 로딩
     function loadVehicleList(page) {
         const params = {
             page: page,
             keyword: $("#keyword").val(),
             rentYn: $("#rentYn").val(),
-            facType: "R_01" // 차량 타입
+            facType: "R_01"
         };
 
         $.get("/api/facility/list", params, function (res) {
@@ -175,7 +181,7 @@
         });
     }
 
-    // 테이블 내용을 동적으로 생성하는 함수
+    // 테이블 렌더링
     function renderTable(list) {
         let html = "";
         if (!list || list.length === 0) {
@@ -199,39 +205,31 @@
         $("#vehicleTable").html(html);
     }
 
-    // 페이징 UI를 동적으로 생성하는 함수
+    // 페이징 렌더링
     function renderPagination(p) {
         let html = "";
-
-        // 이전 버튼
         if (p.page > 1) {
             html += "<li class='page-item'><a class='page-link' onclick='loadVehicleList(" + (p.page - 1) + ")'>이전</a></li>";
         } else {
             html += "<li class='page-item disabled'><span class='page-link'>이전</span></li>";
         }
-
-        // 페이지 번호
         for (let i = p.startPage; i <= p.endPage; i++) {
             html += "<li class='page-item " + (i === p.page ? "active" : "") + "'>"
                 + "<a class='page-link' onclick='loadVehicleList(" + i + ")'>" + i + "</a></li>";
         }
-
-        // 다음 버튼
         if (p.page < p.totalPages) {
             html += "<li class='page-item'><a class='page-link' onclick='loadVehicleList(" + (p.page + 1) + ")'>다음</a></li>";
         } else {
             html += "<li class='page-item disabled'><span class='page-link'>다음</span></li>";
         }
-
         $("#pagination").html(html);
     }
 
-    // 예약 모달을 여는 함수
+    // 예약 모달 열기
     function openModal(id, model) {
-        document.getElementById('reserveInfo').innerText = '차량번호: ' + id + ' / 차량명: ' + model;
-        const modal = new bootstrap.Modal(document.getElementById('reserveModal'));
-        document.querySelector("#facId").value = id;
-        modal.show();
+        $("#reserveInfo").text("차량번호: " + id + " / 차량명: " + model);
+        $("#facId").val(id);
+        new bootstrap.Modal($("#reserveModal")).show();
     }
 </script>
 </body>

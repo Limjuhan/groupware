@@ -9,16 +9,13 @@
         body {
             background-color: #f4f6f9;
         }
-
         .container {
             max-width: 1200px;
             margin-top: 40px;
         }
-
         .table td, .table th {
             vertical-align: middle;
         }
-
         .page-link {
             cursor: pointer;
         }
@@ -28,25 +25,21 @@
 
 <div class="container bg-white p-4 shadow rounded">
     <h2 class="mb-4">🏢 회의실 리스트</h2>
-    <form id="searchForm" class="row g-2 align-items-center mb-4">
+
+    <!-- 검색폼 (회의실관리 스타일 적용) -->
+    <form id="searchForm" class="row mb-4 g-2 align-items-end">
         <div class="col-md-5">
-            <div class="form-floating">
-                <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: 회의실205호">
-                <label for="keyword">이름/공용설비ID</label>
-            </div>
+            <label for="keyword" class="form-label fw-medium">회의실명 / 공용설비ID</label>
+            <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: 회의실205호">
         </div>
-
         <div class="col-md-3">
-            <div class="form-floating">
-                <select name="rentYn" id="rentYn" class="form-select">
-                    <option value="">전체</option>
-                    <option value="Y">Y</option>
-                    <option value="N">N</option>
-                </select>
-                <label for="rentYn">반납여부</label>
-            </div>
+            <label for="rentYn" class="form-label fw-medium">반납 여부</label>
+            <select name="rentYn" id="rentYn" class="form-select">
+                <option value="">전체</option>
+                <option value="Y">Y</option>
+                <option value="N">N</option>
+            </select>
         </div>
-
         <div class="col-md-2 d-grid">
             <button type="submit" class="btn btn-primary">
                 <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
@@ -54,11 +47,12 @@
         </div>
     </form>
 
+    <!-- 테이블 -->
     <table class="table table-bordered text-center align-middle">
         <thead class="table-light">
         <tr>
             <th>공용설비ID</th>
-            <th>이름</th>
+            <th>회의실명</th>
             <th>식별번호</th>
             <th>수용인원</th>
             <th>반납여부</th>
@@ -68,11 +62,14 @@
         <tbody id="meetingRoomTable">
         </tbody>
     </table>
+
+    <!-- 페이징 -->
     <nav class="mt-4">
-        <ul class="pagination justify-content-center" id="pagination">
-        </ul>
+        <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
 </div>
+
+<!-- 예약 모달 -->
 <div class="modal fade" id="reserveModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -107,18 +104,18 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-
                 <button class="btn btn-primary" id="reserveBtn">예약</button>
             </div>
         </div>
     </div>
 </div>
+
 <script>
     $(function () {
-        // 페이지 로드 시 회의실 목록을 불러옵니다.
+        // 페이지 로드 시 회의실 목록 불러오기
         loadMeetingRoomList(1);
 
-        // 검색 폼 제출 시 첫 페이지를 다시 불러옵니다.
+        // 검색 폼 제출 시 첫 페이지 로드
         $("#searchForm").on("submit", function (e) {
             e.preventDefault();
             loadMeetingRoomList(1);
@@ -126,11 +123,11 @@
 
         // 예약 버튼 클릭 이벤트
         $("#reserveBtn").on("click", function () {
-            var startDate = document.getElementById("startDate").value;
-            var startHour = document.getElementById("startHour").value;
-            var endDate = document.getElementById("endDate").value;
-            var endHour = document.getElementById("endHour").value;
-            var purpose = document.getElementById("purpose").value.trim();
+            var startDate = $("#startDate").val();
+            var startHour = $("#startHour").val();
+            var endDate = $("#endDate").val();
+            var endHour = $("#endHour").val();
+            var purpose = $("#purpose").val().trim();
 
             if (!startDate || !endDate || startHour === "" || endHour === "" || purpose === "") {
                 alert("모든 정보를 입력해주세요.");
@@ -145,11 +142,11 @@
                 return;
             }
 
-            document.getElementById("startAt").value = start;
-            document.getElementById("endAt").value = end;
-            document.getElementById("rentalPurpose").value = purpose;
+            $("#startAt").val(start);
+            $("#endAt").val(end);
+            $("#rentalPurpose").val(purpose);
 
-            document.getElementById("reserveForm").submit(); // 폼 전송
+            $("#reserveForm").submit();
         });
     });
 
@@ -158,7 +155,7 @@
             page: page,
             keyword: $("#keyword").val(),
             rentYn: $("#rentYn").val(),
-            facType: "R_02" // 회의실 타입
+            facType: "R_02"
         };
 
         $.get("/api/facility/list", params, function (res) {
@@ -196,35 +193,27 @@
 
     function renderPagination(p) {
         let html = "";
-
-        // 이전 버튼
         if (p.page > 1) {
             html += "<li class='page-item'><a class='page-link' onclick='loadMeetingRoomList(" + (p.page - 1) + ")'>이전</a></li>";
         } else {
             html += "<li class='page-item disabled'><span class='page-link'>이전</span></li>";
         }
-
-        // 페이지 번호
         for (let i = p.startPage; i <= p.endPage; i++) {
             html += "<li class='page-item " + (i === p.page ? "active" : "") + "'>"
                 + "<a class='page-link' onclick='loadMeetingRoomList(" + i + ")'>" + i + "</a></li>";
         }
-
-        // 다음 버튼
         if (p.page < p.totalPages) {
             html += "<li class='page-item'><a class='page-link' onclick='loadMeetingRoomList(" + (p.page + 1) + ")'>다음</a></li>";
         } else {
             html += "<li class='page-item disabled'><span class='page-link'>다음</span></li>";
         }
-
         $("#pagination").html(html);
     }
 
     function openModal(id, model) {
-        document.getElementById('reserveInfo').innerText = '공용설비ID: ' + id + ' / 회의실명: ' + model;
-        const modal = new bootstrap.Modal(document.getElementById('reserveModal'));
-        document.querySelector("#facId").value = id;
-        modal.show();
+        $("#reserveInfo").text("공용설비ID: " + id + " / 회의실명: " + model);
+        $("#facId").val(id);
+        new bootstrap.Modal($("#reserveModal")).show();
     }
 </script>
 </body>

@@ -62,7 +62,7 @@
         <thead class="table-light">
         <tr>
             <th>공용설비ID</th>
-            <th>이름</th>
+            <th>비품명</th>
             <th>식별번호</th>
             <th>갯수</th>
             <th>반납여부</th>

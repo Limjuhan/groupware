@@ -143,7 +143,7 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h3 class="fw-bold mb-4" style="color: darkgray">자주 묻는 질문 (FAQ)</h3>
+    <h3 class="fw-bold mb-4" >자주 묻는 질문 (FAQ)</h3>
     <div class="d-flex justify-content-end mb-3">
         <b onclick="goForm('getFaqForm')" class="btn btn-outline-primary fw-bold px-4 py-2 rounded-pill shadow-sm">
             <i class="bi bi-plus-circle me-2"></i> 자주 묻는 질문 등록
@@ -162,7 +162,7 @@
             <input type="text" name="keyword" class="form-control" placeholder="검색어를 입력하세요">
         </div>
         <div class="col-md-3">
-            <button type="submit" class="btn btn-outline-secondary w-100">검색</button>
+            <button type="submit" class="btn btn-primary w-100">검색</button>
         </div>
     </form>
 

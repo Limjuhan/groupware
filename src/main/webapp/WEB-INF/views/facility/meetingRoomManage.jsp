@@ -60,7 +60,7 @@
         <thead class="table-light">
         <tr>
             <th>공용설비ID</th>
-            <th>이름</th>
+            <th>회의실명</th>
             <th>식별번호</th>
             <th>수용인원</th>
             <th>반납여부</th>
