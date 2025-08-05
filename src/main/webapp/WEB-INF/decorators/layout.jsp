@@ -55,6 +55,11 @@
             color: #ffffff !important;
         }
 
+        .search-dropdown {
+            min-width: 300px;
+            transform: translateX(-55px);
+        }
+
         .sidebar {
             height: 100%;
             padding: 0.5rem 0;
@@ -162,7 +167,7 @@
     <div class="container-fluid p-2">
         <a class="navbar-brand" href="/"><i class="fa-solid fa-cubes"></i> LDBSOFT Groupware</a>
         <div class="d-flex">
-            <div class="dropdown me-3 dropstart">
+            <div class="dropdown me-3">
                 <button class="btn" id="searchToggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>

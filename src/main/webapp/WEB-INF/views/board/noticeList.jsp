@@ -47,112 +47,7 @@
             box-sizing: border-box;
         }
     </style>
-    <script>
-        function goForm(url) {
-            var op = "width=600,height=1000,top=50,left=150";
-            window.open(url, "", op);
-        }
 
-        // 공지사항 목록을 불러오는 함수
-        function loadNoticeList(page) {
-            if (!page) page = 1;
-            var searchType = $('select[name="searchType"]').val();
-            var keyword = $('input[name="keyword"]').val();
-
-            $.ajax({
-                url: '/api/notice/noticeList',
-                type: 'GET',
-                data: {
-                    page: page,
-                    searchType: searchType,
-                    keyword: keyword
-                },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        var pinnedList = response.data.pinnedList;
-                        var notice = response.data.notice;
-                        var pageDto = response.data.pageDto;
-                        var $tbody = $('.notice-table tbody').empty();
-
-                        // 상단 고정 공지사항 렌더링
-                        $.each(pinnedList, function(index, p) {
-                            var pinnedRow = '';
-                            pinnedRow += '<tr class="fixed-row">';
-                            pinnedRow += '<td><i class="bi bi-pin-angle-fill text-danger"></i></td>';
-                            pinnedRow += '<td class="notice-title">';
-                            pinnedRow += '<a href="getNoticeDetail?id=' + p.noticeId + '" class="text-decoration-none text-dark">' + p.noticeTitle + '</a>';
-                            pinnedRow += '</td>';
-                            pinnedRow += '<td>' + p.memName + '</td>';
-                            pinnedRow += '<td>' + p.updatedAtToStr + '</td>';
-                            pinnedRow += '<td>' + p.noticeCnt + '</td>';
-                            pinnedRow += '</tr>';
-                            $tbody.append(pinnedRow);
-                        });
-
-                        // 일반 공지사항 렌더링
-                        if (notice && notice.length > 0) {
-                            $.each(notice, function(index, n) {
-                                var noticeRow = '';
-                                noticeRow += '<tr>';
-                                noticeRow += '<td>' + n.noticeId + '</td>';
-                                noticeRow += '<td class="notice-title">';
-                                noticeRow += '<a href="getNoticeDetail?id=' + n.noticeId + '" class="text-decoration-none text-dark">' + n.noticeTitle + '</a>';
-                                noticeRow += '</td>';
-                                noticeRow += '<td>' + n.memName + '</td>';
-                                noticeRow += '<td>' + n.updatedAtToStr + '</td>';
-                                noticeRow += '<td>' + n.noticeCnt + '</td>';
-                                noticeRow += '</tr>';
-                                $tbody.append(noticeRow);
-                            });
-                        } else {
-                            if(pinnedList.length === 0){
-                                $tbody.append('<tr><td colspan="5" class="text-muted">검색 결과가 없습니다.</td></tr>');
-                            }
-                        }
-
-                        renderPagination(pageDto);
-
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function () {
-                    alert('공지사항 데이터를 불러오는 중 오류가 발생했습니다.');
-                }
-            });
-        }
-
-        function renderPagination(pageDto) {
-            var $paginationArea = $('.pagination').empty();
-            if (!pageDto) return;
-
-            var currentPage = pageDto.page;
-            var startPage = pageDto.startPage;
-            var endPage = pageDto.endPage;
-            var totalPages = pageDto.totalPages;
-
-            var prevClass = currentPage > 1 ? '' : 'disabled';
-            $paginationArea.append('<li class="page-item ' + prevClass + '"><a class="page-link" onclick="loadNoticeList(' + (currentPage - 1) + ');">이전</a></li>');
-
-            for (var i = startPage; i <= endPage; i++) {
-                var activeClass = currentPage === i ? 'active' : '';
-                $paginationArea.append('<li class="page-item ' + activeClass + '"><a class="page-link" onclick="loadNoticeList(' + i + ');">' + i + '</a></li>');
-            }
-
-            var nextClass = currentPage < totalPages ? '' : 'disabled';
-            $paginationArea.append('<li class="page-item ' + nextClass + '"><a class="page-link" onclick="loadNoticeList(' + (currentPage + 1) + ');">다음</a></li>');
-        }
-
-        $(document).ready(function () {
-            loadNoticeList(1);
-
-            $('form').on('submit', function (e) {
-                e.preventDefault();
-                loadNoticeList(1);
-            });
-        });
-    </script>
 </head>
 <body>
 <div class="page-content">
@@ -201,5 +96,111 @@
         </ul>
     </nav>
 </div>
+<script>
+    function goForm(url) {
+        var op = "width=600,height=1000,top=50,left=150";
+        window.open(url, "", op);
+    }
+
+    // 공지사항 목록을 불러오는 함수
+    function loadNoticeList(page) {
+        if (!page) page = 1;
+        var searchType = $('select[name="searchType"]').val();
+        var keyword = $('input[name="keyword"]').val();
+
+        $.ajax({
+            url: '/api/notice/noticeList',
+            type: 'GET',
+            data: {
+                page: page,
+                searchType: searchType,
+                keyword: keyword
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    var pinnedList = response.data.pinnedList;
+                    var notice = response.data.notice;
+                    var pageDto = response.data.pageDto;
+                    var $tbody = $('.notice-table tbody').empty();
+
+                    // 상단 고정 공지사항 렌더링
+                    $.each(pinnedList, function(index, p) {
+                        var pinnedRow = '';
+                        pinnedRow += '<tr class="fixed-row">';
+                        pinnedRow += '<td><i class="bi bi-pin-angle-fill text-danger"></i></td>';
+                        pinnedRow += '<td class="notice-title">';
+                        pinnedRow += '<a href="getNoticeDetail?id=' + p.noticeId + '" class="link-white read-link">' + p.noticeTitle + '</a>';
+                        pinnedRow += '</td>';
+                        pinnedRow += '<td>' + p.memName + '</td>';
+                        pinnedRow += '<td>' + p.updatedAtToStr + '</td>';
+                        pinnedRow += '<td>' + p.noticeCnt + '</td>';
+                        pinnedRow += '</tr>';
+                        $tbody.append(pinnedRow);
+                    });
+
+                    // 일반 공지사항 렌더링
+                    if (notice && notice.length > 0) {
+                        $.each(notice, function(index, n) {
+                            var noticeRow = '';
+                            noticeRow += '<tr>';
+                            noticeRow += '<td>' + n.noticeId + '</td>';
+                            noticeRow += '<td class="notice-title">';
+                            noticeRow += '<a href="getNoticeDetail?id=' + n.noticeId + '" class="link-white read-link">' + n.noticeTitle + '</a>';
+                            noticeRow += '</td>';
+                            noticeRow += '<td>' + n.memName + '</td>';
+                            noticeRow += '<td>' + n.updatedAtToStr + '</td>';
+                            noticeRow += '<td>' + n.noticeCnt + '</td>';
+                            noticeRow += '</tr>';
+                            $tbody.append(noticeRow);
+                        });
+                    } else {
+                        if(pinnedList.length === 0){
+                            $tbody.append('<tr><td colspan="5" class="text-muted">검색 결과가 없습니다.</td></tr>');
+                        }
+                    }
+
+                    renderPagination(pageDto);
+
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('공지사항 데이터를 불러오는 중 오류가 발생했습니다.');
+            }
+        });
+    }
+
+    function renderPagination(pageDto) {
+        var $paginationArea = $('.pagination').empty();
+        if (!pageDto) return;
+
+        var currentPage = pageDto.page;
+        var startPage = pageDto.startPage;
+        var endPage = pageDto.endPage;
+        var totalPages = pageDto.totalPages;
+
+        var prevClass = currentPage > 1 ? '' : 'disabled';
+        $paginationArea.append('<li class="page-item ' + prevClass + '"><a class="page-link" onclick="loadNoticeList(' + (currentPage - 1) + ');">이전</a></li>');
+
+        for (var i = startPage; i <= endPage; i++) {
+            var activeClass = currentPage === i ? 'active' : '';
+            $paginationArea.append('<li class="page-item ' + activeClass + '"><a class="page-link" onclick="loadNoticeList(' + i + ');">' + i + '</a></li>');
+        }
+
+        var nextClass = currentPage < totalPages ? '' : 'disabled';
+        $paginationArea.append('<li class="page-item ' + nextClass + '"><a class="page-link" onclick="loadNoticeList(' + (currentPage + 1) + ');">다음</a></li>');
+    }
+
+    $(document).ready(function () {
+        loadNoticeList(1);
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            loadNoticeList(1);
+        });
+    });
+</script>
 </body>
 </html>

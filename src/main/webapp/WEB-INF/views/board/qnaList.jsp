@@ -38,126 +38,7 @@
             box-sizing: border-box;
         }
     </style>
-    <script>
-        function goForm(url) {
-            var op = "width=500,height=700,top=50,left=150";
-            window.open(url, "", op);
-        }
 
-        // QnA 목록을 불러오는 함수
-        function loadQnaList(page) {
-            if (!page) page = 1;
-            var searchType = $('select[name="searchType"]').val();
-            var keyword = $('input[name="keyword"]').val();
-
-            $.ajax({
-                url: '/api/qna/qnaList',
-                type: 'GET',
-                data: {
-                    page: page,
-                    searchType: searchType,
-                    keyword: keyword
-                },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        var qnaList = response.data.qna;
-                        var pagination = response.data.pageDto;
-                        var $tbody = $('#qnaTableBody').empty();
-
-                        if (qnaList && qnaList.length > 0) {
-                            $.each(qnaList, function (index, q) {
-                                var qnaRow = '';
-                                qnaRow += '<tr>';
-                                qnaRow += '<td>' + q.qnaId + '</td>';
-                                qnaRow += '<td class="question-title">';
-                                qnaRow += '<a href="getQnaDetail?id=' + q.qnaId + '" class="text-decoration-none">' + q.qnaTitle + '</a>';
-                                qnaRow += '</td>';
-                                qnaRow += '<td>' + q.memName + '</td>';
-                                qnaRow += '<td>' + q.updatedAtStr + '</td>';
-                                qnaRow += '</tr>';
-                                $tbody.append(qnaRow);
-                            });
-                        } else {
-                            $tbody.append('<tr><td colspan="4" class="text-muted">게시물이 없습니다.</td></tr>');
-                        }
-
-                        renderPagination(pagination);
-                        // FAQ 데이터도 함께 불러와 모달에 표시
-                        renderFaq(response.data.faq);
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function () {
-                    alert('질문 게시판 데이터를 불러오는 중 오류가 발생했습니다.');
-                }
-            });
-        }
-
-        // 페이징을 렌더링하는 함수
-        function renderPagination(pagination) {
-            var $paginationArea = $('#paginationArea').empty();
-            if (!pagination) return;
-
-            var html = '<ul class="pagination justify-content-center">';
-            var currentPage = pagination.page;
-            var startPage = pagination.startPage;
-            var endPage = pagination.endPage;
-            var totalPages = pagination.totalPages;
-
-            // 이전 페이지 버튼
-            var prevClass = currentPage > 1 ? '' : 'disabled';
-            html += '<li class="page-item ' + prevClass + '"><a class="page-link" onclick="loadQnaList(' + (currentPage - 1) + ');">이전</a></li>';
-
-            // 페이지 번호 버튼
-            for (var i = startPage; i <= endPage; i++) {
-                var activeClass = currentPage === i ? ' active' : '';
-                html += '<li class="page-item' + activeClass + '">' +
-                    '<a class="page-link" onclick="loadQnaList(' + i + ');">' + i + '</a>' +
-                    '</li>';
-            }
-
-            // 다음 페이지 버튼
-            var nextClass = currentPage < totalPages ? '' : 'disabled';
-            html += '<li class="page-item ' + nextClass + '"><a class="page-link" onclick="loadQnaList(' + (currentPage + 1) + ');">다음</a></li>';
-
-            html += '</ul>';
-            $paginationArea.append(html);
-        }
-
-        // FAQ 모달에 FAQ 목록을 렌더링하는 함수
-        function renderFaq(faqList) {
-            var $faqAccordion = $('#faqAccordion').empty();
-            if (faqList && faqList.length > 0) {
-                $.each(faqList, function (index, f) {
-                    var faqItem = '';
-                    faqItem += '<div class="accordion-item">';
-                    faqItem += '<h2 class="accordion-header" id="heading' + index + '">';
-                    faqItem += '<button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse' + index + '">';
-                    faqItem += f.faqTitle;
-                    faqItem += '</button>';
-                    faqItem += '</h2>';
-                    faqItem += '<div id="collapse' + index + '" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">';
-                    faqItem += '<div class="accordion-body">' + f.faqContent + '</div>';
-                    faqItem += '</div>';
-                    faqItem += '</div>';
-                    $faqAccordion.append(faqItem);
-                });
-            } else {
-                $faqAccordion.append('<div class="p-3 text-muted">등록된 FAQ가 없습니다.</div>');
-            }
-        }
-
-        $(document).ready(function () {
-            loadQnaList(1);
-
-            $('form').on('submit', function (e) {
-                e.preventDefault();
-                loadQnaList(1);
-            });
-        });
-    </script>
 </head>
 <body>
 <div class="page-content">
@@ -218,5 +99,125 @@
         </div>
     </div>
 </div>
+<script>
+    function goForm(url) {
+        var op = "width=500,height=700,top=50,left=150";
+        window.open(url, "", op);
+    }
+
+    // QnA 목록을 불러오는 함수
+    function loadQnaList(page) {
+        if (!page) page = 1;
+        var searchType = $('select[name="searchType"]').val();
+        var keyword = $('input[name="keyword"]').val();
+
+        $.ajax({
+            url: '/api/qna/qnaList',
+            type: 'GET',
+            data: {
+                page: page,
+                searchType: searchType,
+                keyword: keyword
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    var qnaList = response.data.qna;
+                    var pagination = response.data.pageDto;
+                    var $tbody = $('#qnaTableBody').empty();
+
+                    if (qnaList && qnaList.length > 0) {
+                        $.each(qnaList, function (index, q) {
+                            var qnaRow = '';
+                            qnaRow += '<tr>';
+                            qnaRow += '<td>' + q.qnaId + '</td>';
+                            qnaRow += '<td class="question-title">';
+                            qnaRow += '<a href="getQnaDetail?id=' + q.qnaId + '" class="link-white read-link">' + q.qnaTitle + '</a>';
+                            qnaRow += '</td>';
+                            qnaRow += '<td>' + q.memName + '</td>';
+                            qnaRow += '<td>' + q.updatedAtStr + '</td>';
+                            qnaRow += '</tr>';
+                            $tbody.append(qnaRow);
+                        });
+                    } else {
+                        $tbody.append('<tr><td colspan="4" class="text-muted">게시물이 없습니다.</td></tr>');
+                    }
+
+                    renderPagination(pagination);
+                    // FAQ 데이터도 함께 불러와 모달에 표시
+                    renderFaq(response.data.faq);
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('질문 게시판 데이터를 불러오는 중 오류가 발생했습니다.');
+            }
+        });
+    }
+
+    // 페이징을 렌더링하는 함수
+    function renderPagination(pagination) {
+        var $paginationArea = $('#paginationArea').empty();
+        if (!pagination) return;
+
+        var html = '<ul class="pagination justify-content-center">';
+        var currentPage = pagination.page;
+        var startPage = pagination.startPage;
+        var endPage = pagination.endPage;
+        var totalPages = pagination.totalPages;
+
+        // 이전 페이지 버튼
+        var prevClass = currentPage > 1 ? '' : 'disabled';
+        html += '<li class="page-item ' + prevClass + '"><a class="page-link" onclick="loadQnaList(' + (currentPage - 1) + ');">이전</a></li>';
+
+        // 페이지 번호 버튼
+        for (var i = startPage; i <= endPage; i++) {
+            var activeClass = currentPage === i ? ' active' : '';
+            html += '<li class="page-item' + activeClass + '">' +
+                '<a class="page-link" onclick="loadQnaList(' + i + ');">' + i + '</a>' +
+                '</li>';
+        }
+
+        // 다음 페이지 버튼
+        var nextClass = currentPage < totalPages ? '' : 'disabled';
+        html += '<li class="page-item ' + nextClass + '"><a class="page-link" onclick="loadQnaList(' + (currentPage + 1) + ');">다음</a></li>';
+
+        html += '</ul>';
+        $paginationArea.append(html);
+    }
+
+    // FAQ 모달에 FAQ 목록을 렌더링하는 함수
+    function renderFaq(faqList) {
+        var $faqAccordion = $('#faqAccordion').empty();
+        if (faqList && faqList.length > 0) {
+            $.each(faqList, function (index, f) {
+                var faqItem = '';
+                faqItem += '<div class="accordion-item">';
+                faqItem += '<h2 class="accordion-header" id="heading' + index + '">';
+                faqItem += '<button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse' + index + '">';
+                faqItem += f.faqTitle;
+                faqItem += '</button>';
+                faqItem += '</h2>';
+                faqItem += '<div id="collapse' + index + '" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">';
+                faqItem += '<div class="accordion-body">' + f.faqContent + '</div>';
+                faqItem += '</div>';
+                faqItem += '</div>';
+                $faqAccordion.append(faqItem);
+            });
+        } else {
+            $faqAccordion.append('<div class="p-3 text-muted">등록된 FAQ가 없습니다.</div>');
+        }
+    }
+
+    $(document).ready(function () {
+        loadQnaList(1);
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            loadQnaList(1);
+        });
+    });
+</script>
 </body>
 </html>
