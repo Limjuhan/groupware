@@ -5,7 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <title>LDBSOFT 메인</title>
-
     <style>
         .main {
             padding: 40px;
@@ -16,14 +15,23 @@
         .card {
             border-radius: 0.75rem;
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08);
-            min-height: 300px; /* 카드 높이 고정 */
+            min-height: 300px;
             display: flex;
             flex-direction: column;
         }
 
-        .card h5 {
+        /* 모든 카드 헤더에 적용할 새로운 클래스 */
+        .card-header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 40px; /* 헤더의 높이를 고정하여 모든 카드가 동일한 높이를 갖도록 함 */
+            margin-bottom: 1.5rem; /* 헤더 아래쪽 여백을 통일 (Bootstrap mb-4와 동일) */
+        }
+
+        .card-header-main h5 {
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 0; /* 제목의 기본 마진을 제거하여 컨테이너에 완벽하게 정렬 */
         }
 
         .list-group-item {
@@ -33,30 +41,44 @@
         }
 
         .table {
-            margin-bottom: 0; /* 테이블 하단 여백 제거 */
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
         .table th, .table td {
             vertical-align: middle;
-            text-align: center; /* 텍스트 가운데 정렬 */
-            padding: 12px; /* 패딩 조정으로 균일한 간격 */
-        }
-
-        .table tbody tr {
-            height: 48px; /* 행 높이 고정 */
+            text-align: center;
+            padding: 12px;
+            height: 48px;
         }
 
         .table-responsive {
-            flex-grow: 1; /* 테이블이 카드 높이를 채우도록 */
-            overflow-y: auto; /* 내용이 많을 경우 스크롤 */
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        #myDraftTable tbody td:nth-child(2) {
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #myReservationTable tbody td:nth-child(1) {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         @media (max-width: 767px) {
             .main {
                 padding: 20px;
             }
+
             .card {
-                min-height: 250px; /* 모바일에서 카드 높이 조정 */
+                min-height: 250px;
             }
         }
 
@@ -65,7 +87,7 @@
         }
 
         #myDraftListBody tr:hover {
-            background-color: #f5f5f5; /* 마우스 올렸을 때 배경 하이라이트 */
+            background-color: #f5f5f5;
         }
     </style>
 </head>
@@ -73,12 +95,13 @@
 
 <div class="main container-xl">
     <div class="row gy-4">
-        <!-- 나의 결재 현황 -->
         <div class="col-lg-6 col-md-12">
             <div class="card p-4">
-                <h5>📄 나의 결재 현황</h5>
+                <div class="card-header-main">
+                    <h5>📄 나의 결재 현황</h5>
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-sm table-hover align-middle text-center" id="myDraftTable">
+                    <table class="table table-hover align-middle text-center" id="myDraftTable">
                         <thead class="table-light">
                         <tr>
                             <th style="width: 20%;">양식</th>
@@ -97,15 +120,14 @@
             </div>
         </div>
 
-        <!-- 나의 예약 내역 -->
         <div class="col-lg-6 col-md-12">
             <div class="card p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0">📅 나의 예약 내역</h5>
+                <div class="card-header-main">
+                    <h5>📅 나의 예약 내역</h5>
                     <a href="/facility/getReservationList" class="btn btn-sm btn-primary" title="예약 내역 더보기">+</a>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                    <table class="table table-hover align-middle" id="myReservationTable">
                         <thead class="table-light">
                         <tr>
                             <th>유형</th>
@@ -132,11 +154,10 @@
             </div>
         </div>
 
-        <!-- 회사 일정 -->
         <div class="col-lg-6 col-md-12">
             <div class="card p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0">📆 회사 일정</h5>
+                <div class="card-header-main">
+                    <h5>📆 회사 일정</h5>
                     <a href="/calendar/getCalendar" class="btn btn-sm btn-primary" title="일정 더보기">+</a>
                 </div>
                 <div class="table-responsive">
@@ -165,11 +186,10 @@
             </div>
         </div>
 
-        <!-- 최근 공지사항 -->
         <div class="col-lg-6 col-md-12">
             <div class="card p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0">📢 최근 공지사항</h5>
+                <div class="card-header-main">
+                    <h5>📢 최근 공지사항</h5>
                     <a href="/board/getNoticeList" class="btn btn-sm btn-primary" title="공지사항 더보기">+</a>
                 </div>
                 <div class="table-responsive">
@@ -213,7 +233,7 @@
             url: "/draft/getMyDraftSummary",
             type: "GET",
             dataType: "json",
-            success: function(res) {
+            success: function (res) {
                 var list = res.data || [];
                 var tbody = $("#myDraftListBody");
                 tbody.empty();
@@ -221,7 +241,7 @@
                 if (list.length === 0) {
                     tbody.append('<tr><td colspan="4" class="text-muted">결재 문서가 없습니다.</td></tr>');
                 } else {
-                    $.each(list, function(i, item) {
+                    $.each(list, function (i, item) {
                         var formCodeStr = item.formCodeStr || "양식 없음";
                         var docTitle = item.docTitle || "제목 없음";
                         var endDate = item.docEndDate ? item.docEndDate.substring(0, 10) : "-";
@@ -230,7 +250,7 @@
                         tbody.append(
                             '<tr>' +
                             '<td>' + formCodeStr + '</td>' +
-                            '<td class="text-truncate" style="max-width:180px;" title="' + docTitle + '">' + docTitle + '</td>' +
+                            '<td title="' + docTitle + '">' + docTitle + '</td>' +
                             '<td>' + endDate + '</td>' +
                             '<td>' + statusStr + '</td>' +
                             '</tr>'
@@ -238,7 +258,7 @@
                     });
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error("나의 결재 현황 조회 실패", xhr.responseText);
                 $("#myDraftListBody").html('<tr><td colspan="4" class="text-danger">데이터를 불러오지 못했습니다.</td></tr>');
             }
@@ -267,7 +287,7 @@
     }
 
     // 페이지 로드 시 자동 실행
-    $(document).ready(function() {
+    $(document).ready(function () {
         loadMyDraftSummary();
     });
 </script>
