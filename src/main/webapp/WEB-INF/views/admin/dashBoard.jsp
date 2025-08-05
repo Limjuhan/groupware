@@ -165,8 +165,12 @@
         console.log('차트데이터확인 ',chartData);
         console.log('페이징데이터확인 ',tableData);
         renderTable(tableData);
-        renderChart(chartData);
-        console.log("page정보", res.data.pageInfo);
+        var canvasId = document.getElementById('leaveChart');
+        var isChart = Chart.getChart(canvasId);
+        if (isChart == null || isChart == undefined) {
+          renderChart(chartData);
+        }
+
         if (res.data.pageInfo) renderPagination(res.data.pageInfo);
       },
       error: function(error) {
