@@ -7,30 +7,94 @@
     <meta charset="UTF-8">
     <title>전자결재 - LDBSOFT</title>
     <style>
-
+        /* 공통 컨텐츠 영역 */
+        .page-content {
+            width: 100%; /* sidebar 제외 나머지 폭 전부 */
+            min-height: calc(100vh - 160px); /* 상단바 + 여백 제외한 높이 */
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        /* 검색 영역 */
+        .page-search {
+            margin-bottom: 20px;
+        }
+        /* 페이지 제목 */
+        .page-title {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
         a.link-white:hover {
             color: #ffffff;
             text-decoration: underline;
         }
-
-        .form-label { font-weight: bold; }
-
+        .form-label {
+            font-weight: bold;
+        }
         .select-wrapper {
             position: relative;
         }
+        /* 테이블 컬럼 폭 조정 */
+        #documentTable th:nth-child(1), /* 문서번호 */
+        #documentTable td:nth-child(1) {
+            width: 8%;
+        }
 
+        #documentTable th:nth-child(2), /* 양식 */
+        #documentTable td:nth-child(2) {
+            width: 12%;
+        }
+
+        #documentTable th:nth-child(3), /* 제목 */
+        #documentTable td:nth-child(3) {
+            width: 30%;
+        }
+
+        #documentTable th:nth-child(4), /* 문서종료일 */
+        #documentTable td:nth-child(4) {
+            width: 12%;
+        }
+
+        #documentTable th:nth-child(5), /* 기안자 */
+        #documentTable td:nth-child(5) {
+            width: 10%;
+        }
+
+        #documentTable th:nth-child(6), /* 1차 결재 */
+        #documentTable td:nth-child(6),
+        #documentTable th:nth-child(7), /* 2차 결재 */
+        #documentTable td:nth-child(7) {
+            width: 10%;
+        }
+
+        #documentTable th:nth-child(8), /* 상태 */
+        #documentTable td:nth-child(8) {
+            width: 8%;
+        }
+
+        #documentTable th:nth-child(9), /* 삭제 */
+        #documentTable td:nth-child(9) {
+            width: 6%;
+        }
+        #documentTable {
+            table-layout: fixed;
+            word-break: break-word;
+        }
     </style>
 </head>
 <body>
 
-<div class="container  p-4  rounded">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="page-content">
+    <!-- 페이지 제목 -->
+    <div class="d-flex justify-content-between align-items-center page-title">
         <h2>전자결재</h2>
-        <a href="draftForm" class="btn btn-primary ">+ 새 결재문서 작성</a>
+        <a href="draftForm" class="btn btn-primary">+ 새 결재문서 작성</a>
     </div>
 
     <!-- 검색 영역 -->
-    <div class="row mb-3 align-items-end g-2">
+    <div class="row align-items-end g-2 page-search">
         <!-- 결재 상태 -->
         <div class="col-md-3 select-wrapper">
             <label for="searchStatus" class="form-label small mb-1">결재 상태</label>
@@ -54,24 +118,23 @@
         <!-- 검색어 입력 -->
         <div class="col-md-4">
             <label for="searchKeyword" class="form-label small mb-1">검색어 입력</label>
-            <input type="text" id="searchKeyword" class="form-control " placeholder="검색어 입력">
+            <input type="text" id="searchKeyword" class="form-control" placeholder="검색어 입력">
         </div>
 
         <!-- 검색 버튼 -->
         <div class="col-md-2">
             <label class="form-label small mb-1">&nbsp;</label>
-            <button type="button" class="btn btn-primary w-100 " onclick="searchMyDraftList()">검색</button>
+            <button type="button" class="btn btn-primary w-100" onclick="searchMyDraftList()">검색</button>
         </div>
     </div>
 
-
     <!-- 결재문서 리스트 -->
     <h5 class="mb-3">내 결재문서 목록</h5>
-    <table class="table table-hover table-bordered text-center align-middle " id="documentTable">
+    <table class="table table-hover table-bordered text-center align-middle" id="documentTable">
         <thead class="table-light">
         <tr>
             <th>문서번호</th>
-            <td>양식</td>
+            <th>양식</th>
             <th>제목</th>
             <th>문서종료일</th>
             <th>기안자</th>
@@ -88,8 +151,8 @@
     <div id="pagination" class="d-flex justify-content-center mt-4"></div>
 </div>
 
-<!-- 이동용 form (POST 방식) -->
-<form id="draftMoveForm" method="get" action="draftForm" style="display: none;">
+<!-- 이동용 form -->
+<form id="draftMoveForm" method="get" action="draftForm" style="display:none;">
     <input type="hidden" name="docId">
     <input type="hidden" name="memId">
     <input type="hidden" name="formCode">
@@ -97,8 +160,8 @@
 </form>
 
 <script>
-
-    function searchMyDraftList(page = 1) {
+    function searchMyDraftList(page) {
+        if (!page) page = 1;
         var keyword = $("#searchKeyword").val().trim();
         var searchType = $("#searchType").val();
         var searchStatus = $("#searchStatus").val();
@@ -107,7 +170,7 @@
             searchType: '',
             keyword: '',
             page: page,
-            searchStatus : searchStatus,
+            searchStatus: searchStatus
         };
 
         if (keyword !== "" && searchType !== "") {
@@ -133,20 +196,19 @@
                 $tbody.empty();
 
                 if (!data || data.length === 0) {
-                    $tbody.append("<tr><td colspan='8' class='text-center text-muted'>검색 결과가 없습니다.</td></tr>");
+                    $tbody.append("<tr><td colspan='9' class='text-center text-muted'>검색 결과가 없습니다.</td></tr>");
                 } else {
                     data.forEach(function (draft) {
                         var statusBadge = getStatusBadge(draft.status);
 
-                        // null값 세팅
                         if (!draft.approver1Name) draft.approver1Name = '-';
                         if (!draft.approver2Name) draft.approver2Name = '-';
                         if (!draft.docEndDate) draft.docEndDate = '-';
-                        if (!draft.docTitle)  draft.docTitle = '-';
+                        if (!draft.docTitle) draft.docTitle = '-';
 
-                        var isTemp =
-                            draft.status == 0 ? "<td><a href='#' onclick=\"deleteMyDraft('" + draft.docId + "','" + draft.formCode + "','" + draft.status + "')\" " +
-                                "class='btn btn-sm btn-outline-danger '>삭제</a></td>" : "<td>-</td>";
+                        var isTemp = (draft.status == 0)
+                            ? "<td><a href='#' onclick=\"deleteMyDraft('" + draft.docId + "','" + draft.formCode + "','" + draft.status + "')\" class='btn btn-sm btn-outline-danger'>삭제</a></td>"
+                            : "<td>-</td>";
 
                         var row = "<tr class='" + (draft.readYn === 'N' ? "fw-bold" : "text-muted") + "'>" +
                             "<td>" + draft.docId + "</td>" +
@@ -178,41 +240,20 @@
 
         if (!pageDto || pageDto.totalPages === 0) return;
 
-        let html = "<nav><ul class='pagination pagination-sm'>";
+        var html = "<nav><ul class='pagination pagination-sm'>";
 
-        // 처음으로
         if (pageDto.page > 1) {
-            html += "<li class='page-item'>" +
-                "<a class='page-link  ' href='#' onclick='searchMyDraftList(1)'>&laquo;&laquo;</a>" +
-                "</li>";
+            html += "<li class='page-item'><a class='page-link' href='#' onclick='searchMyDraftList(1)'>&laquo;&laquo;</a></li>";
+            html += "<li class='page-item'><a class='page-link' href='#' onclick='searchMyDraftList(" + (pageDto.page - 1) + ")'>&laquo;</a></li>";
         }
 
-        // 이전
-        if (pageDto.page > 1) {
-            html += "<li class='page-item'>" +
-                "<a class='page-link  ' href='#' onclick='searchMyDraftList(" + (pageDto.page - 1) + ")'>&laquo;</a>" +
-                "</li>";
+        for (var i = pageDto.startPage; i <= pageDto.endPage; i++) {
+            html += "<li class='page-item" + (pageDto.page === i ? " active" : "") + "'><a class='page-link' href='#' onclick='searchMyDraftList(" + i + ")'>" + i + "</a></li>";
         }
 
-        // 페이지 번호
-        for (let i = pageDto.startPage; i <= pageDto.endPage; i++) {
-            html += "<li class='page-item" + (pageDto.page === i ? " active" : "") + "'>" +
-                "<a class='page-link  ' href='#' onclick='searchMyDraftList(" + i + ")'>" + i + "</a>" +
-                "</li>";
-        }
-
-        // 다음
         if (pageDto.page < pageDto.totalPages) {
-            html += "<li class='page-item'>" +
-                "<a class='page-link  ' href='#' onclick='searchMyDraftList(" + (pageDto.page + 1) + ")'>&raquo;</a>" +
-                "</li>";
-        }
-
-        // 끝으로
-        if (pageDto.page < pageDto.totalPages) {
-            html += "<li class='page-item'>" +
-                "<a class='page-link  ' href='#' onclick='searchMyDraftList(" + pageDto.totalPages + ")'>&raquo;&raquo;</a>" +
-                "</li>";
+            html += "<li class='page-item'><a class='page-link' href='#' onclick='searchMyDraftList(" + (pageDto.page + 1) + ")'>&raquo;</a></li>";
+            html += "<li class='page-item'><a class='page-link' href='#' onclick='searchMyDraftList(" + pageDto.totalPages + ")'>&raquo;&raquo;</a></li>";
         }
 
         html += "</ul></nav>";
@@ -220,30 +261,22 @@
     }
 
     function moveToDraft(docId, memId, formCode, status, readYn) {
-
         if (readYn === 'N') {
             $.ajax({
                 url: "/alarm/markAsRead",
                 type: "POST",
                 contentType: "application/json",
-                data: { docId: docId,
-                        memId: memId,
-                        readYn: 'Y',
-                },
-                async: false // 읽음 처리 후 이동
+                data: { docId: docId, memId: memId, readYn: 'Y' },
+                async: false
             });
         }
 
-        const form = document.getElementById("draftMoveForm");
-
-        // 상태값이 0(임시저장)인 경우 draftForm, 그 외는 getMyDraftDetail
+        var form = document.getElementById("draftMoveForm");
         form.action = (status === "0") ? "draftForm" : "getMyDraftDetail";
-
         form["docId"].value = docId;
         form["memId"].value = memId;
         form["formCode"].value = formCode;
         form["status"].value = status;
-
         form.submit();
     }
 
@@ -257,7 +290,7 @@
             data: JSON.stringify({
                 docId: docId,
                 formCode: formCode,
-                status: status,
+                status: status
             }),
             success: function (res) {
                 if (res.success) {
@@ -269,46 +302,30 @@
             },
             error: function (xhr) {
                 alert("삭제 요청 중 오류 발생");
-                console.error(xhr.responseText);
             }
         });
     }
 
     function getStatusBadge(status) {
-        if (status === "0") {
-            return "<span class='badge bg-secondary'>임시저장</span>";
-        } else if (status === "1") {
-            return "<span class='badge bg-warning text-dark'>1차결재 대기</span>";
-        } else if (status === "2") {
-            return "<span class='badge bg-warning text-dark'>1차결재 승인</span>";
-        } else if (status === "3") {
-            return "<span class='badge bg-danger'>1차결재 반려</span>";
-        } else if (status === "4") {
-            return "<span class='badge bg-info text-dark'>2차결재 대기</span>";
-        } else if (status === "5") {
-            return "<span class='badge bg-success'>2차결재 승인</span>";
-        } else if (status === "6") {
-            return "<span class='badge bg-danger'>2차결재 반려</span>";
-        } else {
-            return "<span class='badge bg-dark'>알 수 없음</span>";
-        }
+        if (status === "0") return "<span class='badge bg-secondary'>임시저장</span>";
+        if (status === "1") return "<span class='badge bg-warning text-dark'>1차결재 대기</span>";
+        if (status === "2") return "<span class='badge bg-warning text-dark'>1차결재 승인</span>";
+        if (status === "3") return "<span class='badge bg-danger'>1차결재 반려</span>";
+        if (status === "4") return "<span class='badge bg-info text-dark'>2차결재 대기</span>";
+        if (status === "5") return "<span class='badge bg-success'>2차결재 승인</span>";
+        if (status === "6") return "<span class='badge bg-danger'>2차결재 반려</span>";
+        return "<span class='badge bg-dark'>알 수 없음</span>";
     }
 
     $(document).ready(function () {
         var errorMessage = '${globalError}';
-        if (errorMessage !== '') {
-            alert(errorMessage);
-        }
+        if (errorMessage !== '') alert(errorMessage);
 
         var confirmMsg = '${message}';
-        if (confirmMsg !== '') {
-            alert(confirmMsg);
-        }
+        if (confirmMsg !== '') alert(confirmMsg);
 
         $("#searchKeyword").on("keydown", function(e) {
-            if (e.key === "Enter" ||  e.keyCode === 13) {
-                searchMyDraftList();
-            }
+            if (e.key === "Enter" || e.keyCode === 13) searchMyDraftList();
         });
 
         searchMyDraftList(1);
