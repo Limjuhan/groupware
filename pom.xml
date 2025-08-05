@@ -14,7 +14,7 @@
 	<groupId>ldb</groupId>
 	<artifactId>groupware</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>groupware</name>
 	<description>Groupware Service</description>
 

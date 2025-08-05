@@ -18,7 +18,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build JAR
+      - name: Build WAR
         run: mvn clean package -U -DskipTests
 
       - name: Copy files to EC2
@@ -27,7 +27,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
-          source: "target/groupware-0.0.1-SNAPSHOT.jar,Dockerfile"
+          source: "target/groupware-0.0.1-SNAPSHOT.war,Dockerfile"
           target: "/home/ubuntu/app"
 
       - name: Deploy on EC2
@@ -41,6 +41,6 @@ jobs:
             docker stop groupware || true
             docker rm groupware || true
             docker rmi groupware || true
-            docker builder prune -af || true
+            docker builder prune -af || true   # 🔹 빌드 캐시 삭제
             docker build --no-cache -t groupware .
             docker run -d --name groupware -p 8080:8080 groupware
