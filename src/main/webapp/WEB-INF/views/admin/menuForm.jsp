@@ -6,20 +6,24 @@
 <head>
     <meta charset="UTF-8">
     <title>메뉴 등록 - LDBSOFT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        /* 공통 컨텐츠 영역 */
+        .page-content {
+            width: 100%;
+            min-height: calc(100vh - 160px);
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        .container {
-            max-width: 1200px;
-            margin-top: 2rem;
-        }
-
-        .card {
-            border-radius: 0.375rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* 페이지 제목 */
+        .page-title {
+            margin-bottom: 20px;
+            font-weight: bold;
         }
 
         .form-label {
@@ -45,39 +49,37 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="card p-4">
-        <h3 class="mb-4 fw-bold">메뉴 등록</h3>
+<div class="page-content">
+    <h2 class="page-title">메뉴 등록</h2>
 
-        <form:form modelAttribute="dto" method="post" action="insertMenu">
-            <div class="mb-3">
-                <label for="menuName" class="form-label">메뉴 이름</label>
-                <form:input path="menuName" cssClass="form-control" placeholder="메뉴 이름을 입력하세요"/>
-                <form:errors path="menuName" cssClass="text-danger"/>
-            </div>
+    <form:form modelAttribute="dto" method="post" action="insertMenu">
+        <div class="mb-3">
+            <label for="menuName" class="form-label">메뉴 이름</label>
+            <form:input path="menuName" cssClass="form-control" placeholder="메뉴 이름을 입력하세요"/>
+            <form:errors path="menuName" cssClass="text-danger"/>
+        </div>
 
-            <div class="mb-3">
-                <label for="description" class="form-label">설명</label>
-                <form:textarea path="description" cssClass="form-control" rows="4" placeholder="메뉴에 대한 설명을 입력하세요"/>
-                <form:errors path="description" cssClass="text-danger"/>
-            </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">설명</label>
+            <form:textarea path="description" cssClass="form-control" rows="4" placeholder="메뉴에 대한 설명을 입력하세요"/>
+            <form:errors path="description" cssClass="text-danger"/>
+        </div>
 
-            <div class="mb-3">
-                <label for="useYn" class="form-label">사용 여부</label>
-                <form:select path="useYn" cssClass="form-select">
-                    <form:option value="">선택하세요</form:option>
-                    <form:option value="Y">사용</form:option>
-                    <form:option value="N">미사용</form:option>
-                </form:select>
-                <form:errors path="useYn" cssClass="text-danger"/>
-            </div>
+        <div class="mb-3">
+            <label for="useYn" class="form-label">사용 여부</label>
+            <form:select path="useYn" cssClass="form-select">
+                <form:option value="">선택하세요</form:option>
+                <form:option value="Y">사용</form:option>
+                <form:option value="N">미사용</form:option>
+            </form:select>
+            <form:errors path="useYn" cssClass="text-danger"/>
+        </div>
 
-            <div class="text-end">
-                <button type="submit" class="btn btn-primary px-4">등록</button>
-                <a href="/admin/getDeptAuthList" class="btn btn-outline-secondary px-4">목록으로</a>
-            </div>
-        </form:form>
-    </div>
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary px-4">등록</button>
+            <a href="/admin/getDeptAuthList" class="btn btn-outline-secondary px-4">목록으로</a>
+        </div>
+    </form:form>
 </div>
 </body>
 </html>

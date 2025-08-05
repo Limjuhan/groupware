@@ -1,37 +1,50 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>캘린더 - LDBSOFT Groupware</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #f4f6f9;
-        }
-        .container {
-            max-width: 1200px;
-            margin-top: 40px;
-        }
-        #calendar {
+        /* 공통 컨텐츠 영역 */
+        .page-content {
+            width: 100%;
+            min-height: calc(100vh - 160px);
+            display: flex;
+            flex-direction: column;
             background-color: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* 페이지 제목 */
+        .page-title {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        #calendar {
             min-height: 700px;
             min-width: 100%;
         }
+
         .fc-daygrid-event .fc-event-time {
             display: inline;
         }
+
         .fc-daygrid-event .fc-event-title {
             display: block;
             margin-top: 2px;
         }
+
         .fc-daygrid-day-number,
         .fc-daygrid-day-top {
             color: #333;
         }
+
         .fc-toolbar-title {
             color: #000 !important; /* 시간표시 위 태그타이클 개발보안 */
         }
@@ -39,12 +52,11 @@
 </head>
 <body>
 
-<div class="container">
-    <h2 class="mb-4">캘린더</h2>
+<div class="page-content">
+    <h2 class="page-title">캘린더</h2>
     <div id="calendar"></div>
 </div>
 
-<!-- 일정 모델 -->
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -125,7 +137,7 @@
                 inner.appendChild(timeText);
                 inner.appendChild(titleText);
 
-                return { domNodes: [inner] };
+                return {domNodes: [inner]};
             },
             eventClick: function (info) {
                 const event = info.event;

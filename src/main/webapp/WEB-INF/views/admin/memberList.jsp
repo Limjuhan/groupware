@@ -8,13 +8,27 @@
     <meta charset="UTF-8">
     <title>사원 관리 - LDBSOFT</title>
     <style>
-        body {
-            background-color: #f4f6f9;
+        /* 공통 컨텐츠 영역 */
+        .page-content {
+            width: 100%; /* sidebar 제외 나머지 폭 전부 */
+            min-height: calc(100vh - 160px); /* 상단바 + 여백 제외한 높이 */
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            /* 전자결재 페이지와 동일하게 border-radius와 box-shadow를 제거 */
         }
 
-        .container {
-            max-width: 1200px;
-            margin-top: 40px;
+        /* 페이지 제목 */
+        .page-title {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* 검색/필터 영역 */
+        .page-search {
+            margin-bottom: 20px;
         }
 
         /* 클릭 가능한 이름 스타일 */
@@ -73,187 +87,16 @@
         .table th:nth-child(5), .table td:nth-child(5) {
             width: 15%;
         }
-
     </style>
-    <script>
-        function openEmployeeDetail(memId) {
-            $.ajax({
-                url: '/admin/getMemberInfo',
-                method: 'GET',
-                data: {memId: memId},
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        const user = response.data;
-                        const annualHistoryList = response.data.annualHistoryList;
-                        $('#detailMemPicture').attr('src', user.memPicture || '/img/profile_default.png');
-                        $('#detailName').val(user.memName);
-                        $('#detailGender').val(user.memGender);
-                        $('#detailBirth').val(user.birthDate);
-                        $('#detailPhone').val(user.memPhone);
-                        $('#detailDept').val(user.deptName);
-                        $('#detailRank').val(user.rankName);
-                        $('#detailStatus').val(user.statusStr);
-                        $('#detailHire').val(user.memHiredate);
-                        $('#detailEmail').val(user.memEmail);
-                        $('#detailPrivateEmail').val(user.privateEmail);
-                        $('#detailAddress').val(user.memAddress);
-                        const $annualInfo = $('#annualInfo');
-                        $annualInfo.empty();
-                        if (user.year != null && user.totalDays != null) {
-                            $annualInfo.html(
-                                '<strong>연도:</strong> ' + user.year + '년<br>' +
-                                '<strong>총 연차:</strong> ' + user.totalDays + '일<br>' +
-                                '<strong>사용 연차:</strong> ' + user.useDays + '일<br>' +
-                                '<strong>잔여 연차:</strong> ' + user.remainDays + '일'
-                            );
-                        } else {
-                            $annualInfo.html('연차 정보가 없습니다.');
-                        }
-                        const $annualHistoryBody = $('#annualHistoryBody');
-                        $annualHistoryBody.empty();
-                        if (annualHistoryList && annualHistoryList.length > 0) {
-                            $.each(annualHistoryList, function (index, his) {
-                                const row = '<tr>' +
-                                    '<td>' + his.startDate + ' ~ ' + his.endDate + '</td>' +
-                                    '<td>' + (his.approvedByName || his.approvedBy) + '</td>' +
-                                    '<td>' + (his.leaveName || his.leaveCode) + '</td>' +
-                                    '</tr>';
-                                $annualHistoryBody.append(row);
-                            });
-                        } else {
-                            $annualHistoryBody.append('<tr><td colspan="3" class="text-center">연차 사용 이력이 없습니다.</td></tr>');
-                        }
-                        new bootstrap.Modal(document.getElementById('infoModal')).show();
-                    } else {
-                        alert("정보를 불러오는 데 실패했습니다: " + response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX Error: ", status, error);
-                    alert("정보를 불러오는 데 실패했습니다.");
-                }
-            });
-        }
-
-        function openEditModal(memId, memName, deptId, rankId) {
-            $('#editMemId').val(memId);
-            $('#editMemIdDisplay').val(memId);
-            $('#editMemName').val(memName);
-            $('#editDept').val(deptId);
-            $('#editRank').val(rankId);
-            new bootstrap.Modal(document.getElementById('editModal')).show();
-        }
-
-        function saveEdit() {
-            const memId = $('#editMemId').val();
-            const deptId = $('#editDept').val();
-            const rankId = $('#editRank').val();
-            $.ajax({
-                url: '/admin/updateMemberByMng',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    memId: memId,
-                    deptId: deptId,
-                    rankId: rankId
-                }),
-                success: function (response) {
-                    if (response.success) {
-                        bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
-                        searchMembers();
-                    } else {
-                        alert("수정 실패: " + response.message);
-                    }
-                },
-                error: function (xhr) {
-                    console.error("AJAX Error: ", xhr.status, xhr.responseText);
-                    alert("수정 실패: " + xhr.responseText);
-                }
-            });
-        }
-
-        function searchMembers(page = 1) {
-            const dept = $('#deptFilter').val();
-            const rank = $('#rankFilter').val();
-            const name = $('#nameFilter').val().trim();
-            $.ajax({
-                url: '/admin/searchMembers',
-                method: 'GET',
-                data: {
-                    dept: dept,
-                    rank: rank,
-                    name: name,
-                    page: page
-                },
-                dataType: 'json',
-                success: function (data) {
-                    const $tbody = $('#memberTableBody');
-                    $tbody.empty();
-                    const list = data.list;
-                    const pagination = data.pagination;
-                    if (list && list.length > 0) {
-                        $.each(list, function (index, mem) {
-                            const row = '<tr>' +
-                                '<td>' + mem.memId + '</td>' +
-                                '<td><span class="name-link" onclick="openEmployeeDetail(\'' + mem.memId + '\')">' + mem.memName + '</span></td>' +
-                                '<td>' + mem.deptName + '</td>' +
-                                '<td>' + mem.rankName + '</td>' +
-                                '<td><button type="button" class="btn btn-sm btn-warning" onclick="openEditModal(\'' +
-                                mem.memId + '\', \'' + mem.memName + '\', \'' + (mem.deptId || '') + '\', \'' + (mem.rankId || '') +
-                                '\')">설정</button></td>' +
-                                '</tr>';
-                            $tbody.append(row);
-                        });
-                    } else {
-                        $tbody.append('<tr><td colspan="5" class="text-center text-muted">검색 결과가 없습니다.</td></tr>');
-                    }
-                    const $paging = $('#paginationArea');
-                    $paging.empty();
-                    let html = '<nav><ul class="pagination pagination-sm">';
-                    html += '<li class="page-item' + (pagination.page === 1 ? ' disabled' : '') + '">';
-                    html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
-                        (pagination.page > 1 ? 'searchMembers(' + (pagination.page - 1) + ');' : '') +
-                        '">이전</a></li>';
-                    for (let i = pagination.startPage; i <= pagination.endPage; i++) {
-                        html += '<li class="page-item' + (i === pagination.page ? ' active' : '') + '">';
-                        html += '<a class="page-link" href="#" onclick="event.preventDefault();searchMembers(' + i + ');">' + i + '</a></li>';
-                    }
-                    html += '<li class="page-item' + (pagination.page === pagination.totalPages ? ' disabled' : '') + '">';
-                    html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
-                        (pagination.page < pagination.totalPages ? 'searchMembers(' + (pagination.page + 1) + ');' : '') +
-                        '">다음</a></li>';
-                    html += '</ul></nav>';
-                    $paging.append(html);
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX Error: ", status, error);
-                    alert('데이터를 불러오는 중 오류가 발생했습니다.');
-                }
-            });
-        }
-
-        $(document).ready(function () {
-            searchMembers();
-        });
-        $(function () {
-            searchMembers();
-            $('#nameFilter').keypress(function (e) {
-                if (e.which === 13) {
-                    searchMembers(1);
-                }
-            });
-        });
-    </script>
 </head>
-<body class="bg-light">
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="mb-0">사원 관리</h4>
+<body>
+<div class="page-content">
+    <div class="d-flex justify-content-between align-items-center page-title">
+        <h2 class="fw-bold">사원 관리</h2>
         <a href="/admin/getMemberForm" class="btn btn-primary">등록</a>
     </div>
 
-    <div class="row mb-4">
+    <div class="row page-search">
         <div class="col-md-3 mb-3">
             <label for="deptFilter" class="form-label fw-medium">부서</label>
             <select id="deptFilter" class="form-select rounded">
@@ -281,21 +124,19 @@
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <table class="table table-hover table-bordered text-center mb-0">
-                <thead class="table-light">
-                <tr>
-                    <th>사원번호</th>
-                    <th>이름</th>
-                    <th>부서</th>
-                    <th>직급</th>
-                    <th>관리</th>
-                </tr>
-                </thead>
-                <tbody id="memberTableBody"></tbody>
-            </table>
-        </div>
+    <div class="p-0">
+        <table class="table table-hover table-bordered text-center mb-0">
+            <thead class="table-light">
+            <tr>
+                <th>사원번호</th>
+                <th>이름</th>
+                <th>부서</th>
+                <th>직급</th>
+                <th>관리</th>
+            </tr>
+            </thead>
+            <tbody id="memberTableBody"></tbody>
+        </table>
     </div>
 
     <div id="paginationArea" class="d-flex justify-content-center mt-4"></div>
@@ -423,5 +264,175 @@
         </div>
     </div>
 </div>
+<script>
+    function openEmployeeDetail(memId) {
+        $.ajax({
+            url: '/admin/getMemberInfo',
+            method: 'GET',
+            data: {memId: memId},
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    const user = response.data;
+                    const annualHistoryList = response.data.annualHistoryList;
+                    $('#detailMemPicture').attr('src', user.memPicture || '/img/profile_default.png');
+                    $('#detailName').val(user.memName);
+                    $('#detailGender').val(user.memGender);
+                    $('#detailBirth').val(user.birthDate);
+                    $('#detailPhone').val(user.memPhone);
+                    $('#detailDept').val(user.deptName);
+                    $('#detailRank').val(user.rankName);
+                    $('#detailStatus').val(user.statusStr);
+                    $('#detailHire').val(user.memHiredate);
+                    $('#detailEmail').val(user.memEmail);
+                    $('#detailPrivateEmail').val(user.privateEmail);
+                    $('#detailAddress').val(user.memAddress);
+                    const $annualInfo = $('#annualInfo');
+                    $annualInfo.empty();
+                    if (user.year != null && user.totalDays != null) {
+                        $annualInfo.html(
+                            '<strong>연도:</strong> ' + user.year + '년<br>' +
+                            '<strong>총 연차:</strong> ' + user.totalDays + '일<br>' +
+                            '<strong>사용 연차:</strong> ' + user.useDays + '일<br>' +
+                            '<strong>잔여 연차:</strong> ' + user.remainDays + '일'
+                        );
+                    } else {
+                        $annualInfo.html('연차 정보가 없습니다.');
+                    }
+                    const $annualHistoryBody = $('#annualHistoryBody');
+                    $annualHistoryBody.empty();
+                    if (annualHistoryList && annualHistoryList.length > 0) {
+                        $.each(annualHistoryList, function (index, his) {
+                            const row = '<tr>' +
+                                '<td>' + his.startDate + ' ~ ' + his.endDate + '</td>' +
+                                '<td>' + (his.approvedByName || his.approvedBy) + '</td>' +
+                                '<td>' + (his.leaveName || his.leaveCode) + '</td>' +
+                                '</tr>';
+                            $annualHistoryBody.append(row);
+                        });
+                    } else {
+                        $annualHistoryBody.append('<tr><td colspan="3" class="text-center">연차 사용 이력이 없습니다.</td></tr>');
+                    }
+                    new bootstrap.Modal(document.getElementById('infoModal')).show();
+                } else {
+                    alert("정보를 불러오는 데 실패했습니다: " + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: ", status, error);
+                alert("정보를 불러오는 데 실패했습니다.");
+            }
+        });
+    }
+
+    function openEditModal(memId, memName, deptId, rankId) {
+        $('#editMemId').val(memId);
+        $('#editMemIdDisplay').val(memId);
+        $('#editMemName').val(memName);
+        $('#editDept').val(deptId);
+        $('#editRank').val(rankId);
+        new bootstrap.Modal(document.getElementById('editModal')).show();
+    }
+
+    function saveEdit() {
+        const memId = $('#editMemId').val();
+        const deptId = $('#editDept').val();
+        const rankId = $('#editRank').val();
+        $.ajax({
+            url: '/admin/updateMemberByMng',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                memId: memId,
+                deptId: deptId,
+                rankId: rankId
+            }),
+            success: function (response) {
+                if (response.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+                    searchMembers();
+                } else {
+                    alert("수정 실패: " + response.message);
+                }
+            },
+            error: function (xhr) {
+                console.error("AJAX Error: ", xhr.status, xhr.responseText);
+                alert("수정 실패: " + xhr.responseText);
+            }
+        });
+    }
+
+    function searchMembers(page = 1) {
+        const dept = $('#deptFilter').val();
+        const rank = $('#rankFilter').val();
+        const name = $('#nameFilter').val().trim();
+        $.ajax({
+            url: '/admin/searchMembers',
+            method: 'GET',
+            data: {
+                dept: dept,
+                rank: rank,
+                name: name,
+                page: page
+            },
+            dataType: 'json',
+            success: function (data) {
+                const $tbody = $('#memberTableBody');
+                $tbody.empty();
+                const list = data.list;
+                const pagination = data.pagination;
+                if (list && list.length > 0) {
+                    $.each(list, function (index, mem) {
+                        const row = '<tr>' +
+                            '<td>' + mem.memId + '</td>' +
+                            '<td><span class="name-link" onclick="openEmployeeDetail(\'' + mem.memId + '\')">' + mem.memName + '</span></td>' +
+                            '<td>' + mem.deptName + '</td>' +
+                            '<td>' + mem.rankName + '</td>' +
+                            '<td><button type="button" class="btn btn-sm btn-warning" onclick="openEditModal(\'' +
+                            mem.memId + '\', \'' + mem.memName + '\', \'' + (mem.deptId || '') + '\', \'' + (mem.rankId || '') +
+                            '\')">설정</button></td>' +
+                            '</tr>';
+                        $tbody.append(row);
+                    });
+                } else {
+                    $tbody.append('<tr><td colspan="5" class="text-center text-muted">검색 결과가 없습니다.</td></tr>');
+                }
+                const $paging = $('#paginationArea');
+                $paging.empty();
+                let html = '<nav><ul class="pagination pagination-sm">';
+                html += '<li class="page-item' + (pagination.page === 1 ? ' disabled' : '') + '">';
+                html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
+                    (pagination.page > 1 ? 'searchMembers(' + (pagination.page - 1) + ');' : '') +
+                    '">이전</a></li>';
+                for (let i = pagination.startPage; i <= pagination.endPage; i++) {
+                    html += '<li class="page-item' + (i === pagination.page ? ' active' : '') + '">';
+                    html += '<a class="page-link" href="#" onclick="event.preventDefault();searchMembers(' + i + ');">' + i + '</a></li>';
+                }
+                html += '<li class="page-item' + (pagination.page === pagination.totalPages ? ' disabled' : '') + '">';
+                html += '<a class="page-link" href="#" onclick="event.preventDefault();' +
+                    (pagination.page < pagination.totalPages ? 'searchMembers(' + (pagination.page + 1) + ');' : '') +
+                    '">다음</a></li>';
+                html += '</ul></nav>';
+                $paging.append(html);
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: ", status, error);
+                alert('데이터를 불러오는 중 오류가 발생했습니다.');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        searchMembers();
+    });
+    $(function () {
+        searchMembers();
+        $('#nameFilter').keypress(function (e) {
+            if (e.which === 13) {
+                searchMembers(1);
+            }
+        });
+    });
+</script>
 </body>
 </html>
