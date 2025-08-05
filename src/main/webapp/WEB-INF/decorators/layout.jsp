@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -114,6 +113,11 @@
         .form-control:focus {
             border-color: #17a2b8;
             box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
+        }
+
+        #searchResults {
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         /* 알람 드롭다운 목록 스타일 */
@@ -676,4 +680,3 @@
 </script>
 </body>
 </html>
-```

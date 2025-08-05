@@ -16,7 +16,9 @@
         .card {
             border-radius: 0.75rem;
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08);
-            height: 100%;
+            min-height: 300px; /* 카드 높이 고정 */
+            display: flex;
+            flex-direction: column;
         }
 
         .card h5 {
@@ -30,19 +32,39 @@
             padding: 0.5rem 0;
         }
 
+        .table {
+            margin-bottom: 0; /* 테이블 하단 여백 제거 */
+        }
+
         .table th, .table td {
             vertical-align: middle;
+            text-align: center; /* 텍스트 가운데 정렬 */
+            padding: 12px; /* 패딩 조정으로 균일한 간격 */
+        }
+
+        .table tbody tr {
+            height: 48px; /* 행 높이 고정 */
+        }
+
+        .table-responsive {
+            flex-grow: 1; /* 테이블이 카드 높이를 채우도록 */
+            overflow-y: auto; /* 내용이 많을 경우 스크롤 */
         }
 
         @media (max-width: 767px) {
             .main {
                 padding: 20px;
             }
+            .card {
+                min-height: 250px; /* 모바일에서 카드 높이 조정 */
+            }
         }
+
         #myDraftListBody {
             cursor: pointer;
         }
-        #myDraftListBody :hover {
+
+        #myDraftListBody tr:hover {
             background-color: #f5f5f5; /* 마우스 올렸을 때 배경 하이라이트 */
         }
     </style>
@@ -181,10 +203,8 @@
 </div>
 
 <script>
-
     $(document).on("click", "#myDraftTable", function (e) {
         console.log("드래프트테이블클릭확인: ", e);
-
         window.location.href = "/draft/getMyDraftList";
     });
 
@@ -250,7 +270,6 @@
     $(document).ready(function() {
         loadMyDraftSummary();
     });
-
 </script>
 </body>
 </html>
