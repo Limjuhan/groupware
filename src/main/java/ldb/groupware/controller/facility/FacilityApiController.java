@@ -2,6 +2,7 @@ package ldb.groupware.controller.facility;
 
 import jakarta.servlet.http.HttpServletRequest;
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
+import ldb.groupware.dto.facility.MyFacilityReserveDto;
 import ldb.groupware.dto.facility.SearchDto;
 import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.service.facility.FacilityService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -46,6 +48,16 @@ public class FacilityApiController {
             return ApiResponseDto.ok(data, "내 예약 내역을 성공적으로 불러왔습니다.");
         } catch (Exception e) {
             return ApiResponseDto.error("예약 내역을 불러오는 중 오류가 발생했습니다.");
+        }
+    }
+
+    @GetMapping("getMyReservationSummary")
+    public ResponseEntity<ApiResponseDto<List<MyFacilityReserveDto>>> getMyReservationSummary(HttpServletRequest request) {
+        try {
+            List<MyFacilityReserveDto> data = service.getLatestReservations(request);
+            return ApiResponseDto.ok(data, "내 최신 예약 내역을 성공적으로 불러왔습니다.");
+        } catch (Exception e) {
+            return ApiResponseDto.error("최신 예약 내역을 불러오는 중 오류가 발생했습니다.");
         }
     }
 }

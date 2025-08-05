@@ -208,4 +208,10 @@
         FROM member
         WHERE mem_id = #{loginId}
     </select>
+
+    <select id="getMemberNameById" parameterType="string" resultType="string">
+        SELECT mem_name
+        FROM member
+        WHERE mem_id = #{loginId}
+    </select>
 </mapper>

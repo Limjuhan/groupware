@@ -131,23 +131,14 @@
                         <thead class="table-light">
                         <tr>
                             <th>유형</th>
-                            <th>예약 명</th>
+                            <th>품목명</th>
                             <th>예약기간</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <c:forEach var="res" items="${myReservations}">
-                            <tr>
-                                <td>[${res.commName}]</td>
-                                <td>${res.facName}</td>
-                                <td>${res.startAt} ~ ${res.endAt}</td>
-                            </tr>
-                        </c:forEach>
-                        <c:if test="${empty myReservations}">
-                            <tr>
-                                <td colspan="3" class="text-muted text-center">예약 내역이 없습니다.</td>
-                            </tr>
-                        </c:if>
+                        <tbody id="myReservationListBody">
+                        <tr>
+                            <td colspan="3" class="text-muted text-center">불러오는 중...</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -168,18 +159,10 @@
                             <th>일정 기간</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <c:forEach var="s" items="${scheduleList}">
-                            <tr>
-                                <td>${s.scheduleTitle}</td>
-                                <td>${s.startAtStr} ~ ${s.endAtStr}</td>
-                            </tr>
-                        </c:forEach>
-                        <c:if test="${empty scheduleList}">
-                            <tr>
-                                <td colspan="2" class="text-muted text-center">등록된 일정이 없습니다.</td>
-                            </tr>
-                        </c:if>
+                        <tbody id="myScheduleListBody">
+                        <tr>
+                            <td colspan="2" class="text-muted text-center">불러오는 중...</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -201,19 +184,10 @@
                             <th>작성일</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <c:forEach var="notice" items="${noticeList}">
-                            <tr>
-                                <td>${notice.noticeTitle}</td>
-                                <td>${notice.memName}</td>
-                                <td>${notice.updatedAtToStr}</td>
-                            </tr>
-                        </c:forEach>
-                        <c:if test="${empty noticeList}">
-                            <tr>
-                                <td colspan="3" class="text-muted text-center">등록된 공지사항이 없습니다.</td>
-                            </tr>
-                        </c:if>
+                        <tbody id="myNoticeListBody">
+                        <tr>
+                            <td colspan="3" class="text-muted text-center">불러오는 중...</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -223,11 +197,13 @@
 </div>
 
 <script>
+    // '나의 결재 현황' 테이블 클릭 이벤트는 그대로 유지합니다.
     $(document).on("click", "#myDraftTable", function (e) {
         console.log("드래프트테이블클릭확인: ", e);
         window.location.href = "/draft/getMyDraftList";
     });
 
+    // 나의 결재 현황 불러오기
     function loadMyDraftSummary() {
         $.ajax({
             url: "/draft/getMyDraftSummary",
@@ -265,6 +241,105 @@
         });
     }
 
+    // 나의 예약 내역 불러오기
+    function loadMyReservationSummary() {
+        $.ajax({
+            url: "/api/facility/getMyReservationSummary",
+            type: "GET",
+            dataType: "json",
+            success: function (res) {
+                var list = res.data || [];
+                var tbody = $("#myReservationListBody");
+                tbody.empty();
+
+                if (list.length === 0) {
+                    tbody.append('<tr><td colspan="3" class="text-muted text-center">예약 내역이 없습니다.</td></tr>');
+                } else {
+                    $.each(list, function (i, item) {
+                        var commName = item.commName || "유형 없음";
+                        var facName = item.facName || "제목 없음";
+                        var endDate = item.docEndDate ? item.docEndDate.substring(0, 10) : "-";
+                        var statusStr = getStatusBadge(item.status);
+                        tbody.append(
+                            '<tr>' +
+                            '<td>[' + item.commName + ']</td>' +
+                            '<td>' + item.facName + '</td>' +
+                            '<td>' + item.startAt + ' ~ ' + item.endAt + '</td>' +
+                            '</tr>'
+                        );
+                    });
+                }
+            },
+            error: function (xhr) {
+                console.error("나의 예약 내역 조회 실패", xhr.responseText);
+                $("#myReservationListBody").html('<tr><td colspan="3" class="text-danger text-center">데이터를 불러오지 못했습니다.</td></tr>');
+            }
+        });
+    }
+
+    // 회사 일정 불러오기
+    function loadScheduleSummary() {
+        $.ajax({
+            url: "/calendar/getScheduleSummary",
+            type: "GET",
+            dataType: "json",
+            success: function (res) {
+                var list = res.data || [];
+                var tbody = $("#myScheduleListBody");
+                tbody.empty();
+
+                if (list.length === 0) {
+                    tbody.append('<tr><td colspan="2" class="text-muted text-center">등록된 일정이 없습니다.</td></tr>');
+                } else {
+                    $.each(list, function (i, item) {
+                        tbody.append(
+                            '<tr>' +
+                            '<td>' + item.scheduleTitle + '</td>' +
+                            '<td>' + item.startAtStr + ' ~ ' + item.endAtStr + '</td>' +
+                            '</tr>'
+                        );
+                    });
+                }
+            },
+            error: function (xhr) {
+                console.error("회사 일정 조회 실패", xhr.responseText);
+                $("#myScheduleListBody").html('<tr><td colspan="2" class="text-danger text-center">데이터를 불러오지 못했습니다.</td></tr>');
+            }
+        });
+    }
+
+    // 최근 공지사항 불러오기
+    function loadNoticeSummary() {
+        $.ajax({
+            url: "/api/notice/getNoticeSummary",
+            type: "GET",
+            dataType: "json",
+            success: function (res) {
+                var list = res.data.notice || [];
+                var tbody = $("#myNoticeListBody");
+                tbody.empty();
+
+                if (list.length === 0) {
+                    tbody.append('<tr><td colspan="3" class="text-muted text-center">등록된 공지사항이 없습니다.</td></tr>');
+                } else {
+                    $.each(list, function (i, item) {
+                        tbody.append(
+                            '<tr>' +
+                            '<td>' + item.noticeTitle + '</td>' +
+                            '<td>' + item.memName + '</td>' +
+                            '<td>' + item.updatedAtToStr + '</td>' +
+                            '</tr>'
+                        );
+                    });
+                }
+            },
+            error: function (xhr) {
+                console.error("최근 공지사항 조회 실패", xhr.responseText);
+                $("#myNoticeListBody").html('<tr><td colspan="3" class="text-danger text-center">데이터를 불러오지 못했습니다.</td></tr>');
+            }
+        });
+    }
+
     // 상태 뱃지 함수
     function getStatusBadge(status) {
         if (status === "0") {
@@ -289,6 +364,9 @@
     // 페이지 로드 시 자동 실행
     $(document).ready(function () {
         loadMyDraftSummary();
+        loadMyReservationSummary();
+        loadScheduleSummary();
+        loadNoticeSummary();
     });
 </script>
 </body>

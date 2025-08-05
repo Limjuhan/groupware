@@ -102,7 +102,18 @@ public class NoticeService {
         }
     }
 
-    public List<NoticeListDto> getLatestNotices() {
-        return mapper.selectNoticeList();
+    public Map<String, Object> getLatestNotices() {
+        HashMap<String, Object> map = new HashMap<>();
+        List<NoticeListDto> noticeList = mapper.selectNoticeList();
+
+        if (noticeList != null && !noticeList.isEmpty()) {
+            for (NoticeListDto notice : noticeList) {
+                notice.updatedAtToString();
+            }
+        }
+
+        map.put("notice", noticeList);
+
+        return map;
     }
 }

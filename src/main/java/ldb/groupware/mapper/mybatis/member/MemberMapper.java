@@ -37,7 +37,7 @@ public interface MemberMapper {
 
     MemberInfoDto selectMemberInfo(String memId);
 
-    String findNameById(String id);
+    String findNameById(@Param("loginId") String id);
 
     boolean isValidMember(PwCodeDto dto);
 
@@ -48,4 +48,6 @@ public interface MemberMapper {
     List<MemberListDto> getMemberList();
 
     AuthDto selectAuth(@Param("loginId") String loginId);
+
+    String getMemberNameById(@Param("loginId") String loginId);
 }

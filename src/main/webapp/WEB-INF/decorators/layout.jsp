@@ -119,7 +119,7 @@
             background-color: #ffffff;
             border: 1px solid #dee2e6;
             border-radius: 0.375rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 0;
         }
 
@@ -151,13 +151,41 @@
             max-width: 100px;
         }
 
-        #alarmList .badge-form-annual { background-color: #28a745; color: #fff; }
-        #alarmList .badge-form-project { background-color: #17a2b8; color: #fff; }
-        #alarmList .badge-form-expense { background-color: #dc3545; color: #fff; }
-        #alarmList .badge-form-resign { background-color: #6c757d; color: #fff; }
-        #alarmList .badge-form-unknown { background-color: #343a40; color: #fff; }
-        #alarmList .badge-title { background-color: #6c757d; color: #fff; max-width: 120px; }
-        #alarmList .badge-writer { background-color: #007bff; color: #fff; }
+        #alarmList .badge-form-annual {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        #alarmList .badge-form-project {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+
+        #alarmList .badge-form-expense {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        #alarmList .badge-form-resign {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        #alarmList .badge-form-unknown {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        #alarmList .badge-title {
+            background-color: #6c757d;
+            color: #fff;
+            max-width: 120px;
+        }
+
+        #alarmList .badge-writer {
+            background-color: #007bff;
+            color: #fff;
+        }
     </style>
 
     <sitemesh:write property="head"/>
@@ -188,7 +216,10 @@
                     <%-- 알람리스트 동적 생성 --%>
                 </ul>
             </div>
-            <span class="me-3 text-dark"><i class="fa-solid fa-user-circle"></i> ${sessionScope.loginId} 님</span>
+            <span class="me-3 text-dark">
+                <i class="fa-solid fa-user-circle"></i>
+                <span id="userName"></span> 님
+            </span>
             <a href="/login/doLogout" class="btn btn-outline-danger btn-sm">로그아웃</a>
         </div>
     </div>
@@ -495,6 +526,27 @@
             return "<span class='badge bg-dark'>알 수 없음</span>";
         }
     }
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/member/getMemberInfoById",
+            type: "GET",
+            data: {loginId: '${sessionScope.loginId}'},
+            dataType: "json",
+            success: function (res) {
+                if (res.success && res.data) {
+                    $("#userName").text(res.data);
+                } else {
+                    $("#userName").text("이름 없음");
+                    console.warn("사용자 이름 조회 실패: ", res.message);
+                }
+            },
+            error: function (xhr) {
+                console.error("사용자 이름 조회 실패", xhr.responseText);
+                $("#userName").text("이름 조회 실패");
+            }
+        });
+    });
 
     let employees = [];
 

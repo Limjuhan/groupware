@@ -66,6 +66,16 @@ public class MemberApiController {
         return ApiResponseDto.ok(members);
     }
 
+    // 레이아웃 - 이름
+    @GetMapping("getMemberInfoById")
+    public ResponseEntity<ApiResponseDto<String>> getMemberInfoById(@RequestParam String loginId) {
+        String memberName = memberService.getMemberNameById(loginId);
+        if (memberName != null && !memberName.isEmpty()) {
+            return ApiResponseDto.ok(memberName);
+        } else {
+            return ApiResponseDto.fail("사용자 이름을 찾을 수 없습니다.");
+        }
+    }
 
 
 }

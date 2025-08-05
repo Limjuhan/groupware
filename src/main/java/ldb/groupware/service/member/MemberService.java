@@ -245,4 +245,8 @@ public class MemberService {
     public AuthDto selectAuth(String loginId) {
         return memberMapper.selectAuth(loginId);
     }
+
+    public String getMemberNameById(String loginId) {
+        return memberMapper.getMemberNameById(loginId);
+    }
 }

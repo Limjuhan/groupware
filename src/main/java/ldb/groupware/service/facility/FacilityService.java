@@ -172,7 +172,9 @@ public class FacilityService {
         return null;
     }
 
-    public List<MyFacilityReserveDto> getLatestReservations(String loginId) {
+
+    public List<MyFacilityReserveDto> getLatestReservations(HttpServletRequest request) {
+        String loginId = (String) request.getSession().getAttribute("loginId");
         return facilityMapper.selectReservations(loginId);
     }
 }

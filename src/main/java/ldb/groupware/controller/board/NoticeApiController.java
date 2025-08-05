@@ -1,6 +1,7 @@
 package ldb.groupware.controller.board;
 
 import ldb.groupware.dto.apiresponse.ApiResponseDto;
+import ldb.groupware.dto.board.NoticeListDto;
 import ldb.groupware.dto.page.PaginationDto;
 import ldb.groupware.service.board.NoticeService;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,6 +39,16 @@ public class NoticeApiController {
             return ApiResponseDto.ok(noticeData, "공지사항 목록을 성공적으로 불러왔습니다.");
         } catch (Exception e) {
             return ApiResponseDto.error("공지사항 목록을 불러오는 중 오류가 발생했습니다.");
+        }
+    }
+
+    @GetMapping("getNoticeSummary")
+    public ResponseEntity<ApiResponseDto<Map<String, Object>>> getNoticeSummary() {
+        try {
+            Map<String, Object> data = service.getLatestNotices();
+            return ApiResponseDto.ok(data, "최신 공지사항 목록을 성공적으로 불러왔습니다.");
+        } catch (Exception e) {
+            return ApiResponseDto.error("최신 공지사항 목록을 불러오는 중 오류가 발생했습니다.");
         }
     }
 }

@@ -61,4 +61,13 @@ public class CalendarApiController {
         return calendarService.getEventList();
     }
 
+    @GetMapping("getScheduleSummary")
+    public ResponseEntity<ApiResponseDto<Object>> getScheduleSummary() {
+        try {
+            Object data = calendarService.getRecentSchedules();
+            return ApiResponseDto.ok(data, "최신 회사 일정을 성공적으로 불러왔습니다.");
+        } catch (Exception e) {
+            return ApiResponseDto.error("최신 회사 일정을 불러오는 중 오류가 발생했습니다.");
+        }
+    }
 }

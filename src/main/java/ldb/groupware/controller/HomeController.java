@@ -27,14 +27,7 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(Model model, HttpServletRequest request) {
-        String loginId = (String)request.getSession().getAttribute("loginId");
-        List<ScheduleListDto> scheduleList = calendarService.getRecentSchedules();
-        List<NoticeListDto> noticeList = noticeService.getLatestNotices();
-        List<MyFacilityReserveDto> myReservations = facilityService.getLatestReservations(loginId);
-        model.addAttribute("noticeList", noticeList);
-        model.addAttribute("myReservations", myReservations);
-        model.addAttribute("scheduleList", scheduleList);
+    public String home() {
         return "home"; // → /WEB-INF/views/home.jsp 렌더링됨
     }
 
