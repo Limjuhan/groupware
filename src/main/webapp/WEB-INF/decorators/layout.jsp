@@ -14,19 +14,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
         html, body {
             margin: 0;
             padding: 0;
-            min-height: 100%;
+            height: 100%; /* 전체 높이 고정 */
             background-color: #f8f9fa;
         }
 
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
         .navbar {
-            background-color: #4b5e8c; /* 부드러운 남색 */
-            margin: 0; /* 상단/하단 여백 제거 */
-            padding: 0.5rem 1rem; /* 최소 패딩 */
-            border-bottom: none; /* 하단 경계선 제거 */
+            background-color: #4b5e8c;
+            margin: 0;
+            padding: 0.5rem 1rem;
+            border-bottom: none;
         }
 
         .navbar-brand {
@@ -50,13 +56,11 @@
         }
 
         .sidebar {
-            height: 100vh; /* 화면 전체 높이 */
-            padding: 0.5rem 0; /* 최소 패딩 */
-            background-color: #2c3e50; /* 짙은 회색-남색 */
-            border-right: 1px solid #2c3e50; /* 오른쪽 경계선 */
-            position: sticky;
-            top: 0; /* 상단 바 바로 아래 */
-            overflow-y: auto; /* 스크롤 가능 */
+            height: 100%;
+            padding: 0.5rem 0;
+            background-color: #2c3e50;
+            border-right: 1px solid #2c3e50;
+            overflow-y: auto;
         }
 
         .nav-pills .nav-link {
@@ -64,81 +68,63 @@
         }
 
         .nav-pills .nav-link.active {
-            background-color: #17a2b8; /* 청록색 */
+            background-color: #17a2b8;
             color: #ffffff;
         }
 
         .nav-pills .nav-link:hover {
-            background-color: #1a252f; /* 더 어두운 회색-남색 */
+            background-color: #1a252f;
             color: #ffffff;
         }
 
+        /* 페이지 전체 영역을 남는 공간 없이 꽉 채움 */
         .content-wrapper {
+            flex: 1;
             display: flex;
-            min-height: calc(100vh - 60px); /* 상단 바 높이(약 60px) 제외 */
-            padding: 0; /* 여백 제거 */
+            min-height: calc(100vh - 60px); /* 네비게이션 제외 */
+            height: calc(100vh - 60px);
+            overflow: hidden;
         }
 
-        .glass-content {
+        /* 컨텐츠 박스 - 여백 없이 꽉 차도록 */
+        .page-container {
+            flex: 1;
+            min-height: 100%;
             padding: 20px;
             background-color: #ffffff;
-            border-radius: 0.375rem;
-            flex-grow: 1; /* 나머지 공간 채우기 */
+            border: 1px solid #ddd;
+            border-radius: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
         }
 
-        .modal-content {
-            background-color: #ffffff;
-            border-radius: 0.375rem;
-        }
-
-        .dropdown-menu {
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .search-dropdown {
-            min-width: 300px;
-            transform: translateY(45px);
-        }
-
-        .list-group-item {
-            background-color: #ffffff;
-            border: 1px solid #dee2e6;
-        }
-
-        .form-control {
-            border-radius: 0.375rem;
-        }
-
-        .form-control:focus {
-            border-color: #17a2b8;
-            box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
-        }
-
+        /* 검색 결과 영역 */
         #searchResults {
             max-height: 200px;
             overflow-y: auto;
         }
 
-        /* 알람 드롭다운 목록 스타일 */
+        /* 알람 드롭다운 */
         #alarmList {
-            min-width: 350px; /* 드롭다운 너비 유지 */
-            max-height: 400px; /* 최대 높이로 스크롤 가능 */
+            min-width: 350px;
+            max-height: 400px;
             overflow-y: auto;
             background-color: #ffffff;
             border: 1px solid #dee2e6;
             border-radius: 0.375rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             padding: 0;
         }
 
         #alarmList li {
-            padding: 8px 12px; /* 패딩 축소로 컴팩트하게 */
+            padding: 8px 12px;
             border-bottom: 1px solid #e9ecef;
             transition: background-color 0.2s ease;
-            display: flex; /* 한 줄로 배치 */
-            align-items: center; /* 수직 중앙 정렬 */
-            gap: 8px; /* 배지 간 간격 */
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         #alarmList li:last-child {
@@ -146,98 +132,29 @@
         }
 
         #alarmList li:hover {
-            background-color: #f1f3f5; /* 호버 시 연한 회색 */
+            background-color: #f1f3f5;
         }
 
-        #alarmList .alarm-link {
-            display: flex; /* 한 줄로 배치 */
-            align-items: center; /* 수직 중앙 정렬 */
-            text-decoration: none;
-            color: #212529;
-            width: 100%; /* 전체 너비 사용 */
-            overflow: hidden; /* 넘치는 내용 숨김 */
-        }
-
-        /* 공통 배지 스타일 */
         #alarmList .badge {
-            font-size: 0.75rem; /* 배지 폰트 크기 */
-            padding: 3px 8px; /* 패딩 조정 */
-            border-radius: 10px; /* 둥근 배지 */
-            font-weight: 500; /* 약간 굵은 폰트 */
-            white-space: nowrap; /* 한 줄로 유지 */
-            overflow: hidden; /* 넘치는 텍스트 숨김 */
-            text-overflow: ellipsis; /* 말줄임표 */
-            max-width: 100px; /* 각 배지 최대 너비 제한 */
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100px;
         }
 
-        /* formCodeStr별 배지 스타일 */
-        #alarmList .badge-form-annual {
-            background-color: #28a745; /* 휴가: 녹색 */
-            color: #ffffff;
-        }
-
-        #alarmList .badge-form-project {
-            background-color: #17a2b8; /* 프로젝트: 청록색 */
-            color: #ffffff;
-        }
-
-        #alarmList .badge-form-expense {
-            background-color: #dc3545; /* 지출: 빨간색 */
-            color: #ffffff;
-        }
-
-        #alarmList .badge-form-resign {
-            background-color: #6c757d; /* 사직: 회색 */
-            color: #ffffff;
-        }
-
-        #alarmList .badge-form-unknown {
-            background-color: #343a40; /* 양식정보없음: 어두운 회색 */
-            color: #ffffff;
-        }
-
-        /* 기타 배지 스타일 */
-        #alarmList .badge-title {
-            background-color: #6c757d; /* 제목: 회색 */
-            color: #ffffff;
-            max-width: 120px; /* 제목은 약간 더 길게 */
-        }
-
-        #alarmList .badge-writer {
-            background-color: #007bff; /* 작성자: 파란색 */
-            color: #ffffff;
-        }
-
-        /* 알람이 없을 경우 메시지 스타일 */
-        #alarmList .text-muted {
-            padding: 12px 16px;
-            font-size: 0.9rem;
-            color: #6c757d;
-            text-align: center;
-        }
-
-        /* 모든 JSP 공통 컨테이너 */
-        .page-container {
-            flex: 1; /* 남은 공간 전부 채움 */
-            min-height: 100%; /* content-wrapper 높이 전부 사용 */
-            padding: 20px; /* 내부 여백 유지, 필요없으면 0으로 */
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 0; /* 모서리 둥글기 제거 가능 */
-            box-sizing: border-box;
-
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* content-wrapper 전체 화면 높이 사용 */
-        .content-wrapper {
-            display: flex;
-            flex: 1;
-            height: calc(100vh - 60px); /* 상단 네비게이션 제외한 전체 높이 */
-        }
-
+        #alarmList .badge-form-annual { background-color: #28a745; color: #fff; }
+        #alarmList .badge-form-project { background-color: #17a2b8; color: #fff; }
+        #alarmList .badge-form-expense { background-color: #dc3545; color: #fff; }
+        #alarmList .badge-form-resign { background-color: #6c757d; color: #fff; }
+        #alarmList .badge-form-unknown { background-color: #343a40; color: #fff; }
+        #alarmList .badge-title { background-color: #6c757d; color: #fff; max-width: 120px; }
+        #alarmList .badge-writer { background-color: #007bff; color: #fff; }
     </style>
+
     <sitemesh:write property="head"/>
 </head>
 <body>
