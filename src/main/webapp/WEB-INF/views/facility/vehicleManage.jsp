@@ -9,16 +9,51 @@
         body {
             background-color: #f4f6f9;
         }
+
         .container {
             max-width: 1200px;
             margin-top: 40px;
         }
+
         .table td, .table th {
             vertical-align: middle;
         }
+
         .page-link {
             cursor: pointer;
         }
+
+        /* 테이블 컬럼 너비 고정 */
+        .table th:nth-child(1), .table td:nth-child(1) {
+            width: 15%;
+        }
+
+        /* 공용설비ID */
+        .table th:nth-child(2), .table td:nth-child(2) {
+            width: 30%;
+        }
+
+        /* 차량명 */
+        .table th:nth-child(3), .table td:nth-child(3) {
+            width: 20%;
+        }
+
+        /* 차량번호 */
+        .table th:nth-child(4), .table td:nth-child(4) {
+            width: 10%;
+        }
+
+        /* 수용인원 */
+        .table th:nth-child(5), .table td:nth-child(5) {
+            width: 10%;
+        }
+
+        /* 반납여부 */
+        .table th:nth-child(6), .table td:nth-child(6) {
+            width: 15%;
+        }
+
+        /* 관리 */
     </style>
 </head>
 <body>
@@ -26,17 +61,14 @@
 <div class="container bg-white p-4 shadow rounded">
     <h2 class="mb-0">🚗 차량관리시스템</h2>
 
-    <!-- 검색 및 필터 폼 (회의실 예약리스트 스타일 적용) -->
     <form id="searchForm" class="row mb-4 g-2 align-items-end">
         <input type="hidden" name="facType" value="vehicle">
 
-        <!-- 차량명/공용설비ID -->
         <div class="col-md-5">
             <label for="keyword" class="form-label fw-medium">차량명 / 공용설비ID</label>
             <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: G70">
         </div>
 
-        <!-- 반납 여부 -->
         <div class="col-md-3">
             <label for="rentYn" class="form-label fw-medium">반납 여부</label>
             <select name="rentYn" id="rentYn" class="form-select">
@@ -46,14 +78,12 @@
             </select>
         </div>
 
-        <!-- 검색 버튼 -->
         <div class="col-md-2 d-grid">
             <button type="submit" class="btn btn-primary">
                 <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
             </button>
         </div>
 
-        <!-- 등록 버튼 -->
         <div class="col-md-2 d-grid">
             <a href="getVehicleForm" class="btn btn-success">
                 <i class="fa-solid fa-plus me-1"></i> 차량 등록
@@ -61,7 +91,6 @@
         </div>
     </form>
 
-    <!-- 테이블 -->
     <table class="table table-bordered text-center align-middle">
         <thead class="table-light">
         <tr>
@@ -80,7 +109,6 @@
         </tbody>
     </table>
 
-    <!-- 페이징 -->
     <nav class="mt-4">
         <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
@@ -122,16 +150,17 @@
         if (!list || list.length === 0) {
             html = "<tr><td colspan='6'>데이터가 없습니다.</td></tr>";
         } else {
-            $.each(list, function (i, c) {
+            $.each(list, function (i, v) {
                 html += "<tr>"
-                    + "<td>" + c.facId + "</td>"
-                    + "<td>" + c.facName + "</td>"
-                    + "<td>" + c.facUid + "</td>"
-                    + "<td>" + c.capacity + "</td>"
-                    + "<td>" + c.rentYn + "</td>"
+                    + "<td>" + v.facId + "</td>"
+                    + "<td>" + v.facName + "</td>"
+                    + "<td>" + v.facUid + "</td>"
+                    + "<td>" + v.capacity + "</td>"
+                    + "<td>" + v.rentYn + "</td>"
                     + "<td>";
-                if (c.rentYn === 'Y') {
-                    html += "<button class='btn btn-outline-danger btn-sm' onclick=\"confirmDelete('" + c.facId + "','" + c.facName + "','" + c.facType + "')\">삭제하기</button>";
+                // 반납여부가 'Y'일 때만 삭제 버튼 표시
+                if (v.rentYn === "Y") {
+                    html += "<button class='btn btn-outline-danger btn-sm' onclick=\"confirmDelete('" + v.facId + "','" + v.facName + "','" + v.facType + "')\">삭제하기</button>";
                 }
                 html += "</td></tr>";
             });
