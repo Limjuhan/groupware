@@ -25,13 +25,22 @@
             color: white;
             font-size: 1.2rem;
         }
+        .page-content {
+            width: 100%;
+            min-height: calc(100vh - 160px);
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
 
-<div class="container  p-4  rounded">
+<div class="page-content">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-">받은 전자결재</h2>
+        <h2 class="fw-bold">받은 전자결재</h2>
     </div>
 
     <!-- 검색 필터 -->
@@ -66,6 +75,7 @@
     </div>
 
     <!-- 결재문서 테이블 -->
+    <h5 class="mb-3">받은 결재문서 목록</h5>
     <table class="table table-hover table-bordered text-center align-middle " id="approvalTable">
         <thead class="table-light">
         <tr>

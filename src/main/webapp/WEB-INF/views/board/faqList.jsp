@@ -32,6 +32,15 @@
         .page-link {
             cursor: pointer;
         }
+        .page-content {
+            width: 100%;
+            min-height: calc(100vh - 160px);
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+        }
     </style>
     <script>
         // FAQ 목록을 불러오는 함수
@@ -140,7 +149,7 @@
     </script>
 </head>
 <body>
-<div class="container mt-5">
+<div class="page-content">
     <h3 class="fw-bold mb-4">자주 묻는 질문 (FAQ)</h3>
 
     <form class="row g-2 mb-4">

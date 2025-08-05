@@ -89,7 +89,7 @@
 <div class="page-content">
     <!-- 페이지 제목 -->
     <div class="d-flex justify-content-between align-items-center page-title">
-        <h2>전자결재</h2>
+        <h2 class="fw-bold">전자결재</h2>
         <a href="draftForm" class="btn btn-primary">+ 새 결재문서 작성</a>
     </div>
 
