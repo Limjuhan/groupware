@@ -28,6 +28,15 @@
         .page-link {
             cursor: pointer;
         }
+        .page-content {
+            width: 100%;
+            min-height: calc(100vh - 160px);
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+        }
     </style>
     <script>
         function goForm(url) {
@@ -151,7 +160,7 @@
     </script>
 </head>
 <body>
-<div class="container mt-5">
+<div class="page-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold">질문 게시판</h3>
         <div>
