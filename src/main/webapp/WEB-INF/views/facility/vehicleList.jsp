@@ -22,26 +22,48 @@
         .page-link {
             cursor: pointer;
         }
+
+        /* 테이블 컬럼 너비 고정 */
+        .table th:nth-child(1), .table td:nth-child(1) {
+            width: 15%;
+        }
+
+        /* 공용설비ID */
+        .table th:nth-child(2), .table td:nth-child(2) {
+            width: 30%;
+        }
+
+        /* 차량명 */
+        .table th:nth-child(3), .table td:nth-child(3) {
+            width: 25%;
+        }
+
+        /* 식별번호 */
+        .table th:nth-child(4), .table td:nth-child(4) {
+            width: 10%;
+        }
+
+        /* 수용인원 */
+        .table th:nth-child(5), .table td:nth-child(5) {
+            width: 20%;
+        }
+
+        /* 예약 */
     </style>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 
 <div class="container bg-white p-4 shadow rounded">
     <h2 class="mb-0">🚗 차량예약리스트</h2>
 
-    <!-- 검색 및 필터 폼 (차량관리 스타일 적용) -->
     <form id="searchForm" class="row mb-4 g-2 align-items-end">
         <input type="hidden" name="facType" value="vehicle">
 
-        <!-- 차량명/공용설비ID -->
         <div class="col-md-5">
             <label for="keyword" class="form-label fw-medium">차량명 / 공용설비ID</label>
             <input type="text" id="keyword" name="keyword" class="form-control" placeholder="예: G70">
         </div>
 
-        <!-- 반납 여부 -->
         <div class="col-md-3">
             <label for="rentYn" class="form-label fw-medium">반납 여부</label>
             <select name="rentYn" id="rentYn" class="form-select">
@@ -51,7 +73,6 @@
             </select>
         </div>
 
-        <!-- 검색 버튼 -->
         <div class="col-md-2 d-grid">
             <button type="submit" class="btn btn-primary">
                 <i class="fa-solid fa-magnifying-glass me-1"></i> 검색
@@ -59,7 +80,6 @@
         </div>
     </form>
 
-    <!-- 테이블 -->
     <table class="table table-bordered text-center align-middle">
         <thead class="table-light">
         <tr>
@@ -67,7 +87,6 @@
             <th>차량명</th>
             <th>식별번호</th>
             <th>수용인원</th>
-            <th>반납여부</th>
             <th>예약</th>
         </tr>
         </thead>
@@ -75,13 +94,11 @@
         </tbody>
     </table>
 
-    <!-- 페이징 -->
     <nav class="mt-4">
         <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
 </div>
 
-<!-- 예약 모달 -->
 <div class="modal fade" id="reserveModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -185,7 +202,7 @@
     function renderTable(list) {
         let html = "";
         if (!list || list.length === 0) {
-            html = "<tr><td colspan='6'>데이터가 없습니다.</td></tr>";
+            html = "<tr><td colspan='5'>데이터가 없습니다.</td></tr>";
         } else {
             $.each(list, function (i, v) {
                 html += "<tr>"
@@ -193,11 +210,12 @@
                     + "<td>" + v.facName + "</td>"
                     + "<td>" + v.facUid + "</td>"
                     + "<td>" + v.capacity + "</td>"
-                    + "<td>" + v.rentYn + "</td>"
                     + "<td>";
                 if (v.rentYn === "Y") {
                     html += "<button class='btn btn-outline-primary btn-sm' "
                         + "onclick=\"openModal('" + v.facId + "','" + v.facName + "')\">예약하기</button>";
+                } else {
+                    html += "-";
                 }
                 html += "</td></tr>";
             });

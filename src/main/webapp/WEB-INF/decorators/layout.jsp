@@ -115,6 +115,11 @@
             box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
         }
 
+        #searchResults {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
         /* 알람 드롭다운 목록 스타일 */
         #alarmList {
             min-width: 350px; /* 드롭다운 너비 유지 */

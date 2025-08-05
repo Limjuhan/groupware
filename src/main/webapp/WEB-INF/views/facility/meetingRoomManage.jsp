@@ -22,6 +22,38 @@
         .page-link {
             cursor: pointer;
         }
+
+        /* 테이블 컬럼 너비 고정 */
+        .table th:nth-child(1), .table td:nth-child(1) {
+            width: 15%;
+        }
+
+        /* 공용설비ID */
+        .table th:nth-child(2), .table td:nth-child(2) {
+            width: 30%;
+        }
+
+        /* 회의실명 */
+        .table th:nth-child(3), .table td:nth-child(3) {
+            width: 20%;
+        }
+
+        /* 식별번호 */
+        .table th:nth-child(4), .table td:nth-child(4) {
+            width: 10%;
+        }
+
+        /* 수용인원 */
+        .table th:nth-child(5), .table td:nth-child(5) {
+            width: 10%;
+        }
+
+        /* 반납여부 */
+        .table th:nth-child(6), .table td:nth-child(6) {
+            width: 15%;
+        }
+
+        /* 관리 */
     </style>
 </head>
 <body>
@@ -29,7 +61,6 @@
 <div class="container bg-white p-4 shadow rounded">
     <h2 class="mb-4">🏢 회의실관리</h2>
 
-    <!-- 검색폼 -->
     <form id="searchForm" class="row mb-4 g-2 align-items-end">
         <div class="col-md-5">
             <label for="keyword" class="form-label fw-medium">회의실명 / 공용설비ID</label>
@@ -55,7 +86,6 @@
         </div>
     </form>
 
-    <!-- 테이블 -->
     <table class="table table-bordered text-center align-middle">
         <thead class="table-light">
         <tr>
@@ -74,7 +104,6 @@
         </tbody>
     </table>
 
-    <!-- 페이징 -->
     <nav class="mt-4">
         <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>

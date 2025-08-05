@@ -22,6 +22,37 @@
         .page-link {
             cursor: pointer;
         }
+
+        /* 공용설비ID*/
+        .table th:nth-child(1), .table td:nth-child(1) {
+            width: 15%;
+        }
+
+        /* 비품명 */
+        .table th:nth-child(2), .table td:nth-child(2) {
+            width: 30%;
+        }
+
+        /* 식별번호 */
+        .table th:nth-child(3), .table td:nth-child(3) {
+            width: 20%;
+        }
+
+        /* 수량 */
+        .table th:nth-child(4), .table td:nth-child(4) {
+            width: 10%;
+        }
+
+        /* 반납여부 */
+        .table th:nth-child(5), .table td:nth-child(5) {
+            width: 10%;
+        }
+
+        /* 관리 */
+        .table th:nth-child(6), .table td:nth-child(6) {
+            width: 15%;
+        }
+
     </style>
 </head>
 <body>
@@ -31,7 +62,6 @@
         <i class="fa-solid fa-box-open me-2"></i> 비품 관리
     </h2>
 
-    <!-- 검색폼 -->
     <form id="searchForm" class="row mb-4 g-2 align-items-end">
         <div class="col-md-5">
             <label for="keyword" class="form-label fw-medium">비품명 / 공용설비ID</label>
@@ -57,14 +87,13 @@
         </div>
     </form>
 
-    <!-- 테이블 -->
     <table class="table table-bordered text-center align-middle">
         <thead class="table-light">
         <tr>
             <th>공용설비ID</th>
             <th>비품명</th>
             <th>식별번호</th>
-            <th>갯수</th>
+            <th>수량</th>
             <th>반납여부</th>
             <th>관리</th>
         </tr>
@@ -76,7 +105,6 @@
         </tbody>
     </table>
 
-    <!-- 페이징 -->
     <nav class="mt-4">
         <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
@@ -123,10 +151,9 @@
                     + "<td>" + v.capacity + "</td>"
                     + "<td>" + v.rentYn + "</td>"
                     + "<td>";
-                if (v.rentYn === "Y") {
-                    html += "<button class='btn btn-outline-danger btn-sm' "
-                        + "onclick=\"confirmDelete('" + v.facId + "','" + v.facName + "','" + v.facType + "')\">삭제하기</button>";
-                }
+                // 반납여부와 관계없이 삭제 버튼 표시
+                html += "<button class='btn btn-outline-danger btn-sm' "
+                    + "onclick=\"confirmDelete('" + v.facId + "','" + v.facName + "','" + v.facType + "')\">삭제하기</button>";
                 html += "</td></tr>";
             });
         }

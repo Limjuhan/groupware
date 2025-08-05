@@ -8,6 +8,15 @@
     <meta charset="UTF-8">
     <title>사원 관리 - LDBSOFT</title>
     <style>
+        body {
+            background-color: #f4f6f9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin-top: 40px;
+        }
+
         /* 클릭 가능한 이름 스타일 */
         .name-link {
             text-decoration: underline;
@@ -39,6 +48,32 @@
             background-color: #f8f9fa;
             color: #6c757d;
         }
+
+        /* 사원번호 */
+        .table th:nth-child(1), .table td:nth-child(1) {
+            width: 25%;
+        }
+
+        /* 이름 */
+        .table th:nth-child(2), .table td:nth-child(2) {
+            width: 25%;
+        }
+
+        /* 부서 */
+        .table th:nth-child(3), .table td:nth-child(3) {
+            width: 25%;
+        }
+
+        /* 직급 */
+        .table th:nth-child(4), .table td:nth-child(4) {
+            width: 15%;
+        }
+
+        /* 관리 */
+        .table th:nth-child(5), .table td:nth-child(5) {
+            width: 15%;
+        }
+
     </style>
     <script>
         function openEmployeeDetail(memId) {

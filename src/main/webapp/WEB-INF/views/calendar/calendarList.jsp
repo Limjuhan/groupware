@@ -61,6 +61,33 @@
         .table th, .table td {
             border: 1px solid #dee2e6;
         }
+
+        /* 테이블 컬럼 너비 고정 */
+        .table th:nth-child(1), .table td:nth-child(1) {
+            width: 25%;
+        }
+
+        /* 제목 */
+        .table th:nth-child(2), .table td:nth-child(2) {
+            width: 15%;
+        }
+
+        /* 시작일 */
+        .table th:nth-child(3), .table td:nth-child(3) {
+            width: 15%;
+        }
+
+        /* 종료일 */
+        .table th:nth-child(4), .table td:nth-child(4) {
+            width: 30%;
+        }
+
+        /* 내용 */
+        .table th:nth-child(5), .table td:nth-child(5) {
+            width: 15%;
+        }
+
+        /* 관리 */
     </style>
     <script>
         // 일정 목록을 불러오는 함수
