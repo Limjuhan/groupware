@@ -52,12 +52,20 @@
             width: 20%;
         }
 
-        /* 예약 */
+        .page-content {
+            width: 100%;
+            min-height: calc(100vh - 160px);
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
 
-<div class="container bg-white p-4 shadow rounded">
+<div class="page-content">
     <h2 class="mb-4">🏢 회의실 리스트</h2>
 
     <form id="searchForm" class="row mb-4 g-2 align-items-end">
