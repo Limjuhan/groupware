@@ -24,7 +24,7 @@
 </head>
 <body>
 
-<div class="container  p-4  rounded">
+<div class="container p-4  rounded">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-">전자결재 상세보기</h2>
 

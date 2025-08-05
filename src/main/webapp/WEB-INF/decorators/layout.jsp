@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -211,6 +210,28 @@
             color: #6c757d;
             text-align: center;
         }
+
+        /* 모든 JSP 공통 컨테이너 */
+        .page-container {
+            flex: 1; /* 남은 공간 전부 채움 */
+            min-height: 100%; /* content-wrapper 높이 전부 사용 */
+            padding: 20px; /* 내부 여백 유지, 필요없으면 0으로 */
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 0; /* 모서리 둥글기 제거 가능 */
+            box-sizing: border-box;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* content-wrapper 전체 화면 높이 사용 */
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 60px); /* 상단 네비게이션 제외한 전체 높이 */
+        }
+
     </style>
     <sitemesh:write property="head"/>
 </head>
@@ -283,7 +304,8 @@
                                 <li class="nav-item"><a class="nav-link" href="/board/getQnaList">질문게시판</a></li>
                             </c:if>
                             <c:if test="${fn:contains(allowedMenus, 'A_0006') || fn:startsWith(sessionScope.loginId,'admin') }">
-                                <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage">자주묻는질문 관리</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/board/getFaqListManage">자주묻는질문 관리</a>
+                                </li>
                             </c:if>
                         </ul>
                     </div>
@@ -394,11 +416,11 @@
             </c:if>
         </ul>
     </div>
-    <div class="flex-fill">
-        <div class="glass-content">
-            <sitemesh:write property="body"/>
-        </div>
+
+    <div class="page-container">
+        <sitemesh:write property="body"/>
     </div>
+
 </div>
 <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -676,4 +698,3 @@
 </script>
 </body>
 </html>
-```

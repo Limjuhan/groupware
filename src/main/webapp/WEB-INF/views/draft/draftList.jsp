@@ -23,10 +23,10 @@
 </head>
 <body>
 
-<div class="container bg-glass p-4  rounded">
+<div class="container  p-4  rounded">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>전자결재</h2>
-        <a href="draftForm" class="btn btn-primary bg-glass">+ 새 결재문서 작성</a>
+        <a href="draftForm" class="btn btn-primary ">+ 새 결재문서 작성</a>
     </div>
 
     <!-- 검색 영역 -->
@@ -54,20 +54,20 @@
         <!-- 검색어 입력 -->
         <div class="col-md-4">
             <label for="searchKeyword" class="form-label small mb-1">검색어 입력</label>
-            <input type="text" id="searchKeyword" class="form-control bg-glass" placeholder="검색어 입력">
+            <input type="text" id="searchKeyword" class="form-control " placeholder="검색어 입력">
         </div>
 
         <!-- 검색 버튼 -->
         <div class="col-md-2">
             <label class="form-label small mb-1">&nbsp;</label>
-            <button type="button" class="btn btn-primary w-100 bg-glass" onclick="searchMyDraftList()">검색</button>
+            <button type="button" class="btn btn-primary w-100 " onclick="searchMyDraftList()">검색</button>
         </div>
     </div>
 
 
     <!-- 결재문서 리스트 -->
     <h5 class="mb-3">내 결재문서 목록</h5>
-    <table class="table table-hover table-bordered text-center align-middle bg-glass" id="documentTable">
+    <table class="table table-hover table-bordered text-center align-middle " id="documentTable">
         <thead class="table-light">
         <tr>
             <th>문서번호</th>
@@ -146,7 +146,7 @@
 
                         var isTemp =
                             draft.status == 0 ? "<td><a href='#' onclick=\"deleteMyDraft('" + draft.docId + "','" + draft.formCode + "','" + draft.status + "')\" " +
-                                "class='btn btn-sm btn-outline-danger bg-glass'>삭제</a></td>" : "<td>-</td>";
+                                "class='btn btn-sm btn-outline-danger '>삭제</a></td>" : "<td>-</td>";
 
                         var row = "<tr class='" + (draft.readYn === 'N' ? "fw-bold" : "text-muted") + "'>" +
                             "<td>" + draft.docId + "</td>" +
@@ -183,35 +183,35 @@
         // 처음으로
         if (pageDto.page > 1) {
             html += "<li class='page-item'>" +
-                "<a class='page-link bg-glass ' href='#' onclick='searchMyDraftList(1)'>&laquo;&laquo;</a>" +
+                "<a class='page-link  ' href='#' onclick='searchMyDraftList(1)'>&laquo;&laquo;</a>" +
                 "</li>";
         }
 
         // 이전
         if (pageDto.page > 1) {
             html += "<li class='page-item'>" +
-                "<a class='page-link bg-glass ' href='#' onclick='searchMyDraftList(" + (pageDto.page - 1) + ")'>&laquo;</a>" +
+                "<a class='page-link  ' href='#' onclick='searchMyDraftList(" + (pageDto.page - 1) + ")'>&laquo;</a>" +
                 "</li>";
         }
 
         // 페이지 번호
         for (let i = pageDto.startPage; i <= pageDto.endPage; i++) {
             html += "<li class='page-item" + (pageDto.page === i ? " active" : "") + "'>" +
-                "<a class='page-link bg-glass ' href='#' onclick='searchMyDraftList(" + i + ")'>" + i + "</a>" +
+                "<a class='page-link  ' href='#' onclick='searchMyDraftList(" + i + ")'>" + i + "</a>" +
                 "</li>";
         }
 
         // 다음
         if (pageDto.page < pageDto.totalPages) {
             html += "<li class='page-item'>" +
-                "<a class='page-link bg-glass ' href='#' onclick='searchMyDraftList(" + (pageDto.page + 1) + ")'>&raquo;</a>" +
+                "<a class='page-link  ' href='#' onclick='searchMyDraftList(" + (pageDto.page + 1) + ")'>&raquo;</a>" +
                 "</li>";
         }
 
         // 끝으로
         if (pageDto.page < pageDto.totalPages) {
             html += "<li class='page-item'>" +
-                "<a class='page-link bg-glass ' href='#' onclick='searchMyDraftList(" + pageDto.totalPages + ")'>&raquo;&raquo;</a>" +
+                "<a class='page-link  ' href='#' onclick='searchMyDraftList(" + pageDto.totalPages + ")'>&raquo;&raquo;</a>" +
                 "</li>";
         }
 
