@@ -31,11 +31,7 @@ public class FacilityController {
 
     //차량예약 페이지(A_0009)
     @GetMapping("getVehicleList")
-    public String getVehicleList(Model model, PaginationDto pageDto, SearchDto searchDto) {
-        searchDto.setFacType(CommTypeDto.VEHICLE_TYPE);
-        Map<String, Object> map = service.getFacilityList(pageDto, searchDto);
-        model.addAttribute("facility", map.get("list"));
-        model.addAttribute("pageDto", map.get("pageDto"));
+    public String getVehicleList() {
         return "facility/vehicleList";
 
     }
@@ -55,31 +51,19 @@ public class FacilityController {
 
     //회의실 예약페이지(A_0010)
     @GetMapping("getMeetingRoomList")
-    public String getMeetingRoomList(Model model, PaginationDto dto, SearchDto dto2) {
-        dto2.setFacType(CommTypeDto.ROOM_TYPE);
-        Map<String, Object> map = service.getFacilityList(dto, dto2);
-        model.addAttribute("facility", map.get("list"));
-        model.addAttribute("pageDto", map.get("pageDto"));
+    public String getMeetingRoomList() {
         return "facility/meetingRoomList";
     }
 
     //비품예약페이지 (A_0011)
     @GetMapping("getItemList")
-    public String getItemList(Model model, PaginationDto dto, SearchDto dto2) {
-        dto2.setFacType(CommTypeDto.ITEM_TYPE);
-        Map<String, Object> map = service.getFacilityList(dto, dto2);
-        model.addAttribute("facility", map.get("list"));
-        model.addAttribute("pageDto", map.get("pageDto"));
+    public String getItemList() {
         return "facility/itemList";
     }
 
     //내 예약내역(A_0012)
     @GetMapping("getReservationList")
-    public String getReservationList(Model model, PaginationDto dto, SearchDto sDto, HttpServletRequest request) {
-        System.out.println("sdto :: " + sDto);
-        Map<String, Object> map = service.getReserveList(dto, sDto, request);
-        model.addAttribute("pageDto", map.get("pageDto"));
-        model.addAttribute("facility", map.get("facility"));
+    public String getReservationList() {
         return "facility/reservationList";
     }
 
