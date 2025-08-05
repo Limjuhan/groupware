@@ -30,58 +30,59 @@ public class MenuAuthorityInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession(false);
+        String uri = request.getRequestURI();
+        String ctx = request.getContextPath();
 
-        // 세션 체크
+        // contextPath 제거
+        if (ctx != null && !ctx.isEmpty() && uri.startsWith(ctx)) {
+            uri = uri.substring(ctx.length());
+        }
+
+        // ===== 로그인 여부 체크 =====
         if (session == null || session.getAttribute("loginId") == null) {
-            String msg = "로그인 후 이용 부탁드립니다.";
-            String url = "/login/doLogin";
-            response.sendRedirect("/alert?url=" + url + "&msg=" + URLEncoder.encode(msg, StandardCharsets.UTF_8));
+            if ("/".equals(uri) || "/home".equals(uri)) {
+                response.sendRedirect("/login/doLogin");
+            } else {
+                response.sendRedirect("/login/doLogin");
+            }
             return false;
         }
 
         String loginId = (String) session.getAttribute("loginId");
 
-        String uri = request.getRequestURI();
-        String ctx = request.getContextPath();
-
-        if (ctx != null && !ctx.isEmpty() && uri.startsWith(ctx)) {
-            uri = uri.substring(ctx.length());
-        }
-
+        // =====  Ajax / 허용 예외 URI 체크 =====
         String ajaxHeader = request.getHeader("X-Requested-With");
-
         if ("XMLHttpRequest".equalsIgnoreCase(ajaxHeader) ||
                 uri.contains("cdn.jsdelivr.net") ||
                 uri.startsWith("/calendar/getScheduleList")) {
             return true;
         }
 
+        // ===== 관리자(admin)는 전체 통과 =====
         if ("admin".equalsIgnoreCase(loginId)) {
-            return true; // 모든 권한 통과
+            return true;
         }
 
+        // =====사용자 권한 조회 =====
         AuthDto auth = memberService.selectAuth(loginId);
-
-        // 부서별 기본 권한 조회
         List<String> allowedMenus = menuAuthorityMapper.selectAllowedMenus(auth.getDeptId(), auth.getRankId());
         request.setAttribute("allowedMenus", allowedMenus);
 
-        // admin이 아닌 경우에만 차단
-        Set<String> adminAuth = new HashSet<>(List.of("A_0021", "A_0019")); // 차단할 메뉴
-        if (!"admin".equalsIgnoreCase(loginId)) {
-            String menuCode = MenuConst.fromUri(uri);
-            if (menuCode != null && !menuCode.isEmpty() && adminAuth.contains(menuCode)) {
-                String msg = "해당 페이지에 대한 접근 권한이 없습니다. (관리자 전용)";
-                response.sendRedirect("/alert?url=/&msg=" + URLEncoder.encode(msg, StandardCharsets.UTF_8));
-                return false;
-            }
+        // ===== 관리자 전용 메뉴 차단 =====
+        Set<String> adminAuth = new HashSet<>(List.of("A_0021", "A_0019")); // 차단할 메뉴 코드
+        String menuCode = MenuConst.fromUri(uri);
+        if (menuCode != null && !menuCode.isEmpty() && adminAuth.contains(menuCode)) {
+            String msg = "해당 페이지에 대한 접근 권한이 없습니다. (관리자 전용)";
+            String url = "/home";
+            response.sendRedirect("/alert?url=" + url + "&msg=" + URLEncoder.encode(msg, StandardCharsets.UTF_8));
+            return false;
         }
 
-        // 기본 권한 체크
-        String menuCode = MenuConst.fromUri(uri);
-        if (!allowedMenus.contains(menuCode)) {
+        // =====기본 권한 체크 =====
+        if (menuCode != null && !allowedMenus.contains(menuCode)) {
             String msg = "해당 페이지의 접속 권한이 없습니다.";
-            response.sendRedirect("/alert?url=/&msg=" + URLEncoder.encode(msg, StandardCharsets.UTF_8));
+            String url = "/home";
+            response.sendRedirect("/alert?url=" + url + "&msg=" + URLEncoder.encode(msg, StandardCharsets.UTF_8));
             return false;
         }
 

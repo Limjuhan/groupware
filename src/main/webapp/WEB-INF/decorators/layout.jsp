@@ -193,7 +193,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid p-2">
-        <a class="navbar-brand" href="/"><i class="fa-solid fa-cubes"></i> LDBSOFT Groupware</a>
+        <a class="navbar-brand" href="/home"><i class="fa-solid fa-cubes"></i> LDBSOFT Groupware</a>
         <div class="d-flex">
             <div class="dropdown me-3">
                 <button class="btn" id="searchToggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -230,7 +230,7 @@
             <!-- 홈 -->
             <c:if test="${fn:contains(allowedMenus, 'A_0000') || fn:startsWith(sessionScope.loginId,'admin')}">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">
+                    <a class="nav-link" href="/home">
                         <i class="fa-solid fa-house"></i> 홈
                     </a>
                 </li>

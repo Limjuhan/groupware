@@ -23,7 +23,7 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    // 로그인 페이지 요청
+    // 로그인 페이지
     @GetMapping("doLogin")
     public String doLogin(Model model) {
         model.addAttribute("loginDto", new LoginDto());
@@ -55,19 +55,22 @@ public class LoginController {
             return "alert";
         }
 
+        // 세션 저장
         session.setAttribute("loginId", loginId);
         session.setMaxInactiveInterval(180 * 60); // 3시간
-        return "redirect:/";
+
+        // 로그인 성공 후 홈으로
+        return "redirect:/home";
     }
 
     // 로그아웃 처리
     @GetMapping("doLogout")
     public String doLogout(HttpServletRequest request) {
         loginService.logout(request);
-        return "redirect:/login/doLogin";
+        return "redirect:/";
     }
 
-    // 비밀번호 찾기
+    // 비밀번호 찾기 페이지
     @GetMapping("findPass")
     public String findPass(Model model) {
         model.addAttribute("pwCodeDto", new PwCodeDto());

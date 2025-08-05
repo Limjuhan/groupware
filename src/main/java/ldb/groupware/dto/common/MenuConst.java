@@ -1,7 +1,7 @@
 package ldb.groupware.dto.common;
 
 public enum MenuConst {
-    HOME("A_0000", new String[]{"/"}),
+    HOME("A_0000", new String[]{"/home"}),
     MEMBER_INFO("A_0001", new String[]{
             "/member/getMemberInfo", "/member/updateMemberInfo", "/member/passEditForm", "/member/updatePass"
     }),
