@@ -62,7 +62,7 @@
 <body>
 
 <div class="page-content">
-    <h2 class="mb-0">🚗 차량예약리스트</h2>
+    <h2 class="mb-4">🚗 차량예약리스트</h2>
 
     <form id="searchForm" class="row mb-4 g-2 align-items-end">
         <input type="hidden" name="facType" value="vehicle">
