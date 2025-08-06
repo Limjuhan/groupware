@@ -185,21 +185,27 @@
         where fac_uid = #{facUid}
     </select>
 
-    <select id="selectReservations">
+    <select id="selectReservations" resultType="MyFacilityReserveDto">
         SELECT fr.fac_id,
                c.comm_name,
                fi.fac_name,
                fi.fac_type,
+               fi.fac_uid,
                fr.renter_id,
+               fr.rent_yn,
+               fr.cancel_status,
                fr.start_at,
-               fr.end_at
+               fr.end_at,
+               fr.created_at
         FROM facility_info fi
                  INNER JOIN facility_rent fr ON fi.fac_id = fr.fac_id
-                 join common_type c on fr.fac_type = c.comm_code
+                 JOIN common_type c ON fr.fac_type = c.comm_code
         WHERE fr.end_at >= NOW()
           AND fr.renter_id = #{loginId}
           AND fr.rent_yn = 'N'
           AND fr.cancel_status = 'N'
-        ORDER BY fr.start_at ASC LIMIT 5
+        ORDER BY fr.start_at ASC
+            LIMIT 5
     </select>
+
 </mapper>

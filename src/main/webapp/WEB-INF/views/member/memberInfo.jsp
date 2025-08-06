@@ -63,34 +63,7 @@
         }
 
     </style>
-    <script>
-        function getPassEditForm() {
-            let op = "width=500,height=600,top=100,left=300,resizable=no,scrollbars=no";
-            window.open("/member/passEditForm", "비밀번호변경", op);
-        }
 
-        function removePhoto() {
-            if (confirm("사진을 삭제하시겠습니까?")) {
-                document.getElementById("profileImg").src = "/img/profile_default.png";
-                document.getElementById("deletePhoto").value = "${user.memPictureSavedName}";
-                const fileInput = document.getElementById("photoInput");
-                if (fileInput) fileInput.value = "";
-            }
-        }
-
-        window.addEventListener("DOMContentLoaded", function () {
-            document.getElementById('photoInput').addEventListener('change', function (e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (ev) {
-                        document.getElementById('profileImg').src = ev.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
-    </script>
 </head>
 <body>
 <div class="container">
@@ -207,5 +180,33 @@
         </form:form>
     </div>
 </div>
+<script>
+    function getPassEditForm() {
+        let op = "width=500,height=600,top=100,left=300,resizable=no,scrollbars=no";
+        window.open("/member/passEditForm", "비밀번호변경", op);
+    }
+
+    function removePhoto() {
+        if (confirm("사진을 삭제하시겠습니까?")) {
+            document.getElementById("profileImg").src = "/img/profile_default.png";
+            document.getElementById("deletePhoto").value = "${user.memPictureSavedName}";
+            const fileInput = document.getElementById("photoInput");
+            if (fileInput) fileInput.value = "";
+        }
+    }
+
+    window.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('photoInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    document.getElementById('profileImg').src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
 </body>
 </html>

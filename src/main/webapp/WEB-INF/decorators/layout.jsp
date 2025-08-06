@@ -21,6 +21,7 @@
             padding: 0;
             height: 100%; /* 전체 높이 고정 */
             background-color: #f8f9fa;
+            overflow: hidden;
         }
 
         body {

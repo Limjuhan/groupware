@@ -81,8 +81,7 @@ public class QnaController {
     @GetMapping("getQnaDetail")
     public  String getQnaDetail(Model model , HttpServletRequest request , @RequestParam("id")int  id) {
         System.out.println("getQuestionDetail컨트롤러 접근");
-        String loginId = "admin";
-        // loginId = (String)request.getSession().getAttribute("loginId");
+        String loginId = (String)request.getSession().getAttribute("loginId");
 
        Map<String,Object> map = service.findDetailById(id);
         model.addAttribute("loginId", loginId);
@@ -145,17 +144,29 @@ public class QnaController {
     }
 
     @GetMapping("deleteCommentByMng")
-    public String deleteCommentByMng(Model model , @RequestParam("id")  int id , @RequestParam("qnaId")int qnaId) {
-        System.out.println("qnaID :::::: "+qnaId);
-        if(service.deleteCommentById(id)){
-            model.addAttribute("msg","삭제성공");
+    public String deleteCommentByMng(Model model,
+                                     @RequestParam("id") int id,
+                                     @RequestParam("qnaId") int qnaId,
+                                     HttpServletRequest request) {
+        String loginId = (String) request.getSession().getAttribute("loginId");
+
+        // 댓글 작성자 확인
+        String writerId = service.getCommentWriter(id);
+        if (!loginId.equals(writerId)) {
+            model.addAttribute("msg", "삭제 권한이 없습니다.");
+            model.addAttribute("url", "getQnaDetail?id=" + qnaId);
+            return "alert";
         }
-        else{
-            model.addAttribute("msg","삭제실패");
+
+        if (service.deleteCommentById(id)) {
+            model.addAttribute("msg", "삭제 성공");
+        } else {
+            model.addAttribute("msg", "삭제 실패");
         }
-        model.addAttribute("url","getQnaDetail?id="+qnaId);
+        model.addAttribute("url", "getQnaDetail?id=" + qnaId);
         return "alert";
     }
+
 
 
 

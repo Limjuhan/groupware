@@ -1,8 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.*" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags/form" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -90,9 +88,13 @@
     <!-- 질문 박스 -->
     <div class="question-box">
         <div class="question-title">${q.qnaTitle}</div>
-        <div class="question-meta">작성자: ${q.memName} | 작성일: ${q.createFormat} | 수정일 : ${q.updateFormat}</div>
+        <div class="question-meta">
+            작성자: ${q.memName} | 작성일: ${q.createFormat} | 수정일 : ${q.updateFormat}
+        </div>
         <div class="question-content">${q.qnaContent}</div>
-        <c:if test="${attach != null }">
+
+        <!-- 첨부파일 -->
+        <c:if test="${attach != null}">
             <c:forEach items="${attach}" var="a">
                 <c:if test="${a.filePath != null}">
                     <div class="file-section mt-4">
@@ -102,33 +104,30 @@
                 </c:if>
             </c:forEach>
         </c:if>
-        <!-- 수정/삭제 버튼 -->
+
+        <!-- 수정/삭제 버튼: 질문 작성자만 -->
         <div class="btn-group">
             <a href="getQnaList" class="btn btn-outline-secondary">← 목록으로</a>
-            <div>
-                <a onclick="goForm('getQnaEditForm?id=${q.qnaId}')" class="btn btn-outline-primary me-2">수정</a>
-                <a href="deleteQnaByMng?id=${q.qnaId}" class="btn btn-outline-danger"
-                   onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-            </div>
-
+            <c:if test="${q.memId eq loginId}">
+                <div>
+                    <a onclick="goForm('getQnaEditForm?id=${q.qnaId}')" class="btn btn-outline-primary me-2">수정</a>
+                    <a href="deleteQnaByMng?id=${q.qnaId}" class="btn btn-outline-danger"
+                       onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                </div>
+            </c:if>
         </div>
-
     </div>
-
 
     <!-- 댓글 영역 -->
     <div class="comment-box">
         <h5 class="mb-3">댓글 <span class="text-muted"></span></h5>
-        <div id="commentList">
-            <%-- ajax이용호출 --%>
-        </div>
+        <div id="commentList"></div>
     </div>
-
 
     <!-- 댓글 작성 폼 -->
     <form:form id="commentForm" class="mt-4">
         <input type="hidden" name="qnaId" id="qnaId" value="${q.qnaId}">
-        <input type="hidden" name="memId" id="memId" value=${loginId}> <%--나중에세션으로?--%>
+        <input type="hidden" name="memId" id="memId" value="${loginId}">
         <div class="mb-3">
             <textarea name="commentText" id="commentText" class="form-control" rows="3" placeholder="댓글을 입력하세요."
                       onkeyup="delError(this)"></textarea>
@@ -140,15 +139,13 @@
     </form:form>
 </div>
 
-</div>
 <script>
-
     function goForm(url) {
         let op = "width=500,height=700,top=50,left=150";
         window.open(url, "", op);
     }
 
-    function delError(f) {
+    function delError() {
         $('#commentTextError').html('');
     }
 
@@ -162,17 +159,22 @@
             type: 'GET',
             data: {qnaId: qnaId},
             success: function (comments) {
-                console.log(comments);
+                let loginId = $('#memId').val();
                 let html = '';
                 comments.forEach(function (c) {
                     html += '<div class="comment-item position-relative">';
-                    html += '<a href="deleteCommentByMng?id=' + c.commentId + "&qnaId=" + qnaId + '" class="btn btn-sm btn-outline-danger position-absolute top-0 end-0" style="margin: 5px;" onclick="return confirm(\'정말 삭제하시겠습니까?\');">삭제</a>';
+                    // 작성자 본인만 삭제 버튼 표시
+                    if (c.memId === loginId) {
+                        html += '<a href="deleteCommentByMng?id=' + c.commentId + "&qnaId=" + qnaId +
+                            '" class="btn btn-sm btn-outline-danger position-absolute top-0 end-0" style="margin: 5px;"' +
+                            ' onclick="return confirm(\'정말 삭제하시겠습니까?\');">삭제</a>';
+                    }
                     html += '<div><strong>' + c.memName + '</strong></div>';
                     html += '<div class="mb-1">' + c.commentText + '</div>';
                     html += '<div class="comment-meta">' + c.createdAt + '</div>';
                     html += '</div>';
                 });
-                $('#commentList').html(html); // 새로운 댓글 삽입
+                $('#commentList').html(html);
             },
             error: function () {
                 alert('댓글 불러오기 실패');
@@ -181,36 +183,30 @@
     }
 
     $('#commentForm').on('submit', function (e) {
-        e.preventDefault(); //기본 동작(예: form submit 후 새로고침)을 막는다
+        e.preventDefault();
         let commentFormDto = JSON.stringify({
             qnaId: $('#qnaId').val(),
             memId: $('#memId').val(),
             commentText: $('#commentText').val()
-        })
+        });
         $.ajax({
             url: "/api/qna/insertComment",
             type: "POST",
-            data: commentFormDto, //JSON객체로변환
-            contentType: 'application/json', //JSON타입임을 명시
-
-            success: function (response) {
+            data: commentFormDto,
+            contentType: 'application/json',
+            success: function () {
                 loadComments($('#qnaId').val());
                 $('#commentText').val('');
             },
             error: function (xhr) {
                 if (xhr.status === 400 && xhr.responseJSON && xhr.responseJSON.data) {
-                    let error = xhr.responseJSON.data;
-                    console.log(error);
-                    $('#commentTextError').html(error.commentText);
+                    $('#commentTextError').html(xhr.responseJSON.data.commentText);
                 } else {
-                    alert('수정 실패: ' + (xhr.responseJSON ? xhr.responseJSON.error : "서버 오류"));
+                    alert('댓글 등록 실패');
                 }
             }
-
-
-        })
-
-    })
+        });
+    });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

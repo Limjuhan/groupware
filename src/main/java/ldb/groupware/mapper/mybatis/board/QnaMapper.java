@@ -30,4 +30,6 @@ public interface QnaMapper {
     int deleteById(int id);
 
     int deleteCommentById(int id);
+
+    String getCommentWriter(int commentId);
 }

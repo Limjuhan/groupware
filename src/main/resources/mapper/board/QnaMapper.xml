@@ -108,5 +108,9 @@
         where comment_id = #{val}
     </delete>
 
+    <select id="getCommentWriter" parameterType="int" resultType="string">
+        SELECT mem_id FROM qna_comment WHERE comment_id = #{commentId}
+    </select>
+
 
 </mapper>

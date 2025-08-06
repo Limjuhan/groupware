@@ -113,4 +113,9 @@ public class QnaService {
         }
         return false;
     }
+
+    public String getCommentWriter(int commentId) {
+        return mapper.getCommentWriter(commentId);
+    }
+
 }
