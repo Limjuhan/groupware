@@ -170,7 +170,7 @@
                             '<td>' + schedule.scheduleContent + '</td>' +
                             '<td>' +
                             '<a href="getCalendarEditForm?scheduleId=' + schedule.scheduleId + '" class="btn btn-sm btn-warning">수정</a>' +
-                            '<button class="btn btn-sm btn-danger" onclick="removeSchedule(' + schedule.scheduleId + ')">삭제</button>' +
+                            '<button class="btn btn-sm btn-danger ms-3" onclick="removeSchedule(' + schedule.scheduleId + ')">삭제</button>' +
                             '</td>' +
                             '</tr>';
                         $tableBody.append(row);

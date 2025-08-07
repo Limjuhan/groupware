@@ -25,7 +25,7 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h3 class="fw-bold mb-4">공지사항 작성</h3>
+    <h3 class="fw-bold mb-4">공지사항 수정</h3>
 
     <!-- 파일 업로드를 위해 multipart/form-data 필요 -->
     <form:form action="updateNoticeByMng"  modelAttribute="noticeUpdateDto"   method="post" enctype="multipart/form-data">

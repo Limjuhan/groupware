@@ -9,9 +9,7 @@
     <meta charset="UTF-8">
     <title>질문 작성</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- jQuery (필수) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Summernote CSS/JS -->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <style>
@@ -36,22 +34,21 @@
 
         <!-- 작성자 (자동 입력) -->
         <div class="mb-4">
-            <label for="v" class="form-label">작성자</label>
-            <input type="text" class="form-control" id="memName" name="memName" value="${memName}" readonly>
-            <input type="hidden" name="memId" value="${loginId}">
+            <label class="form-label">작성자</label>
+            <form:input path="memName" cssClass="form-control" readonly="true"/>
+            <form:hidden path="memId"/>
         </div>
         <!-- 제목 -->
         <div class="mb-3">
-            <label for="qnaTitle" class="form-label">질문 제목</label>
-            <input type="text" class="form-control" id="qnaTitle" name="qnaTitle" placeholder="예: 연차 신청은 어떻게 하나요?">
+            <label class="form-label">질문 제목</label>
+            <form:input path="qnaTitle" cssClass="form-control" placeholder="예: 연차 신청은 어떻게 하나요?"/>
             <p style="color: red"><form:errors path="qnaTitle"/></p>
         </div>
-
         <!-- 내용 -->
         <div class="mb-3">
-            <label for="qnaContent" class="form-label">질문 내용</label>
-            <textarea class="form-control" id="qnaContent" name="qnaContent" rows="7"
-                      placeholder="질문의 상세 내용을 입력해 주세요."></textarea>
+            <label class="form-label">질문 내용</label>
+            <form:textarea path="qnaContent" cssClass="form-control" rows="7" id="qnaContent"
+                           placeholder="질문의 상세 내용을 입력해 주세요."/>
             <p style="color: red"><form:errors path="qnaContent"/></p>
         </div>
         <!-- 첨부파일 -->
@@ -78,7 +75,7 @@
         document.querySelector("form").reset();
 
         // 2. summernote 내용 초기화
-        $('#qnaContent').summernote('reset'); // 또는 .code('')
+        $('#qnaContent').summernote('reset');
     }
 
     function addFileInput() {
@@ -89,14 +86,13 @@
         container.appendChild(newInput);
     }
 
-    $(document).ready(function () { /*summerNote*/
+    $(document).ready(function () {
         $('#qnaContent').summernote({
             height: 300,
             placeholder: '질문 내용을 입력하세요',
             lang: 'ko-KR'
         });
     });
-
     function addFileInput() {
         const container = document.getElementById("fileInputs");
         const newInput = document.createElement("div");
@@ -104,8 +100,6 @@
         newInput.innerHTML = '<input class="form-control" type="file" name="uploadFile" />'; //동적으로 파일추가를
         container.appendChild(newInput);
     }
-
-
 </script>
 </body>
 </html>

@@ -23,7 +23,7 @@ public class SiteMeshConfig  {
                         .addExcludedPath("/alert")
 
                         .addExcludedPath("/member/passEditForm")
-                        .addExcludedPath("/member/UpdatePass")
+                        .addExcludedPath("/member/updatePass")
 
                         .addExcludedPath("/board/getFaqForm")
                         .addExcludedPath("/board/insertFaqByMng")

@@ -47,6 +47,7 @@ public class QnaController {
         String memName = memService.findNameById(loginId);//나중에 세션으로바꿔야함
         model.addAttribute("memName", memName);
         model.addAttribute("loginId", loginId);
+        model.addAttribute("qnaFormDto", new QnaFormDto());
         return  "board/qnaForm";
     }
 

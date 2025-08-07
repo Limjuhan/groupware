@@ -169,7 +169,7 @@
     <select id="findNameById" parameterType="String" resultType="String">
         SELECT mem_name
         FROM member
-        WHERE mem_id = #{val}
+        WHERE mem_id = #{loginId}
     </select>
 
     <!-- 이메일 조회 -->
