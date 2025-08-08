@@ -158,34 +158,37 @@
 
     // 페이징을 렌더링하는 함수
     function renderPagination(pagination) {
-        var $paginationArea = $('#paginationArea').empty();
+        const $paginationArea = $('#paginationArea').empty();
         if (!pagination) return;
 
-        var html = '<ul class="pagination justify-content-center">';
-        var currentPage = pagination.page;
-        var startPage = pagination.startPage;
-        var endPage = pagination.endPage;
-        var totalPages = pagination.totalPages;
+        let html = '<ul class="pagination justify-content-center">';
+        const currentPage = pagination.page;
+        const startPage = pagination.startPage;
+        const endPage = pagination.endPage;
+        const totalPages = pagination.totalPages;
 
-        // 이전 페이지 버튼
-        var prevClass = currentPage > 1 ? '' : 'disabled';
-        html += '<li class="page-item ' + prevClass + '"><a class="page-link" onclick="loadQnaList(' + (currentPage - 1) + ');">이전</a></li>';
+        // 이전 버튼 (첫 페이지 아닐 때만 노출)
+        if (currentPage > 1) {
+            html += '<li class="page-item"><a class="page-link" onclick="loadQnaList(' + (currentPage - 1) + ');">이전</a></li>';
+        }
 
-        // 페이지 번호 버튼
-        for (var i = startPage; i <= endPage; i++) {
-            var activeClass = currentPage === i ? ' active' : '';
+        // 페이지 번호
+        for (let i = startPage; i <= endPage; i++) {
+            const activeClass = (currentPage === i) ? ' active' : '';
             html += '<li class="page-item' + activeClass + '">' +
                 '<a class="page-link" onclick="loadQnaList(' + i + ');">' + i + '</a>' +
                 '</li>';
         }
 
-        // 다음 페이지 버튼
-        var nextClass = currentPage < totalPages ? '' : 'disabled';
-        html += '<li class="page-item ' + nextClass + '"><a class="page-link" onclick="loadQnaList(' + (currentPage + 1) + ');">다음</a></li>';
+        // 다음 버튼 (마지막 페이지 아닐 때만 노출)
+        if (currentPage < totalPages) {
+            html += '<li class="page-item"><a class="page-link" onclick="loadQnaList(' + (currentPage + 1) + ');">다음</a></li>';
+        }
 
         html += '</ul>';
         $paginationArea.append(html);
     }
+
 
     // FAQ 모달에 FAQ 목록을 렌더링하는 함수
     function renderFaq(faqList) {

@@ -45,9 +45,10 @@ public class QnaController {
     public String getQnaForm(Model model , HttpServletRequest request) {
         String loginId = (String) request.getSession().getAttribute("loginId");
         String memName = memService.findNameById(loginId);//나중에 세션으로바꿔야함
-        model.addAttribute("memName", memName);
-        model.addAttribute("loginId", loginId);
-        model.addAttribute("qnaFormDto", new QnaFormDto());
+        QnaFormDto dto = new QnaFormDto();
+        dto.setMemName(memName);
+        dto.setMemId(loginId);
+        model.addAttribute("qnaFormDto", dto);
         return  "board/qnaForm";
     }
 
