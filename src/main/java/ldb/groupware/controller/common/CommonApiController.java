@@ -21,8 +21,8 @@ public class CommonApiController {
 
     // 코드 그룹별 조회
     @GetMapping("/list")
-    public ResponseEntity<ApiResponseDto<Map<String, List<CommonCodeDto>>>> getCodeList() {
-        Map<String, List<CommonCodeDto>> groupedCodes = commonService.getGroupedCodes();
+    public ResponseEntity<ApiResponseDto<Map<String, Map<String, Object>>>> getCodeList() {
+        Map<String, Map<String, Object>> groupedCodes = commonService.getGroupedCodes();
         return ApiResponseDto.ok(groupedCodes);
     }
 

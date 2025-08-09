@@ -32,19 +32,26 @@ public class CommonService {
         return deptList;
     }
 
-    public Map<String, List<CommonCodeDto>> getGroupedCodes() {
+    public Map<String, Map<String, Object>> getGroupedCodes() {
+
         List<CommonCodeDto> allCodes =  commonMapper.selectAllCodes();
-        Map<String, List<CommonCodeDto>> groupedMap = new LinkedHashMap<>();
+        Map<String, Map<String, Object>> resultMap = new LinkedHashMap<>();
 
         for (CommonCodeDto code : allCodes) {
-            String codeGroup = code.getCodeGroup();
-            if (!groupedMap.containsKey(codeGroup)) {
-                groupedMap.put(codeGroup, new ArrayList<CommonCodeDto>());
+            String group = code.getCodeGroup();
+
+            resultMap.putIfAbsent(group, new LinkedHashMap<>());
+
+            if (!resultMap.get(group).containsKey("groupName")) {
+                resultMap.get(group).put("groupName", code.getCodeGroupName(group));
+                resultMap.get(group).put("codes", new ArrayList<CommonCodeDto>());
             }
-            groupedMap.get(codeGroup).add(code);
+
+            List<CommonCodeDto> codeList = (List<CommonCodeDto>) resultMap.get(group).get("codes");
+            codeList.add(code);
         }
 
-        return groupedMap;
+        return resultMap;
     }
 
     public void updateCodeUsage(List<CommonCodeDto> codes) {

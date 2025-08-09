@@ -69,9 +69,12 @@
         // 테이블 렌더링
         function renderTable(data) {
             $("#codeContainer").empty();
-            $.each(data, function (group, codes) {
+            $.each(data, function (groupKey, groupData) {
+                var groupName = groupData.groupName;
+                var codes = groupData.codes;
+
                 var html = '';
-                html += '<div class="group-title">' + group + '</div>';
+                html += '<div class="group-title">' + groupName + '(' + groupKey + ')</div>';
                 html += '<table class="table table-bordered">';
                 html += '<thead class="table-light">';
                 html += '<tr><th>코드</th><th>설명</th><th>사용여부</th></tr>';
@@ -82,8 +85,8 @@
                     html += '<td>' + code.codeId + '</td>';
                     html += '<td>' + code.codeName + '</td>';
                     html += '<td>';
-                    html += '<input type="radio" name="' + group + '_' + code.codeId + '" value="Y" ' + (code.useYn === 'Y' ? 'checked' : '') + '> Y ';
-                    html += '<input type="radio" name="' + group + '_' + code.codeId + '" value="N" ' + (code.useYn === 'N' ? 'checked' : '') + '> N';
+                    html += '<input type="radio" name="' + groupKey + '_' + code.codeId + '" value="Y" ' + (code.useYn === 'Y' ? 'checked' : '') + '> Y ';
+                    html += '<input type="radio" name="' + groupKey + '_' + code.codeId + '" value="N" ' + (code.useYn === 'N' ? 'checked' : '') + '> N';
                     html += '</td>';
                     html += '</tr>';
                 });
