@@ -38,6 +38,10 @@
             margin-top: 40px;
             margin-bottom: 10px;
         }
+        .text-end {
+            margin-top: 40px;
+            padding-bottom: 20px;
+        }
     </style>
 </head>
 <body>
