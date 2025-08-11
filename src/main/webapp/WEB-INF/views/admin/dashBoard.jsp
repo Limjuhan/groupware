@@ -167,13 +167,11 @@
                 console.log('차트데이터확인 ', chartData);
                 console.log('페이징데이터확인 ', tableData);
                 renderTable(tableData);
-                var canvasId = document.getElementById('leaveChart');
-                var isChart = Chart.getChart(canvasId);
-                if (isChart == null || isChart == undefined) {
-                    renderChart(chartData);
-                }
+                renderChart(chartData);
 
-                if (res.data.pageInfo) renderPagination(res.data.pageInfo);
+                if (res.data.pageInfo) {
+                    renderPagination(res.data.pageInfo);
+                }
             },
             error: function (error) {
                 alert("데이터를 불러오는 중 오류가 발생했습니다.");
