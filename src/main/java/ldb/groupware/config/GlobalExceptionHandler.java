@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponseDto<Void>> handleException(Exception e) {
         log.error("서버 오류 발생 : {}", e);
-        return ApiResponseDto.error("서버 오류가 발생했습니다.");
+        return ApiResponseDto.error("서버 오류가 발생했습니다." + e);
     }
 }
 
